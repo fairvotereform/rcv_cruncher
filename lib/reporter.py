@@ -33,6 +33,9 @@ def percent(part, whole):
     Return a percent float.
 
     """
+    # Prevent division by zero.
+    if whole == 0:
+        return 0
     return 100.0 * part / whole
 
 def ljust(s, length, fill_string):
@@ -139,6 +142,10 @@ class Reporter(object):
         percent_strings = [self.rounded_percent_string(value, first_round) for value in number_ranked]
         number_ranked_strings = [str(value) for value in number_ranked]
 
+        print label_string
+        print percent_strings
+        print first_round
+        print number_ranked_strings
         strings = [label_string] + percent_strings + [first_round] + number_ranked_strings
 
         s = "%s %s %s %s (%s = %s + %s + %s)" % tuple(strings)
@@ -146,8 +153,12 @@ class Reporter(object):
         self.add_text(s)
 
     def add_aggregate_number_ranked(self, name, candidate_ids):
-        number_ranked_list = [self.stats.get_number_ranked(candidate_id) for candidate_id in candidate_ids]
-        number_ranked = map(sum, zip(*number_ranked_list))
+        # TODO: make this elegant.
+        if candidate_ids:
+            number_ranked_list = [self.stats.get_number_ranked(candidate_id) for candidate_id in candidate_ids]
+            number_ranked = map(sum, zip(*number_ranked_list))
+        else:
+            number_ranked = (0, 0, 0)
 
         self.add_number_ranked(name, number_ranked)
 

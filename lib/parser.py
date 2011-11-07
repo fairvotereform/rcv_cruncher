@@ -35,7 +35,9 @@ class Contest(object):
 
 class MasterParser(object):
 
-    def __init__(self, winning_candidate, final_candidates):
+    # TODO: clean up case of final_candidates None.
+    #       This corresponds to all candidates being final candidates.
+    def __init__(self, winning_candidate, final_candidates=None):
         self.winning_candidate = winning_candidate
         self.final_candidates = final_candidates
 
@@ -72,10 +74,14 @@ class MasterParser(object):
 
         winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
 
-        finalist_ids = []
-        for candidate in self.final_candidates:
-            finalist_id = self.find_candidate_id(candidate_dict, candidate)
-            finalist_ids.append(finalist_id)
+        # TODO: make this more elegant.  Eliminate the need for this if block.
+        if self.final_candidates is None:
+            finalist_ids = candidate_dict.keys()
+        else:
+            finalist_ids = []
+            for candidate in self.final_candidates:
+                finalist_id = self.find_candidate_id(candidate_dict, candidate)
+                finalist_ids.append(finalist_id)
 
         contest = Contest(contest_name, contest_id, candidate_dict, winner_id, finalist_ids)
 

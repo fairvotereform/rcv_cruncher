@@ -443,9 +443,9 @@ def main(sys_argv):
         contest_url = contest_config['url']
         contest_dir = os.path.join(election_dir, contest_config['label'])
         winner = contest_config['winner']
-        finalists = contest_config['finalists']
+        finalists = contest_config['finalists'] or None
 
-        #download_data(contest_url, contest_dir)
+        download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
