@@ -1,0 +1,20 @@
+election_label: SF_20111108
+election_name: San Francisco November 8, 2011 Municipal Election
+master_file_glob: Master*.txt
+ballot_file_glob: Ballot*.txt
+contests:
+ - label: Mayor
+   url: http://sfelections.org/results/20111108/data/D2.zip
+   winner: MARK
+   finalists:
+    - JANET
+ - label: DistrictAttorney
+   url: http://sfelections.org/results/20111108/data/D6.zip
+   winner: JANE
+   finalists:
+    - DEBRA
+ - label: Sheriff
+   url: http://sfelections.org/results/20111108/data/D8.zip
+   winner: SCOTT
+   finalists:
+    - RAFAEL

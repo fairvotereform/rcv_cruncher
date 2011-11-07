@@ -1,0 +1,487 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
+#
+"""
+TODO: complete this.
+
+"""
+
+import calendar
+from datetime import datetime
+import glob
+import logging
+import os
+import sys
+import urllib
+import yaml
+from zipfile import ZipFile
+
+from lib.parser import MasterParser
+from lib.parser import BallotParser
+from lib.reporter import Reporter
+
+_log = logging.getLogger(__name__)
+
+DOWNLOAD_DIRECTORY_PREFIX = 'download_'
+INFO_FILE_NAME = 'INFO.yaml'
+UNZIP_DIRECTORY_NAME = 'download'
+
+UNDERVOTE = -1
+OVERVOTE  = -2
+
+YAML_URL_KEY = 'download_url'
+YAML_TIME_KEY = 'download_time'
+
+STATS_HEADER = """\
+RCV RESULTS KEY
+
+Total:         total number of ballots, including undervotes.
+
+Voted:         number of ballots with at least one ranking marked (or overvoted).
+Undervoted:    total minus voted.
+
+N-Candidate:   number of voted ballots with N valid distinct candidate rankings.
+               A valid ranking is a ranking not preceded by an overvote.
+               For example, the 0-Distinct ballots are the first-round
+               overvotes, i.e. the voted ballots whose first marked ranking
+               is an overvote.
+
+Has overvote:  number of ballots with an overvoted ranking at some ranking.
+Has duplicate: number of ballots with the same candidate marked more than once.
+Has skipped:   number of ballots with an unmarked ranking before a marked ranking.
+Irregular:     number of voted ballots with at least one of the following:
+               an overvote, a duplicate candidate, or a skipped ranking (see
+               above for descriptions).  Note that these categories are not
+               mutually exclusive, for example an unmarked ranking followed by
+               an overvoted ranking.
+
+R1-Overvotes:  number of ballots counting as an overvote in the first round.
+
+
+"""
+
+
+def configure_logging(logging_level=None):
+    """Configure logging for standard purposes.
+
+    Args:
+      logging_level: The minimum logging level to log.
+                     Defaults to logging.INFO.
+
+    """
+    # If the stream does not define an "encoding" data attribute, the
+    # logging module can throw an error like the following:
+    #
+    # Traceback (most recent call last):
+    #   File "/System/Library/Frameworks/Python.framework/Versions/2.6/...
+    #         lib/python2.6/logging/__init__.py", line 761, in emit
+    #     self.stream.write(fs % msg.encode(self.stream.encoding))
+    # LookupError: unknown encoding: unknown
+    if logging_level is None:
+        logging_level = logging.INFO
+
+    # Create the handler.
+    #
+    # The stream is a file-like object to which to log.  The stream must
+    # define an "encoding" data attribute, or else logging raises an error.
+    stream = sys.stderr
+    handler = logging.StreamHandler(stream)
+    formatter = logging.Formatter("%(name)s: [%(levelname)s] %(message)s")
+    handler.setFormatter(formatter)
+
+    # The root logger.
+    logger = logging.getLogger()
+
+    logger.setLevel(logging_level)
+    logger.addHandler(handler)
+
+    _log.debug("Debug logging enabled.")
+
+
+class BallotAnalyzer(object):
+    
+    def first_round(self, ballot):
+        """
+        Return what the ballot counts towards in the first round.
+
+        """
+        for choice in ballot:
+            if choice is not UNDERVOTE:
+                break
+        return choice
+
+    def count_number_ranked(self, ballot):
+        """
+        Return the number of distinct valid candidate rankings.
+
+        """
+        count = 0
+        seen = []
+        for choice in ballot:
+            if choice is UNDERVOTE:
+                continue
+            if choice is OVERVOTE:
+                break
+            if choice in seen:
+                # Then duplicate candidate.
+                continue
+            # Otherwise, new candidate.
+            count += 1
+            seen.append(choice)
+        return count
+
+    def has_overvote(self, ballot):
+        return OVERVOTE in ballot
+
+    def has_duplicate(self, ballot):
+        seen = []
+        for choice in ballot:
+            if choice is UNDERVOTE or choice is OVERVOTE:
+                continue
+            if choice in seen:
+                return True
+            seen.append(choice)
+        return False
+
+    def has_skipped(self, ballot):
+        seen_undervote = False
+        for choice in ballot:
+            if choice is UNDERVOTE:
+                seen_undervote = True
+                continue
+            if seen_undervote:
+                return True
+        return False
+
+    def did_validly_rank(self, ballot, candidates):
+        for choice in ballot:
+            if choice is OVERVOTE:
+                return False
+            if choice in candidates:
+                return True
+        return False
+
+    def did_sweep(self, ballot, candidate_id):
+        for choice in ballot:
+            if choice != candidate_id:
+                return False
+        return True
+
+    def who_wins(self, ballot, candidate_id1, candidate_id2):
+        winner_id = 0
+        for choice in ballot:
+            if choice is OVERVOTE:
+                break
+            if choice is candidate_id1 or choice is candidate_id2:
+                return choice
+        
+        return winner_id
+
+
+class Stats(object):
+
+
+    def __init__(self, candidate_ids, winner_id):
+
+        self.total = 0
+        self.undervotes = 0
+
+        self.has_overvote = 0
+        self.has_duplicate = 0
+        self.has_skipped = 0
+        self.irregular = 0
+
+        self.first_round_overvotes = 0
+
+        # These dictionaries group values by first-round choice.
+        number_ranked = {}
+        ranked_winner = {}
+        ranked_finalist = {}
+        did_sweep = {}
+
+        for candidate_id in candidate_ids:
+            number_ranked[candidate_id] = 3 * [0]  # [ranked3, ranked2, ranked1]
+            ranked_winner[candidate_id] = 0
+            ranked_finalist[candidate_id] = 0
+            did_sweep[candidate_id] = 0
+
+        self._number_ranked = number_ranked
+        self.ranked_winner = ranked_winner
+        self.ranked_finalist = ranked_finalist
+        self.did_sweep = did_sweep
+
+        # Initialize condorcet pairs against the winner.
+        condorcet = {}
+        for candidate_id in candidate_ids:
+            if candidate_id == winner_id:
+                continue
+            condorcet[(candidate_id, winner_id)] = 0
+            condorcet[(winner_id, candidate_id)] = 0
+        self._condorcet = condorcet
+
+    @property
+    def voted(self):
+        """
+        Get the number of voted ballots.
+
+        """
+        return self.total - self.undervotes
+
+    @property
+    def first_round_continuing(self):
+        """
+        Get the number of voted ballots.
+
+        """
+        return self.voted - self.first_round_overvotes
+
+    def get_first_round(self, candidate_id):
+        """
+        Return the first-round count for a candidate.
+
+        """
+        return sum(self._number_ranked[candidate_id])
+
+    def add_number_ranked(self, candidate_id, number_ranked):
+        index = 3 - number_ranked
+        self._number_ranked[candidate_id][index] += 1
+
+    def get_number_ranked(self, candidate_id):
+        """
+        Return the number ranked as a list: [ranked3, ranked2, ranked1].
+
+        """
+        return list(self._number_ranked[candidate_id])
+
+    def add_condorcet_winner(self, winning_id, losing_id):
+        self._condorcet[(winning_id, losing_id)] += 1
+
+    def get_condorcet_support(self, candidate_id1, candidate_id2):
+        win_count = self._condorcet[(candidate_id1, candidate_id2)]
+        lose_count = self._condorcet[(candidate_id2, candidate_id1)]
+
+        total_count = win_count + lose_count
+
+        return (win_count, total_count)
+
+
+class BallotHandler(object):
+    
+    def __init__(self, contest, stats):
+        self.analyzer = BallotAnalyzer()
+        self.stats = stats
+
+        winner_id_list = [contest.winner_id]
+        self.winner_id_list = winner_id_list
+        self.finalist_ids = contest.finalist_ids
+        self.non_winner_ids = list(set(contest.candidate_ids) - set(winner_id_list))
+
+    def on_ballot(self, ballot):
+
+        analyzer = self.analyzer
+        stats = self.stats
+        winner_id = self.winner_id_list[0]
+
+        stats.total += 1
+
+        first_round = analyzer.first_round(ballot)
+
+        if first_round == UNDERVOTE:
+            stats.undervotes += 1
+            return
+
+        if first_round == OVERVOTE:
+            stats.first_round_overvotes += 1
+        else:
+            number_ranked = analyzer.count_number_ranked(ballot)
+            stats.add_number_ranked(first_round, number_ranked)
+            if analyzer.did_validly_rank(ballot, self.winner_id_list):
+                stats.ranked_winner[first_round] += 1
+            if analyzer.did_validly_rank(ballot, self.finalist_ids):
+                stats.ranked_finalist[first_round] += 1
+            if analyzer.did_sweep(ballot, first_round):
+                stats.did_sweep[first_round] += 1
+            
+            # Calculate condorcet pairs.
+            for candidate_id in self.non_winner_ids:
+                pair_winner_id = analyzer.who_wins(ballot, winner_id, candidate_id)
+                if not pair_winner_id:
+                    continue
+                if pair_winner_id == winner_id:
+                    stats.add_condorcet_winner(winner_id, candidate_id)
+                else:
+                    stats.add_condorcet_winner(candidate_id, winner_id)
+
+        has_overvote = analyzer.has_overvote(ballot)
+        has_duplicate = analyzer.has_duplicate(ballot)
+        has_skipped = analyzer.has_skipped(ballot)
+    
+        if has_overvote: stats.has_overvote += 1
+        if has_duplicate: stats.has_duplicate += 1
+        if has_skipped: stats.has_skipped += 1
+    
+        if has_overvote or has_duplicate or has_skipped:
+            stats.irregular += 1
+
+
+def from_yaml(path):
+    """Deserialize a value from disk."""
+    with open(path, "r") as stream:
+        data = yaml.load(stream)
+
+    return data
+
+
+def ensure_dir(path):
+    if os.path.isdir(path):
+        return
+    _log.info("Creating directory at: %s" % path)
+    os.mkdir(path)
+
+
+def write_file(text, path):
+    _log.info("Creating file at: %s" % path)
+    with open(path, "w") as f:
+        f.write(text)
+
+
+def utc_datetime_to_local_datetime(utc_datetime):
+    utc_tuple = utc_datetime.utctimetuple()
+    timestamp = calendar.timegm(utc_tuple)
+    local_datetime = datetime.fromtimestamp(timestamp)
+    
+    return local_datetime
+
+
+
+def download_data(url, contest_dir):
+    """
+    Download and extract the election zip file.
+    
+    """
+    utc_now = datetime.utcnow()
+
+    ensure_dir(contest_dir)
+    readme_path = os.path.join(contest_dir, 'README.txt')
+    write_file("This directory should be empty except for auto-downloaded directories.", readme_path)
+
+    download_dir_name = DOWNLOAD_DIRECTORY_PREFIX + utc_now.strftime("%Y%m%d_%H%M%S")
+    download_dir = os.path.join(contest_dir, download_dir_name)
+    ensure_dir(download_dir)
+
+    zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
+    
+    _log.info("Downloading %s to %s..." % (url, zip_path))
+    urllib.urlretrieve(url, zip_path)
+
+    unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
+    zip_file = ZipFile(zip_path, 'r')
+    zip_file.extractall(unzip_dir)
+
+    local_now = utc_datetime_to_local_datetime(utc_now)
+
+    time_string = local_now.strftime("%A, %B %d, %Y at %I:%m:%d%p")
+    time_string += " (%s UTC)" % utc_now
+    info_dict = {YAML_URL_KEY: url, YAML_TIME_KEY: time_string}
+    yaml_dump = yaml.dump(info_dict)
+
+    text = "# This file is auto-generated.  Do not modify this file.\n"
+    text += yaml_dump
+
+    info_path = os.path.join(download_dir, INFO_FILE_NAME)
+    write_file(text, info_path)
+
+
+def find_data_dir(contest_dir):
+
+    file_name = DOWNLOAD_DIRECTORY_PREFIX + "*"
+    glob_path = os.path.join(contest_dir, file_name)
+    paths = glob.glob(glob_path)
+    paths.sort()
+    path = os.path.join(paths[-1], UNZIP_DIRECTORY_NAME)
+
+    return path
+
+
+def get_path(dir_path, file_glob):
+    glob_path = os.path.join(dir_path, file_glob)
+    paths = glob.glob(glob_path)
+    
+    if len(paths) is not 1:
+        raise AssertionError("No path found matching: %s" % glob_path)
+
+    return paths[0]
+
+def main(sys_argv):
+    start_time = datetime.now()
+
+    args = sys_argv[1:]
+
+    path = args[0]
+    data_dir = args[1]
+
+    configure_logging(logging.DEBUG)
+
+    ensure_dir(data_dir)
+
+    config = from_yaml(path)
+
+    election_label = config['election_label']
+    election_name = config['election_name']
+    master_file_glob = config['master_file_glob']
+    ballot_file_glob = config['ballot_file_glob']
+
+    election_dir = os.path.join(data_dir, election_label)
+    ensure_dir(election_dir)
+
+    report = "%s\n\n" % election_name.upper()
+
+    for contest_config in config['contests']:
+
+        contest_url = contest_config['url']
+        contest_dir = os.path.join(election_dir, contest_config['label'])
+        winner = contest_config['winner']
+        finalists = contest_config['finalists']
+
+        #download_data(contest_url, contest_dir)
+        data_dir = find_data_dir(contest_dir)
+
+        _log.info("Chose data directory: %s" % data_dir)
+        master_path = get_path(data_dir, master_file_glob)
+        ballot_path = get_path(data_dir, ballot_file_glob)
+
+        master_parser = MasterParser(winner, finalists)
+        contest = master_parser.parse(master_path)
+
+        stats = Stats(candidate_ids=contest.candidate_ids, winner_id=contest.winner_id)
+        ballot_handler = BallotHandler(contest, stats)
+
+        parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
+        parser.process_contest(ballot_path, winner)
+
+        info_path = os.path.join(data_dir, os.pardir, INFO_FILE_NAME)
+        
+        download_info = from_yaml(info_path)
+        download_url = download_info[YAML_URL_KEY]
+        download_time = download_info[YAML_TIME_KEY]
+
+        reporter = Reporter(contest, stats, download_url=download_url, download_time=download_time)
+
+        report += reporter.make_report()
+
+    # print STATS_HEADER
+
+    print report
+    output_path = "out_%s.html" % election_label
+    report = "<pre>\n%s\n</pre>\n" % report
+    write_file(report, output_path)
+    #read_ballot_path(path, stats)
+    print "Elapsed time: %s" % (datetime.now() - start_time)
+
+
+    exit("Done...")
+
+if __name__ == "__main__":
+    main(sys.argv)
