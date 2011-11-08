@@ -217,7 +217,7 @@ class Reporter(object):
         for candidate_id, name, first_round in self.sorted_candidates:
             self.add_data(name, first_round, 'continuing', stats.first_round_continuing)
 
-        self.add_section_title("Number of candidates validly ranked (3-2-1), by first round")
+        self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
 
         self.add_aggregate_number_ranked(LABELS['all'], contest.candidate_ids)
         self.add_aggregate_number_ranked(LABELS['winner'], [contest.winner_id])
@@ -229,7 +229,7 @@ class Reporter(object):
             number_ranked = stats.get_number_ranked(candidate_id)
             self.add_number_ranked(name, number_ranked)
 
-        self.add_section_title("Ballots validly ranking the winner, by first round")
+        self.add_section_title("Ballots validly ranking the winner, by first-round choice")
 
         self.add_first_round_percent_data(LABELS['all'], stats.ranked_winner, contest.candidate_ids)
         self.skip()
@@ -237,7 +237,7 @@ class Reporter(object):
         for candidate_id, name, first_round in self.sorted_candidates:
             self.add_first_round_percent_data(name, stats.ranked_winner, [candidate_id])
 
-        self.add_section_title("Ballots validly ranking a finalist, by first round")
+        self.add_section_title("Ballots validly ranking a finalist, by first-round choice")
 
         self.add_first_round_percent_data(LABELS['all'], stats.ranked_finalist, contest.candidate_ids)
         self.skip()
