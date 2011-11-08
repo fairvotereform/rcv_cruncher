@@ -144,10 +144,6 @@ class Reporter(object):
         percent_strings = [self.rounded_percent_string(value, first_round) for value in number_ranked]
         number_ranked_strings = [str(value) for value in number_ranked]
 
-        print label_string
-        print percent_strings
-        print first_round
-        print number_ranked_strings
         strings = [label_string] + percent_strings + [first_round] + number_ranked_strings
 
         s = "%s %s %s %s (%s = %s + %s + %s)" % tuple(strings)

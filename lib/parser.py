@@ -76,7 +76,9 @@ class MasterParser(object):
 
         # TODO: make this more elegant.  Eliminate the need for this if block.
         if self.final_candidates is None:
-            finalist_ids = candidate_dict.keys()
+            candidate_ids = candidate_dict.keys() 
+            # Make sure the winner is not a finalist to avoid duplicates.
+            finalist_ids = list(set(candidate_ids) - set([winner_id]))
         else:
             finalist_ids = []
             for candidate in self.final_candidates:
