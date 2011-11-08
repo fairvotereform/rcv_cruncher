@@ -15,6 +15,8 @@ LABELS = {
     'voted': "Voted",
     'under': "Undervoted",
     'has_dupe': "Has_Duplicate",
+    'dupe3': "Has_Duplicate_3",
+    'dupe2': "Has_Duplicate_2",
     'has_over': "Has_Overvote",
     'has_skip': "Has_Skipped",
     'irregular': "Irregular",
@@ -197,10 +199,14 @@ class Reporter(object):
         self.add_data(LABELS['under'], stats.undervotes, 'total', stats.total)
         self.skip()
 
-        self.add_data(LABELS['has_dupe'], stats.has_duplicate, 'voted', stats.voted)
+        self.add_data(LABELS['has_dupe'], sum(stats.duplicates.values()), 'voted', stats.voted)
         self.add_data(LABELS['has_over'], stats.has_overvote, 'voted', stats.voted)
         self.add_data(LABELS['has_skip'], stats.has_skipped, 'voted', stats.voted)
         self.add_data(LABELS['irregular'], stats.irregular, 'voted', stats.voted)
+        self.skip()
+
+        self.add_data(LABELS['dupe3'], stats.duplicates[3], 'voted', stats.voted)
+        self.add_data(LABELS['dupe2'], stats.duplicates[2], 'voted', stats.voted)
 
         self.add_section_title("First round")
 

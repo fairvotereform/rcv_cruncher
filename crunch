@@ -135,16 +135,21 @@ class BallotAnalyzer(object):
     def has_overvote(self, ballot):
         return OVERVOTE in ballot
 
-    def has_duplicate(self, ballot):
-        seen = []
-        for choice in ballot:
+    def count_duplicates(self, ballot):
+        """
+        Return the max number of times the same candidate occurs on the ballot.
+        
+        """
+        duplicate_count = 0
+        choices = set(ballot)
+        for choice in choices:
             if choice is UNDERVOTE or choice is OVERVOTE:
                 continue
-            if choice in seen:
-                return True
-            seen.append(choice)
-        return False
-
+            count = ballot.count(choice)
+            if count > duplicate_count:
+                duplicate_count = count
+        return duplicate_count
+    
     def has_skipped(self, ballot):
         seen_undervote = False
         for choice in ballot:
@@ -189,11 +194,12 @@ class Stats(object):
         self.undervotes = 0
 
         self.has_overvote = 0
-        self.has_duplicate = 0
         self.has_skipped = 0
         self.irregular = 0
 
         self.first_round_overvotes = 0
+
+        self.duplicates = {2: 0, 3: 0}
 
         # These dictionaries group values by first-round choice.
         number_ranked = {}
@@ -314,12 +320,16 @@ class BallotHandler(object):
                 else:
                     stats.add_condorcet_winner(candidate_id, winner_id)
 
+        has_duplicate = False
+        duplicate_count = analyzer.count_duplicates(ballot)
+        if duplicate_count > 1:
+            stats.duplicates[duplicate_count] += 1
+            has_duplicate = True
+
         has_overvote = analyzer.has_overvote(ballot)
-        has_duplicate = analyzer.has_duplicate(ballot)
         has_skipped = analyzer.has_skipped(ballot)
     
         if has_overvote: stats.has_overvote += 1
-        if has_duplicate: stats.has_duplicate += 1
         if has_skipped: stats.has_skipped += 1
     
         if has_overvote or has_duplicate or has_skipped:
