@@ -14,11 +14,11 @@ LABELS = {
     'total': "Total",
     'voted': "Voted",
     'under': "Undervoted",
+    'has_over': "Has_Overvote",
+    'has_skip': "Has_Skipped",
     'has_dupe': "Has_Duplicate",
     'dupe3': "Has_Duplicate_3",
     'dupe2': "Has_Duplicate_2",
-    'has_over': "Has_Overvote",
-    'has_skip': "Has_Skipped",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -127,13 +127,31 @@ class Reporter(object):
     def value_string(self, value):
         return "%6d" % value
 
-    def add_data(self, name, value, total_label=None, total=None):
+    def add_data(self, name, value, total_label=None, total=None, description=None):
         label_string = self.label_string(name)
 
         percent = self.percent_string(value, total)
         value_string = self.value_string(value)
 
-        s = "%s %s (%s of %s)" % (label_string, value_string, percent, total_label)
+        total_string = ("of %s" % total_label) if total_label is not None else ""
+        s = "%s %s (%s %s)" % (label_string, value_string, percent, total_string)
+
+        if description is not None:
+            s += " [%s]" % description
+
+        self.add_text(s)
+
+    # TODO: find a nicer abstraction of this functionality.
+    def add_data2(self, name, value1, total1, value2, total2):
+        label_string = self.label_string(name)
+
+        def data_pair_string(value, total):
+            value_string = self.value_string(value)
+            percent_string = self.percent_string(value, total)
+
+            return "%s ( %s )" % (value_string, percent_string)
+
+        s = "%s %s %s" % (label_string, data_pair_string(value1, total1), data_pair_string(value2, total2))
 
         self.add_text(s)
 
@@ -193,25 +211,31 @@ class Reporter(object):
         self.skip()
         self.add_data(LABELS['voted'], stats.voted, 'total', stats.total)
         self.add_data(LABELS['under'], stats.undervotes, 'total', stats.total)
+
+        self.add_section_title("Overview of voted, as percent of voted")
+
+        self.add_data(LABELS['has_dupe'], sum(stats.duplicates.values()), total=stats.voted)
+        self.add_data(LABELS['has_over'], stats.has_overvote, total=stats.voted)
+        self.add_data(LABELS['has_skip'], stats.has_skipped, total=stats.voted)
+        self.add_data(LABELS['irregular'], stats.irregular, total=stats.voted,
+                      description="has duplicate, overvote, and/or skip")
         self.skip()
 
-        self.add_data(LABELS['has_dupe'], sum(stats.duplicates.values()), 'voted', stats.voted)
-        self.add_data(LABELS['has_over'], stats.has_overvote, 'voted', stats.voted)
-        self.add_data(LABELS['has_skip'], stats.has_skipped, 'voted', stats.voted)
-        self.add_data(LABELS['irregular'], stats.irregular, 'voted', stats.voted)
-        self.skip()
+        self.add_data(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
+        self.add_data(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
 
-        self.add_data(LABELS['dupe3'], stats.duplicates[3], 'voted', stats.voted)
-        self.add_data(LABELS['dupe2'], stats.duplicates[2], 'voted', stats.voted)
+        self.add_section_title("Overview of first round, as percent of voted")
 
-        self.add_section_title("First round")
+        self.add_data(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
+        self.add_data(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
 
-        self.add_data(LABELS['continuing'], stats.first_round_continuing, 'voted', stats.voted)
-        self.add_data(LABELS['over'], stats.first_round_overvotes, 'voted', stats.voted)
+        self.add_section_title("Candidate support, in descending order of first round total")
+
+        self.add_text("[First round as percent of continuing; ranked anywhere as percent of voted.]")
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
-            self.add_data(name, first_round, 'continuing', stats.first_round_continuing)
+            self.add_data2(name, first_round, stats.first_round_continuing, stats.ranked_anywhere[candidate_id], stats.voted)
 
         self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
 

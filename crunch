@@ -160,6 +160,13 @@ class BallotAnalyzer(object):
                 return True
         return False
 
+    def get_candidates(self, ballot):
+        """
+        Return the set of candidates ranked anywhere on the ballot.
+
+        """
+        return set(ballot) - set((UNDERVOTE, OVERVOTE))
+
     def did_validly_rank(self, ballot, candidates):
         for choice in ballot:
             if choice is OVERVOTE:
@@ -201,22 +208,24 @@ class Stats(object):
 
         self.duplicates = {2: 0, 3: 0}
 
-        # These dictionaries group values by first-round choice.
-        number_ranked = {}
-        ranked_winner = {}
-        ranked_finalist = {}
+        number_ranked = {}  # grouped by first-round choice.
+        ranked_winner = {}  # grouped by first-round choice.
+        ranked_finalist = {}  # grouped by first-round choice.
         did_sweep = {}
+        ranked_anywhere = {}
 
         for candidate_id in candidate_ids:
             number_ranked[candidate_id] = 3 * [0]  # [ranked3, ranked2, ranked1]
             ranked_winner[candidate_id] = 0
             ranked_finalist[candidate_id] = 0
             did_sweep[candidate_id] = 0
+            ranked_anywhere[candidate_id] = 0
 
         self._number_ranked = number_ranked
         self.ranked_winner = ranked_winner
         self.ranked_finalist = ranked_finalist
         self.did_sweep = did_sweep
+        self.ranked_anywhere = ranked_anywhere
 
         # Initialize condorcet pairs against the winner.
         condorcet = {}
@@ -297,6 +306,10 @@ class BallotHandler(object):
         if first_round == UNDERVOTE:
             stats.undervotes += 1
             return
+
+        candidate_ids = analyzer.get_candidates(ballot)
+        for candidate_id in candidate_ids:
+            stats.ranked_anywhere[candidate_id] += 1
 
         if first_round == OVERVOTE:
             stats.first_round_overvotes += 1
@@ -456,7 +469,7 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        download_data(contest_url, contest_dir)
+        #download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
