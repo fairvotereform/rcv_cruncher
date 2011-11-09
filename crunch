@@ -392,8 +392,9 @@ def download_data(url, contest_dir):
 
     local_now = utc_datetime_to_local_datetime(utc_now)
 
-    time_string = local_now.strftime("%A, %B %d, %Y at %I:%m:%d%p")
+    time_string = local_now.strftime("%A, %B %d, %Y at %I:%M:%d%p")
     time_string += " (%s UTC)" % utc_now
+
     info_dict = {YAML_URL_KEY: url, YAML_TIME_KEY: time_string}
     yaml_dump = yaml.dump(info_dict)
 
