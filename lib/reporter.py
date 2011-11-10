@@ -318,7 +318,7 @@ class Reporter(object):
             percent_string = self.percent_string(win_count, total_count)
             percent_of_voted_string = self.percent_string(total_count, stats.first_round_continuing)
 
-            strings = [label_string, percent_string, win_count, total_count, percent_of_voted_string]
+            strings = [label_string, percent_string, self.value_string(win_count), self.value_string(total_count), percent_of_voted_string]
 
             s = "%s %s (%s / %s) (%s of first-round continuing)" % tuple(strings)
 

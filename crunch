@@ -483,7 +483,7 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        download_data(contest_url, contest_dir)
+        #download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
@@ -496,7 +496,9 @@ def main(sys_argv):
         stats = Stats(candidate_ids=contest.candidate_ids, winner_id=contest.winner_id)
         ballot_handler = BallotHandler(contest, stats)
 
-        parser = BallotParser(ENCODING_DATA_FILES, undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
+        # Parsing the ballot file is faster without specifying an encoding.
+        # The ballot file is just integers, so an encoding is not necessary.
+        parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
         info_path = os.path.join(data_dir, os.pardir, INFO_FILE_NAME)
