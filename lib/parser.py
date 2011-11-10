@@ -111,7 +111,8 @@ class MasterParser(object):
 
 class BallotParser(object):
     
-    def __init__(self, undervote, overvote, on_ballot):
+    def __init__(self, encoding, undervote, overvote, on_ballot):
+        self.encoding = encoding
         self.undervote = undervote
         self.overvote = overvote
         self.on_ballot = on_ballot
@@ -121,7 +122,7 @@ class BallotParser(object):
 
     def read_ballot_path(self, path):
         _log.info("Reading ballots: %s" % path)
-        with open(path, "r") as f:
+        with codecs.open(path, "r", encoding=self.encoding) as f:
             self.process_ballot_file(f)
 
     def process_ballot_file(self, f):

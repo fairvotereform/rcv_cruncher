@@ -1,8 +1,11 @@
+#
+# This file is UTF-8 encoded.
+#
 election_label: SF_20111108
 election_name: San Francisco November 8, 2011 Municipal Election
 master_file_glob: "*-Master*.txt"
 ballot_file_glob: "*-Ballot*.txt"
-contests2:
+contests:
  - label: Mayor
    url: http://www.sfelections.org/results/20111108/data/Mayor.zip
    winner: ED LEE
@@ -13,11 +16,9 @@ contests2:
    winner: ROSS MIRKARIMI
    finalists:
     - PAUL MIYAMOTO
-contests:
  - label: DA
    url: http://www.sfelections.org/results/20111108/data/DA.zip
    winner: GEORGE GASCÓN
-#   winner: GEORGE GASCON
    finalists:
     - DAVID ONEK
   
