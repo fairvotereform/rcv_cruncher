@@ -112,7 +112,7 @@ class Reporter(object):
 
     def write_value(self, label, value, total=None, total_label=None, description=None):
         """
-        Writes of a line of the form--
+        Write a line of the form--
 
         LABEL .....................   9578 (  6.2% ) [description]
 

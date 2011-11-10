@@ -494,12 +494,12 @@ def main(sys_argv):
 
         reporter.add_contest(contest_label, contest, stats, download_url=download_url, download_time=download_time)
 
-    report_text = reporter.generate()
+    report = reporter.generate()
 
-    print report_text
+    print report
 
     output_path = "out_%s.html" % election_label
-    write_file(report_text, output_path)
+    write_file(report, output_path)
 
     print "Completed in: %s" % (datetime.now() - start_time)
 
