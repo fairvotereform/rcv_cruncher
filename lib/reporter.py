@@ -254,13 +254,13 @@ class Reporter(object):
         self.add_data(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
         self.add_data(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
 
-        self.add_section_title("Candidate support, in descending order of first round total")
+        self.add_section_title("Candidate support, in descending order of first round totals")
 
-        self.add_text("[First round as percent of continuing; ranked anywhere as percent of voted.]")
+        self.add_text("[First round and validly ranked anywhere, as percent of first-round continuing.]")
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
-            self.add_data2(name, first_round, stats.first_round_continuing, stats.ranked_anywhere[candidate_id], stats.voted)
+            self.add_data2(name, first_round, stats.first_round_continuing, stats.ranked_anywhere[candidate_id], stats.first_round_continuing)
 
         self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
 

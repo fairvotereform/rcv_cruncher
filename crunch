@@ -117,26 +117,6 @@ class BallotAnalyzer(object):
                 break
         return choice
 
-    def count_number_ranked(self, ballot):
-        """
-        Return the number of distinct valid candidate rankings.
-
-        """
-        count = 0
-        seen = []
-        for choice in ballot:
-            if choice is UNDERVOTE:
-                continue
-            if choice is OVERVOTE:
-                break
-            if choice in seen:
-                # Then duplicate candidate.
-                continue
-            # Otherwise, new candidate.
-            count += 1
-            seen.append(choice)
-        return count
-
     def has_overvote(self, ballot):
         return OVERVOTE in ballot
 
@@ -165,20 +145,20 @@ class BallotAnalyzer(object):
                 return True
         return False
 
-    def get_candidates(self, ballot):
+    def get_ranked_candidates(self, ballot):
         """
-        Return the set of candidates ranked anywhere on the ballot.
+        Return the set of validly ranked candidates.
 
         """
-        return set(ballot) - set((UNDERVOTE, OVERVOTE))
-
-    def did_validly_rank(self, ballot, candidates):
+        candidates = set()
         for choice in ballot:
+            if choice is UNDERVOTE:
+                continue
             if choice is OVERVOTE:
-                return False
-            if choice in candidates:
-                return True
-        return False
+                break
+            candidates.add(choice)
+
+        return candidates
 
     def did_sweep(self, ballot, candidate_id):
         for choice in ballot:
@@ -298,9 +278,9 @@ class BallotHandler(object):
         winner_id_list = [contest.winner_id]
         self.winner_id_list = winner_id_list
 
-        finalist_ids = contest.finalist_ids
-        self.finalist_ids = finalist_ids
-        self.finalist_ids_set = set(finalist_ids)
+        finalists = contest.finalist_ids
+        self.finalists = finalists
+        self.finalists_set = set(finalists)
         self.non_winner_ids = list(set(contest.candidate_ids) - set(winner_id_list))
 
     def on_ballot(self, ballot):
@@ -317,21 +297,21 @@ class BallotHandler(object):
             stats.undervotes += 1
             return
 
-        candidate_ids = analyzer.get_candidates(ballot)
-        for candidate_id in candidate_ids:
-            stats.ranked_anywhere[candidate_id] += 1
+        ranked_candidates = analyzer.get_ranked_candidates(ballot)
+        for candidate in ranked_candidates:
+            stats.ranked_anywhere[candidate] += 1
 
-        if len(candidate_ids) == 3 and (len(candidate_ids - self.finalist_ids_set) == 3):
+        if len(ranked_candidates) == 3 and (len(ranked_candidates - self.finalists_set) == 3):
             stats.true_exhaust += 1
 
         if first_round == OVERVOTE:
             stats.first_round_overvotes += 1
         else:
-            number_ranked = analyzer.count_number_ranked(ballot)
+            number_ranked = len(ranked_candidates)
             stats.add_number_ranked(first_round, number_ranked)
-            if analyzer.did_validly_rank(ballot, self.winner_id_list):
+            if winner_id in ranked_candidates:
                 stats.ranked_winner[first_round] += 1
-            if analyzer.did_validly_rank(ballot, self.finalist_ids):
+            if not ranked_candidates.isdisjoint(self.finalists):
                 stats.ranked_finalist[first_round] += 1
             if analyzer.did_sweep(ballot, first_round):
                 stats.did_sweep[first_round] += 1
