@@ -52,8 +52,6 @@ class MasterParser(object):
 
     def find_candidate_id(self, candidate_dict, name_to_find):
         for (candidate_id, name) in candidate_dict.iteritems():
-            #print repr(name)
-            #print repr(name_to_find)
             if name == name_to_find:
                 return candidate_id
         raise Error("Candidate %s not found in dictionary." % name_to_find)
@@ -74,7 +72,6 @@ class MasterParser(object):
                 continue
 
             if record_type == "Candidate":
-                print repr(description)
                 candidate_dict[record_id] = description
 
         winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
@@ -140,6 +137,7 @@ class BallotParser(object):
                 try:
                     ballot = self.read_ballot(parsed_line, f)
                 except Exception:
+                    print "Error reading line..."
                     print line_index
                     print parsed_line
                     exit()

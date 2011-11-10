@@ -56,26 +56,9 @@ class Reporter(object):
 
     candidate_indent = 12
 
-    def __init__(self, contest, stats, download_url, download_time):
-        self.contest = contest
-        self.stats = stats
-        self.download_url = download_url
-        self.download_time = download_time
-        
-        self.report = ""
-
-        labels = LABELS.values() + contest.candidate_dict.values()
-        max_label_length = max([len(label) for label in labels])
-        self.left_indent = max_label_length + 1  # for extra space.
-
-        # Sort candidates in descending order by first-round totals.
-        triples = []
-        for candidate_id, name in contest.candidate_dict.iteritems():
-            first_round = stats.get_first_round(candidate_id)
-            triples.append((first_round, candidate_id, name))
-        triples.sort()
-        triples.reverse()
-        self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
+    def __init__(self, election_name):
+        self.text = ""
+        self.election_name = election_name
 
     def percent_string(self, part, whole):
         """
@@ -95,7 +78,7 @@ class Reporter(object):
         return self.contest.candidate_dict[candidate_id]
 
     def add_text(self, text):
-        self.report += "%s\n" % text
+        self.text += "%s\n" % text
 
     def _add_header(self, text, sep_char):
         self.add_text(text)
@@ -196,12 +179,49 @@ class Reporter(object):
         self.add_percent_data(name, value, total)
 
     def skip(self):
-        self.report += "\n"
+        self.add_text("")
 
-    def make_report(self):
+    def add_header(self):
+        s = """\
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+<body>
+<pre>
+%s
+""" % (self.election_name)
 
-        contest = self.contest
-        stats = self.stats
+        self.add_text(s)
+
+    def add_footer(self):
+        s = """\
+</pre>
+</body>
+</html>
+"""
+        self.add_text(s)
+
+    # TODO: refactor this method to be smaller.
+    def add_contest(self, contest, stats, download_url, download_time):
+
+        self.contest = contest
+        self.stats = stats
+        self.download_url = download_url
+        self.download_time = download_time
+    
+        labels = LABELS.values() + contest.candidate_dict.values()
+        max_label_length = max([len(label) for label in labels])
+        self.left_indent = max_label_length + 1  # for extra space.
+
+        # Sort candidates in descending order by first-round totals.
+        triples = []
+        for candidate_id, name in contest.candidate_dict.iteritems():
+            first_round = stats.get_first_round(candidate_id)
+            triples.append((first_round, candidate_id, name))
+        triples.sort()
+        triples.reverse()
+        self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
 
         self.add_title(contest.name + " RCV Stats")
 
@@ -315,7 +335,4 @@ class Reporter(object):
         self.add_text(80 * "*")
         self.skip()
         self.skip()
-
-        return self.report
-
 

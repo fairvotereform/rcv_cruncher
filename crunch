@@ -473,7 +473,8 @@ def main(sys_argv):
     election_dir = os.path.join(data_dir, election_label)
     ensure_dir(election_dir)
 
-    report = "%s\n\n" % election_name.upper()
+    reporter = Reporter(election_name=election_name.upper())
+    reporter.add_header()
 
     for contest_config in config['contests']:
 
@@ -482,7 +483,7 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        download_data(contest_url, contest_dir)
+        #download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
@@ -504,21 +505,19 @@ def main(sys_argv):
         download_url = download_info[YAML_URL_KEY]
         download_time = download_info[YAML_TIME_KEY]
 
-        reporter = Reporter(contest, stats, download_url=download_url, download_time=download_time)
+        reporter.add_contest(contest, stats, download_url=download_url, download_time=download_time)
 
-        report += reporter.make_report()
+    reporter.add_footer()
 
-    # print STATS_HEADER
+    report_text = reporter.text
 
-    print report
+    print report_text
+
     output_path = "out_%s.html" % election_label
-    report = "<pre>\n%s\n</pre>\n" % report
-    write_file(report, output_path)
-    #read_ballot_path(path, stats)
-    print "Elapsed time: %s" % (datetime.now() - start_time)
+    write_file(report_text, output_path)
 
+    print "Completed in: %s" % (datetime.now() - start_time)
 
-    exit("Done...")
 
 if __name__ == "__main__":
     main(sys.argv)
