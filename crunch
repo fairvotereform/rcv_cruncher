@@ -420,6 +420,10 @@ def find_data_dir(contest_dir):
     file_name = DOWNLOAD_DIRECTORY_PREFIX + "*"
     glob_path = os.path.join(contest_dir, file_name)
     paths = glob.glob(glob_path)
+    
+    if not paths:
+        raise Exception("Downloaded files not found in: %s" % contest_dir)
+
     paths.sort()
     path = os.path.join(paths[-1], UNZIP_DIRECTORY_NAME)
 
