@@ -57,8 +57,8 @@ class Reporter(object):
     candidate_indent = 12
 
     def __init__(self, election_name):
-        self.text = ""
         self.election_name = election_name
+        self.contest_infos = []
 
     def percent_string(self, part, whole):
         """
@@ -74,32 +74,31 @@ class Reporter(object):
         """
         return "%3.0f%%" % percent(part, whole)
 
-    def get_candidate_name(self, candidate_id):
-        return self.contest.candidate_dict[candidate_id]
-
     def add_text(self, text):
         self.text += "%s\n" % text
 
-    def _add_header(self, text, sep_char):
+    def _add_header(self, text, sep_char, label=None):
+        divider = len(text) * sep_char
+
+        if label is not None:
+            text = "<a name='%s'>%s</name>" % (label, text)
+
         self.add_text(text)
-        self.add_text(len(text) * sep_char)
+        self.add_text(divider)
         self.skip()
 
-    def add_title(self, text):
-        self._add_header(text, "=")
+    def add_title(self, text, label=None):
+        self._add_header(text, "=", label)
 
     def add_section_title(self, text):
         self.skip()
         self._add_header(text, "-")
 
-    def _add_candidate_name(self, candidate_id):
-        name = self.get_candidate_name(candidate_id)
-        self.add_text(3 * " " + name)
-
-    def add_candidate_names(self, header, candidate_ids):
+    def add_candidate_names(self, header, candidate_ids, candidate_dict):
         self.add_text("%s:" % header)
         for candidate_id in candidate_ids:
-            self._add_candidate_name(candidate_id)
+            name = candidate_dict[candidate_id]
+            self.add_text(3 * " " + name)
         self.skip()
 
     def label_string(self, name):
@@ -181,7 +180,7 @@ class Reporter(object):
     def skip(self):
         self.add_text("")
 
-    def add_header(self):
+    def write_header(self):
         s = """\
 <html>
     <head>
@@ -194,7 +193,20 @@ class Reporter(object):
 
         self.add_text(s)
 
-    def add_footer(self):
+    def write_contents(self):
+        self.add_title("Table of Contents")
+        
+        index = 0
+        for contest_info in self.contest_infos:
+            contest_label = contest_info[0]
+            contest = contest_info[1]
+
+            index += 1
+            self.add_text("<a href='#%s'>(%s) %s</a>" % (contest_label, index, contest.name))
+
+        self.add_divider()
+
+    def write_footer(self):
         s = """\
 </pre>
 </body>
@@ -202,14 +214,20 @@ class Reporter(object):
 """
         self.add_text(s)
 
-    # TODO: refactor this method to be smaller.
-    def add_contest(self, contest, stats, download_url, download_time):
+    def add_contest(self, contest_label, contest, stats, download_url, download_time):
+        self.contest_infos.append((contest_label, contest, stats, download_url, download_time))
 
-        self.contest = contest
+    # TODO: refactor this method to be smaller.
+    def _write_contest(self, contest_info):
+        contest_label = contest_info[0]
+        contest = contest_info[1]
+        stats = contest_info[2]
+        download_url = contest_info[3]
+        download_time = contest_info[4]
+
+        # TODO: eliminate the need to set self.stats.
         self.stats = stats
-        self.download_url = download_url
-        self.download_time = download_time
-    
+
         labels = LABELS.values() + contest.candidate_dict.values()
         max_label_length = max([len(label) for label in labels])
         self.left_indent = max_label_length + 1  # for extra space.
@@ -223,10 +241,11 @@ class Reporter(object):
         triples.reverse()
         self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
 
-        self.add_title(contest.name + " RCV Stats")
 
-        self.add_candidate_names(LABELS['winner'], [contest.winner_id])
-        self.add_candidate_names(LABELS['finalists'], contest.finalist_ids)
+        self.add_title(contest.name + " RCV Stats", contest_label)
+
+        self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
+        self.add_candidate_names(LABELS['finalists'], contest.finalist_ids, contest.candidate_dict)
 
         self.add_data(LABELS['total'], stats.total, 'total', stats.total)
         self.skip()
@@ -327,15 +346,26 @@ class Reporter(object):
 
             self.add_text(s)
 
+        self.skip()
+        self.add_text("[Data downloaded from %s" % download_url)
+        self.add_text(" on %s.]" % download_time)
+
+        self.add_divider()
+
+    def add_divider(self):
+        self.skip()
+        self.add_text(80 * "*")
+        self.add_text(80 * "*")
+        self.skip()
+
+    def generate(self):
+        self.text = ""
+        self.write_header()
+        self.write_contents()
+
+        for contest_info in self.contest_infos:
+            self._write_contest(contest_info)
+
+        self.write_footer()
         
-
-        self.skip()
-        self.add_text("[Data downloaded from %s" % self.download_url)
-        self.add_text(" on %s.]" % self.download_time)
-
-        self.skip()
-        self.add_text(80 * "*")
-        self.add_text(80 * "*")
-        self.skip()
-        self.skip()
-
+        return self.text

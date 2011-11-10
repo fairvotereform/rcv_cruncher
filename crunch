@@ -454,14 +454,15 @@ def main(sys_argv):
     ensure_dir(election_dir)
 
     reporter = Reporter(election_name=election_name.upper())
-    reporter.add_header()
 
     for contest_config in config['contests']:
 
         contest_url = contest_config['url']
-        contest_dir = os.path.join(election_dir, contest_config['label'])
+        contest_label = contest_config['label']
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
+
+        contest_dir = os.path.join(election_dir, contest_label)
 
         #download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
@@ -487,11 +488,9 @@ def main(sys_argv):
         download_url = download_info[YAML_URL_KEY]
         download_time = download_info[YAML_TIME_KEY]
 
-        reporter.add_contest(contest, stats, download_url=download_url, download_time=download_time)
+        reporter.add_contest(contest_label, contest, stats, download_url=download_url, download_time=download_time)
 
-    reporter.add_footer()
-
-    report_text = reporter.text
+    report_text = reporter.generate()
 
     print report_text
 
