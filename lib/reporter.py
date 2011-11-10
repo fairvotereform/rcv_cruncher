@@ -114,16 +114,15 @@ class Reporter(object):
         """
         Write a line of the form--
 
-        LABEL .....................   9578 (  6.2% ) [description]
+        LABEL .....................   9578 (  6.2% of total_label) [description]
 
         """
         label_string = self.label_string(label)
-
-        percent = self.percent_string(value, total)
+        percent_string = self.percent_string(value, total)
         value_string = self.value_string(value)
+        total_label_string = ("of %s" % total_label) if total_label is not None else ""
 
-        total_string = ("of %s" % total_label) if total_label is not None else ""
-        s = "%s %s (%s %s)" % (label_string, value_string, percent, total_string)
+        s = "%s %s (%s %s)" % (label_string, value_string, percent_string, total_label_string)
 
         if description is not None:
             s += " [%s]" % description
