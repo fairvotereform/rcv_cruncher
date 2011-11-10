@@ -275,7 +275,7 @@ class Reporter(object):
 
         self.add_section_title("Candidate support, in descending order of first round totals")
 
-        self.add_text("[First round and validly ranked anywhere, as percent of first-round continuing.]")
+        self.add_text("[(1) First round, and (2) validly ranked anywhere, as percent of first-round continuing.]")
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
@@ -345,6 +345,20 @@ class Reporter(object):
             s = "%s %s (%s / %s) (%s represented)" % tuple(strings)
 
             self.add_text(s)
+
+        self.add_section_title("Truly exhausted ballots, by first choice")
+
+        self.add_data(LABELS['all'], stats.true_exhaust, total=stats.true_exhaust)
+        self.skip()
+
+        true_exhaust_data = []
+        for candidate_id, name, first_round in self.sorted_candidates:
+            true_exhaust_data.append((stats.true_exhaust_by_first_round[candidate_id], name))
+        true_exhaust_data.sort()
+        true_exhaust_data.reverse()
+        
+        for data in true_exhaust_data:
+            self.add_data(data[1], data[0], total=stats.true_exhaust)
 
         self.skip()
         self.add_text("[Data downloaded from %s" % download_url)

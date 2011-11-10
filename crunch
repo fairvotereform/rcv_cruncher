@@ -198,6 +198,7 @@ class Stats(object):
         number_ranked = {}  # grouped by first-round choice.
         ranked_winner = {}  # grouped by first-round choice.
         ranked_finalist = {}  # grouped by first-round choice.
+        true_exhaust_by_first_round = {}  # grouped by first-round choice.
         did_sweep = {}
         ranked_anywhere = {}
 
@@ -205,12 +206,14 @@ class Stats(object):
             number_ranked[candidate_id] = 3 * [0]  # [ranked3, ranked2, ranked1]
             ranked_winner[candidate_id] = 0
             ranked_finalist[candidate_id] = 0
+            true_exhaust_by_first_round[candidate_id] = 0
             did_sweep[candidate_id] = 0
             ranked_anywhere[candidate_id] = 0
 
         self._number_ranked = number_ranked
         self.ranked_winner = ranked_winner
         self.ranked_finalist = ranked_finalist
+        self.true_exhaust_by_first_round = true_exhaust_by_first_round
         self.did_sweep = did_sweep
         self.ranked_anywhere = ranked_anywhere
 
@@ -303,6 +306,7 @@ class BallotHandler(object):
 
         if len(ranked_candidates) == 3 and (len(ranked_candidates - self.finalists_set) == 3):
             stats.true_exhaust += 1
+            stats.true_exhaust_by_first_round[first_round] += 1
 
         if first_round == OVERVOTE:
             stats.first_round_overvotes += 1
