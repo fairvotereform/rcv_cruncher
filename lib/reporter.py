@@ -19,7 +19,7 @@ LABELS = {
     'has_dupe': "Has_Duplicate",
     'dupe3': "Has_Duplicate_3",
     'dupe2': "Has_Duplicate_2",
-    'exhaust': "True_Exhaust",
+    'exhaust': "Truly_Exhausted",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -110,8 +110,14 @@ class Reporter(object):
     def value_string(self, value):
         return "%6d" % value
 
-    def add_data(self, name, value, total_label=None, total=None, description=None):
-        label_string = self.label_string(name)
+    def write_value(self, label, value, total_label=None, total=None, description=None):
+        """
+        Writes of a line of the form--
+
+        LABEL .....................   9578 (  6.2% ) [description]
+
+        """
+        label_string = self.label_string(label)
 
         percent = self.percent_string(value, total)
         value_string = self.value_string(value)
@@ -247,31 +253,31 @@ class Reporter(object):
         self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
         self.add_candidate_names(LABELS['finalists'], contest.finalist_ids, contest.candidate_dict)
 
-        self.add_data(LABELS['total'], stats.total, 'total', stats.total)
+        self.write_value(LABELS['total'], stats.total, 'total', stats.total)
         self.skip()
-        self.add_data(LABELS['voted'], stats.voted, 'total', stats.total)
-        self.add_data(LABELS['under'], stats.undervotes, 'total', stats.total)
+        self.write_value(LABELS['voted'], stats.voted, 'total', stats.total)
+        self.write_value(LABELS['under'], stats.undervotes, 'total', stats.total)
 
         self.add_section_title("Overview of voted, as percent of voted")
 
-        self.add_data(LABELS['has_dupe'], sum(stats.duplicates.values()), total=stats.voted)
-        self.add_data(LABELS['has_over'], stats.has_overvote, total=stats.voted)
-        self.add_data(LABELS['has_skip'], stats.has_skipped, total=stats.voted)
-        self.add_data(LABELS['irregular'], stats.irregular, total=stats.voted,
+        self.write_value(LABELS['has_dupe'], sum(stats.duplicates.values()), total=stats.voted)
+        self.write_value(LABELS['has_over'], stats.has_overvote, total=stats.voted)
+        self.write_value(LABELS['has_skip'], stats.has_skipped, total=stats.voted)
+        self.write_value(LABELS['irregular'], stats.irregular, total=stats.voted,
                       description="has duplicate, overvote, and/or skip")
         self.skip()
 
-        self.add_data(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
-        self.add_data(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
+        self.write_value(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
+        self.write_value(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
         self.skip()
 
-        self.add_data(LABELS['exhaust'], stats.true_exhaust, total=stats.voted,
+        self.write_value(LABELS['exhaust'], stats.true_exhaust, total=stats.voted,
                       description="3 distinct candidates, none a finalist")
 
         self.add_section_title("Overview of first round, as percent of voted")
 
-        self.add_data(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
-        self.add_data(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
+        self.write_value(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
+        self.write_value(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
 
         self.add_section_title("Candidate support, in descending order of first round totals")
 
@@ -348,7 +354,7 @@ class Reporter(object):
 
         self.add_section_title("Truly exhausted ballots, by first choice")
 
-        self.add_data(LABELS['all'], stats.true_exhaust, total=stats.true_exhaust)
+        self.write_value(LABELS['all'], stats.true_exhaust, total=stats.true_exhaust)
         self.skip()
 
         true_exhaust_data = []
@@ -358,7 +364,7 @@ class Reporter(object):
         true_exhaust_data.reverse()
         
         for data in true_exhaust_data:
-            self.add_data(data[1], data[0], total=stats.true_exhaust)
+            self.write_value(data[1], data[0], total=stats.true_exhaust)
 
         self.skip()
         self.add_text("[Data downloaded from %s" % download_url)
