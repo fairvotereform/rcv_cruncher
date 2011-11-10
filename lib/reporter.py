@@ -300,6 +300,9 @@ class Reporter(object):
 
         self.add_section_title("Condorcet support for winner against each candidate, in ascending order")
 
+        self.add_text("[Percent represented is relative to first-round continuing.]")
+        self.skip()
+
         # TODO: move the condorcet code below into a method.
         condorcet_data = []
         for candidate_id, name, first_round in self.sorted_candidates:
@@ -320,7 +323,7 @@ class Reporter(object):
 
             strings = [label_string, percent_string, self.value_string(win_count), self.value_string(total_count), percent_of_voted_string]
 
-            s = "%s %s (%s / %s) (%s of first-round continuing)" % tuple(strings)
+            s = "%s %s (%s / %s) (%s represented)" % tuple(strings)
 
             self.add_text(s)
 
