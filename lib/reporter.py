@@ -110,7 +110,7 @@ class Reporter(object):
     def value_string(self, value):
         return "%6d" % value
 
-    def write_value(self, label, value, total_label=None, total=None, description=None):
+    def write_value(self, label, value, total=None, total_label=None, description=None):
         """
         Writes of a line of the form--
 
@@ -253,10 +253,10 @@ class Reporter(object):
         self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
         self.add_candidate_names(LABELS['finalists'], contest.finalist_ids, contest.candidate_dict)
 
-        self.write_value(LABELS['total'], stats.total, 'total', stats.total)
+        self.write_value(LABELS['total'], stats.total, total=stats.total, total_label='total')
         self.skip()
-        self.write_value(LABELS['voted'], stats.voted, 'total', stats.total)
-        self.write_value(LABELS['under'], stats.undervotes, 'total', stats.total)
+        self.write_value(LABELS['voted'], stats.voted, total=stats.total, total_label='total')
+        self.write_value(LABELS['under'], stats.undervotes, total=stats.total, total_label='total')
 
         self.add_section_title("Overview of voted, as percent of voted")
 
