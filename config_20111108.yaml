@@ -1,20 +1,23 @@
 election_label: SF_20111108
 election_name: San Francisco November 8, 2011 Municipal Election
-master_file_glob: Master*.txt
-ballot_file_glob: Ballot*.txt
-contests:
+master_file_glob: "*-Master*.txt"
+ballot_file_glob: "*-Ballot*.txt"
+contests2:
  - label: Mayor
-   url: http://sfelections.org/results/20111108/data/D2.zip
-   winner: MARK
+   url: http://www.sfelections.org/results/20111108/data/Mayor.zip
+   winner: ED LEE
    finalists:
-    - JANET
- - label: DA
-   url: http://sfelections.org/results/20111108/data/D6.zip
-   winner: JANE
-   finalists:
-    - DEBRA
+    - JOHN AVALOS
  - label: Sheriff
-   url: http://sfelections.org/results/20111108/data/D8.zip
-   winner: SCOTT
+   url: http://sfelections.org/results/20111108/data/Sheriff.zip
+   winner: ROSS MIRKARIMI
    finalists:
-    - RAFAEL
+    - PAUL MIYAMOTO
+contests:
+ - label: DA
+   url: http://www.sfelections.org/results/20111108/data/DA.zip
+   winner: GEORGE GASCÓN
+#   winner: GEORGE GASCON
+   finalists:
+    - DAVID ONEK
+  

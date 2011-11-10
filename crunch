@@ -9,6 +9,7 @@ TODO: complete this.
 """
 
 import calendar
+import codecs
 from datetime import datetime
 import glob
 import logging
@@ -23,6 +24,10 @@ from lib.parser import BallotParser
 from lib.reporter import Reporter
 
 _log = logging.getLogger(__name__)
+
+ENCODING_CONFIG_FILE = 'utf-8'
+ENCODING_OUTPUT_FILE = 'utf-8'
+ENCODING_DATA_FILES  = 'utf-8'
 
 DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 INFO_FILE_NAME = 'INFO.yaml'
@@ -206,6 +211,8 @@ class Stats(object):
 
         self.first_round_overvotes = 0
 
+        self.true_exhaust = 0
+
         self.duplicates = {2: 0, 3: 0}
 
         number_ranked = {}  # grouped by first-round choice.
@@ -290,7 +297,10 @@ class BallotHandler(object):
 
         winner_id_list = [contest.winner_id]
         self.winner_id_list = winner_id_list
-        self.finalist_ids = contest.finalist_ids
+
+        finalist_ids = contest.finalist_ids
+        self.finalist_ids = finalist_ids
+        self.finalist_ids_set = set(finalist_ids)
         self.non_winner_ids = list(set(contest.candidate_ids) - set(winner_id_list))
 
     def on_ballot(self, ballot):
@@ -310,6 +320,9 @@ class BallotHandler(object):
         candidate_ids = analyzer.get_candidates(ballot)
         for candidate_id in candidate_ids:
             stats.ranked_anywhere[candidate_id] += 1
+
+        if len(candidate_ids) == 3 and (len(candidate_ids - self.finalist_ids_set) == 3):
+            stats.true_exhaust += 1
 
         if first_round == OVERVOTE:
             stats.first_round_overvotes += 1
@@ -351,7 +364,7 @@ class BallotHandler(object):
 
 def from_yaml(path):
     """Deserialize a value from disk."""
-    with open(path, "r") as stream:
+    with codecs.open(path, "r", encoding=ENCODING_CONFIG_FILE) as stream:
         data = yaml.load(stream)
 
     return data
@@ -366,7 +379,7 @@ def ensure_dir(path):
 
 def write_file(text, path):
     _log.info("Creating file at: %s" % path)
-    with open(path, "w") as f:
+    with codecs.open(path, "w", encoding=ENCODING_OUTPUT_FILE) as f:
         f.write(text)
 
 
@@ -469,14 +482,14 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        #download_data(contest_url, contest_dir)
+        download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
         master_path = get_path(data_dir, master_file_glob)
         ballot_path = get_path(data_dir, ballot_file_glob)
 
-        master_parser = MasterParser(winner, finalists)
+        master_parser = MasterParser(ENCODING_DATA_FILES, winner, final_candidates=finalists)
         contest = master_parser.parse(master_path)
 
         stats = Stats(candidate_ids=contest.candidate_ids, winner_id=contest.winner_id)

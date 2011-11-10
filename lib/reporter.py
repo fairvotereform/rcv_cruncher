@@ -19,6 +19,7 @@ LABELS = {
     'has_dupe': "Has_Duplicate",
     'dupe3': "Has_Duplicate_3",
     'dupe2': "Has_Duplicate_2",
+    'exhaust': "True_Exhaust",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -223,6 +224,10 @@ class Reporter(object):
 
         self.add_data(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
         self.add_data(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
+        self.skip()
+
+        self.add_data(LABELS['exhaust'], stats.true_exhaust, total=stats.voted,
+                      description="3 distinct candidates, none a finalist")
 
         self.add_section_title("Overview of first round, as percent of voted")
 
@@ -304,6 +309,10 @@ class Reporter(object):
         self.skip()
         self.add_text("[Data downloaded from %s" % self.download_url)
         self.add_text(" on %s.]" % self.download_time)
+
+        self.skip()
+        self.add_text(80 * "*")
+        self.add_text(80 * "*")
         self.skip()
         self.skip()
 

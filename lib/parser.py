@@ -3,6 +3,7 @@
 # Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
 #
 
+import codecs
 import logging
 import os
 import sys
@@ -37,19 +38,22 @@ class MasterParser(object):
 
     # TODO: clean up case of final_candidates None.
     #       This corresponds to all candidates being final candidates.
-    def __init__(self, winning_candidate, final_candidates=None):
+    def __init__(self, encoding, winning_candidate, final_candidates=None):
+        self.encoding = encoding
         self.winning_candidate = winning_candidate
         self.final_candidates = final_candidates
 
     def parse(self, path):
         _log.info("Reading master file: %s" % path)
-        with open(path, "r") as f:
+        with codecs.open(path, "r", encoding=self.encoding) as f:
             contest = self.read_master_file(f)
 
         return contest
 
     def find_candidate_id(self, candidate_dict, name_to_find):
         for (candidate_id, name) in candidate_dict.iteritems():
+            #print repr(name)
+            #print repr(name_to_find)
             if name == name_to_find:
                 return candidate_id
         raise Error("Candidate %s not found in dictionary." % name_to_find)
@@ -70,6 +74,7 @@ class MasterParser(object):
                 continue
 
             if record_type == "Candidate":
+                print repr(description)
                 candidate_dict[record_id] = description
 
         winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
@@ -132,7 +137,12 @@ class BallotParser(object):
 
         try:
             while True:
-                ballot = self.read_ballot(parsed_line, f)
+                try:
+                    ballot = self.read_ballot(parsed_line, f)
+                except Exception:
+                    print line_index
+                    print parsed_line
+                    exit()
 
                 self.on_ballot(ballot)
 
