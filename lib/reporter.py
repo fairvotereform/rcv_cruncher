@@ -37,12 +37,13 @@ LABELS = {
 
 
 def render_template(template_path, values):
-    with codecs.open(template_path, "r", encoding=ENCODING_TEMPLATE_FILE) as stream:
-        pass
-    
-#import pystache
-#>>> pystache.render('Hi {{person}}!', {'person': 'Mom'})
-#'Hi Mom!'
+    with codecs.open(template_path, "r", encoding=ENCODING_TEMPLATE_FILE) as f:
+        template = f.read()
+
+    rendered = pystache.render(template, values)
+    print(rendered)
+
+    return rendered
 
 
 def percent(part, whole):
@@ -55,6 +56,7 @@ def percent(part, whole):
         return 0
     return 100.0 * part / whole
 
+
 def ljust(s, length, fill_string):
     """
     Right pad a string with a fill string, for example "ALICE . . . .".
@@ -66,12 +68,15 @@ def ljust(s, length, fill_string):
 
     return s
 
+
 class Reporter(object):
 
     candidate_indent = 12
 
-    def __init__(self, election_name):
+    def __init__(self, election_name, template_path):
         self.election_name = election_name
+        self.template_path = template_path
+
         self.contest_infos = []
 
     def percent_string(self, part, whole):
@@ -200,15 +205,10 @@ class Reporter(object):
         self.add_text("")
 
     def write_header(self):
-        s = """\
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    </head>
-<body>
-<pre>
-%s
-""" % (self.election_name)
+        values = {'file_encoding': ENCODING_TEMPLATE_FILE,
+                  'election_name': self.election_name}
+
+        s = render_template(self.template_path, values)
 
         self.add_text(s)
 

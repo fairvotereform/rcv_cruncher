@@ -67,6 +67,9 @@ R1-Overvotes:  number of ballots counting as an overvote in the first round.
 
 """
 
+# TODO: overview of final round (percent of continuing first round, etc).
+#       Include "adjusted final round percentage."
+# TODO: html encode report.
 
 def configure_logging(logging_level=None):
     """Configure logging for standard purposes.
@@ -394,7 +397,14 @@ def download_data(url, contest_dir):
     zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
     
     _log.info("Downloading %s to %s..." % (url, zip_path))
-    urllib.urlretrieve(url, zip_path)
+    try:
+        urllib.urlretrieve(url, zip_path)
+    except Exception, ex:
+        _log.error(ex)
+        _log.error("Error downloading url: %s" % url)
+        _log.info("Removing dir: %s" % download_dir)
+        os.rmdir(download_dir)
+        exit()
 
     unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
     zip_file = ZipFile(zip_path, 'r')
@@ -461,7 +471,7 @@ def main(sys_argv):
     election_dir = os.path.join(data_dir, election_label)
     ensure_dir(election_dir)
 
-    reporter = Reporter(election_name=election_name.upper())
+    reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
     for contest_config in config['contests']:
 
