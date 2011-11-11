@@ -3,12 +3,17 @@
 # Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
 #
 
+import codecs
 import logging
 import os
 import sys
 
+import pystache
+
+
 _log = logging.getLogger(__name__)
 
+ENCODING_TEMPLATE_FILE = 'utf-8'
 
 LABELS = {
     'total': "Total",
@@ -29,6 +34,15 @@ LABELS = {
     'finalists': "Finalists",
     'non-finalists': "Non-finalists",
 }
+
+
+def render_template(template_path, values):
+    with codecs.open(template_path, "r", encoding=ENCODING_TEMPLATE_FILE) as stream:
+        pass
+    
+#import pystache
+#>>> pystache.render('Hi {{person}}!', {'person': 'Mom'})
+#'Hi Mom!'
 
 
 def percent(part, whole):
