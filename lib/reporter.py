@@ -41,7 +41,6 @@ def render_template(template_path, values):
         template = f.read()
 
     rendered = pystache.render(template, values)
-    print(rendered)
 
     return rendered
 
