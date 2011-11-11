@@ -204,14 +204,6 @@ class Reporter(object):
     def skip(self):
         self.add_text("")
 
-    def write_header(self):
-        values = {'file_encoding': ENCODING_TEMPLATE_FILE,
-                  'election_name': self.election_name}
-
-        s = render_template(self.template_path, values)
-
-        self.add_text(s)
-
     def write_contents(self):
         self.add_title("Table of Contents")
         
@@ -224,14 +216,6 @@ class Reporter(object):
             self.add_text("<a href='#%s'>(%s) %s</a>" % (contest_label, index, contest.name))
 
         self.add_divider()
-
-    def write_footer(self):
-        s = """\
-</pre>
-</body>
-</html>
-"""
-        self.add_text(s)
 
     def add_contest(self, contest_label, contest, stats, download_url, download_time):
         self.contest_infos.append((contest_label, contest, stats, download_url, download_time))
@@ -392,13 +376,17 @@ class Reporter(object):
         self.skip()
 
     def generate(self):
+
         self.text = ""
-        self.write_header()
         self.write_contents()
 
         for contest_info in self.contest_infos:
             self._write_contest(contest_info)
 
-        self.write_footer()
-        
-        return self.text
+        values = {'file_encoding': ENCODING_TEMPLATE_FILE,
+                  'election_name': self.election_name,
+                  'body': self.text}
+
+        s = render_template(self.template_path, values)
+
+        return s
