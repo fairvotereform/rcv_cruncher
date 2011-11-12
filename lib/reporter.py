@@ -202,8 +202,8 @@ class Reporter(object):
     def skip(self):
         self.add_text("")
 
-    def add_contest(self, contest_label, contest, stats, download_url, download_time):
-        self.contest_infos.append((contest_label, contest, stats, download_url, download_time))
+    def add_contest(self, contest_label, contest, stats, download_metadata):
+        self.contest_infos.append((contest_label, contest, stats, download_metadata))
 
     # TODO: refactor this method to be smaller.
     def make_contest(self, contest_info):
@@ -213,8 +213,7 @@ class Reporter(object):
         contest_label = contest_info[0]
         contest = contest_info[1]
         stats = contest_info[2]
-        download_url = contest_info[3]
-        download_time = contest_info[4]
+        metadata = contest_info[3]
 
         # TODO: eliminate the need to set self.stats.
         self.stats = stats
@@ -349,8 +348,6 @@ class Reporter(object):
             self.write_value(data[1], data[0], total=stats.true_exhaust)
 
         self.skip()
-        self.add_text("[Data downloaded from %s" % download_url)
-        self.add_text(" on %s.]" % download_time)
 
         return self.text
 
@@ -368,6 +365,7 @@ class Reporter(object):
 
             contest_label = info[0]
             contest = info[1]
+            metadata = info[3]
 
             contest_name = contest.name
 
@@ -377,15 +375,22 @@ class Reporter(object):
             toc_dict = {'label': contest_label,
                         'index': index,
                         'text': contest_name
-                        }
+            }
+
+            url = metadata.url
+            datetime_string = metadata.datetime_local.strftime("%A, %B %d, %Y at %I:%M:%S%p")
+            tzname = metadata.local_tzname
 
             contest_report = self.make_contest(info)
             contest_dict = {'label': contest_label,
                             'title': title,
                             'line': header_line,
                             'body': contest_report,
+                            'download_url': url,
+                            'download_datetime_local': datetime_string,
+                            'local_tzname': tzname
             }
-            
+
             toc_dicts.append(toc_dict)
             contest_dicts.append(contest_dict)
 

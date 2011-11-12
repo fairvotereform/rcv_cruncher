@@ -15,6 +15,7 @@ import glob
 import logging
 import os
 import sys
+import time
 import urllib
 import yaml
 from zipfile import ZipFile
@@ -25,7 +26,7 @@ from lib.reporter import Reporter
 
 _log = logging.getLogger(__name__)
 
-ENCODING_CONFIG_FILE = 'utf-8'
+ENCODING_INTERNAL = 'utf-8'
 ENCODING_OUTPUT_FILE = 'utf-8'
 ENCODING_DATA_FILES  = 'utf-8'
 
@@ -35,9 +36,6 @@ UNZIP_DIRECTORY_NAME = 'download'
 
 UNDERVOTE = -1
 OVERVOTE  = -2
-
-YAML_URL_KEY = 'download_url'
-YAML_TIME_KEY = 'download_time'
 
 STATS_HEADER = """\
 RCV RESULTS KEY
@@ -106,6 +104,34 @@ def configure_logging(logging_level=None):
     logger.addHandler(handler)
 
     _log.debug("Debug logging enabled.")
+
+
+class DownloadMetadata(object):
+
+    def __init__(self):
+        self.url = ""
+        self.iso_datetime_utc = ""
+        self.iso_datetime_local = ""
+        self.local_tzname = ""
+
+    def _iso_to_datetime(self, iso_string):
+        return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S")
+
+    @property
+    def datetime_utc(self):
+        return self._iso_to_datetime(self.iso_datetime_utc)
+
+    @datetime_utc.setter
+    def datetime_utc(self, value):
+        self.iso_datetime_utc = value.isoformat()
+
+    @property
+    def datetime_local(self):
+        return self._iso_to_datetime(self.iso_datetime_local)
+
+    @datetime_local.setter
+    def datetime_local(self, value):
+        self.iso_datetime_local = value.isoformat()
 
 
 class BallotAnalyzer(object):
@@ -349,9 +375,12 @@ class BallotHandler(object):
             stats.irregular += 1
 
 
-def from_yaml(path):
-    """Deserialize a value from disk."""
-    with codecs.open(path, "r", encoding=ENCODING_CONFIG_FILE) as stream:
+def unserialize_yaml_file(path):
+    """
+    Deserialize a value from disk.
+
+    """
+    with codecs.open(path, "r", encoding=ENCODING_INTERNAL) as stream:
         data = yaml.load(stream)
 
     return data
@@ -364,10 +393,17 @@ def ensure_dir(path):
     os.mkdir(path)
 
 
-def write_file(text, path):
+def write_to_file(s, path):
+    """
+    Write a unicode string to a file.
+
+    """
+    if not isinstance(s, unicode):
+        raise Exception("The argument is not a unicode string.")
+
     _log.info("Creating file at: %s" % path)
     with codecs.open(path, "w", encoding=ENCODING_OUTPUT_FILE) as f:
-        f.write(text)
+        f.write(s)
 
 
 def utc_datetime_to_local_datetime(utc_datetime):
@@ -377,6 +413,33 @@ def utc_datetime_to_local_datetime(utc_datetime):
     
     return local_datetime
 
+
+def create_download_metadata(url, datetime_utc):
+    """
+    Return the dictionary of metadata about the election data downloaded.
+
+    """
+    # Stripping microseconds simplifies subsequent formatting code.
+    datetime_utc = datetime_utc.replace(microsecond=0)
+
+    datetime_local = utc_datetime_to_local_datetime(datetime_utc)
+    local_tzname = "/".join(time.tzname) if time.tzname else ""
+
+    data = DownloadMetadata()
+    data.url = url
+    data.datetime_utc = datetime_utc
+    data.datetime_local = datetime_local
+    data.local_tzname = local_tzname
+
+    return data
+
+
+def yaml_serialize(instance):
+    """
+    Serialize an object instance to a unicode YAML document.
+    
+    """
+    return yaml.dump(instance.__dict__,  encoding=None, default_flow_style=False)
 
 
 def download_data(url, contest_dir):
@@ -388,7 +451,7 @@ def download_data(url, contest_dir):
 
     ensure_dir(contest_dir)
     readme_path = os.path.join(contest_dir, 'README.txt')
-    write_file("This directory should be empty except for auto-downloaded directories.", readme_path)
+    write_to_file(u"This directory should be empty except for auto-downloaded directories.", readme_path)
 
     download_dir_name = DOWNLOAD_DIRECTORY_PREFIX + utc_now.strftime("%Y%m%d_%H%M%S")
     download_dir = os.path.join(contest_dir, download_dir_name)
@@ -410,19 +473,17 @@ def download_data(url, contest_dir):
     zip_file = ZipFile(zip_path, 'r')
     zip_file.extractall(unzip_dir)
 
-    local_now = utc_datetime_to_local_datetime(utc_now)
+    metadata = create_download_metadata(url, utc_now)
 
-    time_string = local_now.strftime("%A, %B %d, %Y at %I:%M:%d%p")
-    time_string += " (%s UTC)" % utc_now
+    text = """\
+# This file is auto-generated.  Do not modify this file.
+# Date time strings are in ISO 8601 format YYYY-MM-DDTHH:MM:SS.
+"""
 
-    info_dict = {YAML_URL_KEY: url, YAML_TIME_KEY: time_string}
-    yaml_dump = yaml.dump(info_dict)
-
-    text = "# This file is auto-generated.  Do not modify this file.\n"
-    text += yaml_dump
+    text += yaml_serialize(metadata)
 
     info_path = os.path.join(download_dir, INFO_FILE_NAME)
-    write_file(text, info_path)
+    write_to_file(text, info_path)
 
 
 def find_data_dir(contest_dir):
@@ -461,7 +522,7 @@ def main(sys_argv):
 
     ensure_dir(data_dir)
 
-    config = from_yaml(path)
+    config = unserialize_yaml_file(path)
 
     election_label = config['election_label']
     election_name = config['election_name']
@@ -502,11 +563,12 @@ def main(sys_argv):
 
         info_path = os.path.join(data_dir, os.pardir, INFO_FILE_NAME)
         
-        download_info = from_yaml(info_path)
-        download_url = download_info[YAML_URL_KEY]
-        download_time = download_info[YAML_TIME_KEY]
+        download_dict = unserialize_yaml_file(info_path)
 
-        reporter.add_contest(contest_label, contest, stats, download_url=download_url, download_time=download_time)
+        download_metadata = DownloadMetadata()
+        download_metadata.__dict__ = download_dict
+
+        reporter.add_contest(contest_label, contest, stats, download_metadata=download_metadata)
 
     report = reporter.generate()
 
@@ -516,8 +578,8 @@ def main(sys_argv):
         # Windows seems to have trouble with some unicode characters, e.g. the "Ó" in GASCÓN.
         _log.warn("Error printing report to console (probably because of special characters.")
 
-    output_path = "out_%s.html" % election_label
-    write_file(report, output_path)
+    output_path = "rcv_stats_%s.html" % election_label
+    write_to_file(report, output_path)
 
     print "Completed in: %s" % (datetime.now() - start_time)
 
