@@ -26,8 +26,8 @@ LABELS = {
     'dupe2': "Has_Duplicate_2",
     'exhausted': "Exhausted",
     'exhausted_by_overvote': "Exhausted_by_overvote",
-    'involuntary_exhausted': "unwilling_exhausted",
-    'voluntary_exhausted': "willing_exhausted",
+    'exhausted_involuntary': "exhausted_unwilling",
+    'exhausted_voluntary': "exhausted_willing",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -36,7 +36,10 @@ LABELS = {
     'winner': "Winner",
     'finalists': "Finalists",
     'non-finalists': "Non-finalists",
-    'mandate_final_round': "Final_Round_Mandate",
+    'mandate_final_round': "Mandate_Final_Round",
+    'mandate_first_round': "Mandate_Valid",
+    'mandate_minimum': "Mandate_Minimum",
+    'mandate_voted': "Mandate_Voted",
 }
 
 
@@ -194,7 +197,7 @@ class Reporter(object):
 
             return "%s ( %s )" % (value_string, percent_string)
 
-        s = "%s %s %s" % (label_string, data_pair_string(value1, total1), data_pair_string(value2, total2))
+        s = "%s %s   %s" % (label_string, data_pair_string(value1, total1), data_pair_string(value2, total2))
 
         self.add_text(s)
 
@@ -239,31 +242,35 @@ class Reporter(object):
         exhausted_by_overvote = stats.exhausted_by_overvote
         exhausted = stats.exhausted
 
-        involuntary_exhausted = stats.truly_exhausted_total
-        voluntary_exhausted = exhausted - involuntary_exhausted
+        exhausted_involuntary = stats.truly_exhausted_total
+        exhausted_voluntary = exhausted - exhausted_involuntary
 
         winner_total = stats.final_round_winner_total
 
-        lines = self.make_section_title("Overview of final round (%s candidates)" % len(contest.finalists))
+        lines = self.make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest.finalists))
 
-        total_label = 'first-round continuing'
+        total_label = None
         lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing, total_label=total_label))
+        lines.append(self.make_value(LABELS['exhausted_by_overvote'], exhausted_by_overvote, total=first_round_continuing, total_label=total_label,
+            description="excludes overvoted"))
         lines.append(self.make_value(LABELS['exhausted'], exhausted, total=first_round_continuing, total_label=total_label,
             description='does not include overvoted or exhausted-by-overvote'))
-        lines.append(self.make_value(LABELS['exhausted_by_overvote'], exhausted_by_overvote, total=first_round_continuing, total_label=total_label,
-            description="excludes first-round overvotes"))
         lines.append("")
 
-        lines.append(self.make_value(LABELS['voluntary_exhausted'], voluntary_exhausted, total=first_round_continuing, total_label=total_label,
-            description="exhausted minus unwilling exhausted"))
-        lines.append(self.make_value(LABELS['involuntary_exhausted'], involuntary_exhausted, total=first_round_continuing, total_label=total_label,
-            description="3 distinct candidates, none a finalist"))
+        lines.append(self.make_value(LABELS['exhausted_involuntary'], exhausted_involuntary, total=first_round_continuing, total_label=total_label,
+            description="3 distinct candidates, no finalists"))
+        lines.append(self.make_value(LABELS['exhausted_voluntary'], exhausted_voluntary, total=first_round_continuing, total_label=total_label))
         lines.append("")
 
         lines.append(self.make_value(LABELS['winner'], winner_total))
         lines.append("")
 
         lines.append(self.make_percent_line(LABELS['mandate_final_round'], stats.final_round_winner_total, final_round_continuing))
+        lines.append(self.make_percent_line(LABELS['mandate_minimum'], stats.final_round_winner_total, final_round_continuing + exhausted_involuntary,
+            description='final-round continuing and unwilling exhausted'))
+        lines.append(self.make_percent_line(LABELS['mandate_first_round'], stats.final_round_winner_total, first_round_continuing,
+            description='first-round continuing'))
+        lines.append(self.make_percent_line(LABELS['mandate_voted'], stats.final_round_winner_total, stats.voted))
 
         return lines
 
