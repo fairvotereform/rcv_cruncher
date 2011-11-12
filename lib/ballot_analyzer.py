@@ -55,20 +55,26 @@ class BallotAnalyzer(object):
                 return True
         return False
 
-    def get_set_of_validly_ranked(self, ballot):
+    def get_effective_choices(self, ballot):
         """
-        Return the validly ranked candidates as a set.
+        Return the effective choices on the ballot.
+
+        For example:
+
+        [UNDERVOTE, A, B] -> [A, B]
+        [UNDERVOTE, A, A] -> [A]
+        [A, OVERVOTE, B] -> [A]
 
         """
-        candidates = set()
+        effective_choices = []
         for choice in ballot:
-            if choice is self.undervote:
+            if choice is self.undervote or choice in effective_choices:
                 continue
             if choice is self.overvote:
                 break
-            candidates.add(choice)
+            effective_choices.append(choice)
 
-        return candidates
+        return effective_choices
 
     def did_sweep(self, ballot, candidate_id):
         for choice in ballot:

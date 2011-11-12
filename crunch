@@ -175,58 +175,63 @@ class BallotHandler(object):
             stats.undervotes += 1
             return
 
-        set_of_validly_ranked = analyzer.get_set_of_validly_ranked(ballot)
-
-        for candidate in set_of_validly_ranked:
-            stats.validly_ranked[candidate] += 1
-
-        if len(set_of_validly_ranked) == 3 and set_of_validly_ranked.isdisjoint(self.set_of_finalists):
-            stats.truly_exhausted[first_round] += 1
-
-        if first_round == OVERVOTE:
-            stats.first_round_overvotes += 1
-        else:
-            number_ranked = len(set_of_validly_ranked)
-            stats.add_number_ranked(first_round, number_ranked)
-            if winner in set_of_validly_ranked:
-                stats.ranked_winner[first_round] += 1
-            if not set_of_validly_ranked.isdisjoint(self.set_of_finalists):
-                stats.ranked_finalist[first_round] += 1
-            else:
-                # Then no finalist is validly ranked on the ballot.
-                if OVERVOTE in ballot:
-                    stats.exhausted_by_overvote += 1
-            if analyzer.did_sweep(ballot, first_round):
-                stats.did_sweep[first_round] += 1
-
-            if analyzer.beats_challengers(ballot, winner, self.non_winning_finalists):
-                stats.final_round_winner_total += 1
-
-            # Calculate condorcet pairs against winner.
-            for non_winner in self.non_winners:
-                did_winner_win = analyzer.beats_challenger(ballot, winner, non_winner)
-                if did_winner_win is None:
-                    continue
-                if did_winner_win:
-                    stats.add_condorcet_winner(winner, non_winner)
-                else:
-                    stats.add_condorcet_winner(non_winner, winner)
-
-        has_duplicate = False
+        # Now check for various types of irregularities.
         duplicate_count = analyzer.count_duplicates(ballot)
         if duplicate_count > 1:
             stats.duplicates[duplicate_count] += 1
             has_duplicate = True
+        else:
+            has_duplicate = False
 
         has_overvote = analyzer.has_overvote(ballot)
         has_skipped = analyzer.has_skipped(ballot)
-    
+
         if has_overvote:
             stats.has_overvote += 1
         if has_skipped:
             stats.has_skipped += 1
         if has_overvote or has_duplicate or has_skipped:
             stats.irregular += 1
+
+        if first_round == OVERVOTE:
+            stats.first_round_overvotes += 1
+            # Return since all remaining analysis needs effective choices.
+            return
+
+        effective_choices = analyzer.get_effective_choices(ballot)
+        number_ranked = len(effective_choices)
+
+        stats.add_number_ranked(first_round, number_ranked)
+
+        for index in range(number_ranked):
+            candidate = effective_choices[index]
+            stats.ballot_position[candidate][index] += 1
+
+        if number_ranked == 3 and self.set_of_finalists.isdisjoint(effective_choices):
+            stats.truly_exhausted[first_round] += 1
+        if winner in effective_choices:
+            stats.ranked_winner[first_round] += 1
+        if not self.set_of_finalists.isdisjoint(effective_choices):
+            stats.ranked_finalist[first_round] += 1
+        else:
+            # Then no finalist is validly ranked on the ballot.
+            if OVERVOTE in ballot:
+                stats.exhausted_by_overvote += 1
+        if analyzer.did_sweep(ballot, first_round):
+            stats.did_sweep[first_round] += 1
+
+        if analyzer.beats_challengers(ballot, winner, self.non_winning_finalists):
+            stats.final_round_winner_total += 1
+
+        # Calculate condorcet pairs against winner.
+        for non_winner in self.non_winners:
+            did_winner_win = analyzer.beats_challenger(ballot, winner, non_winner)
+            if did_winner_win is None:
+                continue
+            if did_winner_win:
+                stats.add_condorcet_winner(winner, non_winner)
+            else:
+                stats.add_condorcet_winner(non_winner, winner)
 
 
 def unserialize_yaml_file(path):
@@ -268,6 +273,13 @@ def utc_datetime_to_local_datetime(utc_datetime):
     return local_datetime
 
 
+def utc_datetime_to_local_datetime_tzname(utc_datetime):
+    local_datetime = utc_datetime_to_local_datetime(utc_datetime)
+    local_tzname = "/".join(time.tzname) if time.tzname else ""
+
+    return local_datetime, local_tzname
+
+
 def create_download_metadata(url, datetime_utc):
     """
     Return the dictionary of metadata about the election data downloaded.
@@ -276,8 +288,7 @@ def create_download_metadata(url, datetime_utc):
     # Stripping microseconds simplifies subsequent formatting code.
     datetime_utc = datetime_utc.replace(microsecond=0)
 
-    datetime_local = utc_datetime_to_local_datetime(datetime_utc)
-    local_tzname = "/".join(time.tzname) if time.tzname else ""
+    datetime_local, local_tzname = utc_datetime_to_local_datetime_tzname(datetime_utc)
 
     data = DownloadMetadata()
     data.url = url
@@ -376,6 +387,9 @@ def get_data(election_label, contest_label, source, master_file_glob,
     Download data if necessary, and return master and ballot paths.
 
     """
+    if data_dir is None:
+        raise Exception("Need to provide data directory.")
+
     ensure_dir(data_dir)
 
     election_dir = os.path.join(data_dir, election_label)
@@ -384,7 +398,7 @@ def get_data(election_label, contest_label, source, master_file_glob,
     contest_dir = os.path.join(election_dir, contest_label)
 
     if data_dir is not None:
-        download_data(source, contest_dir)
+        #download_data(source, contest_dir)
         download_dir = most_recent_download_dir(contest_dir)
 
         _log.info("Using most recent download directory: %s" % download_dir)
@@ -413,6 +427,7 @@ def main(sys_argv):
     master_file_glob = config['master_file_glob']
     ballot_file_glob = config['ballot_file_glob']
 
+    utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
     for contest_config in config['contests']:
@@ -448,7 +463,8 @@ def main(sys_argv):
 
         reporter.add_contest(contest_label, contest, stats, download_metadata=download_metadata)
 
-    report = reporter.generate()
+    datetime_local, local_tzname = utc_datetime_to_local_datetime_tzname(utc_now)
+    report = reporter.generate(datetime_local, local_tzname)
 
     try:
         print report

@@ -183,6 +183,26 @@ class Reporter(object):
 
         return s
 
+    def make_effective_position_line(self, label, values, total):
+        """
+        Return a line of the form--
+
+        LABEL .....................   9578 (  6.2% )
+
+        """
+        def format(strings):
+            last = strings.pop()
+            return " + ".join(strings) + " = " + last
+
+        values.append(sum(values))
+
+        value_strings = [self.value_string(value) for value in values]
+        percent_strings = [self.percent_string(value, total) for value in values]
+
+        s = "%s %s  %s" % (self.label_string(label), format(value_strings), format(percent_strings))
+
+        return s
+
     def write_value(self, label, value, total=None, total_label=None, description=None):
         s = self.make_value(label, value, total, total_label, description)
         self.add_text(s)
@@ -230,6 +250,16 @@ class Reporter(object):
 
         s = self.make_percent_line(name, value, total)
         self.add_text(s)
+
+    def make_candidate_support(self, stats):
+
+        lines = self.make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
+
+        for candidate, name, first_round in self.sorted_candidates:
+            line = self.make_effective_position_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
+            lines.append(line)
+
+        return lines
 
     def make_final_round(self, contest, stats):
         """
@@ -327,13 +357,8 @@ class Reporter(object):
         lines = self.make_final_round(contest, stats)
         self.add_lines(lines)
 
-        self.add_section_title("Candidate support, in descending order of first round totals")
-
-        self.add_text("[(1) First round, and (2) validly ranked anywhere, as percent of first-round continuing.]")
-        self.skip()
-
-        for candidate_id, name, first_round in self.sorted_candidates:
-            self.add_data2(name, first_round, stats.first_round_continuing, stats.validly_ranked[candidate_id], stats.first_round_continuing)
+        lines = self.make_candidate_support(stats)
+        self.add_lines(lines)
 
         self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
 
@@ -400,7 +425,7 @@ class Reporter(object):
 
             self.add_text(s)
 
-        self.add_section_title("Truly exhausted ballots, by first choice")
+        self.add_section_title("Unwilling exhausted ballots, by first choice")
 
         self.write_value(LABELS['all'], stats.truly_exhausted_total, total=stats.truly_exhausted_total)
         self.skip()
@@ -416,14 +441,22 @@ class Reporter(object):
 
         return self.text
 
-    def format_datetime(self, metadata):
+    def format_datetime_tzname(self, dt, tzname):
+        """
+        Return a string to display a datetime and timezone.
+
+        """
+        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tzname) 
+
+    def format_metadata_datetime(self, metadata):
         """
         Return the metadata datetime as a string for display.
 
         """
         dt = metadata.datetime_local
         tz = metadata.local_tzname
-        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tz) 
+
+        return self.format_datetime_tzname(dt, tz)
 
     def get_oldest_contest_metadata(self):
         """
@@ -443,7 +476,7 @@ class Reporter(object):
 
         return metadata
 
-    def generate(self):
+    def generate(self, generated_datetime, generated_tzname):
 
         toc_dicts = []
         contest_dicts = []
@@ -467,7 +500,7 @@ class Reporter(object):
             }
 
             url = metadata.url
-            datetime_string = self.format_datetime(metadata)
+            datetime_string = self.format_metadata_datetime(metadata)
 
             contest_report = self.make_contest(info)
             contest_dict = {'label': contest_label,
@@ -481,12 +514,15 @@ class Reporter(object):
             toc_dicts.append(toc_dict)
             contest_dicts.append(contest_dict)
 
+        generated_datetime_string = self.format_datetime_tzname(generated_datetime, generated_tzname)
+
         metadata = self.get_oldest_contest_metadata()
-        datetime_string = self.format_datetime(metadata)
+        data_datetime_string = self.format_metadata_datetime(metadata)
 
         values = {'file_encoding': ENCODING_TEMPLATE_FILE,
                   'election_name': self.election_name,
-                  'data_datetime': datetime_string,
+                  'generated_datetime': generated_datetime_string,
+                  'data_datetime': data_datetime_string,
                   'toc_item': toc_dicts,
                   'contest': contest_dicts,
                   }

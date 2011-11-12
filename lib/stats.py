@@ -17,16 +17,16 @@ class Stats(object):
         ranked_winner = {}  # grouped by first-round choice.
         ranked_finalist = {}  # grouped by first-round choice.
         truly_exhausted = {}  # grouped by first-round choice.
+        ballot_position = {}
         did_sweep = {}
-        validly_ranked = {}
 
         for candidate_id in candidates:
+            ballot_position[candidate_id] = 3 * [0]  # [first, second, third]
             number_ranked[candidate_id] = 3 * [0]  # [ranked3, ranked2, ranked1]
             ranked_winner[candidate_id] = 0
             ranked_finalist[candidate_id] = 0
             truly_exhausted[candidate_id] = 0
             did_sweep[candidate_id] = 0
-            validly_ranked[candidate_id] = 0
 
         # Initialize condorcet pairs against the winner.
         condorcet = {}
@@ -53,15 +53,15 @@ class Stats(object):
         self._condorcet = condorcet
         self._number_ranked = number_ranked
 
+        # A dictionary of the number of times each candidate appears at each
+        # of the three positions on the ballot.  The position is the effective
+        # position, so that [UNDERVOTE, A, B] is effectively [A, B].  Each
+        # triple is [first, second, third].
+        self.ballot_position = ballot_position
         self.ranked_winner = ranked_winner
         self.ranked_finalist = ranked_finalist
         self.truly_exhausted = truly_exhausted
         self.did_sweep = did_sweep
-
-        # TODO: this is slightly redundant with ranked_winner, etc.
-        # Maybe we should store this by candidate so we can eliminate
-        # self.ranked_winner and self.ranked_finalist?
-        self.validly_ranked = validly_ranked
 
 
     @property
@@ -92,12 +92,12 @@ class Stats(object):
     def truly_exhausted_total(self):
         return sum([value for value in self.truly_exhausted.values()])
 
-    def get_first_round(self, candidate_id):
+    def get_first_round(self, candidate):
         """
         Return the first-round count for a candidate.
 
         """
-        return sum(self._number_ranked[candidate_id])
+        return self.ballot_position[candidate][0]
 
     def add_number_ranked(self, candidate_id, number_ranked):
         index = 3 - number_ranked
