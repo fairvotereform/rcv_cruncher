@@ -213,7 +213,6 @@ class Reporter(object):
         contest_label = contest_info[0]
         contest = contest_info[1]
         stats = contest_info[2]
-        metadata = contest_info[3]
 
         # TODO: eliminate the need to set self.stats.
         self.stats = stats
@@ -354,6 +353,24 @@ class Reporter(object):
     def make_divider(self):
         return 2 * ((80 * "*" + "\n"))
 
+    def format_datetime(self, metadata):
+        dt = metadata.datetime_local
+        tz = metadata.local_tzname
+        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tz) 
+
+    def get_oldest_contest_metadata(self):
+        contest_infos = list(self.contest_infos)
+
+        def key(info):
+            metadata = info[3]
+            return metadata.iso_datetime_utc
+
+        contest_infos.sort(key=key)
+        oldest_info = contest_infos[0]
+        metadata = oldest_info[3]
+
+        return metadata
+
     def generate(self):
 
         toc_dicts = []
@@ -378,8 +395,7 @@ class Reporter(object):
             }
 
             url = metadata.url
-            datetime_string = metadata.datetime_local.strftime("%A, %B %d, %Y at %I:%M:%S%p")
-            tzname = metadata.local_tzname
+            datetime_string = self.format_datetime(metadata)
 
             contest_report = self.make_contest(info)
             contest_dict = {'label': contest_label,
@@ -387,18 +403,18 @@ class Reporter(object):
                             'line': header_line,
                             'body': contest_report,
                             'download_url': url,
-                            'download_datetime_local': datetime_string,
-                            'local_tzname': tzname
+                            'download_datetime': datetime_string,
             }
 
             toc_dicts.append(toc_dict)
             contest_dicts.append(contest_dict)
 
-        divider = self.make_divider()
+        metadata = self.get_oldest_contest_metadata()
+        datetime_string = self.format_datetime(metadata)
 
         values = {'file_encoding': ENCODING_TEMPLATE_FILE,
                   'election_name': self.election_name,
-                  'divider': divider,
+                  'data_datetime': datetime_string,
                   'toc_item': toc_dicts,
                   'contest': contest_dicts,
                   }
