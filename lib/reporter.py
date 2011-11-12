@@ -183,21 +183,33 @@ class Reporter(object):
 
         return s
 
-    def make_effective_position_line(self, label, values, total):
+    def make_three_sum_line(self, label, values, total=None):
         """
         Return a line of the form--
 
-        LABEL .....................   9578 (  6.2% )
-
+        TONY HALL .....................   6590 +   4256 +   3911 =  14757    3.6% +   2.3% +   2.1% =   8.1%
+        
         """
+        leave_off_total_percent = total is None
+
+        if total is None:
+            total = sum(values)
+
         def format(strings):
-            last = strings.pop()
-            return " + ".join(strings) + " = " + last
+            if len(strings) > 3:
+                last = strings.pop()
+            else:
+                last = None
+            return " + ".join(strings) + (" = " + last if last is not None else "")
 
         values.append(sum(values))
 
         value_strings = [self.value_string(value) for value in values]
         percent_strings = [self.percent_string(value, total) for value in values]
+        
+        if leave_off_total_percent:
+            # Then the 100% doesn't say more.
+            percent_strings.pop()
 
         s = "%s %s  %s" % (self.label_string(label), format(value_strings), format(percent_strings))
 
@@ -234,7 +246,7 @@ class Reporter(object):
 
         self.add_text(s)
 
-    def add_aggregate_number_ranked(self, name, candidate_ids):
+    def make_aggregate_number_ranked_line(self, name, candidate_ids):
         # TODO: make this elegant.
         if candidate_ids:
             number_ranked_list = [self.stats.get_number_ranked(candidate_id) for candidate_id in candidate_ids]
@@ -242,7 +254,9 @@ class Reporter(object):
         else:
             number_ranked = (0, 0, 0)
 
-        self.add_number_ranked(name, number_ranked)
+        line = self.make_three_sum_line(name, number_ranked)
+
+        return line
 
     def add_first_round_percent_data(self, name, value_dict, candidate_ids):
         value = sum([value_dict[candidate_id] for candidate_id in candidate_ids])
@@ -251,12 +265,29 @@ class Reporter(object):
         s = self.make_percent_line(name, value, total)
         self.add_text(s)
 
-    def make_candidate_support(self, stats):
+    def make_effective_ballot_position(self, stats):
 
         lines = self.make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
 
         for candidate, name, first_round in self.sorted_candidates:
-            line = self.make_effective_position_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
+            line = self.make_three_sum_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
+            lines.append(line)
+
+        return lines
+
+    def make_number_valid_rankings(self, contest, stats):
+
+        lines = self.make_section_title("Number of candidates validly ranked (3 + 2 + 1), by first-round choice")
+
+        lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest.candidate_ids),
+                      self.make_aggregate_number_ranked_line(LABELS['winner'], [contest.winner_id]),
+                      self.make_aggregate_number_ranked_line(LABELS['finalists'], contest.finalists),
+                      self.make_aggregate_number_ranked_line(LABELS['non-finalists'], contest.non_finalist_ids)])
+        lines.append("")
+
+        for candidate_id, name, first_round in self.sorted_candidates:
+            number_ranked = stats.get_number_ranked(candidate_id)
+            line = self.make_three_sum_line(name, number_ranked)
             lines.append(line)
 
         return lines
@@ -355,22 +386,10 @@ class Reporter(object):
         self.write_value(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
 
         lines = self.make_final_round(contest, stats)
+        lines.extend(self.make_effective_ballot_position(stats))
+        lines.extend(self.make_number_valid_rankings(contest, stats))
+
         self.add_lines(lines)
-
-        lines = self.make_candidate_support(stats)
-        self.add_lines(lines)
-
-        self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
-
-        self.add_aggregate_number_ranked(LABELS['all'], contest.candidate_ids)
-        self.add_aggregate_number_ranked(LABELS['winner'], [contest.winner_id])
-        self.add_aggregate_number_ranked(LABELS['finalists'], contest.finalists)
-        self.add_aggregate_number_ranked(LABELS['non-finalists'], contest.non_finalist_ids)
-        self.skip()
-
-        for candidate_id, name, first_round in self.sorted_candidates:
-            number_ranked = stats.get_number_ranked(candidate_id)
-            self.add_number_ranked(name, number_ranked)
 
         self.add_section_title("Ballots validly ranking the winner, by first-round choice")
 
