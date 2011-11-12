@@ -24,7 +24,10 @@ LABELS = {
     'has_dupe': "Has_Duplicate",
     'dupe3': "Has_Duplicate_3",
     'dupe2': "Has_Duplicate_2",
-    'exhaust': "Truly_Exhausted",
+    'exhausted': "Exhausted",
+    'exhausted_by_overvote': "Exhausted_by_overvote",
+    'involuntary_exhausted': "unwilling_exhausted",
+    'voluntary_exhausted': "willing_exhausted",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -33,6 +36,7 @@ LABELS = {
     'winner': "Winner",
     'finalists': "Finalists",
     'non-finalists': "Non-finalists",
+    'mandate_final_round': "Final_Round_Mandate",
 }
 
 
@@ -70,6 +74,7 @@ def ljust(s, length, fill_string):
 
 class Reporter(object):
 
+    line_break = "\n"
     candidate_indent = 12
 
     def __init__(self, election_name, template_path):
@@ -77,6 +82,9 @@ class Reporter(object):
         self.template_path = template_path
 
         self.contest_infos = []
+
+    def add_contest(self, contest_label, contest, stats, download_metadata):
+        self.contest_infos.append((contest_label, contest, stats, download_metadata))
 
     def percent_string(self, part, whole):
         """
@@ -92,24 +100,30 @@ class Reporter(object):
         """
         return "%3.0f%%" % percent(part, whole)
 
+    def make_string(self, lines):
+        return self.line_break.join(lines)
+
+    # DEPRECATED
     def add_text(self, text):
-        self.text += "%s\n" % text
+        self.text += text + self.line_break
+
+    def add_lines(self, lines):
+        s = self.make_string(lines)
+        self.add_text(s)
+
+    def skip(self):
+        self.add_text("")
 
     def make_header_line(self, preceding_text, symbol):
         return len(preceding_text) * symbol
 
-    def _add_header(self, text, sep_char, label=None):
-
-        self.add_text(text)
-
-        header_line = self.make_header_line(text, sep_char)
-        self.add_text(header_line)
-
-        self.skip()
+    def make_section_title(self, text):
+        header_line = self.make_header_line(text, "-")
+        return ["", text, header_line, ""]
 
     def add_section_title(self, text):
-        self.skip()
-        self._add_header(text, "-")
+        lines = self.make_section_title(text)
+        self.add_lines(lines)
 
     def add_candidate_names(self, header, candidate_ids, candidate_dict):
         self.add_text("%s:" % header)
@@ -127,23 +141,47 @@ class Reporter(object):
     def value_string(self, value):
         return "%6d" % value
 
-    def write_value(self, label, value, total=None, total_label=None, description=None):
+    def make_percent_line(self, label, value, total, description=None):
         """
-        Write a line of the form--
+        Return a line of the form--
 
-        LABEL .....................   9578 (  6.2% of total_label) [description]
+        LABEL .....................  46.4% ( 84666 / 182362) [description]
 
         """
         label_string = self.label_string(label)
         percent_string = self.percent_string(value, total)
         value_string = self.value_string(value)
-        total_label_string = ("of %s" % total_label) if total_label is not None else ""
+        total_string = self.value_string(total)
 
-        s = "%s %s (%s %s)" % (label_string, value_string, percent_string, total_label_string)
+        s = "%s %s (%s / %s)" % (label_string, percent_string, value_string, total_string)
 
         if description is not None:
             s += " [%s]" % description
 
+        return s
+
+    def make_value(self, label, value, total=None, total_label=None, description=None):
+        """
+        Return a line of the form--
+
+        LABEL .....................   9578 (  6.2% of total_label) [description]
+
+        """
+        s = "%s %s" % (self.label_string(label), self.value_string(value))
+        
+        if total is not None:
+            percent_string = self.percent_string(value, total)
+            total_label_string = ("of %s" % total_label) if total_label is not None else ""
+            
+            s += " (%s %s)" % (percent_string, total_label_string)
+
+        if description is not None:
+            s += " [%s]" % description
+
+        return s
+
+    def write_value(self, label, value, total=None, total_label=None, description=None):
+        s = self.make_value(label, value, total, total_label, description)
         self.add_text(s)
 
     # TODO: find a nicer abstraction of this functionality.
@@ -183,27 +221,51 @@ class Reporter(object):
 
         self.add_number_ranked(name, number_ranked)
 
-    def add_percent_data(self, name, value, total):
-        label_string = self.label_string(name)
-        percent_string = self.percent_string(value, total)
-        value_string = self.value_string(value)
-        total_string = self.value_string(total)
-
-        s = "%s %s (%s / %s)" % (label_string, percent_string, value_string, total_string)
-
-        self.add_text(s)
-
     def add_first_round_percent_data(self, name, value_dict, candidate_ids):
         value = sum([value_dict[candidate_id] for candidate_id in candidate_ids])
         total = sum([self.stats.get_first_round(candidate_id) for candidate_id in candidate_ids])
 
-        self.add_percent_data(name, value, total)
+        s = self.make_percent_line(name, value, total)
+        self.add_text(s)
 
-    def skip(self):
-        self.add_text("")
+    def make_final_round(self, contest, stats):
+        """
+        Return final-round overview as lines.
 
-    def add_contest(self, contest_label, contest, stats, download_metadata):
-        self.contest_infos.append((contest_label, contest, stats, download_metadata))
+        """
+        first_round_continuing = stats.first_round_continuing
+
+        final_round_continuing = stats.final_round_continuing
+        exhausted_by_overvote = stats.exhausted_by_overvote
+        exhausted = stats.exhausted
+
+        involuntary_exhausted = stats.truly_exhausted_total
+        voluntary_exhausted = exhausted - involuntary_exhausted
+
+        winner_total = stats.final_round_winner_total
+
+        lines = self.make_section_title("Overview of final round (%s candidates)" % len(contest.finalists))
+
+        total_label = 'first-round continuing'
+        lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing, total_label=total_label))
+        lines.append(self.make_value(LABELS['exhausted'], exhausted, total=first_round_continuing, total_label=total_label,
+            description='does not include overvoted or exhausted-by-overvote'))
+        lines.append(self.make_value(LABELS['exhausted_by_overvote'], exhausted_by_overvote, total=first_round_continuing, total_label=total_label,
+            description="excludes first-round overvotes"))
+        lines.append("")
+
+        lines.append(self.make_value(LABELS['voluntary_exhausted'], voluntary_exhausted, total=first_round_continuing, total_label=total_label,
+            description="exhausted minus unwilling exhausted"))
+        lines.append(self.make_value(LABELS['involuntary_exhausted'], involuntary_exhausted, total=first_round_continuing, total_label=total_label,
+            description="3 distinct candidates, none a finalist"))
+        lines.append("")
+
+        lines.append(self.make_value(LABELS['winner'], winner_total))
+        lines.append("")
+
+        lines.append(self.make_percent_line(LABELS['mandate_final_round'], stats.final_round_winner_total, final_round_continuing))
+
+        return lines
 
     # TODO: refactor this method to be smaller.
     def make_contest(self, contest_info):
@@ -231,7 +293,7 @@ class Reporter(object):
         self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
 
         self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
-        self.add_candidate_names(LABELS['finalists'], contest.finalist_ids, contest.candidate_dict)
+        self.add_candidate_names(LABELS['finalists'], contest.finalists, contest.candidate_dict)
 
         self.write_value(LABELS['total'], stats.total, total=stats.total, total_label='total')
         self.skip()
@@ -244,20 +306,19 @@ class Reporter(object):
         self.write_value(LABELS['has_over'], stats.has_overvote, total=stats.voted)
         self.write_value(LABELS['has_skip'], stats.has_skipped, total=stats.voted)
         self.write_value(LABELS['irregular'], stats.irregular, total=stats.voted,
-                      description="has duplicate, overvote, and/or skip")
+                         description="duplicate, overvote, and/or skip")
         self.skip()
 
         self.write_value(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
         self.write_value(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
-        self.skip()
-
-        self.write_value(LABELS['exhaust'], stats.true_exhaust, total=stats.voted,
-                      description="3 distinct candidates, none a finalist")
 
         self.add_section_title("Overview of first round, as percent of voted")
 
         self.write_value(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
         self.write_value(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
+
+        lines = self.make_final_round(contest, stats)
+        self.add_lines(lines)
 
         self.add_section_title("Candidate support, in descending order of first round totals")
 
@@ -265,13 +326,13 @@ class Reporter(object):
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
-            self.add_data2(name, first_round, stats.first_round_continuing, stats.ranked_anywhere[candidate_id], stats.first_round_continuing)
+            self.add_data2(name, first_round, stats.first_round_continuing, stats.validly_ranked[candidate_id], stats.first_round_continuing)
 
         self.add_section_title("Number of candidates validly ranked (3-2-1), by first-round choice")
 
         self.add_aggregate_number_ranked(LABELS['all'], contest.candidate_ids)
         self.add_aggregate_number_ranked(LABELS['winner'], [contest.winner_id])
-        self.add_aggregate_number_ranked(LABELS['finalists'], contest.finalist_ids)
+        self.add_aggregate_number_ranked(LABELS['finalists'], contest.finalists)
         self.add_aggregate_number_ranked(LABELS['non-finalists'], contest.non_finalist_ids)
         self.skip()
 
@@ -334,31 +395,35 @@ class Reporter(object):
 
         self.add_section_title("Truly exhausted ballots, by first choice")
 
-        self.write_value(LABELS['all'], stats.true_exhaust, total=stats.true_exhaust)
+        self.write_value(LABELS['all'], stats.truly_exhausted_total, total=stats.truly_exhausted_total)
         self.skip()
 
         true_exhaust_data = []
-        for candidate_id, name, first_round in self.sorted_candidates:
-            true_exhaust_data.append((stats.true_exhaust_by_first_round[candidate_id], name))
+        for candidate, name, first_round in self.sorted_candidates:
+            true_exhaust_data.append((stats.truly_exhausted[candidate], name))
         true_exhaust_data.sort()
         true_exhaust_data.reverse()
         
         for data in true_exhaust_data:
-            self.write_value(data[1], data[0], total=stats.true_exhaust)
-
-        self.skip()
+            self.write_value(data[1], data[0], total=stats.truly_exhausted_total)
 
         return self.text
 
-    def make_divider(self):
-        return 2 * ((80 * "*" + "\n"))
-
     def format_datetime(self, metadata):
+        """
+        Return the metadata datetime as a string for display.
+
+        """
         dt = metadata.datetime_local
         tz = metadata.local_tzname
         return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tz) 
 
     def get_oldest_contest_metadata(self):
+        """
+        Return the metadata for the earliest downloaded contest.
+
+        """
+        # Make a copy because list.sort() sorts in place.
         contest_infos = list(self.contest_infos)
 
         def key(info):

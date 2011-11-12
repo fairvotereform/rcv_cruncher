@@ -21,17 +21,18 @@ class Contest(object):
     def __init__(self, name, id, candidate_dict, winner_id, other_finalist_ids):
 
         candidate_ids = candidate_dict.keys()
-        finalist_ids = [winner_id] + other_finalist_ids
+        finalists = [winner_id] + other_finalist_ids
 
         self.id = id
         self.name = name
         self.winner_id = winner_id
         self.candidate_dict = candidate_dict
 
+        # TODO: change from ids.
         self.candidate_ids = candidate_ids
-        self.other_finalist_ids = other_finalist_ids
-        self.finalist_ids = finalist_ids
-        self.non_finalist_ids = list(set(candidate_ids) - set(finalist_ids))
+        self.non_winning_finalists = other_finalist_ids
+        self.finalists = finalists
+        self.non_finalist_ids = list(set(candidate_ids) - set(finalists))
 
 
 class MasterParser(object):
