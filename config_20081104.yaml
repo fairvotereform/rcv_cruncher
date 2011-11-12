@@ -1,4 +1,7 @@
-election_label: SF_20081104
+#
+# This file is UTF-8 encoded.
+#
+election_label: SF_2008-11-04
 election_name: San Francisco November 4, 2008 Consolidated Presidential General Election
 master_file_glob: "*Master*.txt"
 ballot_file_glob: "*Ballot_*.txt"
@@ -12,7 +15,7 @@ contests:
    url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D3_BallotImageFinal.zip
    winner: DAVID CHIU
    finalists:
-    - JOSEPH ALIOTO, JR.
+    - "JOSEPH ALIOTO, JR."
  - label: D4
    url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D4_BallotImageFinal.zip
    winner: CARMEN CHU

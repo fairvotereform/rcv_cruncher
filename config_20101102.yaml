@@ -1,4 +1,7 @@
-election_label: SF_20101102
+#
+# This file is UTF-8 encoded.
+#
+election_label: SF_2010-11-02
 election_name: San Francisco November 2, 2010 Consolidated Statewide Direct Primary Election
 master_file_glob: Master*.txt
 ballot_file_glob: Ballot*.txt
