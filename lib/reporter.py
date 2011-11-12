@@ -95,18 +95,17 @@ class Reporter(object):
     def add_text(self, text):
         self.text += "%s\n" % text
 
-    def _add_header(self, text, sep_char, label=None):
-        divider = len(text) * sep_char
+    def make_header_line(self, preceding_text, symbol):
+        return len(preceding_text) * symbol
 
-        if label is not None:
-            text = "<a name='%s'>%s</name>" % (label, text)
+    def _add_header(self, text, sep_char, label=None):
 
         self.add_text(text)
-        self.add_text(divider)
-        self.skip()
 
-    def add_title(self, text, label=None):
-        self._add_header(text, "=", label)
+        header_line = self.make_header_line(text, sep_char)
+        self.add_text(header_line)
+
+        self.skip()
 
     def add_section_title(self, text):
         self.skip()
@@ -203,24 +202,14 @@ class Reporter(object):
     def skip(self):
         self.add_text("")
 
-    def write_contents(self):
-        self.add_title("Table of Contents")
-        
-        index = 0
-        for contest_info in self.contest_infos:
-            contest_label = contest_info[0]
-            contest = contest_info[1]
-
-            index += 1
-            self.add_text("<a href='#%s'>(%s) %s</a>" % (contest_label, index, contest.name))
-
-        self.add_divider()
-
     def add_contest(self, contest_label, contest, stats, download_url, download_time):
         self.contest_infos.append((contest_label, contest, stats, download_url, download_time))
 
     # TODO: refactor this method to be smaller.
-    def _write_contest(self, contest_info):
+    def make_contest(self, contest_info):
+        self.text = ""
+
+        # TODO: eliminate the need to store the arguments as a tuple.
         contest_label = contest_info[0]
         contest = contest_info[1]
         stats = contest_info[2]
@@ -242,9 +231,6 @@ class Reporter(object):
         triples.sort()
         triples.reverse()
         self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
-
-
-        self.add_title(contest.name + " RCV Stats", contest_label)
 
         self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
         self.add_candidate_names(LABELS['finalists'], contest.finalist_ids, contest.candidate_dict)
@@ -366,25 +352,51 @@ class Reporter(object):
         self.add_text("[Data downloaded from %s" % download_url)
         self.add_text(" on %s.]" % download_time)
 
-        self.add_divider()
+        return self.text
 
-    def add_divider(self):
-        self.skip()
-        self.add_text(80 * "*")
-        self.add_text(80 * "*")
-        self.skip()
+    def make_divider(self):
+        return 2 * ((80 * "*" + "\n"))
 
     def generate(self):
 
-        self.text = ""
-        self.write_contents()
+        toc_dicts = []
+        contest_dicts = []
 
-        for contest_info in self.contest_infos:
-            self._write_contest(contest_info)
+        index = 0
+        for info in self.contest_infos:
+            index += 1
+
+            contest_label = info[0]
+            contest = info[1]
+
+            contest_name = contest.name
+
+            title = contest_name + " RCV Stats"
+            header_line = self.make_header_line(title, "=")
+
+            toc_dict = {'label': contest_label,
+                        'index': index,
+                        'text': contest_name
+                        }
+
+            contest_report = self.make_contest(info)
+            contest_dict = {'label': contest_label,
+                            'title': title,
+                            'line': header_line,
+                            'body': contest_report,
+            }
+            
+            toc_dicts.append(toc_dict)
+            contest_dicts.append(contest_dict)
+
+        divider = self.make_divider()
 
         values = {'file_encoding': ENCODING_TEMPLATE_FILE,
                   'election_name': self.election_name,
-                  'body': self.text}
+                  'divider': divider,
+                  'toc_item': toc_dicts,
+                  'contest': contest_dicts,
+                  }
 
         s = render_template(self.template_path, values)
 
