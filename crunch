@@ -482,7 +482,7 @@ def main(sys_argv):
 
         contest_dir = os.path.join(election_dir, contest_label)
 
-        #download_data(contest_url, contest_dir)
+        download_data(contest_url, contest_dir)
         data_dir = find_data_dir(contest_dir)
 
         _log.info("Chose data directory: %s" % data_dir)
@@ -510,7 +510,11 @@ def main(sys_argv):
 
     report = reporter.generate()
 
-    print report
+    try:
+        print report
+    except UnicodeEncodeError:
+        # Windows seems to have trouble with some unicode characters, e.g. the "Ó" in GASCÓN.
+        _log.warn("Error printing report to console (probably because of special characters.")
 
     output_path = "out_%s.html" % election_label
     write_file(report, output_path)
