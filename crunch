@@ -340,7 +340,7 @@ def download_data(url, contest_dir):
     write_to_file(text, info_path)
 
 
-def find_data_dir(contest_dir):
+def most_recent_download_dir(contest_dir):
 
     file_name = DOWNLOAD_DIRECTORY_PREFIX + "*"
     glob_path = os.path.join(contest_dir, file_name)
@@ -350,20 +350,50 @@ def find_data_dir(contest_dir):
         raise Exception("Downloaded files not found in: %s" % contest_dir)
 
     paths.sort()
-    path = os.path.join(paths[-1], UNZIP_DIRECTORY_NAME)
 
-    return path
+    return paths[-1]
 
 
 def get_path(dir_path, file_glob):
+    """
+    Return the path in dir_path matching file_glob.
+
+    """
     glob_path = os.path.join(dir_path, file_glob)
     paths = glob.glob(glob_path)
     
-    if len(paths) is not 1:
+    if len(paths) < 1:
         raise AssertionError("No path found matching: %s" % glob_path)
+    if len(paths) > 1:
+        raise AssertionError("More than one path found matching: %s" % glob_path)
 
     return paths[0]
 
+
+def get_data(election_label, contest_label, source, master_file_glob,
+             ballot_file_glob, data_dir):
+    """
+    Download data if necessary, and return master and ballot paths.
+
+    """
+    ensure_dir(data_dir)
+
+    election_dir = os.path.join(data_dir, election_label)
+    ensure_dir(election_dir)
+
+    contest_dir = os.path.join(election_dir, contest_label)
+
+    if data_dir is not None:
+        download_data(source, contest_dir)
+        download_dir = most_recent_download_dir(contest_dir)
+
+        _log.info("Using most recent download directory: %s" % download_dir)
+
+        unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
+        master_path = get_path(unzip_dir, master_file_glob)
+        ballot_path = get_path(unzip_dir, ballot_file_glob)
+
+    return master_path, ballot_path
 
 def main(sys_argv):
     start_time = datetime.now()
@@ -371,39 +401,32 @@ def main(sys_argv):
     args = sys_argv[1:]
 
     path = args[0]
-    data_dir = args[1]
+    data_dir = args[1] if len(args) > 1 else None
 
     configure_logging(logging.DEBUG)
-
-    ensure_dir(data_dir)
 
     config = unserialize_yaml_file(path)
 
     election_label = config['election_label']
     election_name = config['election_name']
+    election_source = config['source']
     master_file_glob = config['master_file_glob']
     ballot_file_glob = config['ballot_file_glob']
-
-    election_dir = os.path.join(data_dir, election_label)
-    ensure_dir(election_dir)
 
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
     for contest_config in config['contests']:
 
-        contest_url = contest_config['url']
+        contest_source = contest_config['source']
         contest_label = contest_config['label']
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        contest_dir = os.path.join(election_dir, contest_label)
+        source = election_source + contest_source
+        master_path, ballot_path = get_data(election_label, contest_label, source,
+            master_file_glob, ballot_file_glob, data_dir)
 
-        download_data(contest_url, contest_dir)
-        data_dir = find_data_dir(contest_dir)
-
-        _log.info("Chose data directory: %s" % data_dir)
-        master_path = get_path(data_dir, master_file_glob)
-        ballot_path = get_path(data_dir, ballot_file_glob)
+        unzipped_dir = os.path.dirname(master_path)
 
         master_parser = MasterParser(ENCODING_DATA_FILES, winner, final_candidates=finalists)
         contest = master_parser.parse(master_path)
@@ -416,7 +439,7 @@ def main(sys_argv):
         parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
-        info_path = os.path.join(data_dir, os.pardir, INFO_FILE_NAME)
+        info_path = os.path.join(unzipped_dir, os.pardir, INFO_FILE_NAME)
         
         download_dict = unserialize_yaml_file(info_path)
 

@@ -2,31 +2,32 @@
 # This file is UTF-8 encoded.
 #
 election_label: SF_2008-11-04
-election_name: San Francisco November 4, 2008 Consolidated Presidential General Election
+election_name: "San Francisco November 4, 2008 Consolidated Presidential General Election"
+source: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/
 master_file_glob: "*Master*.txt"
 ballot_file_glob: "*Ballot_*.txt"
 contests:
  - label: D1
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D1_BallotImageFinal.zip
+   source: D1_BallotImageFinal.zip
    winner: ERIC MAR
    finalists:
     - SUE LEE
  - label: D3
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D3_BallotImageFinal.zip
+   source: D3_BallotImageFinal.zip
    winner: DAVID CHIU
    finalists:
     - "JOSEPH ALIOTO, JR."
  - label: D4
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D4_BallotImageFinal.zip
+   source: D4_BallotImageFinal.zip
    winner: CARMEN CHU
    finalists:
  - label: D9
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D9_BallotImageFinal.zip
+   source: D9_BallotImageFinal.zip
    winner: DAVID CAMPOS
    finalists:
     - MARK SANCHEZ
  - label: D11
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D11_BallotImageFinal.zip
+   source: D11_BallotImageFinal.zip
    winner: JOHN AVALOS
    finalists:
     - AHSHA SAFAI
