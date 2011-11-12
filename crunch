@@ -20,6 +20,7 @@ import urllib
 import yaml
 from zipfile import ZipFile
 
+from lib.ballot_analyzer import BallotAnalyzer
 from lib.parser import MasterParser
 from lib.parser import BallotParser
 from lib.reporter import Reporter
@@ -137,104 +138,6 @@ class DownloadMetadata(object):
         self.iso_datetime_local = value.isoformat()
 
 
-class BallotAnalyzer(object):
-    
-    def get_first_round(self, ballot):
-        """
-        Return what the ballot counts towards in the first round.
-
-        Returns UNDERVOTE for an undervoted ballot.
-
-        """
-        for choice in ballot:
-            if choice is not UNDERVOTE:
-                break
-        return choice
-
-    def has_overvote(self, ballot):
-        return OVERVOTE in ballot
-
-    def count_duplicates(self, ballot):
-        """
-        Return the max number of times the same candidate occurs on the ballot.
-        
-        """
-        duplicate_count = 0
-        choices = set(ballot)
-        for choice in choices:
-            if choice is UNDERVOTE or choice is OVERVOTE:
-                continue
-            count = ballot.count(choice)
-            if count > duplicate_count:
-                duplicate_count = count
-        return duplicate_count
-    
-    def has_skipped(self, ballot):
-        seen_undervote = False
-        for choice in ballot:
-            if choice is UNDERVOTE:
-                seen_undervote = True
-                continue
-            if seen_undervote:
-                return True
-        return False
-
-    def get_set_of_validly_ranked(self, ballot):
-        """
-        Return the validly ranked candidates as a set.
-
-        """
-        candidates = set()
-        for choice in ballot:
-            if choice is UNDERVOTE:
-                continue
-            if choice is OVERVOTE:
-                break
-            candidates.add(choice)
-
-        return candidates
-
-    def did_sweep(self, ballot, candidate_id):
-        for choice in ballot:
-            if choice != candidate_id:
-                return False
-        return True
-
-    def beats_challenger(self, ballot, candidate, challenger):
-        """
-        Return whether a candidate validly defeats a challenger.
-
-        Return None if the ballot is inconclusive.
-
-        """
-        for choice in ballot:
-            if choice is OVERVOTE:
-                break
-            if choice is candidate:
-                return True
-            if choice is challenger:
-                return False
-
-        return None
-
-    def beats_challengers(self, ballot, candidate, challengers):
-        """
-        Return whether a candidate validly defeats challengers.
-
-        Return None if the ballot is inconclusive.
-
-        """
-        for choice in ballot:
-            if choice is OVERVOTE:
-                break
-            if choice is candidate:
-                return True
-            if choice in challengers:
-                return False
-
-        return None
-
-
 class BallotHandler(object):
 
     def __init__(self, contest, stats):
@@ -247,7 +150,7 @@ class BallotHandler(object):
         finalists = contest.finalists
         non_winning_finalists = contest.non_winning_finalists
 
-        self.analyzer = BallotAnalyzer()
+        self.analyzer = BallotAnalyzer(undervote=UNDERVOTE, overvote=OVERVOTE)
         self.stats = stats
 
         self.winner = winner
