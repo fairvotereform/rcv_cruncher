@@ -26,8 +26,8 @@ LABELS = {
     'dupe2': "Has_Duplicate_2",
     'exhausted': "Exhausted",
     'exhausted_by_overvote': "Exhausted_by_overvote",
-    'exhausted_involuntary': "exhausted_unwilling",
-    'exhausted_voluntary': "exhausted_willing",
+    'exhausted_involuntary': "exhausted_involuntary",
+    'exhausted_voluntary': "exhausted_voluntary",
     'irregular': "Irregular",
     'over': "Overvoted",
     'continuing': "Continuing",
@@ -190,6 +190,8 @@ class Reporter(object):
         TONY HALL .....................   6590 +   4256 +   3911 =  14757    3.6% +   2.3% +   2.1% =   8.1%
         
         """
+        values = list(values)  # Some callers pass a tuple.
+
         leave_off_total_percent = total is None
 
         if total is None:
@@ -328,7 +330,7 @@ class Reporter(object):
 
         lines.append(self.make_percent_line(LABELS['mandate_final_round'], stats.final_round_winner_total, final_round_continuing))
         lines.append(self.make_percent_line(LABELS['mandate_minimum'], stats.final_round_winner_total, final_round_continuing + exhausted_involuntary,
-            description='final-round continuing and unwilling exhausted'))
+            description='final-round continuing and involuntary exhausted'))
         lines.append(self.make_percent_line(LABELS['mandate_first_round'], stats.final_round_winner_total, first_round_continuing,
             description='first-round continuing'))
         lines.append(self.make_percent_line(LABELS['mandate_voted'], stats.final_round_winner_total, stats.voted))
@@ -444,7 +446,7 @@ class Reporter(object):
 
             self.add_text(s)
 
-        self.add_section_title("Unwilling exhausted ballots, by first choice")
+        self.add_section_title("Involuntary exhausted ballots, by first choice")
 
         self.write_value(LABELS['all'], stats.truly_exhausted_total, total=stats.truly_exhausted_total)
         self.skip()
