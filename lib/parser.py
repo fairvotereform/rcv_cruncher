@@ -11,9 +11,34 @@ import sys
 _log = logging.getLogger(__name__)
 
 
+def reraise(ex):
+    raise ex, None, sys.exc_info()[2]
+
+
 class Error(Exception):
-    """Base class for exceptions in this module."""
-    pass
+
+    def __init__(self, err, *args):
+        """
+        err is the main error (e.g. string message or exception instance).
+
+        """
+        super(Error, self).__init__(err)
+        self.__err = err
+        self.__stack = list(args)
+
+    def __type_name(self):
+        return self.__class__.__name__
+
+    def __repr__(self):
+        stack = " stack=%s," % repr(self.__stack)
+        return "%s(%s,%s)" % (self.__type_name(), repr(self.__err), stack)
+
+    def __str__(self):
+        lines = [self.__err] + self.__stack
+        return "\n-->".join([str(line) for line in lines]) + "<--"
+
+    def add(self, message):
+        self.__stack.append(message)
 
 
 class Contest(object):
@@ -79,7 +104,7 @@ class MasterParser(object):
 
         # TODO: make this more elegant.  Eliminate the need for this if block.
         if self.final_candidates is None:
-            candidate_ids = candidate_dict.keys() 
+            candidate_ids = candidate_dict.keys()
             # Make sure the winner is not a finalist to avoid duplicates.
             finalist_ids = list(set(candidate_ids) - set([winner_id]))
         else:
@@ -111,7 +136,7 @@ class MasterParser(object):
 
 
 class BallotParser(object):
-    
+
     def __init__(self, undervote, overvote, on_ballot, encoding=None):
         self.encoding = encoding
         self.undervote = undervote
@@ -123,7 +148,7 @@ class BallotParser(object):
 
     def read_ballot_path(self, path):
         _log.info("Reading ballots: %s" % path)
-        
+
         def open_path(path):
             if self.encoding is None:
                 return open(path, "r")
@@ -135,39 +160,37 @@ class BallotParser(object):
 
     def process_ballot_file(self, f):
 
-        line = f.readline()
-        parsed_line = self.parse_line(line)
-        contest_id = parsed_line[0]
-
-        line_index = 1
-
         try:
-            while True:
-                try:
-                    ballot = self.read_ballot(parsed_line, f)
-                except Exception:
-                    print "Error reading line..."
-                    print line_index
-                    print parsed_line
-                    exit()
-
-                self.on_ballot(ballot)
-
+            try:
+                line_number = 1
                 line = f.readline()
-                if not line:
-                    break
-                line_index += 3
 
-                parsed_line = self.parse_line(line)
-                if parsed_line[0] != contest_id:
-                    raise Exception("Expected contest id: %s" % expected_contest_id)
+                # First line of file, so no expected contest or voter.
+                parsed_line = self.parse_ballot_line(line, 1)
+                contest_id = parsed_line[0]
 
-        except Error as e:
-            _log.error("Error processing ballot beginning at line %s" % line_index)
-            raise e
+                while True:
+                    ballot, line_number = self.read_ballot(f, parsed_line, line_number, contest_id)
 
+                    self.on_ballot(ballot)
 
-    def read_ballot(self, parsed_line, f):
+                    line_number += 1
+                    line = f.readline()
+                    if not line:
+                        _log.info("Read %d lines." % line_number)
+                        break
+
+                    # First line of ballot, so no expected voter.
+                    parsed_line = self.parse_ballot_line(line, 1, expected_contest_id=contest_id)
+            except Error:
+                raise
+            except Exception, ex:
+                reraise(Error(ex))
+        except Error, err:
+            err.add("File line number: %d" % line_number)
+            reraise(err)
+
+    def read_ballot(self, f, parsed_line, line_number, expected_contest_id):
         """
         Read and return an RCV ballot.
 
@@ -184,37 +207,52 @@ class BallotParser(object):
           Each integer is a candidate ID, -1 for undervote, or -2 for overvote.
 
         """
-        contest_id, voter_id, rank, choice = parsed_line
+        try:
+            try:
+                contest_id, voter_id, rank, choice = parsed_line
 
-        if rank != 1:
-            raise Error("Expected rank: 1")
+                choices = [choice]
 
-        choices = [choice]
+                line_number += 1
+                line = f.readline()
+                parsed_line = self.parse_ballot_line(line, 2, expected_contest_id=expected_contest_id, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
 
-        line = f.readline()
-        parsed_line = self.parse_ballot_line(contest_id, voter_id, 2, line)
-        choices.append(parsed_line[3])
+                line_number += 1
+                line = f.readline()
+                parsed_line = self.parse_ballot_line(line, 3, expected_contest_id=expected_contest_id, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
+            except Error:
+                raise
+            except Exception, ex:
+                reraise(Error(ex))
+        except Error, err:
+            err.add("Ballot line number: %d" % line_number)
+            reraise(err)
 
-        line = f.readline()
-        parsed_line = self.parse_ballot_line(contest_id, voter_id, 3, line)
-        choices.append(parsed_line[3])
-
-        return choices
+        return choices, line_number
 
 
-    def parse_ballot_line(self, expected_contest_id, expected_voter_id, expected_rank, line):
+    def parse_ballot_line(self, line, expected_rank, expected_contest_id=None, expected_voter_id=None):
         """
         Return a parsed line, or raise an Exception on failure.
 
         """
-        parsed_line = self.parse_line(line)
+        try:
+            parsed_line = self.parse_line(line)
+            contest_id, voter_id, rank, choice = parsed_line
 
-        if parsed_line[0] != expected_contest_id:
-            raise Error("Expected contest id: %s" % expected_contest_id)
-        if parsed_line[1] != expected_voter_id:
-            raise Error("Expected voter id: %s" % expected_voter_id)
-        if parsed_line[2] != expected_rank:
-            raise Error("Expected rank: %s" % expected_rank)
+            if expected_contest_id is not None and contest_id != expected_contest_id:
+                raise Exception("Expected contest id %d but got %d." % (expected_contest_id, contest_id))
+            if expected_voter_id is not None and voter_id != expected_voter_id:
+                raise Exception("Expected voter id %d but got %d." % (expected_voter_id, voter_id))
+            if rank != expected_rank:
+                raise Exception("Expected rank %d but got %d." % (expected_rank, rank))
+        except Exception, ex:
+            s = "Failed parsing ballot line: %s" % repr(line)
+            if parsed_line is not None:
+                s += "\nParsed line: %s" % repr(parsed_line)
+            reraise(Error(ex, s))
 
         return parsed_line
 
