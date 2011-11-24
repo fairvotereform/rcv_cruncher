@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
+#
+"""
+TODO: complete this.
+
+"""
+
+import logging
+import os
+import sys
+
+_log = logging.getLogger(__name__)
+
+
+class Error(Exception):
+
+    def __init__(self, err, *args):
+        """
+        err is the main error (e.g. string message or exception instance).
+
+        """
+        super(Error, self).__init__(err)
+        self.__err = err
+        self.__stack = list(args)
+
+    def __type_name(self):
+        return self.__class__.__name__
+
+    def __repr__(self):
+        stack = " stack=%s," % repr(self.__stack)
+        return "%s(%s,%s)" % (self.__type_name(), repr(self.__err), stack)
+
+    def __str__(self):
+        lines = ["%s: %s" % (self.__type_name(), self.__err)] + self.__stack
+        return "\n-->".join([str(line) for line in lines]) + "<--"
+
+    def add(self, message):
+        self.__stack.append(message)
+
+
+def reraise(ex):
+    raise ex, None, sys.exc_info()[2]
+
+def inner(sys_argv):
+
+    try:
+        try:
+            s = "message..."
+            raise Error(s, "blah")
+        except Error:
+            raise
+        except Exception, ex:
+            reraise(Error(ex))
+    except Error, ex:
+        ex.add("more")
+        reraise(ex)
+
+
+def main(sys_argv):
+    try:
+        inner(sys_argv)
+    except Error, ex:
+        ex.add("second")
+        print "STR:  " + str(ex)
+        print "REPR: " + repr(ex)
+        raise
+
+if __name__ == "__main__":
+    main(sys.argv)
