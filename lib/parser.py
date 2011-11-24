@@ -238,6 +238,7 @@ class BallotParser(object):
         Return a parsed line, or raise an Exception on failure.
 
         """
+        parsed_line = None
         try:
             parsed_line = self.parse_line(line)
             contest_id, voter_id, rank, choice = parsed_line
