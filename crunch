@@ -269,7 +269,7 @@ def utc_datetime_to_local_datetime(utc_datetime):
     utc_tuple = utc_datetime.utctimetuple()
     timestamp = calendar.timegm(utc_tuple)
     local_datetime = datetime.fromtimestamp(timestamp)
-    
+
     return local_datetime
 
 
@@ -302,7 +302,7 @@ def create_download_metadata(url, datetime_utc):
 def yaml_serialize(instance):
     """
     Serialize an object instance to a unicode YAML document.
-    
+
     """
     return yaml.dump(instance.__dict__,  encoding=None, default_flow_style=False)
 
@@ -310,7 +310,7 @@ def yaml_serialize(instance):
 def download_data(url, contest_dir):
     """
     Download and extract the election zip file.
-    
+
     """
     utc_now = datetime.utcnow()
 
@@ -323,7 +323,7 @@ def download_data(url, contest_dir):
     ensure_dir(download_dir)
 
     zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
-    
+
     _log.info("Downloading %s to %s..." % (url, zip_path))
     try:
         urllib.urlretrieve(url, zip_path)
@@ -356,7 +356,7 @@ def most_recent_download_dir(contest_dir):
     file_name = DOWNLOAD_DIRECTORY_PREFIX + "*"
     glob_path = os.path.join(contest_dir, file_name)
     paths = glob.glob(glob_path)
-    
+
     if not paths:
         raise Exception("Downloaded files not found in: %s" % contest_dir)
 
@@ -372,7 +372,7 @@ def get_path(dir_path, file_glob):
     """
     glob_path = os.path.join(dir_path, file_glob)
     paths = glob.glob(glob_path)
-    
+
     if len(paths) < 1:
         raise AssertionError("No path found matching: %s" % glob_path)
     if len(paths) > 1:
@@ -455,7 +455,7 @@ def main(sys_argv):
         parser.process_contest(ballot_path, winner)
 
         info_path = os.path.join(unzipped_dir, os.pardir, INFO_FILE_NAME)
-        
+
         download_dict = unserialize_yaml_file(info_path)
 
         download_metadata = DownloadMetadata()
