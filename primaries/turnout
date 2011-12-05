@@ -48,11 +48,14 @@ def write_csv(path, rows):
     Write a list of lists to a file.
 
     """
+    lines = []
+    for row in rows:
+        fields = [str(data) for data in row]
+        line = ",".join(fields)
+        lines.append(line)
+
     with open(path, "w") as f:
-        for row in rows:
-            line = [str(data) for data in row]
-            line = ",".join(line)
-            f.write(line)
+        f.write("\n".join(lines))
 
 
 def average(seq):
@@ -315,7 +318,7 @@ def create_sublist(nbhds, citywide_nbhd, general_dates):
 def create_rows(nbhds, spring_dates, general_dates):
     first_row = ["Neighborhood", "Spring Turnout", "November Turnout"]
 
-    rows = []
+    rows = [first_row]
     for nbhd in nbhds:
         row = [nbhd.name, nbhd.get_average_turnout(spring_dates), nbhd.get_average_turnout(general_dates)]
         rows.append(row)

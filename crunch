@@ -398,7 +398,7 @@ def get_data(election_label, contest_label, source, master_file_glob,
     contest_dir = os.path.join(election_dir, contest_label)
 
     if data_dir is not None:
-        #download_data(source, contest_dir)
+        download_data(source, contest_dir)
         download_dir = most_recent_download_dir(contest_dir)
 
         _log.info("Using most recent download directory: %s" % download_dir)
