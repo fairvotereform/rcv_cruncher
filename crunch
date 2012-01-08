@@ -21,6 +21,9 @@ import yaml
 from zipfile import ZipFile
 
 from lib.ballot_analyzer import BallotAnalyzer
+from lib.common import reraise
+from lib.common import Error
+from lib import downloading
 from lib.parser import MasterParser
 from lib.parser import BallotParser
 from lib.reporter import Reporter
@@ -324,15 +327,7 @@ def download_data(url, contest_dir):
 
     zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
 
-    _log.info("Downloading %s to %s..." % (url, zip_path))
-    try:
-        urllib.urlretrieve(url, zip_path)
-    except Exception, ex:
-        _log.error(ex)
-        _log.error("Error downloading url: %s" % url)
-        _log.info("Removing dir: %s" % download_dir)
-        os.rmdir(download_dir)
-        exit()
+    downloading.download(url, zip_path)
 
     unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
     zip_file = ZipFile(zip_path, 'r')
@@ -414,12 +409,12 @@ def main(sys_argv):
 
     args = sys_argv[1:]
 
-    path = args[0]
+    config_path = args[0]
     data_dir = args[1] if len(args) > 1 else None
 
     configure_logging(logging.DEBUG)
 
-    config = unserialize_yaml_file(path)
+    config = unserialize_yaml_file(config_path)
 
     election_label = config['election_label']
     election_name = config['election_name']
