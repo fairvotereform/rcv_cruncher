@@ -85,13 +85,25 @@ class DateAccess(object):
         self.spring_dates = spring_dates
         self.year_dict = years
 
-    def get_general(self):
+    def get_general(self, spring_dates):
         dates = []
-        for spring_date in self.spring_dates:
+        for spring_date in spring_dates:
             general = self.year_dict[spring_date][1]
             dates.append(general)
         return dates
 
+    def _get_spring(self, remainder):
+        dates = []
+        for spring_date in self.spring_dates:
+            if spring_date.year % 4 == remainder:
+                dates.append(spring_date)
+        return dates
+
+    def get_spring_presidential(self):
+        return self._get_spring(0)
+
+    def get_spring_non_presidential(self):
+        return self._get_spring(2)
 
 class Turnout(object):
 
@@ -140,6 +152,18 @@ class Neighborhood(object):
     def get_average_voter_fall(self, spring_dates, date_access):
         falls = [get_voter_fall(self, date, date_access) for date in spring_dates]
         return average(falls)
+
+    def display_average(self, label, da, spring_dates):
+        print "PRIMARY      PRIMARY  GENERAL  DROP"
+        print "------------------------------------"
+        percents = [self.get_average_turnout(spring_dates),
+                    self.get_average_turnout(da.get_general(spring_dates)),
+                    self.get_average_fall(spring_dates, da)]
+        percents = [format_percent(percent) for percent in percents]
+        #                "2000-03-07"
+        s = "%s   %s" % (label.ljust(10), "    ".join(percents))
+        print s
+
 
     def display(self, date_access, spring_dates):
 
@@ -340,17 +364,27 @@ def main(sys_argv):
 
     header_line = lines[1]
     dates = parse_dates(header_line)
-    nbhds, citywide_nbhd = parse_neighborhoods(lines, dates)
+    nbhds, citywide = parse_neighborhoods(lines, dates)
 
     date_access = DateAccess(dates)
-    general_dates = date_access.get_general()
+    da = date_access
     spring_dates = date_access.spring_dates
+    general_dates = date_access.get_general(spring_dates)
+    spring_pres = da.get_spring_presidential()
+    spring_non_pres = da.get_spring_non_presidential()
 
-    nbhds_sublist = create_sublist(nbhds, citywide_nbhd, general_dates)
+    nbhds_sublist = create_sublist(nbhds, citywide, general_dates)
 
-    rows = create_rows(nbhds_sublist, spring_dates, general_dates)
+    #rows = create_rows(nbhds_sublist, spring_dates, general_dates)
 
-    write_csv(output_path, rows)
+    print spring_pres
+    print spring_non_pres
+
+    citywide.display_average("PRES", da, spring_pres)
+    citywide.display_average("NON-PRES", da, spring_non_pres)
+    citywide.display_average("ALL", da, spring_dates)
+    #write_csv(output_path, rows)
+
     exit()
 
     general_func = lambda nbhd: nbhd.get_average_turnout(general_dates)
