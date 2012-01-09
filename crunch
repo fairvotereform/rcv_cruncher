@@ -28,9 +28,6 @@ _log = logging.getLogger(__name__)
 
 ENCODING_OUTPUT_FILE = 'utf-8'
 
-UNDERVOTE = -1
-OVERVOTE  = -2
-
 STATS_HEADER = """\
 RCV RESULTS KEY
 
@@ -102,7 +99,7 @@ def configure_logging(logging_level=None):
 
 class BallotHandler(object):
 
-    def __init__(self, contest, stats):
+    def __init__(self, contest, stats, undervote, overvote):
         """
         Construct an instance.
 
@@ -112,7 +109,7 @@ class BallotHandler(object):
         finalists = contest.finalists
         non_winning_finalists = contest.non_winning_finalists
 
-        self.analyzer = BallotAnalyzer(undervote=UNDERVOTE, overvote=OVERVOTE)
+        self.analyzer = BallotAnalyzer(undervote=undervote, overvote=overvote)
         self.stats = stats
 
         self.winner = winner
@@ -133,7 +130,7 @@ class BallotHandler(object):
 
         first_round = analyzer.get_first_round(ballot)
 
-        if first_round == UNDERVOTE:
+        if first_round == self.analyzer.undervote:
             stats.undervotes += 1
             return
 
@@ -155,7 +152,7 @@ class BallotHandler(object):
         if has_overvote or has_duplicate or has_skipped:
             stats.irregular += 1
 
-        if first_round == OVERVOTE:
+        if first_round == self.analyzer.overvote:
             stats.first_round_overvotes += 1
             # Return since all remaining analysis needs effective choices.
             return
@@ -177,7 +174,7 @@ class BallotHandler(object):
             stats.ranked_finalist[first_round] += 1
         else:
             # Then no finalist is validly ranked on the ballot.
-            if OVERVOTE in ballot:
+            if self.analyzer.overvote in ballot:
                 stats.exhausted_by_overvote += 1
         if analyzer.did_sweep(ballot, first_round):
             stats.did_sweep[first_round] += 1
@@ -228,11 +225,12 @@ def main(sys_argv):
         contest = master_parser.parse(master_path)
 
         stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
-        ballot_handler = BallotHandler(contest, stats)
+        ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
+            overvote=input_format.overvote)
 
         # Parsing the ballot file is faster without specifying an encoding.
         # The ballot file is just integers, so an encoding is not necessary.
-        parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
+        parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
         unzipped_dir = os.path.dirname(master_path)

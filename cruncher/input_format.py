@@ -11,12 +11,13 @@ from zipfile import ZipFile
 
 from . import common
 from .common import ensure_dir
+from .common import reraise
 from .common import write_to_file
+from .common import Error
 from . import downloading
 
 
 _log = logging.getLogger(__name__)
-
 
 DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
@@ -158,6 +159,10 @@ class SF2008Format(object):
 
     def __init__(self, config, output_encoding=None):
 
+        self.expected_contest_id = None
+        self.undervote = -1
+        self.overvote  = -2
+
         self.ballot_file_glob = config['ballot_file_glob']
         self.election_source = config['source']
         self.master_file_glob = config['master_file_glob']
@@ -232,5 +237,100 @@ class SF2008Format(object):
             if record_type == "Candidate":
                 candidate_dict[record_id] = description
 
+        self.expected_contest_id = contest_id
+
         return contest_name, candidate_dict
+
+    def read_ballot(self, f, line, line_number):
+        """
+        Read and return an RCV ballot.
+
+        Arguments:
+
+          parsed_line: a tuple that is the first line of an RCV ballot.  The
+            caller is responsible for confirming that the contest ID is correct.
+
+          f: a file handle.
+
+        Returns:
+
+          a 3-tuple of integers representing the choices on an RCV ballot.
+          Each integer is a candidate ID, -1 for undervote, or -2 for overvote.
+
+        """
+        try:
+            parsed_line = self._parse_ballot_line(line, 1)
+
+            try:
+                contest_id, voter_id, rank, choice = parsed_line
+
+                choices = [choice]
+
+                line_number += 1
+                line = f.readline()
+                parsed_line = self._parse_ballot_line(line, 2, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
+
+                line_number += 1
+                line = f.readline()
+                parsed_line = self._parse_ballot_line(line, 3, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
+            except Error:
+                raise
+            except Exception, ex:
+                reraise(Error(ex))
+        except Error, err:
+            err.add("Ballot line number: %d" % line_number)
+            reraise(err)
+
+        return choices, line_number
+
+    def _parse_ballot_line(self, line, expected_rank, expected_voter_id=None):
+        """
+        Return a parsed line, or raise an Exception on failure.
+
+        """
+        parsed_line = None
+        try:
+            parsed_line = self.parse_line(line)
+            contest_id, voter_id, rank, choice = parsed_line
+
+            if contest_id != self.expected_contest_id:
+                raise Exception("Expected contest id %d but got %d." % (expected_contest_id, contest_id))
+            if expected_voter_id is not None and voter_id != expected_voter_id:
+                raise Exception("Expected voter id %d but got %d." % (expected_voter_id, voter_id))
+            if rank != expected_rank:
+                raise Exception("Expected rank %d but got %d." % (expected_rank, rank))
+        except Exception, ex:
+            s = "Failed parsing ballot line: %s" % repr(line)
+            if parsed_line is not None:
+                s += "\nParsed line: %s" % repr(parsed_line)
+            reraise(Error(ex, s))
+
+        return parsed_line
+
+    def parse_line(self, line):
+        """
+        Return a parsed line as a tuple.
+
+        A sample input--
+
+        000000700001712400000090020000331001000012600
+
+        The corresponding return value--
+
+
+
+        """
+        # TODO: consider having this function return an object.
+        contest_id = int(line[0:7])
+        voter_id = int(line[7:16])
+        rank = int(line[33:36])
+        candidate_id = int(line[36:43])
+        undervote = self.undervote if int(line[44]) else 0
+        overvote = self.overvote if int(line[43]) else 0
+
+        choice = candidate_id or undervote or overvote
+
+        return (contest_id, voter_id, rank, choice)
 
