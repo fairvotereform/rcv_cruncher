@@ -171,11 +171,11 @@ class Reporter(object):
 
         """
         s = "%s %s" % (self.label_string(label), self.value_string(value))
-        
+
         if total is not None:
             percent_string = self.percent_string(value, total)
             total_label_string = ("of %s" % total_label) if total_label is not None else ""
-            
+
             s += " (%s %s)" % (percent_string, total_label_string)
 
         if description is not None:
@@ -188,7 +188,7 @@ class Reporter(object):
         Return a line of the form--
 
         TONY HALL .....................   6590 +   4256 +   3911 =  14757    3.6% +   2.3% +   2.1% =   8.1%
-        
+
         """
         values = list(values)  # Some callers pass a tuple.
 
@@ -208,7 +208,7 @@ class Reporter(object):
 
         value_strings = [self.value_string(value) for value in values]
         percent_strings = [self.percent_string(value, total) for value in values]
-        
+
         if leave_off_total_percent:
             # Then the 100% doesn't say more.
             percent_strings.pop()
@@ -435,7 +435,7 @@ class Reporter(object):
         for data in condorcet_data:
             # BOB  60% (600 / 1000 = 20% of first-round continuing)
             percent_value, win_count, total_count, name = data
-            
+
             label_string = self.label_string(name)
             percent_string = self.percent_string(win_count, total_count)
             percent_of_voted_string = self.percent_string(total_count, stats.first_round_continuing)
@@ -456,7 +456,7 @@ class Reporter(object):
             true_exhaust_data.append((stats.truly_exhausted[candidate], name))
         true_exhaust_data.sort()
         true_exhaust_data.reverse()
-        
+
         for data in true_exhaust_data:
             self.write_value(data[1], data[0], total=stats.truly_exhausted_total)
 
@@ -467,7 +467,7 @@ class Reporter(object):
         Return a string to display a datetime and timezone.
 
         """
-        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tzname) 
+        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tzname)
 
     def format_metadata_datetime(self, metadata):
         """
@@ -521,7 +521,7 @@ class Reporter(object):
             }
 
             url = metadata.url
-            datetime_string = self.format_metadata_datetime(metadata)
+            datetime_string = self.format_metadata_datetime(metadata) if url else ''
 
             contest_report = self.make_contest(info)
             contest_dict = {'label': contest_label,
@@ -538,7 +538,7 @@ class Reporter(object):
         generated_datetime_string = self.format_datetime_tzname(generated_datetime, generated_tzname)
 
         metadata = self.get_oldest_contest_metadata()
-        data_datetime_string = self.format_metadata_datetime(metadata)
+        data_datetime_string = self.format_metadata_datetime(metadata) if metadata.url else ''
 
         values = {'file_encoding': ENCODING_TEMPLATE_FILE,
                   'election_name': self.election_name,

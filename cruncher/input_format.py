@@ -116,6 +116,9 @@ class RCVCalcFormat(object):
 
         self.input_dir = config['input_dir']
 
+    def get_download_metadata(self, master_path):
+        return downloading.DownloadMetadata()
+
     def get_data(self, election_label, contest_label, contest_config, data_dir):
         """
         Return master and ballot paths.
@@ -193,6 +196,16 @@ class SF2008Format(object):
         self.ballot_file_glob = config['ballot_file_glob']
         self.election_source = config['source']
         self.master_file_glob = config['master_file_glob']
+
+    def get_download_metadata(self, master_path):
+        unzipped_dir = os.path.dirname(master_path)
+        info_path = os.path.join(unzipped_dir, os.pardir, common.INFO_FILE_NAME)
+        download_dict = common.unserialize_yaml_file(info_path)
+
+        download_metadata = downloading.DownloadMetadata()
+        download_metadata.__dict__ = download_dict
+
+        return download_metadata
 
     def get_data(self, election_label, contest_label, contest_config, data_dir):
         """

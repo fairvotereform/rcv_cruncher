@@ -11,24 +11,23 @@ contests:
    input_data: D02
    winner: "Michela Alioto-pier"
    finalists:
-    - "Vilma Guinto Peoro"
- - label: D3
-   input_data: D02
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D3_BallotImageFinal.zip
-   winner: DAVID CHIU
-   finalists:
-    - "JOSEPH ALIOTO, JR."
  - label: D4
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D4_BallotImageFinal.zip
-   winner: CARMEN CHU
+   input_data: D04
+   winner: "Ed Jew"
    finalists:
- - label: D9
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D9_BallotImageFinal.zip
-   winner: DAVID CAMPOS
+    - "Ron Dudum"
+ - label: D6
+   input_data: D06
+   winner: "Chris Daly"
    finalists:
-    - MARK SANCHEZ
- - label: D11
-   url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D11_BallotImageFinal.zip
-   winner: JOHN AVALOS
+    - "Rob Black"
+    - "Matt Drake"
+    - "Davy Jones"
+ - label: D8
+   input_data: D08
+   winner: "Bevan Dufty"
    finalists:
-    - AHSHA SAFAI
+ - label: D10
+   input_data: D10
+   winner: "Sophie Maxwell"
+   finalists:

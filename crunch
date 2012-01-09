@@ -233,13 +233,7 @@ def main(sys_argv):
         parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
-        unzipped_dir = os.path.dirname(master_path)
-        info_path = os.path.join(unzipped_dir, os.pardir, common.INFO_FILE_NAME)
-
-        download_dict = common.unserialize_yaml_file(info_path)
-
-        download_metadata = downloading.DownloadMetadata()
-        download_metadata.__dict__ = download_dict
+        download_metadata = input_format.get_download_metadata(master_path)
 
         reporter.add_contest(contest_label, contest, stats, download_metadata=download_metadata)
 
