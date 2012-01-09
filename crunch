@@ -8,21 +8,13 @@ TODO: complete this.
 
 """
 
-import calendar
-import codecs
 from datetime import datetime
-import glob
 import logging
 import os
 import sys
-import time
-import urllib
-import yaml
-from zipfile import ZipFile
 
 from cruncher.ballot_analyzer import BallotAnalyzer
-from cruncher.common import reraise
-from cruncher.common import Error
+from cruncher import common
 from cruncher import downloading
 from cruncher.input_format import parse_input_format
 from cruncher.parser import MasterParser
@@ -34,13 +26,8 @@ from cruncher.stats import Stats
 _log = logging.getLogger(__name__)
 
 
-ENCODING_INTERNAL = 'utf-8'
 ENCODING_OUTPUT_FILE = 'utf-8'
 ENCODING_DATA_FILES  = 'utf-8'
-
-DOWNLOAD_DIRECTORY_PREFIX = 'download_'
-INFO_FILE_NAME = 'INFO.yaml'
-UNZIP_DIRECTORY_NAME = 'download'
 
 UNDERVOTE = -1
 OVERVOTE  = -2
@@ -112,34 +99,6 @@ def configure_logging(logging_level=None):
     logger.addHandler(handler)
 
     _log.debug("Debug logging enabled.")
-
-
-class DownloadMetadata(object):
-
-    def __init__(self):
-        self.url = ""
-        self.iso_datetime_utc = ""
-        self.iso_datetime_local = ""
-        self.local_tzname = ""
-
-    def _iso_to_datetime(self, iso_string):
-        return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S")
-
-    @property
-    def datetime_utc(self):
-        return self._iso_to_datetime(self.iso_datetime_utc)
-
-    @datetime_utc.setter
-    def datetime_utc(self, value):
-        self.iso_datetime_utc = value.isoformat()
-
-    @property
-    def datetime_local(self):
-        return self._iso_to_datetime(self.iso_datetime_local)
-
-    @datetime_local.setter
-    def datetime_local(self, value):
-        self.iso_datetime_local = value.isoformat()
 
 
 class BallotHandler(object):
@@ -238,172 +197,6 @@ class BallotHandler(object):
                 stats.add_condorcet_winner(non_winner, winner)
 
 
-def unserialize_yaml_file(path):
-    """
-    Deserialize a value from disk.
-
-    """
-    with codecs.open(path, "r", encoding=ENCODING_INTERNAL) as stream:
-        data = yaml.load(stream)
-
-    return data
-
-
-def ensure_dir(path):
-    if os.path.isdir(path):
-        return
-    _log.info("Creating directory at: %s" % path)
-    os.mkdir(path)
-
-
-def write_to_file(s, path):
-    """
-    Write a unicode string to a file.
-
-    """
-    if not isinstance(s, unicode):
-        raise Exception("The argument is not a unicode string.")
-
-    _log.info("Creating file at: %s" % path)
-    with codecs.open(path, "w", encoding=ENCODING_OUTPUT_FILE) as f:
-        f.write(s)
-
-
-def utc_datetime_to_local_datetime(utc_datetime):
-    utc_tuple = utc_datetime.utctimetuple()
-    timestamp = calendar.timegm(utc_tuple)
-    local_datetime = datetime.fromtimestamp(timestamp)
-
-    return local_datetime
-
-
-def utc_datetime_to_local_datetime_tzname(utc_datetime):
-    local_datetime = utc_datetime_to_local_datetime(utc_datetime)
-    local_tzname = "/".join(time.tzname) if time.tzname else ""
-
-    return local_datetime, local_tzname
-
-
-def create_download_metadata(url, datetime_utc):
-    """
-    Return the dictionary of metadata about the election data downloaded.
-
-    """
-    # Stripping microseconds simplifies subsequent formatting code.
-    datetime_utc = datetime_utc.replace(microsecond=0)
-
-    datetime_local, local_tzname = utc_datetime_to_local_datetime_tzname(datetime_utc)
-
-    data = DownloadMetadata()
-    data.url = url
-    data.datetime_utc = datetime_utc
-    data.datetime_local = datetime_local
-    data.local_tzname = local_tzname
-
-    return data
-
-
-def yaml_serialize(instance):
-    """
-    Serialize an object instance to a unicode YAML document.
-
-    """
-    return yaml.dump(instance.__dict__,  encoding=None, default_flow_style=False)
-
-
-def download_data(url, contest_dir):
-    """
-    Download and extract the election zip file.
-
-    """
-    utc_now = datetime.utcnow()
-
-    ensure_dir(contest_dir)
-    readme_path = os.path.join(contest_dir, 'README.txt')
-    write_to_file(u"This directory should be empty except for auto-downloaded directories.", readme_path)
-
-    download_dir_name = DOWNLOAD_DIRECTORY_PREFIX + utc_now.strftime("%Y%m%d_%H%M%S")
-    download_dir = os.path.join(contest_dir, download_dir_name)
-    ensure_dir(download_dir)
-
-    zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
-
-    downloading.download(url, zip_path)
-
-    unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
-    zip_file = ZipFile(zip_path, 'r')
-    zip_file.extractall(unzip_dir)
-
-    metadata = create_download_metadata(url, utc_now)
-
-    text = """\
-# This file is auto-generated.  Do not modify this file.
-# Date time strings are in ISO 8601 format YYYY-MM-DDTHH:MM:SS.
-"""
-
-    text += yaml_serialize(metadata)
-
-    info_path = os.path.join(download_dir, INFO_FILE_NAME)
-    write_to_file(text, info_path)
-
-
-def most_recent_download_dir(contest_dir):
-
-    file_name = DOWNLOAD_DIRECTORY_PREFIX + "*"
-    glob_path = os.path.join(contest_dir, file_name)
-    paths = glob.glob(glob_path)
-
-    if not paths:
-        raise Exception("Downloaded files not found in: %s" % contest_dir)
-
-    paths.sort()
-
-    return paths[-1]
-
-
-def get_path(dir_path, file_glob):
-    """
-    Return the path in dir_path matching file_glob.
-
-    """
-    glob_path = os.path.join(dir_path, file_glob)
-    paths = glob.glob(glob_path)
-
-    if len(paths) < 1:
-        raise AssertionError("No path found matching: %s" % glob_path)
-    if len(paths) > 1:
-        raise AssertionError("More than one path found matching: %s" % glob_path)
-
-    return paths[0]
-
-
-def get_data(election_label, contest_label, source, master_file_glob,
-             ballot_file_glob, data_dir):
-    """
-    Download data if necessary, and return master and ballot paths.
-
-    """
-    if data_dir is None:
-        raise Exception("Need to provide data directory.")
-
-    ensure_dir(data_dir)
-
-    election_dir = os.path.join(data_dir, election_label)
-    ensure_dir(election_dir)
-
-    contest_dir = os.path.join(election_dir, contest_label)
-
-    download_data(source, contest_dir)
-    download_dir = most_recent_download_dir(contest_dir)
-
-    _log.info("Using most recent download directory: %s" % download_dir)
-
-    unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
-    master_path = get_path(unzip_dir, master_file_glob)
-    ballot_path = get_path(unzip_dir, ballot_file_glob)
-
-    return master_path, ballot_path
-
 def main(sys_argv):
     start_time = datetime.now()
 
@@ -414,7 +207,7 @@ def main(sys_argv):
 
     configure_logging(logging.DEBUG)
 
-    config = unserialize_yaml_file(config_path)
+    config = common.unserialize_yaml_file(config_path)
 
     election_label = config['election_label']
     election_name = config['election_name']
@@ -431,9 +224,8 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        source = input_format.election_source + contest_source
-        master_path, ballot_path = get_data(election_label, contest_label, source,
-            input_format.master_file_glob, input_format.ballot_file_glob, data_dir)
+        master_path, ballot_path = input_format.get_data(election_label, contest_label,
+            contest_source, data_dir)
 
         unzipped_dir = os.path.dirname(master_path)
 
@@ -448,16 +240,16 @@ def main(sys_argv):
         parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
-        info_path = os.path.join(unzipped_dir, os.pardir, INFO_FILE_NAME)
+        info_path = os.path.join(unzipped_dir, os.pardir, common.INFO_FILE_NAME)
 
-        download_dict = unserialize_yaml_file(info_path)
+        download_dict = common.unserialize_yaml_file(info_path)
 
-        download_metadata = DownloadMetadata()
+        download_metadata = downloading.DownloadMetadata()
         download_metadata.__dict__ = download_dict
 
         reporter.add_contest(contest_label, contest, stats, download_metadata=download_metadata)
 
-    datetime_local, local_tzname = utc_datetime_to_local_datetime_tzname(utc_now)
+    datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)
 
     try:
@@ -467,7 +259,7 @@ def main(sys_argv):
         _log.warn("Error printing report to console (probably because of special characters.")
 
     output_path = "rcv_stats_%s.html" % election_label
-    write_to_file(report, output_path)
+    common.write_to_file(report, output_path)
 
     print "Completed in: %s" % (datetime.now() - start_time)
 
