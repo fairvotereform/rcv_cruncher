@@ -3,9 +3,11 @@
 #
 election_label: SF_2006-11-07
 election_name: "San Francisco November 7, 2006 Consolidated General Election"
-source: data/RcvCalcInput/2006/
-master_file_glob: "*Master*.txt"
-ballot_file_glob: "*Ballot_*.txt"
+input_format:
+  type: old
+  source: data/RcvCalcInput/2006/
+  master_file_glob: "*Master*.txt"
+  ballot_file_glob: "*Ballot_*.txt"
 contests:
  - label: D2
    source: D02

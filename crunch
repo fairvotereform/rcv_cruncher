@@ -24,6 +24,7 @@ from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher.common import reraise
 from cruncher.common import Error
 from cruncher import downloading
+from cruncher.input_format import parse_input_format
 from cruncher.parser import MasterParser
 from cruncher.parser import BallotParser
 from cruncher.reporter import Reporter
@@ -417,9 +418,8 @@ def main(sys_argv):
 
     election_label = config['election_label']
     election_name = config['election_name']
-    election_source = config['source']
-    master_file_glob = config['master_file_glob']
-    ballot_file_glob = config['ballot_file_glob']
+
+    input_format = parse_input_format(config['input_format'])
 
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
@@ -431,9 +431,9 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        source = election_source + contest_source
+        source = input_format.election_source + contest_source
         master_path, ballot_path = get_data(election_label, contest_label, source,
-            master_file_glob, ballot_file_glob, data_dir)
+            input_format.master_file_glob, input_format.ballot_file_glob, data_dir)
 
         unzipped_dir = os.path.dirname(master_path)
 
