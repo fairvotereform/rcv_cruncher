@@ -13,10 +13,13 @@ from . import common
 from .common import ensure_dir
 from .common import write_to_file
 from . import downloading
+from .parser import MasterParser
 
 
 _log = logging.getLogger(__name__)
 
+
+ENCODING_DATA_FILES  = 'utf-8'
 
 DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
@@ -130,4 +133,9 @@ class StandardFormat(object):
 
         return master_path, ballot_path
 
+    def parse_contest(self, master_path, winner, finalists):
+        master_parser = MasterParser(ENCODING_DATA_FILES, winner, final_candidates=finalists)
+        contest = master_parser.parse(master_path)
+
+        return contest
 

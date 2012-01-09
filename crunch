@@ -17,7 +17,6 @@ from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher import common
 from cruncher import downloading
 from cruncher.input_format import parse_input_format
-from cruncher.parser import MasterParser
 from cruncher.parser import BallotParser
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
@@ -27,7 +26,6 @@ _log = logging.getLogger(__name__)
 
 
 ENCODING_OUTPUT_FILE = 'utf-8'
-ENCODING_DATA_FILES  = 'utf-8'
 
 UNDERVOTE = -1
 OVERVOTE  = -2
@@ -224,13 +222,10 @@ def main(sys_argv):
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        master_path, ballot_path = input_format.get_data(election_label, contest_label,
-            contest_source, data_dir)
+        master_path, ballot_path = input_format.get_data(election_label,
+            contest_label, contest_source, data_dir)
 
-        unzipped_dir = os.path.dirname(master_path)
-
-        master_parser = MasterParser(ENCODING_DATA_FILES, winner, final_candidates=finalists)
-        contest = master_parser.parse(master_path)
+        contest = input_format.parse_contest(master_path, winner, finalists)
 
         stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
         ballot_handler = BallotHandler(contest, stats)
@@ -240,6 +235,7 @@ def main(sys_argv):
         parser = BallotParser(undervote=UNDERVOTE, overvote=OVERVOTE, on_ballot=ballot_handler.on_ballot)
         parser.process_contest(ballot_path, winner)
 
+        unzipped_dir = os.path.dirname(master_path)
         info_path = os.path.join(unzipped_dir, os.pardir, common.INFO_FILE_NAME)
 
         download_dict = common.unserialize_yaml_file(info_path)
