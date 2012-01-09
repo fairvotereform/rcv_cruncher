@@ -23,6 +23,11 @@ contests:
     - "Rob Black"
     - "Matt Drake"
     - "Davy Jones"
+ - label: D6X
+   input_data: D06
+   winner: "Chris Daly"
+   finalists:
+    - "Rob Black"
  - label: D8
    input_data: D08
    winner: "Bevan Dufty"

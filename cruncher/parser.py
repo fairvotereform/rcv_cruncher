@@ -23,6 +23,17 @@ class Contest(object):
     def __init__(self, name, candidate_dict, winner_id, other_finalist_ids):
 
         candidate_ids = candidate_dict.keys()
+
+        if not other_finalist_ids:
+            # Then all candidates are finalists.
+            other_finalist_ids = candidate_ids
+            elimination_rounds = False
+        else:
+            elimination_rounds = True
+
+        # Make sure the winner is not a finalist to avoid duplicates.
+        other_finalist_ids = list(set(other_finalist_ids) - set([winner_id]))
+
         finalists = [winner_id] + other_finalist_ids
 
         self.name = name
@@ -34,13 +45,18 @@ class Contest(object):
         self.non_winning_finalists = other_finalist_ids
         self.finalists = finalists
         self.non_finalist_ids = list(set(candidate_ids) - set(finalists))
+        self.elimination_rounds = elimination_rounds
 
 
 class MasterParser(object):
 
-    # TODO: clean up case of final_candidates None.
-    #       This corresponds to all candidates being final candidates.
-    def __init__(self, input_format, winning_candidate, final_candidates=None):
+    def __init__(self, input_format, winning_candidate, final_candidates):
+        """
+        Args:
+
+          final_candidates: the empty list means all candidates (no elimination).
+
+        """
         self.encoding = ENCODING_DATA_FILES
         self.final_candidates = final_candidates
         self.input_format = input_format
@@ -64,16 +80,10 @@ class MasterParser(object):
 
         winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
 
-        # TODO: make this more elegant.  Eliminate the need for this if block.
-        if self.final_candidates is None:
-            candidate_ids = candidate_dict.keys()
-            # Make sure the winner is not a finalist to avoid duplicates.
-            finalist_ids = list(set(candidate_ids) - set([winner_id]))
-        else:
-            finalist_ids = []
-            for candidate in self.final_candidates:
-                finalist_id = self.find_candidate_id(candidate_dict, candidate)
-                finalist_ids.append(finalist_id)
+        finalist_ids = []
+        for candidate in self.final_candidates:
+            finalist_id = self.find_candidate_id(candidate_dict, candidate)
+            finalist_ids.append(finalist_id)
 
         contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
 

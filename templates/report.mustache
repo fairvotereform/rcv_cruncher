@@ -15,14 +15,14 @@ Table of Contents
 =================
 
 {{#toc_item}}
-<a href='#{{label}}'>({{index}}) {{text}}</a><br/>
+<a href='#{{label}}'>({{index}}) {{text}}{{^elimination_rounds}} **DECIDED IN ROUND 1{{/elimination_rounds}}</a><br/>
 {{/toc_item}}
 
 ********************************************************************************
 ********************************************************************************
 
 {{#contest}}
-<a name='{{label}}'>{{title}}</name>
+<a name='{{label}}'>{{title}}{{^elimination_rounds}} **DECIDED IN ROUND 1{{/elimination_rounds}}</name>
 {{line}}
 
 {{body}}

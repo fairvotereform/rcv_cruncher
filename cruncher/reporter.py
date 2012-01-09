@@ -512,12 +512,16 @@ class Reporter(object):
 
             contest_name = contest.name
 
+            if contest.elimination_rounds and len(contest.finalists) > 2:
+                contest_name += " (%d finalists)" % len(contest.finalists)
+
             title = contest_name + " RCV Stats"
             header_line = self.make_header_line(title, "=")
 
             toc_dict = {'label': contest_label,
                         'index': index,
-                        'text': contest_name
+                        'text': contest_name,
+                        'elimination_rounds': contest.elimination_rounds,
             }
 
             url = metadata.url
@@ -530,6 +534,7 @@ class Reporter(object):
                             'body': contest_report,
                             'download_url': url,
                             'download_datetime': datetime_string,
+                            'elimination_rounds': contest.elimination_rounds,
             }
 
             toc_dicts.append(toc_dict)

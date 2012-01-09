@@ -217,7 +217,7 @@ def main(sys_argv):
 
         contest_label = contest_config['label']
         winner = contest_config['winner']
-        finalists = contest_config['finalists'] or None
+        finalists = contest_config['finalists'] or []
 
         master_path, ballot_path = input_format.get_data(election_label, contest_label, contest_config, data_dir)
 
