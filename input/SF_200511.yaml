@@ -1,0 +1,18 @@
+#
+# This file is UTF-8 encoded.
+#
+election_label: SF_2005-11-08
+election_name: "San Francisco November 8, 2005 Consolidated General Election"
+input_format:
+  type: rcv-calc
+  input_dir: data/RcvCalcInput/2005/
+contests:
+ - label: Assessor-Recorder
+   input_data: AR
+   winner: "Phil Ting"
+   finalists:
+    - "Gerardo Sandoval"
+ - label: Treasurer
+   input_data: TR
+   winner: "Jose Cisneros"
+   finalists:

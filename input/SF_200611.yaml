@@ -9,7 +9,7 @@ input_format:
 contests:
  - label: D2
    input_data: D02
-   winner: "Michela Alioto-pier"
+   winner: "Michela Alioto-Pier"
    finalists:
  - label: D4
    input_data: D04

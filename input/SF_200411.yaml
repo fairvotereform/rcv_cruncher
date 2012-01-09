@@ -1,0 +1,47 @@
+#
+# This file is UTF-8 encoded.
+#
+election_label: SF_2004-11-02
+election_name: "San Francisco November 2, 2004 Consolidated General Election"
+input_format:
+  type: rcv-calc
+  input_dir: data/RcvCalcInput/2004/
+contests:
+ - label: D1
+   input_data: D01
+   winner: "Jake McGoldrick"
+   finalists:
+    - "Lillian Sing"
+ - label: D2
+   input_data: D02
+   winner: "Michela Alioto-Pier"
+   finalists:
+ - label: D3
+   input_data: D03
+   winner: "Aaron Peskin"
+   finalists:
+ - label: D5
+   input_data: D05
+   winner: "Ross Mirkarimi"
+   finalists:
+    - "Robert Haaland"
+    - "Lisa Feldstein"
+ - label: D5X
+   input_data: D05
+   winner: "Ross Mirkarimi"
+   finalists:
+    - "Robert Haaland"
+ - label: D7
+   input_data: D07
+   winner: "Sean R. Elsbernd"
+   finalists:
+    - "Christine Linnenbach"
+ - label: D9
+   input_data: D09
+   winner: "Tom Ammiano"
+   finalists:
+ - label: D11
+   input_data: D11
+   winner: "Gerardo Sandoval"
+   finalists:
+    - "Myrna Viray Lim"
