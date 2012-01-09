@@ -18,6 +18,7 @@ from cruncher import common
 from cruncher import downloading
 from cruncher.input_format import parse_input_format
 from cruncher.parser import BallotParser
+from cruncher.parser import MasterParser
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
 
@@ -217,15 +218,14 @@ def main(sys_argv):
 
     for contest_config in config['contests']:
 
-        contest_source = contest_config['source']
         contest_label = contest_config['label']
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or None
 
-        master_path, ballot_path = input_format.get_data(election_label,
-            contest_label, contest_source, data_dir)
+        master_path, ballot_path = input_format.get_data(election_label, contest_label, contest_config, data_dir)
 
-        contest = input_format.parse_contest(master_path, winner, finalists)
+        master_parser = MasterParser(input_format, winner, final_candidates=finalists)
+        contest = master_parser.parse(master_path)
 
         stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
         ballot_handler = BallotHandler(contest, stats)

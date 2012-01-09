@@ -4,17 +4,16 @@
 election_label: SF_2006-11-07
 election_name: "San Francisco November 7, 2006 Consolidated General Election"
 input_format:
-  type: old
-  source: data/RcvCalcInput/2006/
-  master_file_glob: "*Master*.txt"
-  ballot_file_glob: "*Ballot_*.txt"
+  type: rcv-calc
+  input_dir: data/RcvCalcInput/2006/
 contests:
  - label: D2
-   source: D02
-   winner: ERIC MAR
+   input_data: D02
+   winner: "Michela Alioto-pier"
    finalists:
-    - SUE LEE
+    - "Vilma Guinto Peoro"
  - label: D3
+   input_data: D02
    url: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/D3_BallotImageFinal.zip
    winner: DAVID CHIU
    finalists:

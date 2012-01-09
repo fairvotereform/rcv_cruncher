@@ -15,14 +15,16 @@ from .common import Error
 _log = logging.getLogger(__name__)
 
 
+ENCODING_DATA_FILES  = 'utf-8'
+
+
 class Contest(object):
 
-    def __init__(self, name, id, candidate_dict, winner_id, other_finalist_ids):
+    def __init__(self, name, candidate_dict, winner_id, other_finalist_ids):
 
         candidate_ids = candidate_dict.keys()
         finalists = [winner_id] + other_finalist_ids
 
-        self.id = id
         self.name = name
         self.winner_id = winner_id
         self.candidate_dict = candidate_dict
@@ -38,10 +40,11 @@ class MasterParser(object):
 
     # TODO: clean up case of final_candidates None.
     #       This corresponds to all candidates being final candidates.
-    def __init__(self, encoding, winning_candidate, final_candidates=None):
-        self.encoding = encoding
-        self.winning_candidate = winning_candidate
+    def __init__(self, input_format, winning_candidate, final_candidates=None):
+        self.encoding = ENCODING_DATA_FILES
         self.final_candidates = final_candidates
+        self.input_format = input_format
+        self.winning_candidate = winning_candidate
 
     def parse(self, path):
         _log.info("Reading master file: %s" % path)
@@ -57,22 +60,7 @@ class MasterParser(object):
         raise Error("Candidate %s not found in dictionary." % name_to_find)
 
     def read_master_file(self, f):
-        candidate_dict = {}
-
-        while True:
-            line = f.readline()
-            if not line:
-                break
-
-            record_type, record_id, description = self.parse_master_line(line)
-
-            if record_type == "Contest":
-                contest_id = record_id
-                contest_name = description
-                continue
-
-            if record_type == "Candidate":
-                candidate_dict[record_id] = description
+        contest_name, candidate_dict = self.input_format.parse_contest(f)
 
         winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
 
@@ -87,26 +75,9 @@ class MasterParser(object):
                 finalist_id = self.find_candidate_id(candidate_dict, candidate)
                 finalist_ids.append(finalist_id)
 
-        contest = Contest(contest_name, contest_id, candidate_dict, winner_id, finalist_ids)
+        contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
 
         return contest
-
-    def parse_master_line(self, line):
-        """
-        Parse the line, and return a tuple.
-
-        A sample line--
-
-        "Candidate 0000120JANET REILLY                                      0000001000000700"
-
-        """
-        # We only care about the first three fields: Record_Type, Id, and Description.
-        record_type = line[0:10].strip()
-        id = int(line[10:17])
-        description = line[17:67].strip()
-
-        return record_type, id, description
-
 
 
 class BallotParser(object):

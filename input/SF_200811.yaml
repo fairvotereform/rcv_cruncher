@@ -4,6 +4,7 @@
 election_label: SF_2008-11-04
 election_name: "San Francisco November 4, 2008 Consolidated Presidential General Election"
 input_format:
+  type: sf-2008
   source: http://www.sfgov2.org/ftp/uploadedfiles/elections/ElectionsArchives/2008/november/
   master_file_glob: "*Master*.txt"
   ballot_file_glob: "*Ballot_*.txt"
