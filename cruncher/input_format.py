@@ -111,6 +111,9 @@ class RCVCalcFormat(object):
 
     def __init__(self, config):
 
+        self.undervote = None
+        self.overvote  = None
+
         self.input_dir = config['input_dir']
 
     def get_data(self, election_label, contest_label, contest_config, data_dir):
@@ -151,8 +154,32 @@ class RCVCalcFormat(object):
                 name = parsed[2].strip()
 
                 candidate_dict[label] = name
+            elif record_type == 'OverVote':
+                overvote = parsed[1].strip()
+            elif record_type == 'UnderVote':
+                undervote = parsed[1].strip()
+
+        # TODO: these values should be set more deliberately rather
+        #       than as side effects.
+        self.overvote = overvote
+        self.undervote = undervote
 
         return contest_name, candidate_dict
+
+    def read_ballot(self, f, line, line_number):
+        """
+        Read and return an RCV ballot.
+
+        Example:
+
+            '%# 0062 %# JM>DH>--'
+
+        """
+        parts = line.split()
+        ballot = parts[-1]
+        choices = ballot.split('>')
+
+        return choices, line_number
 
 
 class SF2008Format(object):

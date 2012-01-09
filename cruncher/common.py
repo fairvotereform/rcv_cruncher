@@ -102,7 +102,7 @@ class Error(Exception):
         return "%s(%s,%s)" % (self.__type_name(), repr(self.__err), stack)
 
     def __str__(self):
-        lines = [self.__err] + self.__stack
+        lines = [repr(self.__err)] + self.__stack
         return "\n-->".join([str(line) for line in lines]) + "<--"
 
     def add(self, message):

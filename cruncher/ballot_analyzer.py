@@ -23,7 +23,7 @@ class BallotAnalyzer(object):
 
         """
         for choice in ballot:
-            if choice is not self.undervote:
+            if choice != self.undervote:
                 break
         return choice
 
@@ -33,22 +33,22 @@ class BallotAnalyzer(object):
     def count_duplicates(self, ballot):
         """
         Return the max number of times the same candidate occurs on the ballot.
-        
+
         """
         duplicate_count = 0
         choices = set(ballot)
         for choice in choices:
-            if choice is self.undervote or choice is self.overvote:
+            if choice == self.undervote or choice == self.overvote:
                 continue
             count = ballot.count(choice)
             if count > duplicate_count:
                 duplicate_count = count
         return duplicate_count
-    
+
     def has_skipped(self, ballot):
         seen_undervote = False
         for choice in ballot:
-            if choice is self.undervote:
+            if choice == self.undervote:
                 seen_undervote = True
                 continue
             if seen_undervote:
@@ -68,9 +68,9 @@ class BallotAnalyzer(object):
         """
         effective_choices = []
         for choice in ballot:
-            if choice is self.undervote or choice in effective_choices:
+            if choice == self.undervote or choice in effective_choices:
                 continue
-            if choice is self.overvote:
+            if choice == self.overvote:
                 break
             effective_choices.append(choice)
 
@@ -90,11 +90,11 @@ class BallotAnalyzer(object):
 
         """
         for choice in ballot:
-            if choice is self.overvote:
+            if choice == self.overvote:
                 break
-            if choice is candidate:
+            if choice == candidate:
                 return True
-            if choice is challenger:
+            if choice == challenger:
                 return False
 
         return None
@@ -107,9 +107,9 @@ class BallotAnalyzer(object):
 
         """
         for choice in ballot:
-            if choice is self.overvote:
+            if choice == self.overvote:
                 break
-            if choice is candidate:
+            if choice == candidate:
                 return True
             if choice in challengers:
                 return False

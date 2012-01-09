@@ -110,11 +110,12 @@ class BallotParser(object):
         try:
             try:
                 while True:
+                    line_number += 1
                     line = f.readline()
                     if not line:
+                        line_number -= 1  # since there was no line after all.
                         _log.info("Read %d lines." % line_number)
                         break
-                    line_number += 1
 
                     ballot, line_number = input_format.read_ballot(f, line, line_number)
 
