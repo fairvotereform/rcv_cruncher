@@ -266,7 +266,7 @@ class SF2008Format(object):
 
         contest_dir = os.path.join(election_dir, contest_label)
 
-        #download_data(urls, contest_dir)
+        download_data(urls, contest_dir)
         download_dir = most_recent_download_dir(contest_dir)
 
         _log.info("Using most recent download directory: %s" % download_dir)

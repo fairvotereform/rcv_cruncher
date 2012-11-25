@@ -5,17 +5,17 @@ election_label: SF_2012-11-06
 election_name: "San Francisco November 6, 2012, Consolidated General Election"
 input_format:
   type: sf-2008
-  source: http://sfelections.org/results/20121106/data/
+  source: http://sfelections.org/results/20121106/data/%s.zip
   master_file_glob: "*Master*.txt"
   ballot_file_glob: "*Ballot*.txt"
 contests:
- - label: D5
-   source: D5.zip
+ - source: D5
+   url: http://sfelections.org/results/20121106/data/d5.html
    winner: LONDON BREED
    finalists:
     - CHRISTINA OLAGUE
- - label: D7
-   source: D7.zip
+ - source: D7
+   url: http://sfelections.org/results/20121106/data/d7.html
    winner: NORMAN YEE
    finalists:
     - F. X. FRANCIS XAVIER CROWLEY
