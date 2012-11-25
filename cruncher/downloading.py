@@ -21,7 +21,10 @@ def download(url, target_path):
     Download the file at the given URL to the given target path.
 
     """
-    _log.info("Downloading %s to %s..." % (url, target_path))
+    _log.info("""\
+Downloading:
+  %s
+  to %r""" % (url, target_path))
     try:
         urllib.urlretrieve(url, target_path)
     except Exception, ex:

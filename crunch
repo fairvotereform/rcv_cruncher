@@ -213,13 +213,27 @@ def main(sys_argv):
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
-    for contest_config in config['contests']:
+    contest_configs = config['contests']
 
-        contest_label = contest_config['label']
+    # Download all data before trying to process.  This simplifies certain
+    # types of troubleshooting because we can turn off downloading for
+    # subsequent runs.
+    path_pairs = []
+    for contest in contest_configs:
+
+        contest_label = contest.get('label') or contest['source']
+        winner = contest['winner']
+        finalists = contest['finalists'] or []
+
+        path_pair = input_format.get_data(election_label, contest_label, contest, data_dir)
+        path_pairs.append(path_pair)
+
+    for contest_config, path_pair in zip(contest_configs, path_pairs):
+
+        contest_label = contest_config.get('label') or contest_config['source']
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or []
-
-        master_path, ballot_path = input_format.get_data(election_label, contest_label, contest_config, data_dir)
+        master_path, ballot_path = path_pair
 
         master_parser = MasterParser(input_format, winner, final_candidates=finalists)
         contest = master_parser.parse(master_path)
