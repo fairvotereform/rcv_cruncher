@@ -86,8 +86,10 @@ class Reporter(object):
 
         self.contest_infos = []
 
-    def add_contest(self, contest_label, contest, stats, download_metadata):
-        self.contest_infos.append((contest_label, contest, stats, download_metadata))
+    def add_contest(self, contest_label, contest, stats, download_metadata,
+                    round_by_round_url):
+        self.contest_infos.append((contest_label, contest, stats,
+                                   download_metadata, round_by_round_url))
 
     def percent_string(self, part, whole):
         """
@@ -509,6 +511,7 @@ class Reporter(object):
             contest_label = info[0]
             contest = info[1]
             metadata = info[3]
+            round_by_round_url = info[4]
 
             contest_name = contest.name
 
@@ -531,6 +534,7 @@ class Reporter(object):
             contest_dict = {'label': contest_label,
                             'title': title,
                             'line': header_line,
+                            'round_by_round_url': round_by_round_url,
                             'body': contest_report,
                             'download_urls': url,
                             'download_datetime': datetime_string,

@@ -4,6 +4,17 @@
 # Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
 #
 """
+
+YAML CONFIG FILE:
+
+Leave the "finalists" value empty if the contest was decided in the first
+round.  For example:
+
+  - label: D2
+    input_data: D02
+    winner: "Michela Alioto-Pier"
+    finalists:
+
 TODO: complete this.
 
 """
@@ -233,6 +244,7 @@ def main(sys_argv):
         contest_label = contest_config.get('label') or contest_config['source']
         winner = contest_config['winner']
         finalists = contest_config['finalists'] or []
+        round_by_round_url = contest_config.get('url')
         master_path, ballot_path = path_pair
 
         master_parser = MasterParser(input_format, winner, final_candidates=finalists)
@@ -249,7 +261,9 @@ def main(sys_argv):
 
         download_metadata = input_format.get_download_metadata(master_path)
 
-        reporter.add_contest(contest_label, contest, stats, download_metadata=download_metadata)
+        reporter.add_contest(contest_label, contest, stats,
+                             download_metadata=download_metadata,
+                             round_by_round_url=round_by_round_url)
 
     datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)

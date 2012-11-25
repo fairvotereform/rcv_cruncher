@@ -16,80 +16,80 @@ input_format:
   ballot_file_glob: "ballot_image.txt"
 contests:
  - source: Oak-Council-AtLarge
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6363.htm
    winner: REBECCA KAPLAN
    finalists:
     - IGNACIO DE LA FUENTE
  - source: Oak-Council1
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6464.htm
    winner: DAN KALB
    finalists:
     - AMY LEMLEY
  - source: Oak-Council3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6565.htm
    winner: LYNETTE GIBSON-MCELHANEY
    finalists:
     - SEAN SULLIVAN
  - source: Oak-Council5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6666.htm
    winner: NOEL GALLO
    finalists:
     - MARIO JUAREZ
  - source: Oak-Council7
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6767.htm
    winner: LARRY E. REID
    finalists:
-    - SHERYL WALTON
  - source: Oak-Attorney
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6868.htm
    winner: BARBARA PARKER
    finalists:
-    - JANE BRUNNER
  - source: Oak-School1
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6969.htm
    winner: JODY LONDON
    finalists:
-    - THEARSE PECOT
  - source: Oak-School3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7070.htm
    winner: JUMOKE HINTON HODGE
    finalists:
-    - RICHARD FUENTES
  - source: Oak-School5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7171.htm
    winner: ROSIE TORRES
    finalists:
-    - MIKE HUTCHINSON
  - source: Oak-School7
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7272.htm
    winner: JAMES HARRIS
    finalists:
-    - ALICE A. SPEARMAN
  - source: Berk-Mayor
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_5858.htm
    winner: TOM BATES
    finalists:
-    - KRISS WORTHINGTON
-    - JACQUELYN MCCORMICK
-    - BERNT RAINER WAHL
-    - "KAHLIL ''DA MAYOR'' JACOBS-FANTAUZZI"
-    - ZACHARY RUNNINGWOLF
-    - MARK SCHWARTZ
  - source: Berk-Council2
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_5959.htm
    winner: DARRYL MOORE
    finalists:
-    - DENISHA DELANE
-    - ADOLFO CABRAL
  - source: Berk-Council3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6060.htm
    winner: MAX ANDERSON
    finalists:
-    - DMITRI BELSER
  - source: Berk-Council5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6161.htm
    winner: LAURIE CAPITELLI
    finalists:
-    - SOPHIE HAHN
  - source: Berk-Council6
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6262.htm
    winner: SUSAN WENGRAF
    finalists:
-    - PHOEBE SORGEN
  - source: SL-Council2
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7373.htm
    winner: URSULA REED
    finalists:
     - MORGAN MACK-ROSE
  - source: SL-Council4
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7474.htm
    winner: BENNY LEE
    finalists:
     - CHRIS CROW
  - source: SL-Council6
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7575.htm
    winner: JIM PROLA
    finalists:
-    - HERMY B. ALMONTE
