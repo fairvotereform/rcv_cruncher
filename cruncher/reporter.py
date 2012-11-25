@@ -532,7 +532,7 @@ class Reporter(object):
                             'title': title,
                             'line': header_line,
                             'body': contest_report,
-                            'download_url': url,
+                            'download_urls': url,
                             'download_datetime': datetime_string,
                             'elimination_rounds': contest.elimination_rounds,
             }

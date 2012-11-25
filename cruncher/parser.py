@@ -73,7 +73,10 @@ class MasterParser(object):
         for (candidate_id, name) in candidate_dict.iteritems():
             if name == name_to_find:
                 return candidate_id
-        raise Error("Candidate %s not found in dictionary." % name_to_find)
+        candidates = candidate_dict.values()
+        candidates.sort()
+        print("\n".join(candidates))
+        raise Error("Candidate %s not found in dictionary:" % name_to_find)
 
     def read_master_file(self, f):
         contest_name, candidate_dict = self.input_format.parse_contest(f)

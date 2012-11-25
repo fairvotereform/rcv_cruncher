@@ -7,6 +7,7 @@ from datetime import datetime
 import glob
 import logging
 import os
+import urlparse
 from zipfile import ZipFile
 
 from . import common
@@ -66,11 +67,41 @@ def most_recent_download_dir(contest_dir):
     return paths[-1]
 
 
-def download_data(url, contest_dir):
+def download_url(url, download_dir):
+    target_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
+    ensure_dir(target_dir)
+
+    parsed = urlparse.urlparse(url)
+    path = parsed.path
+    basename = os.path.basename(path)
+
+    if not basename.endswith(".zip"):
+        # Then just download the file directly.
+        target_path = os.path.join(target_dir, basename)
+        downloading.download(url, target_path)
+        return
+    # Otherwise, we have a zip file.
+
+    zip_path = os.path.join(download_dir, basename)
+
+    downloading.download(url, zip_path)
+
+    zip_file = ZipFile(zip_path, 'r')
+    zip_file.extractall(target_dir)
+
+
+def download_data(urls, contest_dir):
     """
     Download and extract the election zip file.
 
+    Arguments:
+
+      urls: an URL of list of URLs.
+
     """
+    if isinstance(urls, str):
+        urls = [urls]
+
     utc_now = datetime.utcnow()
 
     ensure_dir(contest_dir)
@@ -81,15 +112,10 @@ def download_data(url, contest_dir):
     download_dir = os.path.join(contest_dir, download_dir_name)
     ensure_dir(download_dir)
 
-    zip_path = os.path.join(download_dir, '%s%szip' % (UNZIP_DIRECTORY_NAME, os.extsep))
+    for url in urls:
+        download_url(url, download_dir)
 
-    downloading.download(url, zip_path)
-
-    unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
-    zip_file = ZipFile(zip_path, 'r')
-    zip_file.extractall(unzip_dir)
-
-    metadata = downloading.create_download_metadata(url, utc_now)
+    metadata = downloading.create_download_metadata(urls, utc_now)
 
     text = """\
 # This file is auto-generated.  Do not modify this file.
@@ -193,9 +219,17 @@ class SF2008Format(object):
         self.undervote = -1
         self.overvote  = -2
 
-        self.ballot_file_glob = config['ballot_file_glob']
-        self.election_source = config['source']
-        self.master_file_glob = config['master_file_glob']
+        # This can be a string or list of strings.
+        election_sources = config['source']
+        ballot_file_glob = config['ballot_file_glob']
+        master_file_glob = config['master_file_glob']
+
+        if isinstance(election_sources, str):
+            election_sources = [election_sources]
+
+        self.election_sources = election_sources
+        self.ballot_file_glob = ballot_file_glob
+        self.master_file_glob = master_file_glob
 
     def get_download_metadata(self, master_path):
         unzipped_dir = os.path.dirname(master_path)
@@ -217,7 +251,11 @@ class SF2008Format(object):
 
         contest_source = contest_config['source']
 
-        source = self.election_source + contest_source
+        urls = []
+        for election_source in self.election_sources:
+            url = election_source % contest_source
+            urls.append(url)
+
         master_file_glob = self.master_file_glob
         ballot_file_glob = self.ballot_file_glob
 
@@ -228,7 +266,7 @@ class SF2008Format(object):
 
         contest_dir = os.path.join(election_dir, contest_label)
 
-        download_data(source, contest_dir)
+        #download_data(urls, contest_dir)
         download_dir = most_recent_download_dir(contest_dir)
 
         _log.info("Using most recent download directory: %s" % download_dir)
