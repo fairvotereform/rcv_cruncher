@@ -1,0 +1,95 @@
+#
+# This file is UTF-8 encoded.
+#
+# http://www.acgov.org/rov/rcv/results/Oak-Council7/ballot_image.txt
+# http://www.acgov.org/rov/rcv/results/Oak-Council7/master_lookup.txt
+# http://www.acgov.org/rov/rcv/results/SL-Council2/ballot_image.txt
+# http://www.acgov.org/rov/rcv/results/Berk-Mayor/ballot_image.txt
+election_label: AC_2012-11-06
+election_name: "Alameda County November 6, 2012, Consolidated General Election"
+input_format:
+  type: sf-2008
+  source:
+   - http://www.acgov.org/rov/rcv/results/%s/master_lookup.txt
+   - http://www.acgov.org/rov/rcv/results/%s/ballot_image.txt
+  master_file_glob: "master_lookup.txt"
+  ballot_file_glob: "ballot_image.txt"
+contests:
+ - source: Oak-Council-AtLarge
+   winner: REBECCA KAPLAN
+   finalists:
+    - IGNACIO DE LA FUENTE
+ - source: Oak-Council1
+   winner: DAN KALB
+   finalists:
+    - AMY LEMLEY
+ - source: Oak-Council3
+   winner: LYNETTE GIBSON-MCELHANEY
+   finalists:
+    - SEAN SULLIVAN
+ - source: Oak-Council5
+   winner: NOEL GALLO
+   finalists:
+    - MARIO JUAREZ
+ - source: Oak-Council7
+   winner: LARRY E. REID
+   finalists:
+    - SHERYL WALTON
+ - source: Oak-Attorney
+   winner: BARBARA PARKER
+   finalists:
+    - JANE BRUNNER
+ - source: Oak-School1
+   winner: JODY LONDON
+   finalists:
+    - THEARSE PECOT
+ - source: Oak-School3
+   winner: JUMOKE HINTON HODGE
+   finalists:
+    - RICHARD FUENTES
+ - source: Oak-School5
+   winner: ROSIE TORRES
+   finalists:
+    - MIKE HUTCHINSON
+ - source: Oak-School7
+   winner: JAMES HARRIS
+   finalists:
+    - ALICE A. SPEARMAN
+ - source: Berk-Mayor
+   winner: TOM BATES
+   finalists:
+    - KRISS WORTHINGTON
+    - JACQUELYN MCCORMICK
+    - BERNT RAINER WAHL
+    - "KAHLIL ''DA MAYOR'' JACOBS-FANTAUZZI"
+    - ZACHARY RUNNINGWOLF
+    - MARK SCHWARTZ
+ - source: Berk-Council2
+   winner: DARRYL MOORE
+   finalists:
+    - DENISHA DELANE
+    - ADOLFO CABRAL
+ - source: Berk-Council3
+   winner: MAX ANDERSON
+   finalists:
+    - DMITRI BELSER
+ - source: Berk-Council5
+   winner: LAURIE CAPITELLI
+   finalists:
+    - SOPHIE HAHN
+ - source: Berk-Council6
+   winner: SUSAN WENGRAF
+   finalists:
+    - PHOEBE SORGEN
+ - source: SL-Council2
+   winner: URSULA REED
+   finalists:
+    - MORGAN MACK-ROSE
+ - source: SL-Council4
+   winner: BENNY LEE
+   finalists:
+    - CHRIS CROW
+ - source: SL-Council6
+   winner: JIM PROLA
+   finalists:
+    - HERMY B. ALMONTE
