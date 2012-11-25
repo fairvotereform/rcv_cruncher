@@ -9,11 +9,6 @@ input_format:
   master_file_glob: "*Master*.txt"
   ballot_file_glob: "*Ballot*.txt"
 contests:
- - label: D1
-   source: D1.zip
-   winner: ERIC MAR
-   finalists:
-    - DAVID E. LEE
  - label: D5
    source: D5.zip
    winner: LONDON BREED
