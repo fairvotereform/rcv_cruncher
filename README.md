@@ -3,6 +3,20 @@ RCV Cruncher
 
 A script for generating stats on RCV elections.
 
+
+Setup
+-----
+
+Use Python 2.7.
+
+Install dependencies:
+
+    $ pip install PyYAML pystache
+
+
+Usage
+-----
+
 To process an election, you must first create a configuration file for the
 election you would like to process.  See the section below on configuration
 files for more details.
