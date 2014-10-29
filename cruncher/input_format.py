@@ -24,16 +24,17 @@ DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
 
 
-def parse_input_format(config):
+def parse_input_format(config, suppress_download=False):
     format_type = config['type']
 
     if format_type == 'rcv-calc':
-        format = RCVCalcFormat(config)
+        cls = RCVCalcFormat
     elif format_type == 'sf-2008':
-        format = SF2008Format(config)
+        cls = SF2008Format
     else:
         raise Exception("Unknown input format: %s" % repr(format_type))
 
+    format = cls(config, suppress_download=suppress_download)
     return format
 
 
@@ -213,7 +214,7 @@ class RCVCalcFormat(object):
 
 class SF2008Format(object):
 
-    def __init__(self, config, output_encoding=None):
+    def __init__(self, config, output_encoding=None, suppress_download=False):
 
         self.expected_contest_id = None
         self.undervote = -1
@@ -230,6 +231,7 @@ class SF2008Format(object):
         self.election_sources = election_sources
         self.ballot_file_glob = ballot_file_glob
         self.master_file_glob = master_file_glob
+        self.suppress_download = suppress_download
 
     def get_download_metadata(self, master_path):
         unzipped_dir = os.path.dirname(master_path)
@@ -266,7 +268,8 @@ class SF2008Format(object):
 
         contest_dir = os.path.join(election_dir, contest_label)
 
-        download_data(urls, contest_dir)
+        if not self.suppress_download:
+            download_data(urls, contest_dir)
         download_dir = most_recent_download_dir(contest_dir)
 
         _log.info("Using most recent download directory: %s" % download_dir)

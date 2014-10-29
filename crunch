@@ -215,6 +215,7 @@ def main(sys_argv):
     config_path = ns.config_path
     data_dir = ns.data_dir
     output_dir = ns.output_dir
+    suppress_download = ns.suppress_download
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -226,7 +227,7 @@ def main(sys_argv):
     election_label = config['election_label']
     election_name = config['election_name']
 
-    input_format = parse_input_format(config['input_format'])
+    input_format = parse_input_format(config['input_format'], suppress_download=suppress_download)
 
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')

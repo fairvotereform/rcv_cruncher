@@ -17,18 +17,23 @@ Install dependencies:
 Usage
 -----
 
+For command-line usage help (running from the repo root):
+
+    $ python crunch --help
+
 To process an election, you must first create a configuration file for the
 election you would like to process.  See the section below on configuration
 files for more details.
 
 Here is sample command-line usage which will be used to process SF 2012:
 
-    python crunch input/SF_201211.yaml data
+    python crunch input/SF_201211.yaml data output
 
 Running the script does the following.  For each contest listed in the
 configuration file, it--
 
 1. Downloads the zip file for the contest from an URL in the config file.
+   (This step can be suppressed with a command-line option.)
 2. Extracts the contents of the zip file into a directory.
 3. Detects the "master" and "ballot" files from file name globs in the
    config file.
@@ -40,8 +45,6 @@ directory that the script will download the ballot data to.  Try looking in
 this directory after the program runs successfully or unsuccessfully just to
 see where it puts things, etc.
 
-TODO: document how to run the script without auto-download (e.g. by
-specifying the path to a directory containing the two data files).
 
 Config File
 -----------

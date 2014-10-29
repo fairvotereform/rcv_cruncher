@@ -19,5 +19,7 @@ def create_argparser(prog="crunch"):
               "formats are JSON (*.json) and YAML (*.yaml or *.yml)."))
     parser.add_argument('data_dir', metavar='DATA_DIR')
     parser.add_argument('output_dir', metavar='OUTPUT_DIR')
+    parser.add_argument('-s', '--suppress-download', action='store_true',
+        help=("use data files already in the data directory."))
 
     return parser
