@@ -1,0 +1,95 @@
+#
+# This file is UTF-8 encoded.
+#
+# http://www.acgov.org/rov/rcv/results/Oak-Council7/ballot_image.txt
+# http://www.acgov.org/rov/rcv/results/Oak-Council7/master_lookup.txt
+# http://www.acgov.org/rov/rcv/results/SL-Council2/ballot_image.txt
+# http://www.acgov.org/rov/rcv/results/Berk-Mayor/ballot_image.txt
+election_label: AC_2012-11-06
+election_name: "Alameda County November 6, 2012, Consolidated General Election"
+input_format:
+  type: sf-2008
+  source:
+   - http://www.acgov.org/rov/rcv/results/%s/master_lookup.txt
+   - http://www.acgov.org/rov/rcv/results/%s/ballot_image.txt
+  master_file_glob: "master_lookup.txt"
+  ballot_file_glob: "ballot_image.txt"
+contests:
+ - source: Oak-Council-AtLarge
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6363.htm
+   winner: REBECCA KAPLAN
+   finalists:
+    - IGNACIO DE LA FUENTE
+ - source: Oak-Council1
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6464.htm
+   winner: DAN KALB
+   finalists:
+    - AMY LEMLEY
+ - source: Oak-Council3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6565.htm
+   winner: LYNETTE GIBSON-MCELHANEY
+   finalists:
+    - SEAN SULLIVAN
+ - source: Oak-Council5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6666.htm
+   winner: NOEL GALLO
+   finalists:
+    - MARIO JUAREZ
+ - source: Oak-Council7
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6767.htm
+   winner: LARRY E. REID
+   finalists:
+ - source: Oak-Attorney
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6868.htm
+   winner: BARBARA PARKER
+   finalists:
+ - source: Oak-School1
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6969.htm
+   winner: JODY LONDON
+   finalists:
+ - source: Oak-School3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7070.htm
+   winner: JUMOKE HINTON HODGE
+   finalists:
+ - source: Oak-School5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7171.htm
+   winner: ROSIE TORRES
+   finalists:
+ - source: Oak-School7
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7272.htm
+   winner: JAMES HARRIS
+   finalists:
+ - source: Berk-Mayor
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_5858.htm
+   winner: TOM BATES
+   finalists:
+ - source: Berk-Council2
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_5959.htm
+   winner: DARRYL MOORE
+   finalists:
+ - source: Berk-Council3
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6060.htm
+   winner: MAX ANDERSON
+   finalists:
+ - source: Berk-Council5
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6161.htm
+   winner: LAURIE CAPITELLI
+   finalists:
+ - source: Berk-Council6
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_6262.htm
+   winner: SUSAN WENGRAF
+   finalists:
+ - source: SL-Council2
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7373.htm
+   winner: URSULA REED
+   finalists:
+    - MORGAN MACK-ROSE
+ - source: SL-Council4
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7474.htm
+   winner: BENNY LEE
+   finalists:
+    - CHRIS CROW
+ - source: SL-Council6
+   url: http://www.acgov.org/rov/rcv/results/rcvresults_7575.htm
+   winner: JIM PROLA
+   finalists:
