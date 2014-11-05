@@ -449,6 +449,8 @@ class Reporter(object):
 
             self.add_text(s)
 
+        condorcet_winner = stats.is_condorcet_winner(contest.winner_id, contest.candidate_ids)
+        self.add_text("\n(condorcet_winner=%s)" % "YES" if condorcet_winner else "NO")
         self.add_section_title("Involuntary exhausted ballots, by first choice")
 
         self.write_value(LABELS['all'], stats.truly_exhausted_total, total=stats.truly_exhausted_total)
