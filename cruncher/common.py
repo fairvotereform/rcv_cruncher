@@ -22,6 +22,17 @@ ENCODING_INTERNAL = 'utf-8'
 INFO_FILE_NAME = 'INFO.yaml'
 
 
+def find_in_map(mapping, value_to_find):
+    """Return the mapping key of the value to find."""
+    for (key, value) in mapping.iteritems():
+        if value == value_to_find:
+            return key
+    candidates = mapping.values()
+    candidates.sort()
+    print("\n".join(candidates))
+    raise Error("Value %s not found in dictionary:" % value_to_find)
+
+
 def utc_datetime_to_local_datetime(utc_datetime):
     utc_tuple = utc_datetime.utctimetuple()
     timestamp = calendar.timegm(utc_tuple)

@@ -8,7 +8,7 @@ import logging
 import os
 import sys
 
-from .common import reraise
+from .common import find_in_map, reraise
 from .common import Error
 
 
@@ -16,6 +16,10 @@ _log = logging.getLogger(__name__)
 
 
 ENCODING_DATA_FILES  = 'utf-8'
+
+
+def find_candidate_id(candidate_dict, name_to_find):
+    return find_in_map(candidate_dict, name_to_find)
 
 
 class Contest(object):
@@ -79,23 +83,14 @@ class MasterParser(object):
 
         return contest
 
-    def find_candidate_id(self, candidate_dict, name_to_find):
-        for (candidate_id, name) in candidate_dict.iteritems():
-            if name == name_to_find:
-                return candidate_id
-        candidates = candidate_dict.values()
-        candidates.sort()
-        print("\n".join(candidates))
-        raise Error("Candidate %s not found in dictionary:" % name_to_find)
-
     def read_master_file(self, f):
         contest_name, candidate_dict = self.input_format.parse_contest(f)
 
-        winner_id = self.find_candidate_id(candidate_dict, self.winning_candidate)
+        winner_id = find_candidate_id(candidate_dict, self.winning_candidate)
 
         finalist_ids = []
         for candidate in self.final_candidates:
-            finalist_id = self.find_candidate_id(candidate_dict, candidate)
+            finalist_id = find_candidate_id(candidate_dict, candidate)
             finalist_ids.append(finalist_id)
 
         contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
