@@ -364,7 +364,8 @@ class Reporter(object):
         triples.reverse()
         self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
 
-        self.add_candidate_names(LABELS['winner'], [contest.winner_id], contest.candidate_dict)
+        winner_header = "%s (%d candidates)" % (LABELS['winner'], len(contest.candidate_dict))
+        self.add_candidate_names(winner_header, [contest.winner_id], contest.candidate_dict)
         self.add_candidate_names(LABELS['finalists'], contest.finalists, contest.candidate_dict)
 
         self.write_value(LABELS['total'], stats.total, total=stats.total, total_label='total')
@@ -521,7 +522,8 @@ class Reporter(object):
             title = contest_name + " RCV Stats"
             header_line = self.make_header_line(title, "=")
 
-            toc_dict = {'label': contest_label,
+            toc_dict = {'candidate_count': len(contest.candidate_ids),
+                        'label': contest_label,
                         'index': index,
                         'text': contest_name,
                         'elimination_rounds': contest.elimination_rounds,
