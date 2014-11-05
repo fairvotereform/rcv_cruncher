@@ -281,7 +281,7 @@ class Reporter(object):
 
     def make_number_valid_rankings(self, contest, stats):
 
-        lines = self.make_section_title("Number of candidates validly ranked (3 + 2 + 1), by first-round choice")
+        lines = self.make_section_title("Number of distinct candidates validly ranked (3 + 2 + 1), by first-round choice")
 
         lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest.candidate_ids),
                       self.make_aggregate_number_ranked_line(LABELS['winner'], [contest.winner_id]),
