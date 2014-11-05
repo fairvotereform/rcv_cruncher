@@ -47,6 +47,16 @@ class Contest(object):
         self.non_finalist_ids = list(set(candidate_ids) - set(finalists))
         self.elimination_rounds = elimination_rounds
 
+    @property
+    def candidate_count(self):
+        # Don't include WRITE-IN as a candidate.
+        candidate_map = self.candidate_dict
+        names = candidate_map.values()
+        count = len(names)
+        for (candidate_id, name) in candidate_map.iteritems():
+            if name.upper() == "WRITE-IN":
+                count -= 1
+        return count
 
 class MasterParser(object):
 
