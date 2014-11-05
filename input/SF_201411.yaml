@@ -5,17 +5,13 @@ election_label: SF_2014-11-04
 election_name: "San Francisco November 4, 2014 Consolidated General Election"
 input_format:
   type: sf-2008
-  source: http://sfelections.org/results/20121106/data/%s.zip
+  source: http://sfelections.org/results/20141104/data/%s.zip
   master_file_glob: "*Master*.txt"
   ballot_file_glob: "*Ballot*.txt"
 contests:
- - source: D5
-   url: http://sfelections.org/results/20121106/data/d5.html
-   winner: LONDON BREED
+ - source: D10
+   url: http://sfgov2.org/index.aspx?page=4642
+   winner: MALIA COHEN
    finalists:
-    - CHRISTINA OLAGUE
- - source: D7
-   url: http://sfelections.org/results/20121106/data/d7.html
-   winner: NORMAN YEE
-   finalists:
-    - F. X. FRANCIS XAVIER CROWLEY
+    - MARLENE TRAN
+    - TONY KELLY
