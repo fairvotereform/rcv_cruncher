@@ -1,4 +1,4 @@
 TODO
 ====
 
-* Make it easy to tabulate without downloading.
+* Upgrade to Python 3.4
