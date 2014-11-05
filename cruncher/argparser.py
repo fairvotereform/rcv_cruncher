@@ -17,9 +17,9 @@ def create_argparser(prog="crunch"):
     parser.add_argument('config_path', metavar='CONFIG_PATH',
         help=("path to a cruncher configuration file. Supported file "
               "formats are JSON (*.json) and YAML (*.yaml or *.yml)."))
-    parser.add_argument('data_dir', metavar='DATA_DIR')
+    parser.add_argument('data_dir', metavar='DOWNLOAD_DIR')
     parser.add_argument('output_dir', metavar='OUTPUT_DIR')
     parser.add_argument('-s', '--suppress-download', action='store_true',
-        help=("use data files already in the data directory."))
+        help=("use data files already in the download directory."))
 
     return parser
