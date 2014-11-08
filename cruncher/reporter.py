@@ -113,7 +113,8 @@ def get_top_dict_totals(mapping, how_many):
     Arguments:
       mapping: dict of element to integer number of occurrences.
     """
-    values = mapping.values()
+    # Call set() to remove duplicates.
+    values = list(set(mapping.values()))
     values.sort()
     values = values[-1 * how_many:]
     # Totals is a dict from integer totals to lists of objects having that total.
@@ -159,16 +160,16 @@ class ContestWriter(object):
         """
         Add a "top totals" section.
         """
-        totals = get_top_dict_totals(totals, how_many=how_many)
+        top_totals = get_top_dict_totals(totals, how_many=how_many)
 
         index = 1
-        total_counts = totals.keys()
+        total_counts = top_totals.keys()
         total_counts.sort()
         total_counts.reverse()
         index_width = len(str(how_many))
 
         for count in total_counts:
-            elements = totals[count]
+            elements = top_totals[count]
             prefix = "{index:{index_width}}.".format(index=index, index_width=index_width)
             for element in elements:
                 numerics = make_percent_breakdown(count, denominator)
@@ -535,12 +536,12 @@ class Reporter(object):
             percent_value, win_count, total_count, name = data
 
             label_string = self.label_string(name)
-            percent_string = make_percent_string(win_count, total_count)
+            percent_breakdown = make_percent_breakdown(win_count, total_count)
             percent_of_voted_string = make_percent_string(total_count, stats.first_round_continuing)
 
-            strings = [label_string, percent_string, make_value_string(win_count), make_value_string(total_count), percent_of_voted_string]
+            strings = [label_string, percent_breakdown, percent_of_voted_string]
 
-            s = "%s %s (%s / %s) (%s represented)" % tuple(strings)
+            s = "%s %s (%s represented)" % tuple(strings)
 
             self.add_text(s)
 
