@@ -27,10 +27,31 @@ def find_in_map(mapping, value_to_find):
     for (key, value) in mapping.iteritems():
         if value == value_to_find:
             return key
-    candidates = mapping.values()
-    candidates.sort()
-    print("\n".join(candidates))
-    raise Error("Value %s not found in dictionary:" % value_to_find)
+    values = mapping.values()
+    values.sort()
+    print("\n".join(values))
+    raise Error("Value %s not found in dictionary: %r" % (value_to_find, values))
+
+
+def reverse_dict(mapping, values):
+    """
+    Return a dict that swaps the keys and values of the given mapping.
+
+    The returned dict is limited to values matching the given values.
+    Also, the values of the returned dict are iterables since multiple
+    keys of the given mapping can have the same value.
+    """
+    reverse = {}
+    for key, val in mapping.iteritems():
+        if val not in values:
+            continue
+        try:
+            keys = reverse[val]
+        except KeyError:
+            keys = []
+            reverse[val] = keys
+        keys.append(key)
+    return reverse
 
 
 def utc_datetime_to_local_datetime(utc_datetime):

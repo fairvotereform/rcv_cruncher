@@ -10,6 +10,7 @@ import sys
 
 import pystache
 
+from cruncher.common import reverse_dict
 
 _log = logging.getLogger(__name__)
 
@@ -75,6 +76,123 @@ def ljust(s, length, fill_string):
     return s
 
 
+def make_value_string(value):
+    return "%6d" % value
+
+
+def make_percent_string(part, whole):
+    """
+    Return a percent string, for example, " 12.5%".
+    """
+    return "%5.1f%%" % percent(part, whole)
+
+
+def make_percent_breakdown(value, total):
+    percent_string = make_percent_string(value, total)
+    value_string = make_value_string(value)
+    total_string = make_value_string(total)
+    return "%s (%s / %s)" % (percent_string, value_string, total_string)
+
+
+def make_header_line(preceding_text, symbol):
+    return len(preceding_text) * symbol
+
+
+def make_section_title(text):
+    header_line = make_header_line(text, "-")
+    return ["", text, header_line, ""]
+
+
+def get_top_dict_totals(mapping, how_many):
+    """
+    Return a dict mapping total count to list of elements having that total.
+
+    The return value may include more than `how_many` values if there is
+    a tie for last place in terms of totals.
+
+    Arguments:
+      mapping: dict of element to integer number of occurrences.
+    """
+    values = mapping.values()
+    values.sort()
+    values = values[-1 * how_many:]
+    # Totals is a dict from integer totals to lists of objects having that total.
+    totals = reverse_dict(mapping, values)
+    # Now limit to "how_many" values in case of multiple values.
+    count = 0
+    top_totals = {}
+    values.reverse()  # Order largest to smallest.
+    for value in values:
+        els = totals[value]
+        top_totals[value] = els
+        count += len(els)
+        if count >= how_many:
+            break
+    return top_totals
+
+
+class ContestWriter(object):
+
+    def __init__(self, contest):
+        self.contest = contest
+
+    def get_candidate_name(self, candidate_id):
+        return self.contest.candidate_dict[candidate_id]
+
+    def display_ordering(self, candidate_ids):
+        to_string = self.get_candidate_name
+        return ", ".join([to_string(id_) for id_ in candidate_ids])
+
+    def display_combination(self, candidate_ids):
+        to_string = self.get_candidate_name
+        names = [to_string(id_) for id_ in candidate_ids]
+        names.sort()
+        return ", ".join(names)
+
+    def add_section(self, lines, func, **kwargs):
+        section_lines = []
+        title = func(section_lines, **kwargs)
+        lines.extend(make_section_title(title))
+        lines.extend(section_lines)
+
+    def add_top_totals_section(self, lines, totals, denominator, display, how_many):
+        """
+        Add a "top totals" section.
+        """
+        totals = get_top_dict_totals(totals, how_many=how_many)
+
+        index = 1
+        total_counts = totals.keys()
+        total_counts.sort()
+        total_counts.reverse()
+        index_width = len(str(how_many))
+
+        for count in total_counts:
+            elements = totals[count]
+            prefix = "{index:{index_width}}.".format(index=index, index_width=index_width)
+            for element in elements:
+                numerics = make_percent_breakdown(count, denominator)
+                info = display(element)
+                line = "{0} {1}  {2}".format(prefix, numerics, info)
+                lines.append(line)
+            # If there was a tie, we might need to jump ahead more than one.
+            index += len(elements)
+
+    def make_orderings_section(self, lines, stats):
+        title = "Top 10 effective orderings"
+        self.add_top_totals_section(lines=lines, totals=stats.orderings,
+            denominator=stats.first_round_continuing, display=self.display_ordering,
+            how_many=10)
+        return title
+
+    def make_combinations_section(self, lines, stats):
+        title = "Top 10 effective combinations"
+        self.add_top_totals_section(lines=lines, totals=stats.combinations,
+            denominator=stats.first_round_continuing, display=self.display_combination,
+            how_many=10)
+        return title
+
+
 class Reporter(object):
 
     line_break = "\n"
@@ -91,13 +209,6 @@ class Reporter(object):
         self.contest_infos.append((contest_label, contest, stats,
                                    download_metadata, round_by_round_url))
 
-    def percent_string(self, part, whole):
-        """
-        Return a percent string, for example, " 12.5%".
-
-        """
-        return "%5.1f%%" % percent(part, whole)
-
     def rounded_percent_string(self, part, whole):
         """
         Return a rounded percent string, for example, " 25%".
@@ -108,7 +219,7 @@ class Reporter(object):
     def make_string(self, lines):
         return self.line_break.join(lines)
 
-    # DEPRECATED
+    # TODO: remove in favor of add_lines().
     def add_text(self, text):
         self.text += text + self.line_break
 
@@ -119,15 +230,8 @@ class Reporter(object):
     def skip(self):
         self.add_text("")
 
-    def make_header_line(self, preceding_text, symbol):
-        return len(preceding_text) * symbol
-
-    def make_section_title(self, text):
-        header_line = self.make_header_line(text, "-")
-        return ["", text, header_line, ""]
-
     def add_section_title(self, text):
-        lines = self.make_section_title(text)
+        lines = make_section_title(text)
         self.add_lines(lines)
 
     def add_candidate_names(self, header, candidate_ids, candidate_dict):
@@ -143,9 +247,6 @@ class Reporter(object):
 
         return s
 
-    def value_string(self, value):
-        return "%6d" % value
-
     def make_percent_line(self, label, value, total, description=None):
         """
         Return a line of the form--
@@ -154,16 +255,9 @@ class Reporter(object):
 
         """
         label_string = self.label_string(label)
-        percent_string = self.percent_string(value, total)
-        value_string = self.value_string(value)
-        total_string = self.value_string(total)
-
-        s = "%s %s (%s / %s)" % (label_string, percent_string, value_string, total_string)
-
-        if description is not None:
-            s += " [%s]" % description
-
-        return s
+        percent_string = make_percent_breakdown(value, total)
+        description = "" if description is None else " [%s]" % description
+        return "%s %s%s" % (label_string, percent_string, description)
 
     def make_value(self, label, value, total=None, total_label=None, description=None):
         """
@@ -172,10 +266,10 @@ class Reporter(object):
         LABEL .....................   9578 (  6.2% of total_label) [description]
 
         """
-        s = "%s %s" % (self.label_string(label), self.value_string(value))
+        s = "%s %s" % (self.label_string(label), make_value_string(value))
 
         if total is not None:
-            percent_string = self.percent_string(value, total)
+            percent_string = make_percent_string(value, total)
             total_label_string = ("of %s" % total_label) if total_label is not None else ""
 
             s += " (%s %s)" % (percent_string, total_label_string)
@@ -208,8 +302,8 @@ class Reporter(object):
 
         values.append(sum(values))
 
-        value_strings = [self.value_string(value) for value in values]
-        percent_strings = [self.percent_string(value, total) for value in values]
+        value_strings = [make_value_string(value) for value in values]
+        percent_strings = [make_percent_string(value, total) for value in values]
 
         if leave_off_total_percent:
             # Then the 100% doesn't say more.
@@ -228,8 +322,8 @@ class Reporter(object):
         label_string = self.label_string(name)
 
         def data_pair_string(value, total):
-            value_string = self.value_string(value)
-            percent_string = self.percent_string(value, total)
+            value_string = make_value_string(value)
+            percent_string = make_percent_string(value, total)
 
             return "%s ( %s )" % (value_string, percent_string)
 
@@ -271,7 +365,7 @@ class Reporter(object):
 
     def make_effective_ballot_position(self, stats):
 
-        lines = self.make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
+        lines = make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
 
         for candidate, name, first_round in self.sorted_candidates:
             line = self.make_three_sum_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
@@ -281,7 +375,7 @@ class Reporter(object):
 
     def make_number_valid_rankings(self, contest, stats):
 
-        lines = self.make_section_title("Number of distinct candidates validly ranked (3 + 2 + 1), by first-round choice")
+        lines = make_section_title("Number of distinct candidates validly ranked (3 + 2 + 1), by first-round choice")
 
         lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest.candidate_ids),
                       self.make_aggregate_number_ranked_line(LABELS['winner'], [contest.winner_id]),
@@ -312,7 +406,7 @@ class Reporter(object):
 
         winner_total = stats.final_round_winner_total
 
-        lines = self.make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest.finalists))
+        lines = make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest.finalists))
 
         total_label = None
         lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing, total_label=total_label))
@@ -338,6 +432,7 @@ class Reporter(object):
         lines.append(self.make_percent_line(LABELS['mandate_voted'], stats.final_round_winner_total, stats.voted))
 
         return lines
+
 
     # TODO: refactor this method to be smaller.
     def make_contest(self, contest_info):
@@ -440,10 +535,10 @@ class Reporter(object):
             percent_value, win_count, total_count, name = data
 
             label_string = self.label_string(name)
-            percent_string = self.percent_string(win_count, total_count)
-            percent_of_voted_string = self.percent_string(total_count, stats.first_round_continuing)
+            percent_string = make_percent_string(win_count, total_count)
+            percent_of_voted_string = make_percent_string(total_count, stats.first_round_continuing)
 
-            strings = [label_string, percent_string, self.value_string(win_count), self.value_string(total_count), percent_of_voted_string]
+            strings = [label_string, percent_string, make_value_string(win_count), make_value_string(total_count), percent_of_voted_string]
 
             s = "%s %s (%s / %s) (%s represented)" % tuple(strings)
 
@@ -465,6 +560,13 @@ class Reporter(object):
         for data in true_exhaust_data:
             self.write_value(data[1], data[0], total=stats.truly_exhausted_total)
 
+        lines = []
+        contest_writer = ContestWriter(contest=contest)
+        contest_writer.add_section(lines, contest_writer.make_orderings_section, stats=stats)
+        contest_writer.add_section(lines, contest_writer.make_combinations_section, stats=stats)
+        self.add_lines(lines)
+
+        self.skip()
         return self.text
 
     def format_datetime_tzname(self, dt, tzname):
@@ -522,7 +624,7 @@ class Reporter(object):
                 contest_name += " (%d finalists)" % len(contest.finalists)
 
             title = contest_name + " RCV Stats"
-            header_line = self.make_header_line(title, "=")
+            header_line = make_header_line(title, "=")
 
             toc_dict = {'candidate_count': contest.candidate_count,
                         'label': contest_label,

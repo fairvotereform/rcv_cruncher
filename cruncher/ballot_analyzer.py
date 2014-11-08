@@ -74,7 +74,8 @@ class BallotAnalyzer(object):
                 break
             effective_choices.append(choice)
 
-        return effective_choices
+        # Make the choices hashable (for use in a dict).
+        return tuple(effective_choices)
 
     def did_sweep(self, ballot, candidate_id):
         for choice in ballot:

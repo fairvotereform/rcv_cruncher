@@ -9,16 +9,41 @@ import logging
 _log = logging.getLogger(__name__)
 
 
+def increment_dict_total(mapping, key):
+    try:
+        mapping[key] += 1
+    except KeyError:
+        mapping[key] = 1
+
+
 class Stats(object):
+
+    """
+    Attributes:
+
+    ballot_position: dict of the number of times each candidate appears at
+      each of the three positions on the ballot.  The position is the
+      effective position, so that [UNDERVOTE, A, B] results in [A, B].
+      Each triple is [first, second, third].
+
+    combinations: a dict of set() to int keeping track of how many times
+      each combination of candidates appears.
+    orderings: a dict of tuple() to int keeping track of how many times
+      each effective ordering of candidates appears.
+    """
 
     def __init__(self, candidates, winner_id):
 
-        number_ranked = {}  # grouped by first-round choice.
-        ranked_winner = {}  # grouped by first-round choice.
-        ranked_finalist = {}  # grouped by first-round choice.
-        truly_exhausted = {}  # grouped by first-round choice.
+        # These dicts are all grouped by first-round choice.
+        number_ranked = {}
+        ranked_winner = {}
+        ranked_finalist = {}
+        truly_exhausted = {}
         ballot_position = {}
         did_sweep = {}
+
+        combinations = {}
+        orderings = {}
 
         for candidate_id in candidates:
             ballot_position[candidate_id] = 3 * [0]  # [first, second, third]
@@ -53,11 +78,9 @@ class Stats(object):
         self._condorcet = condorcet
         self._number_ranked = number_ranked
 
-        # A dictionary of the number of times each candidate appears at each
-        # of the three positions on the ballot.  The position is the effective
-        # position, so that [UNDERVOTE, A, B] is effectively [A, B].  Each
-        # triple is [first, second, third].
         self.ballot_position = ballot_position
+        self.combinations = combinations
+        self.orderings = orderings
         self.ranked_winner = ranked_winner
         self.ranked_finalist = ranked_finalist
         self.truly_exhausted = truly_exhausted

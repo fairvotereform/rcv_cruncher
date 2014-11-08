@@ -31,7 +31,7 @@ from cruncher import downloading
 from cruncher.input_format import parse_input_format
 from cruncher.parser import BallotParser, MasterParser
 from cruncher.reporter import Reporter
-from cruncher.stats import Stats
+from cruncher.stats import increment_dict_total, Stats
 
 
 _log = logging.getLogger(__name__)
@@ -202,6 +202,10 @@ class BallotHandler(object):
                 stats.add_condorcet_winner(winner, non_winner)
             else:
                 stats.add_condorcet_winner(non_winner, winner)
+
+        # Track orderings and combinations.
+        increment_dict_total(stats.combinations, frozenset(effective_choices))
+        increment_dict_total(stats.orderings, effective_choices)
 
 
 def main(sys_argv):
