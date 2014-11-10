@@ -233,17 +233,24 @@ def parse_ballot_file():
     parser.parse_ballots(ballot_path, winner)
 
 
-def parse_contest(input_format, reporter, contest_config, path_pair):
+def parse_download(input_format, reporter, contest_configs, path_pair):
     master_path, ballot_path = path_pair
+
+    contest_dict = parse_master(input_format, master_path)
+    print(repr(contest_dict))
+
+    # TODO: support multiple contests.
+    assert len(contest_configs) == 1
+    assert len(contest_dict) == 1
+    contest_config = contest_configs[0]
+    contest_id = contest_dict.keys()[0]
+    contest_name, candidate_dict = contest_dict[contest_id]
 
     contest_label = contest_config.label
     winner = contest_config.winner
     finalists = contest_config.finalists
     round_by_round_url = contest_config.round_by_round_url
 
-    contest_dict = parse_master(input_format, master_path)
-
-    contest_name, candidate_dict = contest_dict[1]
 
     winner_id = find_candidate_id(candidate_dict, winner)
 
@@ -271,11 +278,6 @@ def parse_contest(input_format, reporter, contest_config, path_pair):
     reporter.add_contest(contest_label, contest, stats,
                          download_metadata=download_metadata,
                          round_by_round_url=round_by_round_url)
-
-
-def parse_download(input_format, reporter, contest_configs, path_pair):
-    for contest_config in contest_configs:
-        parse_contest(input_format, reporter, contest_config, path_pair)
 
 
 def main(sys_argv):

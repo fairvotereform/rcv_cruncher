@@ -288,44 +288,53 @@ class SF2008Format(object):
         """
         Parse the line, and return a tuple.
 
-        A sample line--
+        Some sample lines:
 
-        "Candidate 0000120JANET REILLY                                      0000001000000700"
+        Candidate 0000111JUAN-ANTONIO CARBALLO                             0000001000002700
+        Contest   0000027Board of Supervisors, District 2                  0000038000000000
 
         """
         # We only care about the first three fields: Record_Type, Id, and Description.
         record_type = line[0:10].strip()
         record_id = int(line[10:17])
         description = line[17:67].strip()
+        # For candidate rows, this is the contest ID.
+        other_id = int(line[74:81])
 
-        return record_type, record_id, description
+        return record_type, record_id, description, other_id
+
+    def _get_contest(self, contest_dict, contest_id):
+        """Return a 2-tuple of (contest_name, candidate_dict)."""
+        try:
+            data = contest_dict[contest_id]
+        except KeyError:
+            # Initialize the (contest_name, candidate_dict) pair.
+            data = [None, {}]
+            contest_dict[contest_id] = data
+        return data
 
     def parse_master_file(self, f):
         """
         Parse contest data from the given file, and return contest data.
 
         """
-        candidate_dict = {}
+        contest_dict = {}
 
         while True:
             line = f.readline()
             if not line:
                 break
 
-            record_type, record_id, description = self._parse_master_line(line)
+            record_type, record_id, description, other_id = self._parse_master_line(line)
 
             if record_type == "Contest":
-                contest_id = record_id
-                contest_name = description
+                contest_data = self._get_contest(contest_dict, record_id)
+                contest_data[0] = description
                 continue
 
             if record_type == "Candidate":
+                contest_name, candidate_dict = self._get_contest(contest_dict, other_id)
                 candidate_dict[record_id] = description
-
-        contest_dict = {
-            # ID 1 is a place-holder.  It is not really the ID.
-            1: (contest_name, candidate_dict)
-        }
 
         return contest_dict
 
