@@ -84,7 +84,8 @@ class MasterParser(object):
         return contest
 
     def read_master_file(self, f):
-        contest_name, candidate_dict = self.input_format.parse_contest(f)
+        contest_dict = self.input_format.parse_master_file(f)
+        contest_name, candidate_dict = contest_dict[1]
 
         winner_id = find_candidate_id(candidate_dict, self.winning_candidate)
 

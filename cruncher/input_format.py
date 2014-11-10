@@ -162,7 +162,7 @@ class RCVCalcFormat(object):
 
         return paths
 
-    def parse_contest(self, f):
+    def parse_master_file(self, f):
         """
         Parse contest data from the given file, and return contest data.
 
@@ -194,7 +194,12 @@ class RCVCalcFormat(object):
         self.overvote = overvote
         self.undervote = undervote
 
-        return contest_name, candidate_dict
+        contest_dict = {
+            # ID 1 is a place-holder.  It is not really the ID.
+            1: (contest_name, candidate_dict)
+        }
+
+        return contest_dict
 
     def read_ballot(self, f, line, line_number):
         """
@@ -296,7 +301,7 @@ class SF2008Format(object):
 
         return record_type, record_id, description
 
-    def parse_contest(self, f):
+    def parse_master_file(self, f):
         """
         Parse contest data from the given file, and return contest data.
 
@@ -320,7 +325,12 @@ class SF2008Format(object):
 
         self.expected_contest_id = contest_id
 
-        return contest_name, candidate_dict
+        contest_dict = {
+            # ID 1 is a place-holder.  It is not really the ID.
+            1: (contest_name, candidate_dict)
+        }
+
+        return contest_dict
 
     def read_ballot(self, f, line, line_number):
         """
@@ -349,12 +359,12 @@ class SF2008Format(object):
 
                 line_number += 1
                 line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 2, expected_voter_id=voter_id)
+                parsed_line = self._parse_ballot_line(line, 2, contest_id=contest_id, expected_voter_id=voter_id)
                 choices.append(parsed_line[3])
 
                 line_number += 1
                 line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 3, expected_voter_id=voter_id)
+                parsed_line = self._parse_ballot_line(line, 3, contest_id=contest_id, expected_voter_id=voter_id)
                 choices.append(parsed_line[3])
             except Error:
                 raise
@@ -366,7 +376,7 @@ class SF2008Format(object):
 
         return choices, line_number
 
-    def _parse_ballot_line(self, line, expected_rank, expected_voter_id=None):
+    def _parse_ballot_line(self, line, expected_rank, contest_id=None, expected_voter_id=None):
         """
         Return a parsed line, or raise an Exception on failure.
 
@@ -376,8 +386,8 @@ class SF2008Format(object):
             parsed_line = self.parse_line(line)
             contest_id, voter_id, rank, choice = parsed_line
 
-            if contest_id != self.expected_contest_id:
-                raise Exception("Expected contest id %d but got %d." % (expected_contest_id, contest_id))
+            if contest_id is not None and contest_id != self.expected_contest_id:
+                raise Exception("Expected contest id %d but got %d." % (self.expected_contest_id, contest_id))
             if expected_voter_id is not None and voter_id != expected_voter_id:
                 raise Exception("Expected voter id %d but got %d." % (expected_voter_id, voter_id))
             if rank != expected_rank:
