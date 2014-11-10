@@ -99,6 +99,7 @@ class MasterParser(object):
         return contest
 
 
+# TODO: rework this to process potentially more than one contest per pass.
 class BallotParser(object):
 
     def __init__(self, input_format, on_ballot, encoding=None):
