@@ -8,8 +8,7 @@ import logging
 import os
 import sys
 
-from .common import find_in_map, reraise
-from .common import Error
+from .common import reraise, Error
 
 
 _log = logging.getLogger(__name__)
@@ -18,8 +17,12 @@ _log = logging.getLogger(__name__)
 ENCODING_DATA_FILES  = 'utf-8'
 
 
-def find_candidate_id(candidate_dict, name_to_find):
-    return find_in_map(candidate_dict, name_to_find)
+def parse_master(input_format, path):
+    _log.info("Reading master file: %s" % path)
+    with codecs.open(path, "r", encoding=ENCODING_DATA_FILES) as f:
+        contest_dict = input_format.parse_master_file(f)
+
+    return contest_dict
 
 
 class Contest(object):
@@ -62,42 +65,6 @@ class Contest(object):
                 count -= 1
         return count
 
-class MasterParser(object):
-
-    def __init__(self, input_format, winning_candidate, final_candidates):
-        """
-        Args:
-
-          final_candidates: the empty list means all candidates (no elimination).
-
-        """
-        self.encoding = ENCODING_DATA_FILES
-        self.final_candidates = final_candidates
-        self.input_format = input_format
-        self.winning_candidate = winning_candidate
-
-    def parse(self, path):
-        _log.info("Reading master file: %s" % path)
-        with codecs.open(path, "r", encoding=self.encoding) as f:
-            contest = self.read_master_file(f)
-
-        return contest
-
-    def read_master_file(self, f):
-        contest_dict = self.input_format.parse_master_file(f)
-        contest_name, candidate_dict = contest_dict[1]
-
-        winner_id = find_candidate_id(candidate_dict, self.winning_candidate)
-
-        finalist_ids = []
-        for candidate in self.final_candidates:
-            finalist_id = find_candidate_id(candidate_dict, candidate)
-            finalist_ids.append(finalist_id)
-
-        contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
-
-        return contest
-
 
 # TODO: rework this to process potentially more than one contest per pass.
 class BallotParser(object):
@@ -107,7 +74,7 @@ class BallotParser(object):
         self.input_format = input_format
         self.on_ballot = on_ballot
 
-    def process_contest(self, ballot_path, winner):
+    def parse_ballots(self, ballot_path, winner):
         self.read_ballot_path(ballot_path)
 
     def read_ballot_path(self, path):

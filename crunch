@@ -27,9 +27,10 @@ import sys
 from cruncher.argparser import create_argparser
 from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher import common
+from cruncher.common import find_in_map
 from cruncher import downloading
 from cruncher.input_format import parse_input_format
-from cruncher.parser import BallotParser, MasterParser
+from cruncher.parser import parse_master, BallotParser, Contest
 from cruncher.reporter import Reporter
 from cruncher.stats import increment_dict_total, Stats
 
@@ -67,10 +68,6 @@ R1-Overvotes:  number of ballots counting as an overvote in the first round.
 
 """
 
-# TODO: overview of final round (percent of continuing first round, etc).
-#       Include "adjusted final round percentage."
-# TODO: html encode report.
-
 def configure_logging(logging_level=None):
     """Configure logging for standard purposes.
 
@@ -106,6 +103,19 @@ def configure_logging(logging_level=None):
     logger.addHandler(handler)
 
     _log.debug("Debug logging enabled.")
+
+
+class ContestConfig(object):
+
+    def __init__(self, data):
+        self.label = data.get('label') or data['source']
+        self.winner = data['winner']
+        # An empty list of finalists means all candidates (no elimination).
+        self.finalists = data['finalists'] or []
+        self.round_by_round_url = data.get('url')
+
+        # For certain special cases, we also need access to the original config.
+        self.data = data
 
 
 class BallotHandler(object):
@@ -208,6 +218,66 @@ class BallotHandler(object):
         increment_dict_total(stats.orderings, effective_choices)
 
 
+def find_candidate_id(candidate_dict, name_to_find):
+    return find_in_map(candidate_dict, name_to_find)
+
+
+def parse_ballot_file():
+    stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
+    ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
+        overvote=input_format.overvote)
+
+    # Parsing the ballot file is faster without specifying an encoding.
+    # The ballot file is just integers, so an encoding is not necessary.
+    parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
+    parser.parse_ballots(ballot_path, winner)
+
+
+def parse_contest(input_format, reporter, contest_config, path_pair):
+    master_path, ballot_path = path_pair
+
+    contest_label = contest_config.label
+    winner = contest_config.winner
+    finalists = contest_config.finalists
+    round_by_round_url = contest_config.round_by_round_url
+
+    contest_dict = parse_master(input_format, master_path)
+
+    contest_name, candidate_dict = contest_dict[1]
+
+    winner_id = find_candidate_id(candidate_dict, winner)
+
+    finalist_ids = []
+    for candidate in finalists:
+        finalist_id = find_candidate_id(candidate_dict, candidate)
+        finalist_ids.append(finalist_id)
+
+    contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
+
+    # TODO: each contest should have its own BallotHandler.
+    stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
+    ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
+        overvote=input_format.overvote)
+
+    # Parsing the ballot file is faster without specifying an encoding.
+    # The ballot file is just integers, so an encoding is not necessary.
+    # TODO: pass a contest_dict instead of on_ballot.
+    parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
+    # TODO: remove need to pass winner.
+    parser.parse_ballots(ballot_path, winner)
+
+    download_metadata = input_format.get_download_metadata(master_path)
+
+    reporter.add_contest(contest_label, contest, stats,
+                         download_metadata=download_metadata,
+                         round_by_round_url=round_by_round_url)
+
+
+def parse_download(input_format, reporter, contest_configs, path_pair):
+    for contest_config in contest_configs:
+        parse_contest(input_format, reporter, contest_config, path_pair)
+
+
 def main(sys_argv):
     start_time = datetime.now()
 
@@ -236,46 +306,22 @@ def main(sys_argv):
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
-    contest_configs = config['contests']
+    contests_config = config['contests']
+    contest_configs = []
+    for data in contests_config:
+        contest_config = ContestConfig(data)
+        contest_configs.append(contest_config)
 
     # Download all data before trying to process.  This simplifies certain
     # types of troubleshooting because we can turn off downloading for
     # subsequent runs.
     path_pairs = []
-    for contest in contest_configs:
-
-        contest_label = contest.get('label') or contest['source']
-        winner = contest['winner']
-        finalists = contest['finalists'] or []
-
-        path_pair = input_format.get_data(election_label, contest_label, contest, data_dir)
+    for contest_config in contest_configs:
+        path_pair = input_format.get_data(election_label, contest_config.label, contest_config.data, data_dir)
         path_pairs.append(path_pair)
 
     for contest_config, path_pair in zip(contest_configs, path_pairs):
-
-        contest_label = contest_config.get('label') or contest_config['source']
-        winner = contest_config['winner']
-        finalists = contest_config['finalists'] or []
-        round_by_round_url = contest_config.get('url')
-        master_path, ballot_path = path_pair
-
-        master_parser = MasterParser(input_format, winner, final_candidates=finalists)
-        contest = master_parser.parse(master_path)
-
-        stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
-        ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
-            overvote=input_format.overvote)
-
-        # Parsing the ballot file is faster without specifying an encoding.
-        # The ballot file is just integers, so an encoding is not necessary.
-        parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
-        parser.process_contest(ballot_path, winner)
-
-        download_metadata = input_format.get_download_metadata(master_path)
-
-        reporter.add_contest(contest_label, contest, stats,
-                             download_metadata=download_metadata,
-                             round_by_round_url=round_by_round_url)
+        parse_download(input_format, reporter, [contest_config], path_pair)
 
     datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)
