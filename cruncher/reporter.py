@@ -205,8 +205,14 @@ class Reporter(object):
 
         self.contest_infos = []
 
-    def add_contest(self, contest_label, contest, stats, download_metadata,
-                    round_by_round_url):
+    def add_contest(self, contest_info, download_metadata):
+        contest_config = contest_info.config
+
+        contest_label = contest_config.label
+        contest = contest_info.contest
+        round_by_round_url = contest_config.round_by_round_url
+        stats = contest_info.stats
+
         self.contest_infos.append((contest_label, contest, stats,
                                    download_metadata, round_by_round_url))
 

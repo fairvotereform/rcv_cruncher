@@ -66,15 +66,17 @@ class Contest(object):
         return count
 
 
-# TODO: rework this to process potentially more than one contest per pass.
 class BallotParser(object):
 
-    def __init__(self, input_format, on_ballot, encoding=None):
-        self.encoding = encoding
-        self.input_format = input_format
-        self.on_ballot = on_ballot
+    def __init__(self, input_format, contest_infos):
+        # Parsing the ballot file is faster without specifying an encoding.
+        # The ballot file is just integers, so an encoding is not necessary.
+        self.encoding = None
 
-    def parse_ballots(self, ballot_path, winner):
+        self.contest_infos = contest_infos
+        self.input_format = input_format
+
+    def parse_ballots(self, ballot_path):
         self.read_ballot_path(ballot_path)
 
     def read_ballot_path(self, path):
@@ -92,6 +94,7 @@ class BallotParser(object):
     def process_ballot_file(self, f):
 
         line_number = 0
+        contest_infos = self.contest_infos
         input_format = self.input_format
 
         try:
@@ -104,9 +107,9 @@ class BallotParser(object):
                         _log.info("Read %d lines." % line_number)
                         break
 
-                    ballot, line_number = input_format.read_ballot(f, line, line_number)
-
-                    self.on_ballot(ballot)
+                    contest_id, ballot, line_number = input_format.read_ballot(f, line, line_number)
+                    ballot_handler = contest_infos[contest_id].ballot_handler
+                    ballot_handler.on_ballot(ballot)
 
             except Error:
                 raise

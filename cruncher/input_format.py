@@ -214,7 +214,8 @@ class RCVCalcFormat(object):
         ballot = parts[-1]
         choices = ballot.split('>')
 
-        return choices, line_number
+        # None is a placeholder for the contest_id.
+        return None, choices, line_number
 
 
 class SF2008Format(object):
@@ -380,7 +381,7 @@ class SF2008Format(object):
             err.add("Ballot line number: %d" % line_number)
             reraise(err)
 
-        return choices, line_number
+        return contest_id, choices, line_number
 
     def _parse_ballot_line(self, line, expected_rank, expected_contest_id=None, expected_voter_id=None):
         """

@@ -108,6 +108,7 @@ def configure_logging(logging_level=None):
 class ContestConfig(object):
 
     def __init__(self, data):
+        self.name = None
         self.label = data.get('label') or data['source']
         self.winner = data['winner']
         # An empty list of finalists means all candidates (no elimination).
@@ -118,9 +119,18 @@ class ContestConfig(object):
         self.data = data
 
 
+class ContestInfo(object):
+
+    def __init__(self, contest, config, stats, ballot_handler):
+        self.ballot_handler = ballot_handler
+        self.config = config
+        self.contest = contest
+        self.stats = stats
+
+
 class BallotHandler(object):
 
-    def __init__(self, contest, stats, undervote, overvote):
+    def __init__(self, analyzer, contest, stats):
         """
         Construct an instance.
 
@@ -130,7 +140,7 @@ class BallotHandler(object):
         finalists = contest.finalists
         non_winning_finalists = contest.non_winning_finalists
 
-        self.analyzer = BallotAnalyzer(undervote=undervote, overvote=overvote)
+        self.analyzer = analyzer
         self.stats = stats
 
         self.winner = winner
@@ -222,62 +232,68 @@ def find_candidate_id(candidate_dict, name_to_find):
     return find_in_map(candidate_dict, name_to_find)
 
 
-def parse_ballot_file():
-    stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
-    ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
-        overvote=input_format.overvote)
+def get_contest_id(contest_config, contest_ids):
+    """Return the contest_id for a contest_config."""
+    contest_name = contest_config.name
+    try:
+        contest_id = contest_ids[contest_name]
+    except KeyError:
+        # The contest will not have a name configured if there is only one.
+        assert contest_name is None
+        assert len(contest_ids) == 1
+        contest_id = contest_ids.values()[0]
+    return contest_id
 
-    # Parsing the ballot file is faster without specifying an encoding.
-    # The ballot file is just integers, so an encoding is not necessary.
-    parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
-    parser.parse_ballots(ballot_path, winner)
+
+def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
+    """
+    Return a dict mapping contest_id to ContestInfo object.
+    """
+    contest_infos = {}
+
+    for contest_config in contest_configs:
+        contest_id = get_contest_id(contest_config, contest_ids)
+        contest_name, candidate_dict = contest_dict[contest_id]
+
+        winner = contest_config.winner
+        finalists = contest_config.finalists
+
+        winner_id = find_candidate_id(candidate_dict, winner)
+
+        finalist_ids = []
+        for candidate in finalists:
+            finalist_id = find_candidate_id(candidate_dict, candidate)
+            finalist_ids.append(finalist_id)
+
+        contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
+        stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
+        ballot_handler = BallotHandler(analyzer, contest, stats)
+
+        contest_info = ContestInfo(contest, contest_config, stats, ballot_handler)
+        contest_infos[contest_id] = contest_info
+
+    return contest_infos
 
 
-def parse_download(input_format, reporter, contest_configs, path_pair):
+def parse_download(analyzer, input_format, reporter, contest_configs, path_pair):
     master_path, ballot_path = path_pair
 
+    # The contest_dict dictionary maps contest_id to (contest_name, candidate_dict).
     contest_dict = parse_master(input_format, master_path)
     print(repr(contest_dict))
+    contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
 
-    # TODO: support multiple contests.
-    assert len(contest_configs) == 1
-    assert len(contest_dict) == 1
-    contest_config = contest_configs[0]
-    contest_id = contest_dict.keys()[0]
-    contest_name, candidate_dict = contest_dict[contest_id]
+    contest_infos = make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids)
 
-    contest_label = contest_config.label
-    winner = contest_config.winner
-    finalists = contest_config.finalists
-    round_by_round_url = contest_config.round_by_round_url
-
-
-    winner_id = find_candidate_id(candidate_dict, winner)
-
-    finalist_ids = []
-    for candidate in finalists:
-        finalist_id = find_candidate_id(candidate_dict, candidate)
-        finalist_ids.append(finalist_id)
-
-    contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
-
-    # TODO: each contest should have its own BallotHandler.
-    stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
-    ballot_handler = BallotHandler(contest, stats, undervote=input_format.undervote,
-        overvote=input_format.overvote)
-
-    # Parsing the ballot file is faster without specifying an encoding.
-    # The ballot file is just integers, so an encoding is not necessary.
-    # TODO: pass a contest_dict instead of on_ballot.
-    parser = BallotParser(input_format=input_format, on_ballot=ballot_handler.on_ballot)
-    # TODO: remove need to pass winner.
-    parser.parse_ballots(ballot_path, winner)
+    parser = BallotParser(input_format=input_format, contest_infos=contest_infos)
+    parser.parse_ballots(ballot_path)
 
     download_metadata = input_format.get_download_metadata(master_path)
 
-    reporter.add_contest(contest_label, contest, stats,
-                         download_metadata=download_metadata,
-                         round_by_round_url=round_by_round_url)
+    for contest_config in contest_configs:
+        contest_id = get_contest_id(contest_config, contest_ids)
+        contest_info = contest_infos[contest_id]
+        reporter.add_contest(contest_info, download_metadata=download_metadata)
 
 
 def main(sys_argv):
@@ -304,6 +320,7 @@ def main(sys_argv):
     election_name = config['election_name']
 
     input_format = parse_input_format(config['input_format'], suppress_download=suppress_download)
+    analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
 
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
@@ -323,7 +340,7 @@ def main(sys_argv):
         path_pairs.append(path_pair)
 
     for contest_config, path_pair in zip(contest_configs, path_pairs):
-        parse_download(input_format, reporter, [contest_config], path_pair)
+        parse_download(analyzer, input_format, reporter, [contest_config], path_pair)
 
     datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)
