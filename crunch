@@ -108,8 +108,8 @@ def configure_logging(logging_level=None):
 class ContestConfig(object):
 
     def __init__(self, data):
-        self.name = None
-        self.label = data.get('label') or data['source']
+        self.name = data.get('name')
+        self.label = data.get('label') or data.get('source')
         self.winner = data['winner']
         # An empty list of finalists means all candidates (no elimination).
         self.finalists = data['finalists'] or []
@@ -117,6 +117,9 @@ class ContestConfig(object):
 
         # For certain special cases, we also need access to the original config.
         self.data = data
+
+    def __repr__(self):
+        return "<ContestConfig: %r>" % repr(self.data)
 
 
 class ContestInfo(object):
@@ -252,6 +255,8 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
     contest_infos = {}
 
     for contest_config in contest_configs:
+        print(repr(contest_config))
+        print(repr(contest_ids))
         contest_id = get_contest_id(contest_config, contest_ids)
         contest_name, candidate_dict = contest_dict[contest_id]
 
@@ -273,6 +278,41 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
         contest_infos[contest_id] = contest_info
 
     return contest_infos
+
+
+def get_download_paths(election_label, input_format, input_config,
+                       contest_configs, data_dir):
+    """
+    Return an iterable of (contest_configs, path_pair).
+    """
+    # A list of (contest_configs, dir_name, urls).
+    # Each element of this list corresponds to a set of files that can
+    # be independently downloaded and parsed.
+    download_infos = []
+    if 'single_source' in input_config:
+        # Then all contests are contained in a single file.
+        source = input_config['single_source']
+        download_infos.append((contest_configs, "election", [source]))
+    else:
+        # Then each contest is contained in a separate file.
+
+        # This can be a string or list of strings.
+        election_sources = input_config['source']
+        if isinstance(election_sources, str):
+            election_sources = [election_sources]
+        for contest_config in contest_configs:
+            label = contest_config.label
+            urls = [source % label for source in election_sources]
+            configs = [contest_config]
+            download_infos.append((configs, label, urls))
+
+    # An iterable of (contest_configs, path_pair).
+    path_infos = []
+    for configs, dir_name, urls in download_infos:
+        path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
+        path_infos.append((configs, path_pair))
+
+    return path_infos
 
 
 def parse_download(analyzer, input_format, reporter, contest_configs, path_pair):
@@ -314,18 +354,19 @@ def main(sys_argv):
 
     configure_logging(logging.DEBUG)
 
-    config = common.unserialize_yaml_file(config_path)
+    election_config = common.unserialize_yaml_file(config_path)
 
-    election_label = config['election_label']
-    election_name = config['election_name']
+    election_label = election_config['election_label']
+    election_name = election_config['election_name']
+    input_config = election_config['input_format']
 
-    input_format = parse_input_format(config['input_format'], suppress_download=suppress_download)
+    input_format = parse_input_format(input_config, suppress_download=suppress_download)
     analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
 
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
-    contests_config = config['contests']
+    contests_config = election_config['contests']
     contest_configs = []
     for data in contests_config:
         contest_config = ContestConfig(data)
@@ -334,13 +375,10 @@ def main(sys_argv):
     # Download all data before trying to process.  This simplifies certain
     # types of troubleshooting because we can turn off downloading for
     # subsequent runs.
-    path_pairs = []
-    for contest_config in contest_configs:
-        path_pair = input_format.get_data(election_label, contest_config.label, contest_config.data, data_dir)
-        path_pairs.append(path_pair)
-
-    for contest_config, path_pair in zip(contest_configs, path_pairs):
-        parse_download(analyzer, input_format, reporter, [contest_config], path_pair)
+    download_infos = get_download_paths(election_label, input_format, input_config,
+                                        contest_configs, data_dir)
+    for contest_configs, path_pair in download_infos:
+        parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 
     datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)

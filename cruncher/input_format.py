@@ -225,15 +225,9 @@ class SF2008Format(object):
         self.undervote = -1
         self.overvote  = -2
 
-        # This can be a string or list of strings.
-        election_sources = config['source']
         ballot_file_glob = config['ballot_file_glob']
         master_file_glob = config['master_file_glob']
 
-        if isinstance(election_sources, str):
-            election_sources = [election_sources]
-
-        self.election_sources = election_sources
         self.ballot_file_glob = ballot_file_glob
         self.master_file_glob = master_file_glob
         self.suppress_download = suppress_download
@@ -248,20 +242,13 @@ class SF2008Format(object):
 
         return download_metadata
 
-    def get_data(self, election_label, contest_label, contest_config, data_dir):
+    def get_data(self, election_label, dir_name, urls, data_dir):
         """
         Download data if necessary, and return master and ballot paths.
 
         """
         if data_dir is None:
             raise Exception("Need to provide data directory.")
-
-        contest_source = contest_config['source']
-
-        urls = []
-        for election_source in self.election_sources:
-            url = election_source % contest_source
-            urls.append(url)
 
         master_file_glob = self.master_file_glob
         ballot_file_glob = self.ballot_file_glob
@@ -271,7 +258,7 @@ class SF2008Format(object):
         election_dir = os.path.join(data_dir, election_label)
         ensure_dir(election_dir)
 
-        contest_dir = os.path.join(election_dir, contest_label)
+        contest_dir = os.path.join(election_dir, dir_name)
 
         if not self.suppress_download:
             download_data(urls, contest_dir)
