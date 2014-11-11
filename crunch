@@ -109,7 +109,7 @@ class ContestConfig(object):
 
     def __init__(self, data):
         self.name = data.get('name')
-        self.label = data.get('label') or data.get('source')
+        self.label = data.get('label') or data['source']
         self.winner = data['winner']
         # An empty list of finalists means all candidates (no elimination).
         self.finalists = data['finalists'] or []
@@ -255,8 +255,6 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
     contest_infos = {}
 
     for contest_config in contest_configs:
-        print(repr(contest_config))
-        print(repr(contest_ids))
         contest_id = get_contest_id(contest_config, contest_ids)
         contest_name, candidate_dict = contest_dict[contest_id]
 
@@ -320,7 +318,6 @@ def parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 
     # The contest_dict dictionary maps contest_id to (contest_name, candidate_dict).
     contest_dict = parse_master(input_format, master_path)
-    print(repr(contest_dict))
     contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
 
     contest_infos = make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids)
