@@ -9,6 +9,14 @@ input_format:
   master_file_glob: "*Master*.txt"
   ballot_file_glob: "*Ballot*.txt"
 contests:
+ - label: D10
+   name: "Board of Supervisors, District 10"
+   url: http://sfgov2.org/index.aspx?page=4642
+   winner: MALIA COHEN
+   finalists:
+    - MARLENE TRAN
+    - TONY KELLY
+contests_bak:
  - label: D2
    name: "Board of Supervisors, District 2"
    url:
@@ -24,10 +32,3 @@ contests:
    url:
    winner: SCOTT WIENER
    finalists:
- - label: D10
-   name: "Board of Supervisors, District 10"
-   url: http://sfgov2.org/index.aspx?page=4642
-   winner: MALIA COHEN
-   finalists:
-    - MARLENE TRAN
-    - TONY KELLY
