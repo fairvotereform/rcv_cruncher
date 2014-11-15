@@ -242,8 +242,11 @@ def get_contest_id(contest_config, contest_ids):
         contest_id = contest_ids[contest_name]
     except KeyError:
         # The contest will not have a name configured if there is only one.
-        assert contest_name is None
-        assert len(contest_ids) == 1
+        try:
+            assert contest_name is None
+            assert len(contest_ids) == 1
+        except AssertionError:
+            raise Exception("contest_name=%r, contest_ids=%r" % (contest_name, contest_ids))
         contest_id = contest_ids.values()[0]
     return contest_id
 
