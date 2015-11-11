@@ -130,6 +130,9 @@ class ContestInfo(object):
         self.contest = contest
         self.stats = stats
 
+    def __repr__(self):
+        return "<ContestInfo: contest={0}>".format(self.contest)
+
 
 class BallotHandler(object):
 
@@ -238,16 +241,12 @@ def find_candidate_id(candidate_dict, name_to_find):
 def get_contest_id(contest_config, contest_ids):
     """Return the contest_id for a contest_config."""
     contest_name = contest_config.name
-    try:
-        contest_id = contest_ids[contest_name]
-    except KeyError:
+    if len(contest_ids) == 1:
         # The contest will not have a name configured if there is only one.
-        try:
-            assert contest_name is None
-            assert len(contest_ids) == 1
-        except AssertionError:
-            raise Exception("contest_name=%r, contest_ids=%r" % (contest_name, contest_ids))
+        assert contest_name is None
         contest_id = contest_ids.values()[0]
+    else:
+        contest_id = contest_ids[contest_name]
     return contest_id
 
 
@@ -298,7 +297,10 @@ def get_download_paths(election_label, input_format, input_config,
         # Then each contest is contained in a separate file.
 
         # This can be a string or list of strings.
-        election_sources = input_config['source']
+        try:
+            election_sources = input_config['source']
+        except KeyError:
+            raise Exception("input_config: {0}".format(input_config))
         if isinstance(election_sources, str):
             election_sources = [election_sources]
         for contest_config in contest_configs:

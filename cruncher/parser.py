@@ -54,6 +54,9 @@ class Contest(object):
         self.non_finalist_ids = list(set(candidate_ids) - set(finalists))
         self.elimination_rounds = elimination_rounds
 
+    def __repr__(self):
+        return "<Contest: name={0}>".format(self.name)
+
     @property
     def candidate_count(self):
         # Don't include WRITE-IN as a candidate.
@@ -108,7 +111,12 @@ class BallotParser(object):
                         break
 
                     contest_id, ballot, line_number = input_format.read_ballot(f, line, line_number)
-                    ballot_handler = contest_infos[contest_id].ballot_handler
+                    try:
+                        contest_info = contest_infos[contest_id]
+                    except KeyError:
+                        raise Exception("contest_infos does not contain id {0}: {1}".
+                                        format(contest_id, contest_infos))
+                    ballot_handler = contest_info.ballot_handler
                     ballot_handler.on_ballot(ballot)
 
             except Error:
@@ -116,6 +124,6 @@ class BallotParser(object):
             except Exception, ex:
                 reraise(Error(ex))
         except Error, err:
-            err.add("File line number: %d" % line_number)
+            err.add("File line number: %s" % line)
             reraise(err)
 
