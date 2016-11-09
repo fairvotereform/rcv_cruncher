@@ -26,3 +26,33 @@ contests:
    winner: SANDRA LEE FEWER
    finalists:
     - MARJAN PHILHOUR
+ - label: "D3"
+   name: "Board of Supervisors, District 3"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d3/20161108_4_d3.html
+   winner: AARON PESKIN
+   finalists:
+    - TIM E. DONNELLY
+ - label: "D5"
+   name: "Board of Supervisors, District 5"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d5/20161108_4_d5.html
+   winner: LONDON BREED
+   finalists:
+    - DEAN PRESTON
+ - label: "D7"
+   name: "Board of Supervisors, District 7"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d7/20161108_4_d7.html
+   winner: NORMAN YEE
+   finalists:
+    - JOEL ENGARDIO
+ - label: "D9"
+   name: "Board of Supervisors, District 9"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d9/20161108_4_d9.html
+   winner: HILLARY RONEN
+   finalists:
+    - JOSHUA ARCE
+ - label: "D11"
+   name: "Board of Supervisors, District 11"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d11/20161108_4_d11.html
+   winner: AHSHA SAFAI
+   finalists:
+    - KIM ALVARENGA

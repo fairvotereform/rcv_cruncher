@@ -138,11 +138,13 @@ class ContestWriter(object):
         self.contest = contest
 
     def get_candidate_name(self, candidate_id):
-        return self.contest.candidate_dict[candidate_id]
+        name = self.contest.candidate_dict[candidate_id]
+        return name
 
     def display_ordering(self, candidate_ids):
         to_string = self.get_candidate_name
-        return ", ".join([to_string(id_) for id_ in candidate_ids])
+        text = ", ".join([to_string(id_) for id_ in candidate_ids])
+        return text
 
     def display_combination(self, candidate_ids):
         to_string = self.get_candidate_name
@@ -174,7 +176,12 @@ class ContestWriter(object):
             for element in elements:
                 numerics = make_percent_breakdown(count, denominator)
                 info = display(element)
-                line = "{0} {1}  {2}".format(prefix, numerics, info)
+                # Without making the format string unicode, we got an
+                # error like the following if "info" contained a non-ascii
+                # character:
+                # > UnicodeEncodeError: 'ascii' codec can't encode character
+                #  u'\xd1' in position 46: ordinal not in range(128)
+                line = u"{0} {1}  {2}".format(prefix, numerics, info)
                 lines.append(line)
             # If there was a tie, we might need to jump ahead more than one.
             index += len(elements)
