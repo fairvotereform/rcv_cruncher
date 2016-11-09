@@ -69,6 +69,7 @@ def most_recent_download_dir(contest_dir):
 
 
 def download_url(url, download_dir):
+    _log.info("downloading url: {}".format(url))
     target_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
     ensure_dir(target_dir)
 

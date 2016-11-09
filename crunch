@@ -291,8 +291,10 @@ def get_download_paths(election_label, input_format, input_config,
     download_infos = []
     if 'single_source' in input_config:
         # Then all contests are contained in a single file.
-        source = input_config['single_source']
-        download_infos.append((contest_configs, "election", [source]))
+        #
+        # The "single_source" value should be a list.
+        sources = input_config['single_source']
+        download_infos.append((contest_configs, "election", sources))
     else:
         # Then each contest is contained in a separate file.
 

@@ -1,0 +1,28 @@
+#
+# This file is UTF-8 encoded.
+#
+
+election_label: SF_2016-11-08
+election_name: "San Francisco November 8, 2016, Consolidated General Election"
+input_format:
+  type: sf-2008
+  # Examples files available to download:
+  #
+  # - http://www.sfelections.org/results/20161108/data/20161108_1/20161108_1_ballotimage.txt
+  #   http://www.sfelections.org/results/20161108/data/20161108_1/20161108_1_masterlookup.txt
+  # - http://www.sfelections.org/results/20161108/data/20161108_4/20161108_4_ballotimage.txt
+  #   http://www.sfelections.org/results/20161108/data/20161108_4/20161108_4_masterlookup.txt
+  #
+  single_source:
+   # "single_source" means that all contests are contained in a single file.
+   - http://www.sfelections.org/results/20161108/data/20161108_4/20161108_4_ballotimage.txt
+   - http://www.sfelections.org/results/20161108/data/20161108_4/20161108_4_masterlookup.txt
+  master_file_glob: "*masterlookup.txt"
+  ballot_file_glob: "*ballotimage.txt"
+contests:
+ - label: "D1"
+   name: "Board of Supervisors, District 1"
+   url: http://www.sfelections.org/results/20161108/data/20161108_4/d1/20161108_4_d1.html
+   winner: SANDRA LEE FEWER
+   finalists:
+    - MARJAN PHILHOUR
