@@ -1,0 +1,102 @@
+# http://www.acgov.org/rov/rcv/results/Oak-Council7/master_lookup.txt
+# http://www.acgov.org/rov/rcv/results/SL-Council2/ballot_image.txt
+# http://www.acgov.org/rov/rcv/results/Berk-Mayor/ballot_image.txt
+election_label: AC_2010-11-02
+election_name: "Alameda County November 2, 2010 Consolidated General Election"
+input_format:
+  type: sf-2008
+  source:
+   - http://www.acgov.org/rov/rcv/results2010-11-02/%s/master_lookup.txt
+   - http://www.acgov.org/rov/rcv/results2010-11-02/%s/ballot_image.txt
+  master_file_glob: "master_lookup.txt"
+  ballot_file_glob: "ballot_image.txt"
+contests:
+  - source: OaklandMayor
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2984.htm
+    winner: JEAN QUAN
+    finalists:
+     - DON PERATA
+  - source: OaklandAuditor
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2188.htm
+    winner: COURTNEY RUBY
+    finalists:
+     - MICHAEL KILIAN     
+  - source: OaklandCouncilD2
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3585.htm
+    winner: PATRICIA KERNIGHAN
+    finalists:
+     - JENNIFER S. PAE
+  - source: OaklandCouncilD4
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3786.htm
+    winner: LIBBY SCHAAF
+    finalists:
+     - JILL BROADHURST
+     - MELANIE SHELBY
+  - source: OaklandCouncilD6
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3887.htm
+    winner: DESLEY BROOKS
+    finalists:
+     - NANCY SIDEBOTHAM
+     - JOSE DORADO
+  - source: OaklandSchoolD2
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_4589.htm
+    winner: DAVID KAKISHIBA
+    finalists:      
+  - source: OaklandSchoolD4
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_4690.htm
+    winner: GARY D. YEE
+    finalists:
+     - BENJAMIN VISNICK
+  - source: OaklandSchoolD6
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_4791.htm
+    winner: CHRISTOPHER DOBBINS
+    finalists:
+  - source: BerkeleyAuditor
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2083.htm
+    winner: ANN-MARIE HOGAN
+    finalists:           
+  - source: BerkeleyCouncilD1
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3479.htm
+    winner: LINDA MAIO
+    finalists:
+     - JASPER KINGETER
+     - MERRILIE MITCHELL
+     - ANTHONY Di DONATO
+  - source: BerkeleyCouncilD4
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3680.htm
+    winner: JESSE ARREGUIN
+    finalists:
+     - JIM NOVOSEL
+     - BERNT RAINER WAHL
+     - ERIC PANZER      
+  - source: BerkeleyCouncilD7
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3981.htm
+    winner: KRISS WORTHINGTON
+    finalists:
+     - GEORGE BEIER
+     - CECILIA ''CES'' ROSALES      
+  - source: BerkeleyCouncilD8
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_4082.htm
+    winner: GORDON WOZNIAK
+    finalists:
+     - STEWART JONES
+     - JACQUELYN McCORMICK
+  - source: SanLeandroMayor
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_3192.htm
+    winner: STEPHEN H. CASSIDY
+    finalists:
+     - ANTHONY B. ''TONY'' SANTOS
+  - source: SanLeandroCouncilD1
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2293.htm
+    winner: MICHAEL J. GREGORY
+    finalists:
+     - DAVID L. ANDERSON, SR.
+  - source: SanLeandroCouncilD3
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2394.htm
+    winner: DIANA M. SOUZA
+    finalists:
+  - source: SanLeandroCouncilD5
+    url: http://www.acgov.org/rov/rcv/results2010-11-02/rcvresults_2495.htm
+    winner: PAULINE RUSSO CUTTER
+    finalists:
+     - CORINA N. LOPEZ
