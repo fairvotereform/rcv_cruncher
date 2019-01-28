@@ -1,0 +1,14 @@
+Title: TR : TREASURER
+SubTitle: San Francisco, CA, 2005, Nov
+Candidate: JC : Jose Cisneros
+Candidate: MV : Manuel B. Valle
+Candidate: CL : Calvin Louie
+Candidate: IW : Isaac Wang
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: TR-Ballots.txt
