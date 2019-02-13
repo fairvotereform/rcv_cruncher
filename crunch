@@ -307,14 +307,22 @@ def get_download_paths(election_label, input_format, input_config,
             election_sources = [election_sources]
         for contest_config in contest_configs:
             label = contest_config.label
-            urls = [source % label for source in election_sources]
+
+            ### OAB
+            urls = ["none"] #[source % label for source in election_sources]
+            ###            
+
             configs = [contest_config]
             download_infos.append((configs, label, urls))
 
     # An iterable of (contest_configs, path_pair).
     path_infos = []
     for configs, dir_name, urls in download_infos:
-        path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
+        if input_config['type'] == 'sf-2008':
+            path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
+        else:
+            ###path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
+            path_pair = input_format.get_data(election_label, election_label, contest_config, data_dir)
         path_infos.append((configs, path_pair))
 
     return path_infos
@@ -353,6 +361,7 @@ def main(sys_argv):
     output_dir = ns.output_dir
     suppress_download = ns.suppress_download
 
+
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
 
@@ -363,6 +372,7 @@ def main(sys_argv):
     election_label = election_config['election_label']
     election_name = election_config['election_name']
     input_config = election_config['input_format']
+    
 
     input_format = parse_input_format(input_config, suppress_download=suppress_download)
     analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
@@ -379,8 +389,11 @@ def main(sys_argv):
     # Download all data before trying to process.  This simplifies certain
     # types of troubleshooting because we can turn off downloading for
     # subsequent runs.
+
     download_infos = get_download_paths(election_label, input_format, input_config,
-                                        contest_configs, data_dir)
+                                       contest_configs, data_dir)
+
+    #candidate count calculated
     for contest_configs, path_pair in download_infos:
         parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 

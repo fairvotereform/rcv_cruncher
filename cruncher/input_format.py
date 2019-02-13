@@ -137,10 +137,11 @@ class RCVCalcFormat(object):
 
     """
 
-    def __init__(self, config):
+    def __init__(self, config,**kwargs):
 
-        self.undervote = None
-        self.overvote  = None
+        ###OAB
+        self.undervote = '--'
+        self.overvote  = '++'
 
         self.input_dir = config['input_dir']
 
@@ -152,7 +153,8 @@ class RCVCalcFormat(object):
         Return master and ballot paths.
 
         """
-        file_prefix = contest_config['input_data']
+
+        file_prefix = contest_config.data['input_data']
 
         master_file = "%s-Cntl.txt" % file_prefix
         ballot_file = "%s-Ballots.txt" % file_prefix
@@ -216,7 +218,8 @@ class RCVCalcFormat(object):
         choices = ballot.split('>')
 
         # None is a placeholder for the contest_id.
-        return None, choices, line_number
+        return int(parts[-3]), choices, line_number
+        ###return None, choices, line_number
 
 
 class SF2008Format(object):

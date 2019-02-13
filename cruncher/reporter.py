@@ -3,6 +3,7 @@
 # Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
 #
 
+
 import codecs
 import logging
 import os
@@ -207,12 +208,14 @@ class Reporter(object):
     candidate_indent = 12
 
     def __init__(self, election_name, template_path):
+	print "initializing...."
         self.election_name = election_name
         self.template_path = template_path
 
         self.contest_infos = []
 
     def add_contest(self, contest_info, download_metadata):
+	print "Adding constest.."
         contest_config = contest_info.config
 
         contest_label = contest_config.label
@@ -660,6 +663,8 @@ class Reporter(object):
                             'download_datetime': datetime_string,
                             'elimination_rounds': contest.elimination_rounds,
             }
+
+
 
             toc_dicts.append(toc_dict)
             contest_dicts.append(contest_dict)

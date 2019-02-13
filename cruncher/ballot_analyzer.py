@@ -46,6 +46,7 @@ class BallotAnalyzer(object):
         return duplicate_count
 
     def has_skipped(self, ballot):
+        ###OAB: voter has skipped a ranking (say the 2nd), and then ranked (say 3rd) for a candidate
         seen_undervote = False
         for choice in ballot:
             if choice == self.undervote:

@@ -24,6 +24,7 @@ INFO_FILE_NAME = 'INFO.yaml'
 
 def find_in_map(mapping, value_to_find):
     """Return the mapping key of the value to find."""
+    ### reverse dictionary lookup
     for (key, value) in mapping.iteritems():
         if value == value_to_find:
             return key

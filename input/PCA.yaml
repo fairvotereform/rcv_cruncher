@@ -1,0 +1,15 @@
+#
+# This file is UTF-8 encoded.
+#
+election_label: PCA
+election_name: "PCA"
+input_format:
+  type: rcv-calc
+  input_dir: data/RcvCalcInput/2009/
+  source: "none"
+contests:
+ - label: PCA
+   input_data: PCA
+   winner: "Julie Anderson"
+   finalists:
+    - "Jan Shabro"
