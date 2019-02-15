@@ -34,9 +34,7 @@ def parse_input_format(config, suppress_download=False):
     else:
         raise Exception("Unknown input format: %s" % repr(format_type))
 
-    format = cls(config, suppress_download=suppress_download)
-    return format
-
+    return cls(config, suppress_download=suppress_download)
 
 def get_path(dir_path, file_glob):
     """
@@ -145,7 +143,7 @@ class RCVCalcFormat(object):
 
         self.input_dir = config['input_dir']
 
-    def get_download_metadata(self, master_path):
+    def get_download_metadata(self, _):
         return downloading.DownloadMetadata()
 
     def get_data(self, election_label, contest_label, contest_config, data_dir):
@@ -218,6 +216,8 @@ class RCVCalcFormat(object):
         choices = ballot.split('>')
 
         # None is a placeholder for the contest_id.
+
+        ### OAB giving an id
         return int(parts[-3]), choices, line_number
         ###return None, choices, line_number
 
@@ -325,7 +325,7 @@ class SF2008Format(object):
                 continue
 
             if record_type == "Candidate":
-                contest_name, candidate_dict = self._get_contest(contest_dict, other_id)
+                _, candidate_dict = self._get_contest(contest_dict, other_id)
                 candidate_dict[record_id] = description
 
         return contest_dict
@@ -347,11 +347,44 @@ class SF2008Format(object):
           Each integer is a candidate ID, -1 for undervote, or -2 for overvote.
 
         """
+
+        ### OAB Ballet length also hardcoded (implicitly) here
         try:
             parsed_line = self._parse_ballot_line(line, 1)
 
             try:
-                contest_id, voter_id, rank, choice = parsed_line
+                contest_id, voter_id, _, choice = parsed_line
+
+                choices = [choice]
+
+                line_number += 1
+                line = f.readline()
+                parsed_line = self._parse_ballot_line(line, 2, expected_contest_id=contest_id, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
+
+                line_number += 1
+                line = f.readline()
+                parsed_line = self._parse_ballot_line(line, 3, expected_contest_id=contest_id, expected_voter_id=voter_id)
+                choices.append(parsed_line[3])
+            except Error:
+                raise
+            except Exception, ex:
+                reraise(Error(ex))
+        except Error, err:
+            err.add("Ballot line number: %d" % line_number)
+            reraise(err)
+
+        return contest_id, choices, line_number
+    
+    def read_ballot2(self, f, line, line_number):
+        ### OAB Ballet length also hardcoded (implicitly) here
+
+        
+        try:
+            parsed_line = self._parse_ballot_line(line, 1)
+
+            try:
+                contest_id, voter_id, _, choice = parsed_line
 
                 choices = [choice]
 
@@ -382,7 +415,7 @@ class SF2008Format(object):
         parsed_line = None
         try:
             parsed_line = self.parse_line(line)
-            contest_id, voter_id, rank, choice = parsed_line
+            contest_id, voter_id, rank, _ = parsed_line
 
             if expected_contest_id is not None and contest_id != expected_contest_id:
                 raise Exception("Expected contest id %d but got %d." % (expected_contest_id, contest_id))

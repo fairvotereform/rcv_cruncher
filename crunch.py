@@ -28,7 +28,6 @@ from cruncher.argparser import create_argparser
 from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher import common
 from cruncher.common import find_in_map
-from cruncher import downloading
 from cruncher.input_format import parse_input_format
 from cruncher.parser import parse_master, BallotParser, Contest
 from cruncher.reporter import Reporter
@@ -203,6 +202,7 @@ class BallotHandler(object):
             candidate = effective_choices[index]
             stats.ballot_position[candidate][index] += 1
 
+        ### Ballot length hard coded here:
         if number_ranked == 3 and self.set_of_finalists.isdisjoint(effective_choices):
             stats.truly_exhausted[first_round] += 1
         if winner in effective_choices:

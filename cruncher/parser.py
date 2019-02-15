@@ -5,8 +5,6 @@
 
 import codecs
 import logging
-import os
-import sys
 
 from .common import reraise, Error
 
@@ -63,7 +61,7 @@ class Contest(object):
         candidate_map = self.candidate_dict
         names = candidate_map.values()
         count = len(names)
-        for (candidate_id, name) in candidate_map.iteritems():
+        for (_, name) in candidate_map.iteritems():
             if name.upper() == "WRITE-IN":
                 count -= 1
         return count

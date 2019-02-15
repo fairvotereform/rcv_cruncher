@@ -6,8 +6,6 @@
 
 import codecs
 import logging
-import os
-import sys
 
 import pystache
 
@@ -384,7 +382,7 @@ class Reporter(object):
 
         lines = make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
 
-        for candidate, name, first_round in self.sorted_candidates:
+        for candidate, name, _ in self.sorted_candidates:
             line = self.make_three_sum_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
             lines.append(line)
 
@@ -400,7 +398,7 @@ class Reporter(object):
                       self.make_aggregate_number_ranked_line(LABELS['non-finalists'], contest.non_finalist_ids)])
         lines.append("")
 
-        for candidate_id, name, first_round in self.sorted_candidates:
+        for candidate_id, name, _ in self.sorted_candidates:
             number_ranked = stats.get_number_ranked(candidate_id)
             line = self.make_three_sum_line(name, number_ranked)
             lines.append(line)
@@ -456,7 +454,6 @@ class Reporter(object):
         self.text = ""
 
         # TODO: eliminate the need to store the arguments as a tuple.
-        contest_label = contest_info[0]
         contest = contest_info[1]
         stats = contest_info[2]
 
@@ -549,7 +546,7 @@ class Reporter(object):
 
         for data in condorcet_data:
             # BOB  60% (600 / 1000 = 20% of first-round continuing)
-            percent_value, win_count, total_count, name = data
+            _, win_count, total_count, name = data
 
             label_string = self.label_string(name)
             percent_breakdown = make_percent_breakdown(win_count, total_count)
