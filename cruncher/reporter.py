@@ -167,21 +167,18 @@ class ContestWriter(object):
         total_counts = top_totals.keys()
         total_counts.sort()
         total_counts.reverse()
-        index_width = len(str(how_many))
 
         for count in total_counts:
             elements = top_totals[count]
-            prefix = "{index:{index_width}}.".format(index=index, index_width=index_width)
+            prefix = "{index:{index_width}}.".format(index=index, index_width=len(str(how_many)))
             for element in elements:
                 numerics = make_percent_breakdown(count, denominator)
-                info = display(element)
                 # Without making the format string unicode, we got an
                 # error like the following if "info" contained a non-ascii
                 # character:
                 # > UnicodeEncodeError: 'ascii' codec can't encode character
                 #  u'\xd1' in position 46: ordinal not in range(128)
-                line = u"{0} {1}  {2}".format(prefix, numerics, info)
-                lines.append(line)
+                lines.append(u"{0} {1}  {2}".format(prefix, numerics, display(element)))
             # If there was a tie, we might need to jump ahead more than one.
             index += len(elements)
 
@@ -206,20 +203,20 @@ class Reporter(object):
     candidate_indent = 12
 
     def __init__(self, election_name, template_path):
-	print "initializing...."
+        print "initializing...."
         self.election_name = election_name
         self.template_path = template_path
 
         self.contest_infos = []
 
     def add_contest(self, contest_info, download_metadata):
-	print "Adding constest.."
-        contest_config = contest_info.config
+        print "Adding constest.."
+        contest_config = contest_info['config']
 
-        contest_label = contest_config.label
-        contest = contest_info.contest
-        round_by_round_url = contest_config.round_by_round_url
-        stats = contest_info.stats
+        contest_label = contest_config['label']
+        contest = contest_info['contest']
+        round_by_round_url = contest_config.get('url')
+        stats = contest_info['stats']
 
         self.contest_infos.append((contest_label, contest, stats,
                                    download_metadata, round_by_round_url))
@@ -461,8 +458,7 @@ class Reporter(object):
         self.stats = stats
 
         labels = LABELS.values() + contest.candidate_dict.values()
-        max_label_length = max([len(label) for label in labels])
-        self.left_indent = max_label_length + 1  # for extra space.
+        self.left_indent = max([len(label) for label in labels]) + 1  # for extra space.
 
         # Sort candidates in descending order by first-round totals.
         triples = []
@@ -638,33 +634,30 @@ class Reporter(object):
                 contest_name += " (%d finalists)" % len(contest.finalists)
 
             title = contest_name + " RCV Stats"
-            header_line = make_header_line(title, "=")
 
-            toc_dict = {'candidate_count': contest.candidate_count,
-                        'label': contest_label,
-                        'index': index,
-                        'text': contest_name,
-                        'elimination_rounds': contest.elimination_rounds,
-            }
+
+            toc_dicts.append({
+                'candidate_count': contest.candidate_count,
+                'label': contest_label,
+                'index': index,
+                'text': contest_name,
+                'elimination_rounds': contest.elimination_rounds,
+            })
 
             url = metadata.url
             datetime_string = self.format_metadata_datetime(metadata) if url else ''
-
             contest_report = self.make_contest(info)
-            contest_dict = {'label': contest_label,
-                            'title': title,
-                            'line': header_line,
-                            'round_by_round_url': round_by_round_url,
-                            'body': contest_report,
-                            'download_urls': url,
-                            'download_datetime': datetime_string,
-                            'elimination_rounds': contest.elimination_rounds,
-            }
+            contest_dicts.append({
+                'label': contest_label,
+                'title': title,
+                'line': make_header_line(title, "="),
+                'round_by_round_url': round_by_round_url,
+                'body': contest_report,
+                'download_urls': url,
+                'download_datetime': datetime_string,
+                'elimination_rounds': contest.elimination_rounds,
+            })
 
-
-
-            toc_dicts.append(toc_dict)
-            contest_dicts.append(contest_dict)
 
         generated_datetime_string = self.format_datetime_tzname(generated_datetime, generated_tzname)
 
@@ -679,6 +672,5 @@ class Reporter(object):
                   'contest': contest_dicts,
                   }
 
-        s = render_template(self.template_path, values)
+        return render_template(self.template_path, values)
 
-        return s

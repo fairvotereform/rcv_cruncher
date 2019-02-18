@@ -31,14 +31,13 @@ from cruncher.common import find_in_map
 from cruncher.input_format import parse_input_format
 from cruncher.parser import parse_master, BallotParser, Contest
 from cruncher.reporter import Reporter
-from cruncher.stats import increment_dict_total, Stats
+from cruncher.stats import Stats
 
 
 _log = logging.getLogger(__name__)
 
 
 ENCODING_OUTPUT_FILE = 'utf-8'
-
 STATS_HEADER = """\
 RCV RESULTS KEY
 
@@ -103,144 +102,12 @@ def configure_logging(logging_level=None):
 
     _log.debug("Debug logging enabled.")
 
-
-class ContestConfig(object):
-
-    def __init__(self, data):
-        self.name = data.get('name')
-        self.label = data.get('label') or data['source']
-        self.winner = data['winner']
-        # An empty list of finalists means all candidates (no elimination).
-        self.finalists = data['finalists'] or []
-        self.round_by_round_url = data.get('url')
-
-        # For certain special cases, we also need access to the original config.
-        self.data = data
-
-    def __repr__(self):
-        return "<ContestConfig: %r>" % repr(self.data)
-
-
-class ContestInfo(object):
-
-    def __init__(self, contest, config, stats, ballot_handler):
-        self.ballot_handler = ballot_handler
-        self.config = config
-        self.contest = contest
-        self.stats = stats
-
-    def __repr__(self):
-        return "<ContestInfo: contest={0}>".format(self.contest)
-
-
-class BallotHandler(object):
-
-    def __init__(self, analyzer, contest, stats):
-        """
-        Construct an instance.
-
-        """
-        candidates = contest.candidate_ids
-        winner = contest.winner_id
-        finalists = contest.finalists
-        non_winning_finalists = contest.non_winning_finalists
-
-        self.analyzer = analyzer
-        self.stats = stats
-
-        self.winner = winner
-        self.set_of_finalists = set(finalists)
-        self.non_winning_finalists = non_winning_finalists
-        self.non_winners = list(set(candidates) - set([winner]))
-
-    def on_ballot(self, ballot):
-        """
-        Update stats based on the given ballot.
-
-        """
-        analyzer = self.analyzer
-        stats = self.stats
-        winner = self.winner
-
-        stats.total += 1
-
-        first_round = analyzer.get_first_round(ballot)
-
-        if first_round == self.analyzer.undervote:
-            stats.undervotes += 1
-            return
-
-        # Now check for various types of irregularities.
-        duplicate_count = analyzer.count_duplicates(ballot)
-        if duplicate_count > 1:
-            stats.duplicates[duplicate_count] += 1
-            has_duplicate = True
-        else:
-            has_duplicate = False
-
-        has_overvote = analyzer.has_overvote(ballot)
-        has_skipped = analyzer.has_skipped(ballot)
-
-        if has_overvote:
-            stats.has_overvote += 1
-        if has_skipped:
-            stats.has_skipped += 1
-        if has_overvote or has_duplicate or has_skipped:
-            stats.irregular += 1
-
-        if first_round == self.analyzer.overvote:
-            stats.first_round_overvotes += 1
-            # Return since all remaining analysis needs effective choices.
-            return
-
-        effective_choices = analyzer.get_effective_choices(ballot)
-        number_ranked = len(effective_choices)
-
-        stats.add_number_ranked(first_round, number_ranked)
-
-        for index in range(number_ranked):
-            candidate = effective_choices[index]
-            stats.ballot_position[candidate][index] += 1
-
-        ### Ballot length hard coded here:
-        if number_ranked == 3 and self.set_of_finalists.isdisjoint(effective_choices):
-            stats.truly_exhausted[first_round] += 1
-        if winner in effective_choices:
-            stats.ranked_winner[first_round] += 1
-        if not self.set_of_finalists.isdisjoint(effective_choices):
-            stats.ranked_finalist[first_round] += 1
-        else:
-            # Then no finalist is validly ranked on the ballot.
-            if self.analyzer.overvote in ballot:
-                stats.exhausted_by_overvote += 1
-        if analyzer.did_sweep(ballot, first_round):
-            stats.did_sweep[first_round] += 1
-
-        if analyzer.beats_challengers(ballot, winner, self.non_winning_finalists):
-            stats.final_round_winner_total += 1
-
-        # Calculate condorcet pairs against winner.
-        for non_winner in self.non_winners:
-            did_winner_win = analyzer.beats_challenger(ballot, winner, non_winner)
-            if did_winner_win is None:
-                continue
-            if did_winner_win:
-                stats.add_condorcet_winner(winner, non_winner)
-            else:
-                stats.add_condorcet_winner(non_winner, winner)
-
-        # Track orderings and combinations.
-        increment_dict_total(stats.combinations, frozenset(effective_choices))
-        increment_dict_total(stats.orderings, effective_choices)
-
-
 def find_candidate_id(candidate_dict, name_to_find):
     return find_in_map(candidate_dict, name_to_find)
 
-
 def get_contest_id(contest_config, contest_ids):
     """Return the contest_id for a contest_config."""
-    contest_name = contest_config.name
+    contest_name = contest_config.get('name')
     if len(contest_ids) == 1:
         # The contest will not have a name configured if there is only one.
         assert contest_name is None
@@ -259,22 +126,19 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
     for contest_config in contest_configs:
         contest_id = get_contest_id(contest_config, contest_ids)
         contest_name, candidate_dict = contest_dict[contest_id]
-
-        winner = contest_config.winner
-        finalists = contest_config.finalists
-
-        winner_id = find_candidate_id(candidate_dict, winner)
-
+        winner_id = find_candidate_id(candidate_dict, contest_config['winner'])
+        
         finalist_ids = []
-        for candidate in finalists:
-            finalist_id = find_candidate_id(candidate_dict, candidate)
-            finalist_ids.append(finalist_id)
+        for candidate in contest_config['finalists']:
+            finalist_ids.append(find_candidate_id(candidate_dict, candidate))
 
-        contest = Contest(contest_name, candidate_dict, winner_id, finalist_ids)
-        stats = Stats(candidates=contest.candidate_ids, winner_id=contest.winner_id)
-        ballot_handler = BallotHandler(analyzer, contest, stats)
+        contest_info = {
+            'contest': Contest(contest_name, candidate_dict, winner_id, finalist_ids),
+            'config': contest_config, 
+            'stats': Stats(candidates=candidate_dict.keys(), winner_id=winner_id),
+            'analyzer': analyzer,
+        }
 
-        contest_info = ContestInfo(contest, contest_config, stats, ballot_handler)
         contest_infos[contest_id] = contest_info
 
     return contest_infos
@@ -299,14 +163,11 @@ def get_download_paths(election_label, input_format, input_config,
         # Then each contest is contained in a separate file.
 
         # This can be a string or list of strings.
-        try:
-            election_sources = input_config['source']
-        except KeyError:
-            raise Exception("input_config: {0}".format(input_config))
+        election_sources = input_config['source']
         if isinstance(election_sources, str):
             election_sources = [election_sources]
         for contest_config in contest_configs:
-            label = contest_config.label
+            label = contest_config['label']
 
             ### OAB
             urls = ["none"] #[source % label for source in election_sources]
@@ -321,8 +182,7 @@ def get_download_paths(election_label, input_format, input_config,
         if input_config['type'] == 'sf-2008':
             path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
         else:
-            ###path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
-            path_pair = input_format.get_data(election_label, election_label, contest_config, data_dir)
+            path_pair = input_format.get_data(contest_config)
         path_infos.append((configs, path_pair))
 
     return path_infos
@@ -349,49 +209,41 @@ def parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 
 
 def main(sys_argv):
+    import pdb; pdb.set_trace()
+
     start_time = datetime.now()
+    ns = create_argparser().parse_args(sys_argv[1:])
 
-    args = sys_argv[1:]
-
-    parser = create_argparser()
-    ns = parser.parse_args(args)
-
-    config_path = ns.config_path
-    data_dir = ns.data_dir
-    output_dir = ns.output_dir
-    suppress_download = ns.suppress_download
-
-
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
+    if not os.path.exists(ns.output_dir):
+        os.mkdir(ns.output_dir)
 
     configure_logging(logging.DEBUG)
 
-    election_config = common.unserialize_yaml_file(config_path)
+    election_config = common.unserialize_yaml_file(ns.config_path)
 
     election_label = election_config['election_label']
     election_name = election_config['election_name']
     input_config = election_config['input_format']
-    
 
-    input_format = parse_input_format(input_config, suppress_download=suppress_download)
+    input_format = parse_input_format(input_config, suppress_download=ns.suppress_download)
     analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
 
     utc_now = datetime.utcnow()
     reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
 
-    contests_config = election_config['contests']
     contest_configs = []
-    for data in contests_config:
-        contest_config = ContestConfig(data)
-        contest_configs.append(contest_config)
+    for data in election_config['contests']:
+        data['label'] = data.get('label') or data['source']
+        data['finalists'] = data['finalists'] or []
+        contest_configs.append(data)
 
     # Download all data before trying to process.  This simplifies certain
     # types of troubleshooting because we can turn off downloading for
     # subsequent runs.
 
+    ### this should go away, just add/change feilds of YAML
     download_infos = get_download_paths(election_label, input_format, input_config,
-                                       contest_configs, data_dir)
+                                       contest_configs, ns.data_dir)
 
     #candidate count calculated
     for contest_configs, path_pair in download_infos:
@@ -406,7 +258,7 @@ def main(sys_argv):
         # Windows seems to have trouble with some unicode characters, e.g. the "Ó" in GASCÓN.
         _log.warn("Error printing report to console (probably because of special characters.")
 
-    output_path = os.path.join(output_dir, "rcv_stats_%s.html" % election_label)
+    output_path = os.path.join(ns.output_dir, "rcv_stats_%s.html" % election_label)
     common.write_to_file(report, output_path)
 
     print "Completed in: %s" % (datetime.now() - start_time)

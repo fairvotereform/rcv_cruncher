@@ -28,13 +28,11 @@ def parse_input_format(config, suppress_download=False):
     format_type = config['type']
 
     if format_type == 'rcv-calc':
-        cls = RCVCalcFormat
+        return RCVCalcFormat(config)
     elif format_type == 'sf-2008':
-        cls = SF2008Format
+        return SF2008Format(config, suppress_download=suppress_download)
     else:
         raise Exception("Unknown input format: %s" % repr(format_type))
-
-    return cls(config, suppress_download=suppress_download)
 
 def get_path(dir_path, file_glob):
     """
@@ -135,7 +133,7 @@ class RCVCalcFormat(object):
 
     """
 
-    def __init__(self, config,**kwargs):
+    def __init__(self, config):
 
         ###OAB
         self.undervote = '--'
@@ -146,13 +144,13 @@ class RCVCalcFormat(object):
     def get_download_metadata(self, _):
         return downloading.DownloadMetadata()
 
-    def get_data(self, election_label, contest_label, contest_config, data_dir):
+    def get_data(self, contest_config):
         """
         Return master and ballot paths.
 
         """
 
-        file_prefix = contest_config.data['input_data']
+        file_prefix = contest_config['input_data']
 
         master_file = "%s-Cntl.txt" % file_prefix
         ballot_file = "%s-Ballots.txt" % file_prefix
@@ -202,7 +200,7 @@ class RCVCalcFormat(object):
 
         return contest_dict
 
-    def read_ballot(self, f, line, line_number):
+    def read_ballot(self, _, line, line_number):
         """
         Read and return an RCV ballot.
 
@@ -224,7 +222,7 @@ class RCVCalcFormat(object):
 
 class SF2008Format(object):
 
-    def __init__(self, config, output_encoding=None, suppress_download=False):
+    def __init__(self, config, suppress_download=False):
 
         self.undervote = -1
         self.overvote  = -2
