@@ -1,0 +1,32 @@
+Title: D05 : MEMBER, BOARD OF SUPERVISORS DIST. 5
+SubTitle: San Francisco, CA, 2004, November
+Candidate: RM : Ross Mirkarimi
+Candidate: MO : Michael E. O'connor
+Candidate: PH : Phillip House
+Candidate: RH : Robert Haaland
+Candidate: EG : Emmett Gilman
+Candidate: JD : Julian Davis
+Candidate: LF : Lisa Feldstein
+Candidate: SK : Susan C. King
+Candidate: DK : Dan Kalb
+Candidate: TS : Tys Sniffen
+Candidate: FS : Francis Somesel
+Candidate: JS : Jim Siegel
+Candidate: PS : Phoenix Streets
+Candidate: AS : Andrew Sullivan
+Candidate: PC : Patrick M. Ciocca
+Candidate: BW : Brett Wheeler
+Candidate: VW : Vivian Wilder
+Candidate: NW : Nick Waugh
+Candidate: RA : Rob Anderson
+Candidate: HB : H. Brown
+Candidate: JB : Joseph Blue
+Candidate: BB : Bill Barnes
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: D05-Ballots.txt

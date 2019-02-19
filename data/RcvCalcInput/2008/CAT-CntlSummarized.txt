@@ -1,0 +1,16 @@
+FormattedFor: RcvCalc 0.5a
+Title: CAT : County Assessor - Treasurer
+SubTitle: 
+Candidate: DW : Dale Washam
+Candidate: TL : Terry Lee
+Candidate: JS : Jan Shabro
+Candidate: BT : Bernardo Tuma
+Candidate: BG : Barbara Gelman
+Candidate: BD : Beverly Davidson
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod:  Ask
+MultipleEliminations: Allow
+StartBallots:
+Include: CAT-RcvInBallotsSummarized.txt 

@@ -1,0 +1,14 @@
+FormattedFor: RcvCalc 0.5a
+Title: CE : County Executive
+SubTitle: 
+Candidate: ML : Mike Lonergan
+Candidate: PM : Pat McCarthy
+Candidate: CG : Calvin Goings
+Candidate: SB : Shawn Bunney
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod:  Ask
+MultipleEliminations: Allow
+StartBallots:
+Include: CE-RcvInBallotsSummarized.txt 

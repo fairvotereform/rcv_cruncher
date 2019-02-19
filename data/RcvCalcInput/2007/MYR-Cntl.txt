@@ -1,0 +1,27 @@
+Title: MYR : Mayor
+SubTitle: San Francisco, CA, 2007, November
+Candidate: GD : George Davis
+Candidate: GK : Grasshopper Alec Kaplan
+Candidate: JR : John Rinaldi
+Candidate: HB : H. Brown
+Candidate: AS : Ahimsa Porter Sumchai
+Candidate: MP : Michael Powers
+Candidate: WP : Wilma Pang
+Candidate: GN : Gavin Newsom
+Candidate: LH : Lonnie S. Holmes
+Candidate: HH : Harold M. Hoogasian
+Candidate: JW : Josh Wolf
+Candidate: QM : Quintin Mecke
+Candidate: WIRH : Write-In Rodney Hauge
+Candidate: WIKK : Write-In Kenneth Kahn
+Candidate: WIRK : Write-In Robert Kully
+Candidate: WIRM : Write-In Robert McCullough
+Candidate: WIPM : Write-In Patrick Monette-Shaw
+Candidate: WILS : Write-In Lea Sherman
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: MYR-Ballots.txt

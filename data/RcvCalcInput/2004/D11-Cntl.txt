@@ -1,0 +1,18 @@
+Title: D11 : MEMBER, BOARD OF SUPERVISORS DIST. 11
+SubTitle: San Francisco, CA, 2004, November
+Candidate: JM : Jose Medina
+Candidate: ML : Myrna Viray Lim
+Candidate: AG : Anita Grier
+Candidate: FS : Fil M. Silverio
+Candidate: RS : Rebecca Reynolds Silverberg
+Candidate: GS : Gerardo Sandoval
+Candidate: RB : Rolando A. Bonialla
+Candidate: TY : Tom Yuen
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: D11-Ballots.txt
