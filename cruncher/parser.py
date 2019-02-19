@@ -14,21 +14,18 @@ _log = logging.getLogger(__name__)
 
 ENCODING_DATA_FILES  = 'utf-8'
 
-def on_ballot(ballot, analyzer, contest, stats):
+def on_ballot(ballot, contest_info):
     """
     Update stats based on the given ballot.
 
     """
 
-    candidates = contest.candidate_ids
-    winner = contest.winner_id
-    finalists = contest.finalists
-    non_winning_finalists = contest.non_winning_finalists
+    analyzer = contest_info['analyzer']
+    stats = contest_info['stats']
 
+    winner = contest_info['winner_id']
 
-    set_of_finalists = set(finalists)
-    non_winners = list(set(candidates) - set([winner]))
-
+    set_of_finalists = set(contest_info['finalists'])
 
     stats.total += 1
 
@@ -84,11 +81,11 @@ def on_ballot(ballot, analyzer, contest, stats):
     if analyzer.did_sweep(ballot, first_round):
         stats.did_sweep[first_round] += 1
 
-    if analyzer.beats_challengers(ballot, winner, non_winning_finalists):
+    if analyzer.beats_challengers(ballot, winner, contest_info['non_winning_finalists']):
         stats.final_round_winner_total += 1
 
     # Calculate condorcet pairs against winner.
-    for non_winner in non_winners:
+    for non_winner in list(set(contest_info['candidate_ids']) - set([winner])):
         did_winner_win = analyzer.beats_challenger(ballot, winner, non_winner)
         if did_winner_win is None:
             continue
@@ -107,47 +104,6 @@ def parse_master(input_format, path):
         contest_dict = input_format.parse_master_file(f)
 
     return contest_dict
-
-
-class Contest(object):
-
-    def __init__(self, name, candidate_dict, winner_id, other_finalist_ids):
-
-        candidate_ids = candidate_dict.keys()
-
-        if not other_finalist_ids:
-            # Then all candidates are finalists.
-            other_finalist_ids = candidate_ids
-            elimination_rounds = False
-        else:
-            elimination_rounds = True
-
-        # Make sure the winner is not a finalist to avoid duplicates.
-        other_finalist_ids = list(set(other_finalist_ids) - set([winner_id]))
-
-        finalists = [winner_id] + other_finalist_ids
-
-        self.name = name
-        self.winner_id = winner_id
-        self.candidate_dict = candidate_dict
-
-        # TODO: change from ids.
-        self.candidate_ids = candidate_ids
-        self.non_winning_finalists = other_finalist_ids
-        self.finalists = finalists
-        self.non_finalist_ids = list(set(candidate_ids) - set(finalists))
-        self.elimination_rounds = elimination_rounds
-
-    @property
-    def candidate_count(self):
-        # Don't include WRITE-IN as a candidate.
-        candidate_map = self.candidate_dict
-        names = candidate_map.values()
-        count = len(names)
-        for (_, name) in candidate_map.iteritems():
-            if name.upper() == "WRITE-IN":
-                count -= 1
-        return count
 
 
 class BallotParser(object):
@@ -193,7 +149,7 @@ class BallotParser(object):
 
                     contest_id, ballot, line_number = input_format.read_ballot(f, line, line_number)
                     contest_info = contest_infos[contest_id]
-                    on_ballot(ballot, contest_info["analyzer"], contest_info["contest"], contest_info["stats"])
+                    on_ballot(ballot, contest_info)
 
             except Error:
                 raise

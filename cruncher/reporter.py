@@ -137,7 +137,7 @@ class ContestWriter(object):
         self.contest = contest
 
     def get_candidate_name(self, candidate_id):
-        name = self.contest.candidate_dict[candidate_id]
+        name = self.contest['candidate_dict'][candidate_id]
         return name
 
     def display_ordering(self, candidate_ids):
@@ -208,18 +208,6 @@ class Reporter(object):
         self.template_path = template_path
 
         self.contest_infos = []
-
-    def add_contest(self, contest_info, download_metadata):
-        print "Adding constest.."
-        contest_config = contest_info['config']
-
-        contest_label = contest_config['label']
-        contest = contest_info['contest']
-        round_by_round_url = contest_config.get('url')
-        stats = contest_info['stats']
-
-        self.contest_infos.append((contest_label, contest, stats,
-                                   download_metadata, round_by_round_url))
 
     def rounded_percent_string(self, part, whole):
         """
@@ -305,7 +293,7 @@ class Reporter(object):
         if total is None:
             total = sum(values)
 
-        def format(strings):
+        def equation(strings):
             if len(strings) > 3:
                 last = strings.pop()
             else:
@@ -321,7 +309,7 @@ class Reporter(object):
             # Then the 100% doesn't say more.
             percent_strings.pop()
 
-        s = "%s %s  %s" % (self.label_string(label), format(value_strings), format(percent_strings))
+        s = "%s %s  %s" % (self.label_string(label), equation(value_strings), equation(percent_strings))
 
         return s
 
@@ -389,10 +377,10 @@ class Reporter(object):
 
         lines = make_section_title("Number of distinct candidates validly ranked (3 + 2 + 1), by first-round choice")
 
-        lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest.candidate_ids),
-                      self.make_aggregate_number_ranked_line(LABELS['winner'], [contest.winner_id]),
-                      self.make_aggregate_number_ranked_line(LABELS['finalists'], contest.finalists),
-                      self.make_aggregate_number_ranked_line(LABELS['non-finalists'], contest.non_finalist_ids)])
+        lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest['candidate_ids']),
+                      self.make_aggregate_number_ranked_line(LABELS['winner'], [contest['winner_id']]),
+                      self.make_aggregate_number_ranked_line(LABELS['finalists'], contest['finalists']),
+                      self.make_aggregate_number_ranked_line(LABELS['non-finalists'], contest['non_finalist_ids'])])
         lines.append("")
 
         for candidate_id, name, _ in self.sorted_candidates:
@@ -418,7 +406,7 @@ class Reporter(object):
 
         winner_total = stats.final_round_winner_total
 
-        lines = make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest.finalists))
+        lines = make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest['finalists']))
 
         total_label = None
         lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing, total_label=total_label))
@@ -451,27 +439,27 @@ class Reporter(object):
         self.text = ""
 
         # TODO: eliminate the need to store the arguments as a tuple.
-        contest = contest_info[1]
-        stats = contest_info[2]
+        contest = contest_info[0]
+        stats = contest_info[0]['stats']
 
         # TODO: eliminate the need to set self.stats.
         self.stats = stats
 
-        labels = LABELS.values() + contest.candidate_dict.values()
+        labels = LABELS.values() + contest['candidate_dict'].values()
         self.left_indent = max([len(label) for label in labels]) + 1  # for extra space.
 
         # Sort candidates in descending order by first-round totals.
         triples = []
-        for candidate_id, name in contest.candidate_dict.iteritems():
+        for candidate_id, name in contest['candidate_dict'].iteritems():
             first_round = stats.get_first_round(candidate_id)
             triples.append((first_round, candidate_id, name))
         triples.sort()
         triples.reverse()
         self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
 
-        winner_header = "%s (%d candidates)" % (LABELS['winner'], contest.candidate_count)
-        self.add_candidate_names(winner_header, [contest.winner_id], contest.candidate_dict)
-        self.add_candidate_names(LABELS['finalists'], contest.finalists, contest.candidate_dict)
+        winner_header = "%s (%d candidates)" % (LABELS['winner'], contest['candidate_count'])
+        self.add_candidate_names(winner_header, [contest['winner_id']], contest['candidate_dict'])
+        self.add_candidate_names(LABELS['finalists'], contest['finalists'], contest['candidate_dict'])
 
         self.write_value(LABELS['total'], stats.total, total=stats.total, total_label='total')
         self.skip()
@@ -503,7 +491,7 @@ class Reporter(object):
 
         self.add_section_title("Ballots validly ranking the winner, by first-round choice")
 
-        self.add_first_round_percent_data(LABELS['all'], stats.ranked_winner, contest.candidate_ids)
+        self.add_first_round_percent_data(LABELS['all'], stats.ranked_winner, contest['candidate_ids'])
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
@@ -511,7 +499,7 @@ class Reporter(object):
 
         self.add_section_title("Ballots validly ranking a finalist, by first-round choice")
 
-        self.add_first_round_percent_data(LABELS['all'], stats.ranked_finalist, contest.candidate_ids)
+        self.add_first_round_percent_data(LABELS['all'], stats.ranked_finalist, contest['candidate_ids'])
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
@@ -519,7 +507,7 @@ class Reporter(object):
 
         self.add_section_title("Ballots ranking the same candidate 3 times")
 
-        self.add_first_round_percent_data(LABELS['all'], stats.did_sweep, contest.candidate_ids)
+        self.add_first_round_percent_data(LABELS['all'], stats.did_sweep, contest['candidate_ids'])
         self.skip()
 
         for candidate_id, name, first_round in self.sorted_candidates:
@@ -533,9 +521,9 @@ class Reporter(object):
         # TODO: move the condorcet code below into a method.
         condorcet_data = []
         for candidate_id, name, first_round in self.sorted_candidates:
-            if candidate_id == contest.winner_id:
+            if candidate_id == contest['winner_id']:
                 continue
-            win_count, total_count = stats.get_condorcet_support(contest.winner_id, candidate_id)
+            win_count, total_count = stats.get_condorcet_support(contest['winner_id'], candidate_id)
             new_data = (percent(win_count, total_count), win_count, total_count, name)
             condorcet_data.append(new_data)
         condorcet_data.sort()
@@ -554,7 +542,7 @@ class Reporter(object):
 
             self.add_text(s)
 
-        condorcet_winner = stats.is_condorcet_winner(contest.winner_id, contest.candidate_ids)
+        condorcet_winner = stats.is_condorcet_winner(contest['winner_id'], contest['candidate_ids'])
         self.add_text("\n(condorcet_winner=%s)" % "YES" if condorcet_winner else "NO")
         self.add_section_title("Involuntary exhausted ballots, by first choice")
 
@@ -605,12 +593,12 @@ class Reporter(object):
         contest_infos = list(self.contest_infos)
 
         def key(info):
-            metadata = info[3]
+            metadata = info[-1]
             return metadata.iso_datetime_utc
 
         contest_infos.sort(key=key)
         oldest_info = contest_infos[0]
-        metadata = oldest_info[3]
+        metadata = oldest_info[-1]
 
         return metadata
 
@@ -623,25 +611,32 @@ class Reporter(object):
         for info in self.contest_infos:
             index += 1
 
-            contest_label = info[0]
-            contest = info[1]
-            metadata = info[3]
-            round_by_round_url = info[4]
+            contest_label = info[0]['config']['label']
+            metadata = info[-1]
+            round_by_round_url = info[0].get('url')
 
-            contest_name = contest.name
+            contest_name = info[0]['contest_name']
+            contest_finalists = info[0]['finalists']
+            contest_elimination_rounds = info[0]['elimination_rounds']
 
-            if contest.elimination_rounds and len(contest.finalists) > 2:
-                contest_name += " (%d finalists)" % len(contest.finalists)
+            if contest_elimination_rounds and len(contest_finalists) > 2:
+                contest_name += " (%d finalists)" % len(contest_finalists)
 
             title = contest_name + " RCV Stats"
 
+            names = info[0]['candidate_dict'].values()
+            count = len(names)
+            for name in names:
+                if name.upper() == "WRITE-IN":
+                    count -= 1
 
+            info[0]['candidate_count'] = count
             toc_dicts.append({
-                'candidate_count': contest.candidate_count,
+                'candidate_count': count,
                 'label': contest_label,
                 'index': index,
                 'text': contest_name,
-                'elimination_rounds': contest.elimination_rounds,
+                'elimination_rounds': contest_elimination_rounds,
             })
 
             url = metadata.url
@@ -655,7 +650,7 @@ class Reporter(object):
                 'body': contest_report,
                 'download_urls': url,
                 'download_datetime': datetime_string,
-                'elimination_rounds': contest.elimination_rounds,
+                'elimination_rounds': contest_elimination_rounds,
             })
 
 

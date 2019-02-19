@@ -29,7 +29,7 @@ from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher import common
 from cruncher.common import find_in_map
 from cruncher.input_format import parse_input_format
-from cruncher.parser import parse_master, BallotParser, Contest
+from cruncher.parser import parse_master, BallotParser
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
 
@@ -128,18 +128,35 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
         contest_name, candidate_dict = contest_dict[contest_id]
         winner_id = find_candidate_id(candidate_dict, contest_config['winner'])
         
-        finalist_ids = []
+        other_finalist_ids = []
         for candidate in contest_config['finalists']:
-            finalist_ids.append(find_candidate_id(candidate_dict, candidate))
+            other_finalist_ids.append(find_candidate_id(candidate_dict, candidate))
 
-        contest_info = {
-            'contest': Contest(contest_name, candidate_dict, winner_id, finalist_ids),
+        candidate_ids = candidate_dict.keys()
+        if not other_finalist_ids:
+            # Then all candidates are finalists.
+            other_finalist_ids = candidate_ids
+            elimination_rounds = False
+        else:
+            elimination_rounds = True
+      
+        other_finalist_ids = list(set(other_finalist_ids) - set([winner_id]))
+        finalists = [winner_id] + other_finalist_ids
+
+        contest_infos[contest_id] = {
+            'contest_name': contest_name, 
+            'candidate_dict': candidate_dict,
+            'candidate_ids': candidate_ids,
+            'winner_id': winner_id,
+            'non_winning_finalists': list(set(other_finalist_ids) - set([winner_id])),
+            'non_finalist_ids': list(set(candidate_ids) - set(finalists)),
+            'finalists': finalists,
+            'elimination_rounds': elimination_rounds,
             'config': contest_config, 
-            'stats': Stats(candidates=candidate_dict.keys(), winner_id=winner_id),
-            'analyzer': analyzer,
+            'stats': Stats(candidates=candidate_ids, winner_id=winner_id),
+            'analyzer': analyzer
         }
 
-        contest_infos[contest_id] = contest_info
 
     return contest_infos
 
@@ -205,11 +222,11 @@ def parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
     for contest_config in contest_configs:
         contest_id = get_contest_id(contest_config, contest_ids)
         contest_info = contest_infos[contest_id]
-        reporter.add_contest(contest_info, download_metadata=download_metadata)
+        reporter.contest_infos.append((contest_info, download_metadata))
 
 
 def main(sys_argv):
-    import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
 
     start_time = datetime.now()
     ns = create_argparser().parse_args(sys_argv[1:])
@@ -222,20 +239,18 @@ def main(sys_argv):
     election_config = common.unserialize_yaml_file(ns.config_path)
 
     election_label = election_config['election_label']
-    election_name = election_config['election_name']
     input_config = election_config['input_format']
 
     input_format = parse_input_format(input_config, suppress_download=ns.suppress_download)
     analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
 
-    utc_now = datetime.utcnow()
-    reporter = Reporter(election_name=election_name.upper(), template_path='templates/report.mustache')
+    datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(datetime.utcnow())
+    reporter = Reporter(election_name=election_config['election_name'].upper(), 
+                        template_path='templates/report.mustache')
 
-    contest_configs = []
     for data in election_config['contests']:
         data['label'] = data.get('label') or data['source']
         data['finalists'] = data['finalists'] or []
-        contest_configs.append(data)
 
     # Download all data before trying to process.  This simplifies certain
     # types of troubleshooting because we can turn off downloading for
@@ -243,13 +258,12 @@ def main(sys_argv):
 
     ### this should go away, just add/change feilds of YAML
     download_infos = get_download_paths(election_label, input_format, input_config,
-                                       contest_configs, ns.data_dir)
+                                       election_config['contests'], ns.data_dir)
 
     #candidate count calculated
     for contest_configs, path_pair in download_infos:
         parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 
-    datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(utc_now)
     report = reporter.generate(datetime_local, local_tzname)
 
     try:
