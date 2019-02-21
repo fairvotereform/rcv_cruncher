@@ -6,10 +6,11 @@
 
 import codecs
 import logging
+from datetime import datetime
 
 import pystache
 
-from cruncher.common import reverse_dict
+from cruncher.common import reverse_dict, utc_datetime_to_local_datetime_tzname
 
 _log = logging.getLogger(__name__)
 
@@ -586,8 +587,7 @@ class Reporter(object):
         oldest_info = contest_infos[0]
         return oldest_info[-1]
 
-    def generate(self, generated_datetime, generated_tzname):
-
+    def generate(self):
         toc_dicts = []
         contest_dicts = []
 
@@ -637,8 +637,8 @@ class Reporter(object):
                 'elimination_rounds': contest_elimination_rounds,
             })
 
-
-        generated_datetime_string = self.format_datetime_tzname(generated_datetime, generated_tzname)
+        dt, tz = utc_datetime_to_local_datetime_tzname(datetime.utcnow())
+        generated_datetime_string = self.format_datetime_tzname(dt, tz)
 
         metadata = self.get_oldest_contest_metadata()
         data_datetime_string = self.format_metadata_datetime(metadata) if metadata.url else ''

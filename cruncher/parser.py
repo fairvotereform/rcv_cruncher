@@ -11,9 +11,6 @@ import ballot_analyzer as analyzer
 
 _log = logging.getLogger(__name__)
 
-
-ENCODING_DATA_FILES  = 'utf-8'
-
 def on_ballot(ballot, contest_info):
     """
     Update stats based on the given ballot.
@@ -94,7 +91,7 @@ def on_ballot(ballot, contest_info):
 
 def parse_master(input_format, path):
     _log.info("Reading master file: %s" % path)
-    with codecs.open(path, "r", encoding=ENCODING_DATA_FILES) as f:
+    with codecs.open(path, "r", encoding='utf-8') as f:
         contest_dict = input_format.parse_master_file(f)
 
     return contest_dict

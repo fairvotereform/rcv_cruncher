@@ -23,13 +23,12 @@ _log = logging.getLogger(__name__)
 DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
 
-def parse_input_format(config, suppress_download=False):
+def parse_input_format(config):
     format_type = config['type']
-
     if format_type == 'rcv-calc':
-        return RCVCalcFormat(config)
+        return RCVCalcFormat()
     elif format_type == 'sf-2008':
-        return SF2008Format(config, suppress_download=suppress_download)
+        return SF2008Format()
     else:
         raise Exception("Unknown input format: %s" % repr(format_type))
 
@@ -132,29 +131,13 @@ class RCVCalcFormat(object):
 
     """
 
-    def __init__(self, config):
+    def __init__(self):
 
         self.undervote = None 
         self.overvote  = None 
 
-        self.input_dir = config['input_dir']
-
     def get_download_metadata(self, _):
         return downloading.DownloadMetadata()
-
-    def get_data(self, contest_config):
-        """
-        Return master and ballot paths.
-
-        """
-
-        file_prefix = contest_config['input_data']
-
-        master_file = "%s-Cntl.txt" % file_prefix
-        ballot_file = "%s-Ballots.txt" % file_prefix
-
-        make_path = lambda file_name: os.path.join(self.input_dir, file_name)
-        return  map(make_path, [master_file, ballot_file])
 
     def parse_master_file(self, f):
         """
@@ -176,7 +159,6 @@ class RCVCalcFormat(object):
             elif record_type == 'Candidate':
                 label = parsed[1].strip()
                 name = parsed[2].strip()
-
                 candidate_dict[label] = name
             elif record_type == 'OverVote':
                 overvote = parsed[1].strip()
@@ -188,12 +170,7 @@ class RCVCalcFormat(object):
         self.overvote = overvote
         self.undervote = undervote
 
-        contest_dict = {
-            # ID 1 is a place-holder.  It is not really the ID.
-            1: (contest_name, candidate_dict)
-        }
-
-        return contest_dict
+        return {1: (contest_name, candidate_dict)}
 
     def read_ballot(self, _, line, line_number):
         """
@@ -209,24 +186,36 @@ class RCVCalcFormat(object):
        
         ### OAB 
         choices = [{self.undervote: UNDERVOTE, self.overvote: OVERVOTE}.get(i,i) for i in ballot.split('>')]
-
-        # None is a placeholder for the contest_id.
-
-        ### OAB giving an id
         return int(parts[-3]), choices, line_number
-        ###return None, choices, line_number
+
+def get_data(ns, input_config, election_label, dir_name, urls):
+    """
+    Download data if necessary, and return master and ballot paths.
+
+    """
+    if ns.data_dir is None:
+        raise Exception("Need to provide data directory.")
+
+    ensure_dir(ns.data_dir)
+    election_dir = os.path.join(ns.data_dir, election_label)
+    ensure_dir(election_dir)
+    contest_dir = os.path.join(election_dir, dir_name)
+
+    if not ns.suppress_download:
+        download_data(urls, contest_dir)
+    download_dir = most_recent_download_dir(contest_dir)
+
+    _log.info("Using most recent download directory: %s" % download_dir)
+
+    unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
+    master_path = get_path(unzip_dir, input_config['master_file_glob'])
+    ballot_path = get_path(unzip_dir, input_config['ballot_file_glob'])
+
+    return master_path, ballot_path
+
 
 
 class SF2008Format(object):
-
-    def __init__(self, config, suppress_download=False):
-
-        ballot_file_glob = config['ballot_file_glob']
-        master_file_glob = config['master_file_glob']
-
-        self.ballot_file_glob = ballot_file_glob
-        self.master_file_glob = master_file_glob
-        self.suppress_download = suppress_download
 
     def get_download_metadata(self, master_path):
         unzipped_dir = os.path.dirname(master_path)
@@ -237,34 +226,6 @@ class SF2008Format(object):
         download_metadata.__dict__ = download_dict
 
         return download_metadata
-
-    ###have user enter explicit paths
-    def get_data(self, election_label, dir_name, urls, data_dir):
-        """
-        Download data if necessary, and return master and ballot paths.
-
-        """
-        if data_dir is None:
-            raise Exception("Need to provide data directory.")
-
-        ensure_dir(data_dir)
-
-        election_dir = os.path.join(data_dir, election_label)
-        ensure_dir(election_dir)
-
-        contest_dir = os.path.join(election_dir, dir_name)
-
-        if not self.suppress_download:
-            download_data(urls, contest_dir)
-        download_dir = most_recent_download_dir(contest_dir)
-
-        _log.info("Using most recent download directory: %s" % download_dir)
-
-        unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
-        master_path = get_path(unzip_dir, self.master_file_glob)
-        ballot_path = get_path(unzip_dir, self.ballot_file_glob)
-
-        return master_path, ballot_path
 
     def _parse_master_line(self, line):
         """

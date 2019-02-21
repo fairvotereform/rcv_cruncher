@@ -27,7 +27,7 @@ import sys
 from cruncher.argparser import create_argparser
 from cruncher import common
 from cruncher.common import find_in_map
-from cruncher.input_format import parse_input_format
+from cruncher.input_format import parse_input_format, get_data
 from cruncher.parser import parse_master, parse_ballots
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
@@ -66,32 +66,13 @@ R1-Overvotes:  number of ballots counting as an overvote in the first round.
 
 def configure_logging(logging_level):
     """Configure logging for standard purposes.
-
-    Args:
-      logging_level: The minimum logging level to log.
-                     Defaults to logging.INFO.
-
     """
-    # If the stream does not define an "encoding" data attribute, the
-    # logging module can throw an error like the following:
-    #
-    # Traceback (most recent call last):
-    #   File "/System/Library/Frameworks/Python.framework/Versions/2.6/...
-    #         lib/python2.6/logging/__init__.py", line 761, in emit
-    #     self.stream.write(fs % msg.encode(self.stream.encoding))
-    # LookupError: unknown encoding: unknown
-
-    # Create the handler.
-    #
-    # The stream is a file-like object to which to log.  The stream must
-    # define an "encoding" data attribute, or else logging raises an error.
     formatter = logging.Formatter("%(name)s: [%(levelname)s] %(message)s")
     handler = logging.StreamHandler(sys.stderr)
     handler.setFormatter(formatter)
     logger = logging.getLogger()
     logger.setLevel(logging_level)
     logger.addHandler(handler)
-
     _log.debug("Debug logging enabled.")
 
 def find_candidate_id(candidate_dict, name_to_find):
@@ -141,42 +122,34 @@ def make_contest_infos(contest_configs, contest_dict, contest_ids):
 
     return contest_infos
 
-
-def get_download_paths(election_label, input_format, input_config,
-                       contest_configs, data_dir):
+#separate globbing/download functionality, remove dispatch on type
+def get_download_paths(ns, ec):
     """
     Return an iterable of (contest_configs, path_pair).
     """
-    # A list of (contest_configs, dir_name, urls).
-    # Each element of this list corresponds to a set of files that can
-    # be independently downloaded and parsed.
     download_infos = []
-    if 'single_source' in input_config:
-        # Then all contests are contained in a single file.
-        #
-        # The "single_source" value should be a list.
-        download_infos.append((contest_configs, "election", input_config['single_source']))
+    if 'single_source' in ec['input_format']:
+        download_infos.append((ec['contests'], "election", ec['input_format']['single_source']))
     else:
-        # Then each contest is contained in a separate file.
-
-        # This can be a string or list of strings.
-        election_sources = input_config['source']
+        election_sources = ec['input_format']['source']
         if isinstance(election_sources, str):
             election_sources = [election_sources]
-        for contest_config in contest_configs:
+        for contest_config in ec['contests']:
             label = contest_config['label']
-            ### OAB
             urls = ["none"] #[source % label for source in election_sources]
-            ###            
             download_infos.append(([contest_config], label, urls))
 
     # An iterable of (contest_configs, path_pair).
     path_infos = []
     for configs, dir_name, urls in download_infos:
-        if input_config['type'] == 'sf-2008':
-            path_pair = input_format.get_data(election_label, dir_name, urls, data_dir)
+        if ec['input_format']['type'] == 'sf-2008':
+            path_pair = get_data(ns, ec['input_format'], ec['election_label'], dir_name, urls)
         else:
-            path_pair = input_format.get_data(contest_config)
+            file_prefix = contest_config['input_data']
+            master_file = "%s-Cntl.txt" % file_prefix
+            ballot_file = "%s-Ballots.txt" % file_prefix
+            make_path = lambda file_name: os.path.join(ec['input_format']['input_dir'], file_name)
+            path_pair = map(make_path, [master_file, ballot_file])
         path_infos.append((configs, path_pair))
 
     return path_infos
@@ -198,42 +171,28 @@ def parse_download(input_format, reporter, contest_configs, path_pair):
         contest_info = contest_infos[contest_id]
         reporter.contest_infos.append((contest_info, download_metadata))
 
-
 def main(sys_argv):
-    #import pdb; pdb.set_trace()
     ns = create_argparser().parse_args(sys_argv[1:])
     if not os.path.exists(ns.output_dir):
         os.mkdir(ns.output_dir)
 
     configure_logging(logging.DEBUG)
-
     election_config = common.unserialize_yaml_file(ns.config_path)
-
-    election_label = election_config['election_label']
-    input_config = election_config['input_format']
-
-    input_format = parse_input_format(input_config, suppress_download=ns.suppress_download)
-
-    datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(datetime.utcnow())
-    reporter = Reporter(election_name=election_config['election_name'].upper(), 
-                        template_path='templates/report.mustache')
 
     for data in election_config['contests']:
         data['label'] = data.get('label') or data['source']
         data['finalists'] = data['finalists'] or []
 
-    # Download all data before trying to process.  This simplifies certain
-    # types of troubleshooting because we can turn off downloading for
-    # subsequent runs.
+    #import pdb; pdb.set_trace()
+    download_infos = get_download_paths(ns, election_config)
+    reporter = Reporter(election_name=election_config['election_name'].upper(), 
+                        template_path='templates/report.mustache')
 
-    ### this should go away, just add/change feilds of YAML
-    download_infos = get_download_paths(election_label, input_format, input_config,
-                                       election_config['contests'], ns.data_dir)
-
+    input_format = parse_input_format(election_config['input_format'])
     for contest_configs, path_pair in download_infos:
         parse_download(input_format, reporter, contest_configs, path_pair)
 
-    report = reporter.generate(datetime_local, local_tzname)
+    report = reporter.generate()
 
     try:
         print report
@@ -241,10 +200,9 @@ def main(sys_argv):
         # Windows seems to have trouble with some unicode characters, e.g. the "Ó" in GASCÓN.
         _log.warn("Error printing report to console (probably because of special characters.")
 
-    output_path = os.path.join(ns.output_dir, "rcv_stats_%s.html" % election_label)
+    output_path = os.path.join(ns.output_dir, "rcv_stats_%s.html" % election_config['election_label'])
     common.write_to_file(report, output_path)
-
-
 
 if __name__ == "__main__":
     main(sys.argv)
+
