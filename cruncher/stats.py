@@ -139,15 +139,12 @@ class Stats(object):
     def get_condorcet_support(self, candidate_id1, candidate_id2):
         win_count = self._condorcet[(candidate_id1, candidate_id2)]
         lose_count = self._condorcet[(candidate_id2, candidate_id1)]
-
         total_count = win_count + lose_count
-
         return (win_count, total_count)
 
     def is_condorcet_winner(self, candidate_id, all_candidate_ids):
         """Return whether the given candidate is the Condorcet winner."""
-        other_ids = set(all_candidate_ids) - set([candidate_id])
-        for other_id in other_ids:
+        for other_id in set(all_candidate_ids) - set([candidate_id]):
             win_count, total_count = self.get_condorcet_support(candidate_id, other_id)
             if 1.0 * win_count / total_count <= 0.5:
                 return False

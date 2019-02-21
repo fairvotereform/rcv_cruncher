@@ -47,10 +47,7 @@ def render_template(template_path, values):
     with codecs.open(template_path, "r", encoding=ENCODING_TEMPLATE_FILE) as f:
         template = f.read()
 
-    rendered = pystache.render(template, values)
-
-    return rendered
-
+    return pystache.render(template, values)
 
 def percent(part, whole):
     """
@@ -71,13 +68,10 @@ def ljust(s, length, fill_string):
     while len(s) < length:
         # Rotate through the characters in the fill string.
         s += fill_string[len(s) % fill_length]
-
     return s
-
 
 def make_value_string(value):
     return "%6d" % value
-
 
 def make_percent_string(part, whole):
     """
@@ -85,13 +79,11 @@ def make_percent_string(part, whole):
     """
     return "%5.1f%%" % percent(part, whole)
 
-
 def make_percent_breakdown(value, total):
     percent_string = make_percent_string(value, total)
     value_string = make_value_string(value)
     total_string = make_value_string(total)
     return "%s (%s / %s)" % (percent_string, value_string, total_string)
-
 
 def make_header_line(preceding_text, symbol):
     return len(preceding_text) * symbol
@@ -137,13 +129,11 @@ class ContestWriter(object):
         self.contest = contest
 
     def get_candidate_name(self, candidate_id):
-        name = self.contest['candidate_dict'][candidate_id]
-        return name
+        return self.contest['candidate_dict'][candidate_id]
 
     def display_ordering(self, candidate_ids):
         to_string = self.get_candidate_name
-        text = ", ".join([to_string(id_) for id_ in candidate_ids])
-        return text
+        return ", ".join([to_string(id_) for id_ in candidate_ids])
 
     def display_combination(self, candidate_ids):
         to_string = self.get_candidate_name
@@ -206,7 +196,6 @@ class Reporter(object):
         print "initializing...."
         self.election_name = election_name
         self.template_path = template_path
-
         self.contest_infos = []
 
     def rounded_percent_string(self, part, whole):
@@ -228,7 +217,6 @@ class Reporter(object):
         self.add_text(s)
 
     def skip(self):
-        self.add_text("")
 
     def add_section_title(self, text):
         lines = make_section_title(text)
@@ -352,16 +340,13 @@ class Reporter(object):
         else:
             number_ranked = (0, 0, 0)
 
-        line = self.make_three_sum_line(name, number_ranked)
-
-        return line
+        return self.make_three_sum_line(name, number_ranked)
 
     def add_first_round_percent_data(self, name, value_dict, candidate_ids):
         value = sum([value_dict[candidate_id] for candidate_id in candidate_ids])
         total = sum([self.stats.get_first_round(candidate_id) for candidate_id in candidate_ids])
 
-        s = self.make_percent_line(name, value, total)
-        self.add_text(s)
+        self.add_text(self.make_percent_line(name, value, total))
 
     def make_effective_ballot_position(self, stats):
 
@@ -376,11 +361,11 @@ class Reporter(object):
     def make_number_valid_rankings(self, contest, stats):
 
         lines = make_section_title("Number of distinct candidates validly ranked (3 + 2 + 1), by first-round choice")
-
+        non_finalist_ids = list(set(contest['candidate_ids']) - set(contest['finalists']))
         lines.extend([self.make_aggregate_number_ranked_line(LABELS['all'], contest['candidate_ids']),
                       self.make_aggregate_number_ranked_line(LABELS['winner'], [contest['winner_id']]),
                       self.make_aggregate_number_ranked_line(LABELS['finalists'], contest['finalists']),
-                      self.make_aggregate_number_ranked_line(LABELS['non-finalists'], contest['non_finalist_ids'])])
+                      self.make_aggregate_number_ranked_line(LABELS['non-finalists'], non_finalist_ids)])
         lines.append("")
 
         for candidate_id, name, _ in self.sorted_candidates:
@@ -598,9 +583,7 @@ class Reporter(object):
 
         contest_infos.sort(key=key)
         oldest_info = contest_infos[0]
-        metadata = oldest_info[-1]
-
-        return metadata
+        return oldest_info[-1]
 
     def generate(self, generated_datetime, generated_tzname):
 
@@ -611,13 +594,13 @@ class Reporter(object):
         for info in self.contest_infos:
             index += 1
 
-            contest_label = info[0]['config']['label']
+            contest_label = info[0]['label']
             metadata = info[-1]
             round_by_round_url = info[0].get('url')
 
             contest_name = info[0]['contest_name']
             contest_finalists = info[0]['finalists']
-            contest_elimination_rounds = info[0]['elimination_rounds']
+            contest_elimination_rounds = len(info[0]['finalists']) == len(info[0]['candidate_ids'])
 
             if contest_elimination_rounds and len(contest_finalists) > 2:
                 contest_name += " (%d finalists)" % len(contest_finalists)

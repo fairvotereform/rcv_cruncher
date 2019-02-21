@@ -5,115 +5,110 @@
 
 import logging
 
-
 _log = logging.getLogger(__name__)
 
+UNDERVOTE = -1
+OVERVOTE  = -2
 
-class BallotAnalyzer(object):
+def get_first_round(ballot):
+    """
+    Return what the ballot counts towards in the first round.
 
-    def __init__(self, undervote, overvote):
-        self.overvote = overvote
-        self.undervote = undervote
+    Returns self.UNDERVOTE for an UNDERVOTEd ballot.
 
-    def get_first_round(self, ballot):
-        """
-        Return what the ballot counts towards in the first round.
+    """
+    for choice in ballot:
+        if choice != UNDERVOTE:
+            break
+    return choice
 
-        Returns self.undervote for an undervoted ballot.
+def has_overvote(ballot):
+    return OVERVOTE in ballot
 
-        """
-        for choice in ballot:
-            if choice != self.undervote:
-                break
-        return choice
+def count_duplicates(ballot):
+    """
+    Return the max number of times the same candidate occurs on the ballot.
 
-    def has_overvote(self, ballot):
-        return self.overvote in ballot
+    """
+    duplicate_count = 0
+    choices = set(ballot)
+    for choice in choices:
+        if choice == UNDERVOTE or choice == OVERVOTE:
+            continue
+        count = ballot.count(choice)
+        if count > duplicate_count:
+            duplicate_count = count
+    return duplicate_count
 
-    def count_duplicates(self, ballot):
-        """
-        Return the max number of times the same candidate occurs on the ballot.
+def has_skipped(ballot):
+    ###OAB: voter has skipped a ranking (say the 2nd), and then ranked (say 3rd) for a candidate
+    seen_undervote = False
+    for choice in ballot:
+        if choice == UNDERVOTE:
+            seen_undervote = True
+            continue
+        if seen_undervote:
+            return True
+    return False
 
-        """
-        duplicate_count = 0
-        choices = set(ballot)
-        for choice in choices:
-            if choice == self.undervote or choice == self.overvote:
-                continue
-            count = ballot.count(choice)
-            if count > duplicate_count:
-                duplicate_count = count
-        return duplicate_count
+def get_effective_choices(ballot):
+    """
+    Return the effective choices on the ballot.
 
-    def has_skipped(self, ballot):
-        ###OAB: voter has skipped a ranking (say the 2nd), and then ranked (say 3rd) for a candidate
-        seen_undervote = False
-        for choice in ballot:
-            if choice == self.undervote:
-                seen_undervote = True
-                continue
-            if seen_undervote:
-                return True
-        return False
+    For example:
 
-    def get_effective_choices(self, ballot):
-        """
-        Return the effective choices on the ballot.
+    [UNDERVOTE, A, B] -> [A, B]
+    [UNDERVOTE, A, A] -> [A]
+    [A, OVERVOTE, B] -> [A]
 
-        For example:
+    """
+    effective_choices = []
+    for choice in ballot:
+        if choice == UNDERVOTE or choice in effective_choices:
+            continue
+        if choice == OVERVOTE:
+            break
+        effective_choices.append(choice)
 
-        [UNDERVOTE, A, B] -> [A, B]
-        [UNDERVOTE, A, A] -> [A]
-        [A, OVERVOTE, B] -> [A]
+    # Make the choices hashable (for use in a dict).
+    return tuple(effective_choices)
 
-        """
-        effective_choices = []
-        for choice in ballot:
-            if choice == self.undervote or choice in effective_choices:
-                continue
-            if choice == self.overvote:
-                break
-            effective_choices.append(choice)
+def did_sweep(ballot, candidate_id):
+    for choice in ballot:
+        if choice != candidate_id:
+            return False
+    return True
 
-        # Make the choices hashable (for use in a dict).
-        return tuple(effective_choices)
+def beats_challenger(ballot, candidate, challenger):
+    """
+    Return whether a candidate validly defeats a challenger.
 
-    def did_sweep(self, ballot, candidate_id):
-        for choice in ballot:
-            if choice != candidate_id:
-                return False
-        return True
+    Return None if the ballot is inconclusive.
 
-    def beats_challenger(self, ballot, candidate, challenger):
-        """
-        Return whether a candidate validly defeats a challenger.
+    """
+    for choice in ballot:
+        if choice == OVERVOTE:
+            break
+        if choice == candidate:
+            return True
+        if choice == challenger:
+            return False
 
-        Return None if the ballot is inconclusive.
+    return None
 
-        """
-        for choice in ballot:
-            if choice == self.overvote:
-                break
-            if choice == candidate:
-                return True
-            if choice == challenger:
-                return False
+def beats_challengers(ballot, candidate, challengers):
+    """
+    Return whether a candidate validly defeats challengers.
 
-        return None
+    Return None if the ballot is inconclusive.
 
-    def beats_challengers(self, ballot, candidate, challengers):
-        """
-        Return whether a candidate validly defeats challengers.
+    """
+    for choice in ballot:
+        if choice == OVERVOTE:
+            break
+        if choice == candidate:
+            return True
+        if choice in challengers:
+            return False
 
-        Return None if the ballot is inconclusive.
-
-        """
-        for choice in ballot:
-            if choice == self.overvote:
-                break
-            if choice == candidate:
-                return True
-            if choice in challengers:
-                return False
-
-        return None
+    return None

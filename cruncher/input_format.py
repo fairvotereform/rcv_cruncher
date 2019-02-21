@@ -16,13 +16,12 @@ from .common import reraise
 from .common import write_to_file
 from .common import Error
 from . import downloading
-
+from ballot_analyzer import UNDERVOTE, OVERVOTE
 
 _log = logging.getLogger(__name__)
 
 DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
-
 
 def parse_input_format(config, suppress_download=False):
     format_type = config['type']
@@ -135,9 +134,8 @@ class RCVCalcFormat(object):
 
     def __init__(self, config):
 
-        ###OAB
-        self.undervote = '--'
-        self.overvote  = '++'
+        self.undervote = None 
+        self.overvote  = None 
 
         self.input_dir = config['input_dir']
 
@@ -156,10 +154,7 @@ class RCVCalcFormat(object):
         ballot_file = "%s-Ballots.txt" % file_prefix
 
         make_path = lambda file_name: os.path.join(self.input_dir, file_name)
-
-        paths = map(make_path, [master_file, ballot_file])
-
-        return paths
+        return  map(make_path, [master_file, ballot_file])
 
     def parse_master_file(self, f):
         """
@@ -211,7 +206,9 @@ class RCVCalcFormat(object):
         """
         parts = line.split()
         ballot = parts[-1]
-        choices = ballot.split('>')
+       
+        ### OAB 
+        choices = [{self.undervote: UNDERVOTE, self.overvote: OVERVOTE}.get(i,i) for i in ballot.split('>')]
 
         # None is a placeholder for the contest_id.
 
@@ -223,9 +220,6 @@ class RCVCalcFormat(object):
 class SF2008Format(object):
 
     def __init__(self, config, suppress_download=False):
-
-        self.undervote = -1
-        self.overvote  = -2
 
         ballot_file_glob = config['ballot_file_glob']
         master_file_glob = config['master_file_glob']
@@ -244,6 +238,7 @@ class SF2008Format(object):
 
         return download_metadata
 
+    ###have user enter explicit paths
     def get_data(self, election_label, dir_name, urls, data_dir):
         """
         Download data if necessary, and return master and ballot paths.
@@ -251,9 +246,6 @@ class SF2008Format(object):
         """
         if data_dir is None:
             raise Exception("Need to provide data directory.")
-
-        master_file_glob = self.master_file_glob
-        ballot_file_glob = self.ballot_file_glob
 
         ensure_dir(data_dir)
 
@@ -269,8 +261,8 @@ class SF2008Format(object):
         _log.info("Using most recent download directory: %s" % download_dir)
 
         unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
-        master_path = get_path(unzip_dir, master_file_glob)
-        ballot_path = get_path(unzip_dir, ballot_file_glob)
+        master_path = get_path(unzip_dir, self.master_file_glob)
+        ballot_path = get_path(unzip_dir, self.ballot_file_glob)
 
         return master_path, ballot_path
 
@@ -374,37 +366,6 @@ class SF2008Format(object):
 
         return contest_id, choices, line_number
     
-    def read_ballot2(self, f, line, line_number):
-        ### OAB Ballet length also hardcoded (implicitly) here
-
-        
-        try:
-            parsed_line = self._parse_ballot_line(line, 1)
-
-            try:
-                contest_id, voter_id, _, choice = parsed_line
-
-                choices = [choice]
-
-                line_number += 1
-                line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 2, expected_contest_id=contest_id, expected_voter_id=voter_id)
-                choices.append(parsed_line[3])
-
-                line_number += 1
-                line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 3, expected_contest_id=contest_id, expected_voter_id=voter_id)
-                choices.append(parsed_line[3])
-            except Error:
-                raise
-            except Exception, ex:
-                reraise(Error(ex))
-        except Error, err:
-            err.add("Ballot line number: %d" % line_number)
-            reraise(err)
-
-        return contest_id, choices, line_number
-
     def _parse_ballot_line(self, line, expected_rank, expected_contest_id=None, expected_voter_id=None):
         """
         Return a parsed line, or raise an Exception on failure.
@@ -439,16 +400,14 @@ class SF2008Format(object):
 
         The corresponding return value--
 
-
-
         """
         # TODO: consider having this function return an object.
         contest_id = int(line[0:7])
         voter_id = int(line[7:16])
         rank = int(line[33:36])
         candidate_id = int(line[36:43])
-        undervote = self.undervote if int(line[44]) else 0
-        overvote = self.overvote if int(line[43]) else 0
+        undervote = UNDERVOTE if int(line[44]) else 0
+        overvote = OVERVOTE if int(line[43]) else 0
 
         choice = candidate_id or undervote or overvote
 

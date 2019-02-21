@@ -7,7 +7,7 @@ import codecs
 import logging
 from cruncher.stats import increment_dict_total
 from .common import reraise, Error
-
+import ballot_analyzer as analyzer
 
 _log = logging.getLogger(__name__)
 
@@ -19,19 +19,12 @@ def on_ballot(ballot, contest_info):
     Update stats based on the given ballot.
 
     """
-
-    analyzer = contest_info['analyzer']
     stats = contest_info['stats']
-
     winner = contest_info['winner_id']
-
     set_of_finalists = set(contest_info['finalists'])
-
     stats.total += 1
-
     first_round = analyzer.get_first_round(ballot)
-
-    if first_round == analyzer.undervote:
+    if first_round == analyzer.UNDERVOTE:
         stats.undervotes += 1
         return
 
@@ -53,7 +46,7 @@ def on_ballot(ballot, contest_info):
     if has_overvote or has_duplicate or has_skipped:
         stats.irregular += 1
 
-    if first_round == analyzer.overvote:
+    if first_round == analyzer.OVERVOTE:
         stats.first_round_overvotes += 1
         # Return since all remaining analysis needs effective choices.
         return
@@ -76,12 +69,13 @@ def on_ballot(ballot, contest_info):
         stats.ranked_finalist[first_round] += 1
     else:
         # Then no finalist is validly ranked on the ballot.
-        if analyzer.overvote in ballot:
+        if analyzer.OVERVOTE in ballot:
             stats.exhausted_by_overvote += 1
     if analyzer.did_sweep(ballot, first_round):
         stats.did_sweep[first_round] += 1
 
-    if analyzer.beats_challengers(ballot, winner, contest_info['non_winning_finalists']):
+    non_winning_finalists = list(set_of_finalists - set([winner]))
+    if analyzer.beats_challengers(ballot, winner, non_winning_finalists):
         stats.final_round_winner_total += 1
 
     # Calculate condorcet pairs against winner.
@@ -105,38 +99,12 @@ def parse_master(input_format, path):
 
     return contest_dict
 
-
-class BallotParser(object):
-
-    def __init__(self, input_format, contest_infos):
-        # Parsing the ballot file is faster without specifying an encoding.
-        # The ballot file is just integers, so an encoding is not necessary.
-        self.encoding = None
-
-        self.contest_infos = contest_infos
-        self.input_format = input_format
-
-    def parse_ballots(self, ballot_path):
-        self.read_ballot_path(ballot_path)
-
-    def read_ballot_path(self, path):
-        _log.info("Reading ballots: %s" % path)
-
-        def open_path(path):
-            if self.encoding is None:
-                return open(path, "r")
-            else:
-                return codecs.open(path, "r", encoding=self.encoding)
-
-        with open_path(path) as f:
-            self.process_ballot_file(f)
-
-    def process_ballot_file(self, f):
-
+def parse_ballots(input_format, contest_infos, path):
+    # Parsing the ballot file is faster without specifying an encoding.
+    # The ballot file is just integers, so an encoding is not necessary.
+    _log.info("Reading ballots: %s" % path)
+    with open(path, "r") as f:
         line_number = 0
-        contest_infos = self.contest_infos
-        input_format = self.input_format
-
         try:
             try:
                 while True:

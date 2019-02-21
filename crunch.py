@@ -25,14 +25,12 @@ import os
 import sys
 
 from cruncher.argparser import create_argparser
-from cruncher.ballot_analyzer import BallotAnalyzer
 from cruncher import common
 from cruncher.common import find_in_map
 from cruncher.input_format import parse_input_format
-from cruncher.parser import parse_master, BallotParser
+from cruncher.parser import parse_master, parse_ballots
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
-
 
 _log = logging.getLogger(__name__)
 
@@ -66,7 +64,7 @@ R1-Overvotes:  number of ballots counting as an overvote in the first round.
 
 """
 
-def configure_logging(logging_level=None):
+def configure_logging(logging_level):
     """Configure logging for standard purposes.
 
     Args:
@@ -82,21 +80,15 @@ def configure_logging(logging_level=None):
     #         lib/python2.6/logging/__init__.py", line 761, in emit
     #     self.stream.write(fs % msg.encode(self.stream.encoding))
     # LookupError: unknown encoding: unknown
-    if logging_level is None:
-        logging_level = logging.INFO
 
     # Create the handler.
     #
     # The stream is a file-like object to which to log.  The stream must
     # define an "encoding" data attribute, or else logging raises an error.
-    stream = sys.stderr
-    handler = logging.StreamHandler(stream)
     formatter = logging.Formatter("%(name)s: [%(levelname)s] %(message)s")
+    handler = logging.StreamHandler(sys.stderr)
     handler.setFormatter(formatter)
-
-    # The root logger.
     logger = logging.getLogger()
-
     logger.setLevel(logging_level)
     logger.addHandler(handler)
 
@@ -117,7 +109,7 @@ def get_contest_id(contest_config, contest_ids):
     return contest_id
 
 
-def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
+def make_contest_infos(contest_configs, contest_dict, contest_ids):
     """
     Return a dict mapping contest_id to ContestInfo object.
     """
@@ -136,27 +128,16 @@ def make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids):
         if not other_finalist_ids:
             # Then all candidates are finalists.
             other_finalist_ids = candidate_ids
-            elimination_rounds = False
-        else:
-            elimination_rounds = True
-      
-        other_finalist_ids = list(set(other_finalist_ids) - set([winner_id]))
-        finalists = [winner_id] + other_finalist_ids
 
         contest_infos[contest_id] = {
             'contest_name': contest_name, 
             'candidate_dict': candidate_dict,
             'candidate_ids': candidate_ids,
             'winner_id': winner_id,
-            'non_winning_finalists': list(set(other_finalist_ids) - set([winner_id])),
-            'non_finalist_ids': list(set(candidate_ids) - set(finalists)),
-            'finalists': finalists,
-            'elimination_rounds': elimination_rounds,
-            'config': contest_config, 
+            'finalists': [winner_id] + list(set(other_finalist_ids) - set([winner_id])),
+            'label': contest_config['label'], 
             'stats': Stats(candidates=candidate_ids, winner_id=winner_id),
-            'analyzer': analyzer
         }
-
 
     return contest_infos
 
@@ -174,8 +155,7 @@ def get_download_paths(election_label, input_format, input_config,
         # Then all contests are contained in a single file.
         #
         # The "single_source" value should be a list.
-        sources = input_config['single_source']
-        download_infos.append((contest_configs, "election", sources))
+        download_infos.append((contest_configs, "election", input_config['single_source']))
     else:
         # Then each contest is contained in a separate file.
 
@@ -185,13 +165,10 @@ def get_download_paths(election_label, input_format, input_config,
             election_sources = [election_sources]
         for contest_config in contest_configs:
             label = contest_config['label']
-
             ### OAB
             urls = ["none"] #[source % label for source in election_sources]
             ###            
-
-            configs = [contest_config]
-            download_infos.append((configs, label, urls))
+            download_infos.append(([contest_config], label, urls))
 
     # An iterable of (contest_configs, path_pair).
     path_infos = []
@@ -205,18 +182,15 @@ def get_download_paths(election_label, input_format, input_config,
     return path_infos
 
 
-def parse_download(analyzer, input_format, reporter, contest_configs, path_pair):
+def parse_download(input_format, reporter, contest_configs, path_pair):
     master_path, ballot_path = path_pair
 
     # The contest_dict dictionary maps contest_id to (contest_name, candidate_dict).
     contest_dict = parse_master(input_format, master_path)
     contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
 
-    contest_infos = make_contest_infos(analyzer, contest_configs, contest_dict, contest_ids)
-
-    parser = BallotParser(input_format=input_format, contest_infos=contest_infos)
-    parser.parse_ballots(ballot_path)
-
+    contest_infos = make_contest_infos(contest_configs, contest_dict, contest_ids)
+    parse_ballots(input_format, contest_infos, ballot_path)
     download_metadata = input_format.get_download_metadata(master_path)
 
     for contest_config in contest_configs:
@@ -226,11 +200,8 @@ def parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
 
 
 def main(sys_argv):
-#    import pdb; pdb.set_trace()
-
-    start_time = datetime.now()
+    #import pdb; pdb.set_trace()
     ns = create_argparser().parse_args(sys_argv[1:])
-
     if not os.path.exists(ns.output_dir):
         os.mkdir(ns.output_dir)
 
@@ -242,7 +213,6 @@ def main(sys_argv):
     input_config = election_config['input_format']
 
     input_format = parse_input_format(input_config, suppress_download=ns.suppress_download)
-    analyzer = BallotAnalyzer(undervote=input_format.undervote, overvote=input_format.overvote)
 
     datetime_local, local_tzname = common.utc_datetime_to_local_datetime_tzname(datetime.utcnow())
     reporter = Reporter(election_name=election_config['election_name'].upper(), 
@@ -260,9 +230,8 @@ def main(sys_argv):
     download_infos = get_download_paths(election_label, input_format, input_config,
                                        election_config['contests'], ns.data_dir)
 
-    #candidate count calculated
     for contest_configs, path_pair in download_infos:
-        parse_download(analyzer, input_format, reporter, contest_configs, path_pair)
+        parse_download(input_format, reporter, contest_configs, path_pair)
 
     report = reporter.generate(datetime_local, local_tzname)
 
@@ -275,7 +244,6 @@ def main(sys_argv):
     output_path = os.path.join(ns.output_dir, "rcv_stats_%s.html" % election_label)
     common.write_to_file(report, output_path)
 
-    print "Completed in: %s" % (datetime.now() - start_time)
 
 
 if __name__ == "__main__":
