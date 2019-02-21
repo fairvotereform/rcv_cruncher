@@ -217,6 +217,7 @@ class Reporter(object):
         self.add_text(s)
 
     def skip(self):
+        self.add_text("")
 
     def add_section_title(self, text):
         lines = make_section_title(text)
