@@ -299,31 +299,24 @@ class SF2008Format(object):
 
         """
 
-        ### OAB Ballet length also hardcoded (implicitly) here
-        try:
-            parsed_line = self._parse_ballot_line(line, 1)
-
-            try:
-                contest_id, voter_id, _, choice = parsed_line
-
-                choices = [choice]
-
-                line_number += 1
-                line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 2, expected_contest_id=contest_id, expected_voter_id=voter_id)
-                choices.append(parsed_line[3])
-
-                line_number += 1
-                line = f.readline()
-                parsed_line = self._parse_ballot_line(line, 3, expected_contest_id=contest_id, expected_voter_id=voter_id)
-                choices.append(parsed_line[3])
-            except Error:
-                raise
-            except Exception, ex:
-                reraise(Error(ex))
-        except Error, err:
-            err.add("Ballot line number: %d" % line_number)
-            reraise(err)
+        ### OAB removing limit on ballot choices, also LBYL
+        rank = 1
+        choices = []
+        contest_id = None
+        voter_id = None
+        while True:
+            parsed_line = self._parse_ballot_line(line, rank, contest_id, voter_id)
+            if not parsed_line:
+                f.seek(-len(line),1)
+                line_number -= 1
+                break
+            contest_id, voter_id, _, choice = parsed_line
+            choices.append(choice)
+            line_number += 1
+            rank += 1
+            line = f.readline()
+            if not line:
+                break
 
         return contest_id, choices, line_number
     
@@ -332,23 +325,14 @@ class SF2008Format(object):
         Return a parsed line, or raise an Exception on failure.
 
         """
-        parsed_line = None
-        try:
-            parsed_line = self.parse_line(line)
-            contest_id, voter_id, rank, _ = parsed_line
-
-            if expected_contest_id is not None and contest_id != expected_contest_id:
-                raise Exception("Expected contest id %d but got %d." % (expected_contest_id, contest_id))
-            if expected_voter_id is not None and voter_id != expected_voter_id:
-                raise Exception("Expected voter id %d but got %d." % (expected_voter_id, voter_id))
-            if rank != expected_rank:
-                raise Exception("Expected rank %d but got %d." % (expected_rank, rank))
-        except Exception, ex:
-            s = "Failed parsing ballot line: %s" % repr(line)
-            if parsed_line is not None:
-                s += "\nParsed line: %s" % repr(parsed_line)
-            reraise(Error(ex, s))
-
+        parsed_line = self.parse_line(line)
+        contest_id, voter_id, rank, _ = parsed_line
+        if expected_contest_id is not None and contest_id != expected_contest_id:
+            return False
+        if expected_voter_id is not None and voter_id != expected_voter_id:
+            return False
+        if expected_rank is not None and rank != expected_rank:
+            return False
         return parsed_line
 
     def parse_line(self, line):
