@@ -14,13 +14,13 @@ def get_first_round(ballot):
     """
     Return what the ballot counts towards in the first round.
 
-    Returns self.UNDERVOTE for an UNDERVOTEd ballot.
+    Returns UNDERVOTE for an undervoted ballot.
 
     """
     for choice in ballot:
         if choice != UNDERVOTE:
-            break
-    return choice
+            return choice
+    return UNDERVOTE
 
 def has_overvote(ballot):
     return OVERVOTE in ballot
@@ -100,7 +100,7 @@ def beats_challengers(ballot, candidate, challengers):
     """
     Return whether a candidate validly defeats challengers.
 
-    Return None if the ballot is inconclusive.
+    Return False if the ballot is inconclusive.
 
     """
     for choice in ballot:
@@ -111,4 +111,4 @@ def beats_challengers(ballot, candidate, challengers):
         if choice in challengers:
             return False
 
-    return None
+    return False

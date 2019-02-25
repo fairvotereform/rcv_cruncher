@@ -92,7 +92,7 @@ def yaml_serialize(instance):
 def ensure_dir(path):
     if os.path.isdir(path):
         return
-    _log.info("Creating directory at: %s" % path)
+    _log.info("Creating directory at: %s", path)
     os.mkdir(path)
 
 
@@ -107,7 +107,7 @@ def write_to_file(s, path, encoding=None):
     if encoding is None:
         encoding = DEFAULT_ENCODING_OUTPUT
 
-    _log.info("Creating file at: %s" % path)
+    _log.info("Creating file at: %s", path)
     with codecs.open(path, "w", encoding=encoding) as f:
         f.write(s)
 

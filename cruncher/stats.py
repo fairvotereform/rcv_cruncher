@@ -65,7 +65,6 @@ class Stats(object):
         self.undervotes = 0
         self.has_overvote = 0
         self.has_skipped = 0
-        self.irregular = 0
         self.first_round_overvotes = 0
         self.exhausted_by_overvote = 0  # excludes first-round overvotes.
 
@@ -86,6 +85,13 @@ class Stats(object):
         self.truly_exhausted = truly_exhausted
         self.did_sweep = did_sweep
 
+    @property
+    def has_dup(self):
+        return sum(self.duplicates.values())
+
+    @property
+    def irregular(self):
+        return sum([self.has_overvote, self.has_skipped, self.duplicates[2], self.duplicates[3]])
 
     @property
     def voted(self):

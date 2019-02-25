@@ -12,9 +12,7 @@ from zipfile import ZipFile
 
 from . import common
 from .common import ensure_dir
-from .common import reraise
 from .common import write_to_file
-from .common import Error
 from . import downloading
 from ballot_analyzer import UNDERVOTE, OVERVOTE
 
@@ -63,7 +61,7 @@ def most_recent_download_dir(contest_dir):
 
 
 def download_url(url, download_dir):
-    _log.info("downloading url: {}".format(url))
+    _log.info("downloading url: %s", url)
     target_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
     ensure_dir(target_dir)
 
@@ -205,7 +203,7 @@ def get_data(ns, input_config, election_label, dir_name, urls):
         download_data(urls, contest_dir)
     download_dir = most_recent_download_dir(contest_dir)
 
-    _log.info("Using most recent download directory: %s" % download_dir)
+    _log.info("Using most recent download directory: %s", download_dir)
 
     unzip_dir = os.path.join(download_dir, UNZIP_DIRECTORY_NAME)
     master_path = get_path(unzip_dir, input_config['master_file_glob'])
@@ -246,16 +244,6 @@ class SF2008Format(object):
 
         return record_type, record_id, description, other_id
 
-    def _get_contest(self, contest_dict, contest_id):
-        """Return a 2-tuple of (contest_name, candidate_dict)."""
-        try:
-            data = contest_dict[contest_id]
-        except KeyError:
-            # Initialize the (contest_name, candidate_dict) pair.
-            data = [None, {}]
-            contest_dict[contest_id] = data
-        return data
-
     def parse_master_file(self, f):
         """
         Parse contest data from the given file, and return contest data.
@@ -271,12 +259,12 @@ class SF2008Format(object):
             record_type, record_id, description, other_id = self._parse_master_line(line)
 
             if record_type == "Contest":
-                contest_data = self._get_contest(contest_dict, record_id)
+                contest_data = contest_dict.setdefault(record_id, [None, {}])
                 contest_data[0] = description
                 continue
 
             if record_type == "Candidate":
-                _, candidate_dict = self._get_contest(contest_dict, other_id)
+                _, candidate_dict = contest_dict.setdefault(other_id, [None, {}])
                 candidate_dict[record_id] = description
 
         return contest_dict

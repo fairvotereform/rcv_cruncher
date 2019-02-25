@@ -3,7 +3,6 @@
 # Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
 #
 
-
 import codecs
 import logging
 from datetime import datetime
@@ -86,14 +85,8 @@ def make_percent_breakdown(value, total):
     total_string = make_value_string(total)
     return "%s (%s / %s)" % (percent_string, value_string, total_string)
 
-def make_header_line(preceding_text, symbol):
-    return len(preceding_text) * symbol
-
-
 def make_section_title(text):
-    header_line = make_header_line(text, "-")
-    return ["", text, header_line, ""]
-
+    return ["", text, len(text) * '-', ""]
 
 def get_top_dict_totals(mapping, how_many):
     """
@@ -105,17 +98,11 @@ def get_top_dict_totals(mapping, how_many):
     Arguments:
       mapping: dict of element to integer number of occurrences.
     """
-    # Call set() to remove duplicates.
-    values = list(set(mapping.values()))
-    values.sort()
-    values = values[-1 * how_many:]
-    # Totals is a dict from integer totals to lists of objects having that total.
+    values = sorted(list(set(mapping.values())))[-1*how_many:]
     totals = reverse_dict(mapping, values)
-    # Now limit to "how_many" values in case of multiple values.
     count = 0
     top_totals = {}
-    values.reverse()  # Order largest to smallest.
-    for value in values:
+    for value in reversed(values):
         els = totals[value]
         top_totals[value] = els
         count += len(els)
@@ -123,98 +110,61 @@ def get_top_dict_totals(mapping, how_many):
             break
     return top_totals
 
+def add_top_totals_section(totals, denominator, candidate_dict, sort=False):
+    """
+    Add a "top totals" section.
+    """
+    top_totals = get_top_dict_totals(totals, how_many=10)
+    lines = []
+    index = 1
+    for count in reversed(sorted(top_totals.keys())):
+        elements = top_totals[count]
+        prefix = "{index:{index_width}}.".format(index=index, index_width=len(str(10)))
+        for element in elements:
+            numerics = make_percent_breakdown(count, denominator)
+            names = [candidate_dict[i] for i in element]
+            if sort: names.sort()
+            lines.append(u"{0} {1}  {2}".format(prefix, numerics, ', '.join(names)))
+        # If there was a tie, we might need to jump ahead more than one.
+        index += len(elements)
+    return lines
 
-class ContestWriter(object):
+def format_datetime_tzname(dt, tzname):
+    """
+    Return a string to display a datetime and timezone.
 
-    def __init__(self, contest):
-        self.contest = contest
+    """
+    return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tzname)
 
-    def get_candidate_name(self, candidate_id):
-        return self.contest['candidate_dict'][candidate_id]
+def format_metadata_datetime(metadata):
+    """
+    Return the metadata datetime as a string for display.
 
-    def display_ordering(self, candidate_ids):
-        to_string = self.get_candidate_name
-        return ", ".join([to_string(id_) for id_ in candidate_ids])
+    """
+    dt = metadata.datetime_local
+    tz = metadata.local_tzname
 
-    def display_combination(self, candidate_ids):
-        to_string = self.get_candidate_name
-        names = [to_string(id_) for id_ in candidate_ids]
-        names.sort()
-        return ", ".join(names)
-
-    def add_section(self, lines, func, **kwargs):
-        section_lines = []
-        title = func(section_lines, **kwargs)
-        lines.extend(make_section_title(title))
-        lines.extend(section_lines)
-
-    def add_top_totals_section(self, lines, totals, denominator, display, how_many):
-        """
-        Add a "top totals" section.
-        """
-        top_totals = get_top_dict_totals(totals, how_many=how_many)
-
-        index = 1
-        total_counts = top_totals.keys()
-        total_counts.sort()
-        total_counts.reverse()
-
-        for count in total_counts:
-            elements = top_totals[count]
-            prefix = "{index:{index_width}}.".format(index=index, index_width=len(str(how_many)))
-            for element in elements:
-                numerics = make_percent_breakdown(count, denominator)
-                # Without making the format string unicode, we got an
-                # error like the following if "info" contained a non-ascii
-                # character:
-                # > UnicodeEncodeError: 'ascii' codec can't encode character
-                #  u'\xd1' in position 46: ordinal not in range(128)
-                lines.append(u"{0} {1}  {2}".format(prefix, numerics, display(element)))
-            # If there was a tie, we might need to jump ahead more than one.
-            index += len(elements)
-
-    def make_orderings_section(self, lines, stats):
-        title = "Top 10 effective orderings"
-        self.add_top_totals_section(lines=lines, totals=stats.orderings,
-            denominator=stats.first_round_continuing, display=self.display_ordering,
-            how_many=10)
-        return title
-
-    def make_combinations_section(self, lines, stats):
-        title = "Top 10 effective combinations"
-        self.add_top_totals_section(lines=lines, totals=stats.combinations,
-            denominator=stats.first_round_continuing, display=self.display_combination,
-            how_many=10)
-        return title
-
+    return format_datetime_tzname(dt, tz)
 
 class Reporter(object):
 
     line_break = "\n"
-    candidate_indent = 12
 
     def __init__(self, election_name, template_path):
         print "initializing...."
         self.election_name = election_name
         self.template_path = template_path
         self.contest_infos = []
+        self.text = None
+        self.stats = None
+        self.left_indent = None
+        self.sorted_candidates = None
 
-    def rounded_percent_string(self, part, whole):
-        """
-        Return a rounded percent string, for example, " 25%".
-
-        """
-        return "%3.0f%%" % percent(part, whole)
-
-    def make_string(self, lines):
-        return self.line_break.join(lines)
-
-    # TODO: remove in favor of add_lines().
     def add_text(self, text):
         self.text += text + self.line_break
 
     def add_lines(self, lines):
-        s = self.make_string(lines)
+        s = self.line_break.join(lines)
         self.add_text(s)
 
     def skip(self):
@@ -233,9 +183,7 @@ class Reporter(object):
 
     def label_string(self, name):
         s = "%s " % name.upper()
-        s = ljust(s, self.left_indent, '.')
-
-        return s
+        return ljust(s, self.left_indent, '.')
 
     def make_percent_line(self, label, value, total, description=None):
         """
@@ -249,20 +197,17 @@ class Reporter(object):
         description = "" if description is None else " [%s]" % description
         return "%s %s%s" % (label_string, percent_string, description)
 
-    def make_value(self, label, value, total=None, total_label=None, description=None):
+    def make_value(self, label, value, total=None,  description=None):
         """
         Return a line of the form--
 
         LABEL .....................   9578 (  6.2% of total_label) [description]
 
         """
-        s = "%s %s" % (self.label_string(label), make_value_string(value))
+        s = "%s %s " % (self.label_string(label), make_value_string(value))
 
         if total is not None:
-            percent_string = make_percent_string(value, total)
-            total_label_string = ("of %s" % total_label) if total_label is not None else ""
-
-            s += " (%s %s)" % (percent_string, total_label_string)
+            s += make_percent_string(value, total)
 
         if description is not None:
             s += " [%s]" % description
@@ -303,39 +248,10 @@ class Reporter(object):
 
         return s
 
-    def write_value(self, label, value, total=None, total_label=None, description=None):
-        s = self.make_value(label, value, total, total_label, description)
-        self.add_text(s)
-
-    # TODO: find a nicer abstraction of this functionality.
-    def add_data2(self, name, value1, total1, value2, total2):
-        label_string = self.label_string(name)
-
-        def data_pair_string(value, total):
-            value_string = make_value_string(value)
-            percent_string = make_percent_string(value, total)
-
-            return "%s ( %s )" % (value_string, percent_string)
-
-        s = "%s %s   %s" % (label_string, data_pair_string(value1, total1), data_pair_string(value2, total2))
-
-        self.add_text(s)
-
-    def add_number_ranked(self, name, number_ranked):
-        first_round = sum(number_ranked)
-
-        label_string = self.label_string(name)
-        percent_strings = [self.rounded_percent_string(value, first_round) for value in number_ranked]
-        number_ranked_strings = [str(value) for value in number_ranked]
-
-        strings = [label_string] + percent_strings + [first_round] + number_ranked_strings
-
-        s = "%s %s %s %s (%s = %s + %s + %s)" % tuple(strings)
-
-        self.add_text(s)
+    def write_value(self, label, value, total=None, description=None):
+        self.add_text(self.make_value(label, value, total, description))
 
     def make_aggregate_number_ranked_line(self, name, candidate_ids):
-        # TODO: make this elegant.
         if candidate_ids:
             number_ranked_list = [self.stats.get_number_ranked(candidate_id) for candidate_id in candidate_ids]
             number_ranked = map(sum, zip(*number_ranked_list))
@@ -354,7 +270,7 @@ class Reporter(object):
 
         lines = make_section_title("Effective ballot position (1st + 2nd + 3rd = any), as percent of first-round continuing")
 
-        for candidate, name, _ in self.sorted_candidates:
+        for candidate, name in self.sorted_candidates:
             line = self.make_three_sum_line(name, stats.ballot_position[candidate], stats.first_round_continuing)
             lines.append(line)
 
@@ -370,7 +286,7 @@ class Reporter(object):
                       self.make_aggregate_number_ranked_line(LABELS['non-finalists'], non_finalist_ids)])
         lines.append("")
 
-        for candidate_id, name, _ in self.sorted_candidates:
+        for candidate_id, name in self.sorted_candidates:
             number_ranked = stats.get_number_ranked(candidate_id)
             line = self.make_three_sum_line(name, number_ranked)
             lines.append(line)
@@ -383,7 +299,6 @@ class Reporter(object):
 
         """
         first_round_continuing = stats.first_round_continuing
-
         final_round_continuing = stats.final_round_continuing
         exhausted_by_overvote = stats.exhausted_by_overvote
         exhausted = stats.exhausted
@@ -395,17 +310,15 @@ class Reporter(object):
 
         lines = make_section_title("Overview of final round (%s candidates), as percent of first-round continuing" % len(contest['finalists']))
 
-        total_label = None
-        lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing, total_label=total_label))
-        lines.append(self.make_value(LABELS['exhausted_by_overvote'], exhausted_by_overvote, total=first_round_continuing, total_label=total_label,
-            description="excludes overvoted"))
-        lines.append(self.make_value(LABELS['exhausted'], exhausted, total=first_round_continuing, total_label=total_label,
+        lines.append(self.make_value(LABELS['continuing'], final_round_continuing, total=first_round_continuing))
+        lines.append(self.make_value(LABELS['exhausted_by_overvote'], exhausted_by_overvote, total=first_round_continuing, description="excludes overvoted"))
+        lines.append(self.make_value(LABELS['exhausted'], exhausted, total=first_round_continuing,
             description='does not include overvoted or exhausted-by-overvote'))
         lines.append("")
 
-        lines.append(self.make_value(LABELS['exhausted_involuntary'], exhausted_involuntary, total=first_round_continuing, total_label=total_label,
+        lines.append(self.make_value(LABELS['exhausted_involuntary'], exhausted_involuntary, total=first_round_continuing,
             description="3 distinct candidates, no finalists"))
-        lines.append(self.make_value(LABELS['exhausted_voluntary'], exhausted_voluntary, total=first_round_continuing, total_label=total_label))
+        lines.append(self.make_value(LABELS['exhausted_voluntary'], exhausted_voluntary, total=first_round_continuing))
         lines.append("")
 
         lines.append(self.make_value(LABELS['winner'], winner_total))
@@ -421,47 +334,35 @@ class Reporter(object):
         return lines
 
 
-    # TODO: refactor this method to be smaller.
     def make_contest(self, contest_info):
         self.text = ""
 
-        # TODO: eliminate the need to store the arguments as a tuple.
         contest = contest_info[0]
         stats = contest_info[0]['stats']
 
         # TODO: eliminate the need to set self.stats.
         self.stats = stats
 
-        labels = LABELS.values() + contest['candidate_dict'].values()
-        self.left_indent = max([len(label) for label in labels]) + 1  # for extra space.
-
-        # Sort candidates in descending order by first-round totals.
-        triples = []
-        for candidate_id, name in contest['candidate_dict'].iteritems():
-            first_round = stats.get_first_round(candidate_id)
-            triples.append((first_round, candidate_id, name))
-        triples.sort()
-        triples.reverse()
-        self.sorted_candidates = [(triple[1], triple[2], triple[0]) for triple in triples]
+        self.left_indent = max(map(len, LABELS.values() + contest['candidate_dict'].values())) + 1
+        self.sorted_candidates = sorted(contest['candidate_dict'].items(), 
+                                        key=lambda x: -stats.get_first_round(x[0]))
 
         winner_header = "%s (%d candidates)" % (LABELS['winner'], contest['candidate_count'])
         self.add_candidate_names(winner_header, [contest['winner_id']], contest['candidate_dict'])
         self.add_candidate_names(LABELS['finalists'], contest['finalists'], contest['candidate_dict'])
 
-        self.write_value(LABELS['total'], stats.total, total=stats.total, total_label='total')
+        self.write_value(LABELS['total'], stats.total, total=stats.total)
         self.skip()
-        self.write_value(LABELS['voted'], stats.voted, total=stats.total, total_label='total')
-        self.write_value(LABELS['under'], stats.undervotes, total=stats.total, total_label='total')
+        self.write_value(LABELS['voted'], stats.voted, total=stats.total)
+        self.write_value(LABELS['under'], stats.undervotes, total=stats.total)
 
         self.add_section_title("Overview of voted, as percent of voted")
-
-        self.write_value(LABELS['has_dupe'], sum(stats.duplicates.values()), total=stats.voted)
+        self.write_value(LABELS['has_dupe'], stats.has_dup, total=stats.voted)
         self.write_value(LABELS['has_over'], stats.has_overvote, total=stats.voted)
         self.write_value(LABELS['has_skip'], stats.has_skipped, total=stats.voted)
         self.write_value(LABELS['irregular'], stats.irregular, total=stats.voted,
                          description="duplicate, overvote, and/or skip")
         self.skip()
-
         self.write_value(LABELS['dupe3'], stats.duplicates[3], total=stats.voted)
         self.write_value(LABELS['dupe2'], stats.duplicates[2], total=stats.voted)
 
@@ -470,18 +371,16 @@ class Reporter(object):
         self.write_value(LABELS['continuing'], stats.first_round_continuing, total=stats.voted)
         self.write_value(LABELS['over'], stats.first_round_overvotes, total=stats.voted)
 
-        lines = self.make_final_round(contest, stats)
-        lines.extend(self.make_effective_ballot_position(stats))
-        lines.extend(self.make_number_valid_rankings(contest, stats))
-
-        self.add_lines(lines)
+        self.add_lines(self.make_final_round(contest, stats))
+        self.add_lines(self.make_effective_ballot_position(stats))
+        self.add_lines(self.make_number_valid_rankings(contest, stats))
 
         self.add_section_title("Ballots validly ranking the winner, by first-round choice")
 
         self.add_first_round_percent_data(LABELS['all'], stats.ranked_winner, contest['candidate_ids'])
         self.skip()
 
-        for candidate_id, name, first_round in self.sorted_candidates:
+        for candidate_id, name in self.sorted_candidates:
             self.add_first_round_percent_data(name, stats.ranked_winner, [candidate_id])
 
         self.add_section_title("Ballots validly ranking a finalist, by first-round choice")
@@ -489,7 +388,7 @@ class Reporter(object):
         self.add_first_round_percent_data(LABELS['all'], stats.ranked_finalist, contest['candidate_ids'])
         self.skip()
 
-        for candidate_id, name, first_round in self.sorted_candidates:
+        for candidate_id, name in self.sorted_candidates:
             self.add_first_round_percent_data(name, stats.ranked_finalist, [candidate_id])
 
         self.add_section_title("Ballots ranking the same candidate 3 times")
@@ -497,7 +396,7 @@ class Reporter(object):
         self.add_first_round_percent_data(LABELS['all'], stats.did_sweep, contest['candidate_ids'])
         self.skip()
 
-        for candidate_id, name, first_round in self.sorted_candidates:
+        for candidate_id, name in self.sorted_candidates:
             self.add_first_round_percent_data(name, stats.did_sweep, [candidate_id])
 
         self.add_section_title("Condorcet support for winner against each candidate, in ascending order")
@@ -507,27 +406,19 @@ class Reporter(object):
 
         # TODO: move the condorcet code below into a method.
         condorcet_data = []
-        for candidate_id, name, first_round in self.sorted_candidates:
-            if candidate_id == contest['winner_id']:
-                continue
-            win_count, total_count = stats.get_condorcet_support(contest['winner_id'], candidate_id)
-            new_data = (percent(win_count, total_count), win_count, total_count, name)
-            condorcet_data.append(new_data)
-        condorcet_data.sort()
+        for candidate_id, name in self.sorted_candidates:
+            if candidate_id != contest['winner_id']:
+                win_count, total_count = stats.get_condorcet_support(contest['winner_id'], candidate_id)
+                condorcet_data.append((win_count, total_count, name))
 
-        for data in condorcet_data:
+        print condorcet_data
+
+        for win_count, total_count, name in sorted(condorcet_data):
             # BOB  60% (600 / 1000 = 20% of first-round continuing)
-            _, win_count, total_count, name = data
-
             label_string = self.label_string(name)
             percent_breakdown = make_percent_breakdown(win_count, total_count)
             percent_of_voted_string = make_percent_string(total_count, stats.first_round_continuing)
-
-            strings = [label_string, percent_breakdown, percent_of_voted_string]
-
-            s = "%s %s (%s represented)" % tuple(strings)
-
-            self.add_text(s)
+            self.add_text("{} {} ({} represented)".format(label_string, percent_breakdown, percent_of_voted_string))
 
         condorcet_winner = stats.is_condorcet_winner(contest['winner_id'], contest['candidate_ids'])
         self.add_text("\n(condorcet_winner=%s)" % "YES" if condorcet_winner else "NO")
@@ -536,40 +427,25 @@ class Reporter(object):
         self.write_value(LABELS['all'], stats.truly_exhausted_total, total=stats.truly_exhausted_total)
         self.skip()
 
-        true_exhaust_data = []
-        for candidate, name, first_round in self.sorted_candidates:
-            true_exhaust_data.append((stats.truly_exhausted[candidate], name))
-        true_exhaust_data.sort()
-        true_exhaust_data.reverse()
+        true_exhaust_data = [(stats.truly_exhausted[candidate], name)
+                                for candidate, name in self.sorted_candidates]
 
-        for data in true_exhaust_data:
+        for data in reversed(sorted(true_exhaust_data)):
             self.write_value(data[1], data[0], total=stats.truly_exhausted_total)
 
-        lines = []
-        contest_writer = ContestWriter(contest=contest)
-        contest_writer.add_section(lines, contest_writer.make_orderings_section, stats=stats)
-        contest_writer.add_section(lines, contest_writer.make_combinations_section, stats=stats)
-        self.add_lines(lines)
-
+        self.add_lines(make_section_title("Top 10 effective orderings"))
+        self.add_lines(add_top_totals_section(
+                        stats.orderings, 
+                        stats.first_round_continuing, 
+                        contest['candidate_dict']))
+        self.add_lines(make_section_title("Top 10 effective combinations"))
+        self.add_lines(add_top_totals_section(
+                        stats.combinations, 
+                        stats.first_round_continuing, 
+                        contest['candidate_dict'],
+                        sort=True))
         self.skip()
         return self.text
-
-    def format_datetime_tzname(self, dt, tzname):
-        """
-        Return a string to display a datetime and timezone.
-
-        """
-        return "%s %s" % (dt.strftime("%A, %B %d, %Y at %I:%M:%S%p"), tzname)
-
-    def format_metadata_datetime(self, metadata):
-        """
-        Return the metadata datetime as a string for display.
-
-        """
-        dt = metadata.datetime_local
-        tz = metadata.local_tzname
-
-        return self.format_datetime_tzname(dt, tz)
 
     def get_oldest_contest_metadata(self):
         """
@@ -587,50 +463,48 @@ class Reporter(object):
         oldest_info = contest_infos[0]
         return oldest_info[-1]
 
+
+    #streamline this 
     def generate(self):
         toc_dicts = []
         contest_dicts = []
 
-        index = 0
-        for info in self.contest_infos:
-            index += 1
+        for i, info in enumerate(self.contest_infos):
 
             contest_label = info[0]['label']
             metadata = info[-1]
-            round_by_round_url = info[0].get('url')
 
             contest_name = info[0]['contest_name']
             contest_finalists = info[0]['finalists']
-            contest_elimination_rounds = len(info[0]['finalists']) == len(info[0]['candidate_ids'])
+            contest_elimination_rounds = len(info[0]['finalists']) != len(info[0]['candidate_ids'])
 
             if contest_elimination_rounds and len(contest_finalists) > 2:
                 contest_name += " (%d finalists)" % len(contest_finalists)
 
             title = contest_name + " RCV Stats"
 
-            names = info[0]['candidate_dict'].values()
-            count = len(names)
-            for name in names:
-                if name.upper() == "WRITE-IN":
-                    count -= 1
+            count = 0
+            for name in info[0]['candidate_dict'].values():
+                if name.upper() != "WRITE-IN":
+                    count += 1
 
             info[0]['candidate_count'] = count
             toc_dicts.append({
                 'candidate_count': count,
                 'label': contest_label,
-                'index': index,
+                'index': i+1,
                 'text': contest_name,
                 'elimination_rounds': contest_elimination_rounds,
             })
 
             url = metadata.url
-            datetime_string = self.format_metadata_datetime(metadata) if url else ''
+            datetime_string = format_metadata_datetime(metadata) if url else ''
             contest_report = self.make_contest(info)
             contest_dicts.append({
                 'label': contest_label,
                 'title': title,
-                'line': make_header_line(title, "="),
-                'round_by_round_url': round_by_round_url,
+                'line': len(title) * "=",
+                'round_by_round_url': info[0].get('url'),
                 'body': contest_report,
                 'download_urls': url,
                 'download_datetime': datetime_string,
@@ -638,18 +512,14 @@ class Reporter(object):
             })
 
         dt, tz = utc_datetime_to_local_datetime_tzname(datetime.utcnow())
-        generated_datetime_string = self.format_datetime_tzname(dt, tz)
-
         metadata = self.get_oldest_contest_metadata()
-        data_datetime_string = self.format_metadata_datetime(metadata) if metadata.url else ''
+        return render_template(self.template_path, {
+                'file_encoding': ENCODING_TEMPLATE_FILE,
+                'election_name': self.election_name,
+                'generated_datetime': format_datetime_tzname(dt, tz),
+                'data_datetime': format_metadata_datetime(metadata) if metadata.url else '',
+                'toc_item': toc_dicts,
+                'contest': contest_dicts,
+                })
 
-        values = {'file_encoding': ENCODING_TEMPLATE_FILE,
-                  'election_name': self.election_name,
-                  'generated_datetime': generated_datetime_string,
-                  'data_datetime': data_datetime_string,
-                  'toc_item': toc_dicts,
-                  'contest': contest_dicts,
-                  }
-
-        return render_template(self.template_path, values)
 

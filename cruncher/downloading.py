@@ -24,7 +24,7 @@ def download(url, target_path):
     _log.info("""\
 Downloading:
   %s
-  to %r""" % (url, target_path))
+  to %r""", url, target_path)
     try:
         urllib.urlretrieve(url, target_path)
     except Exception, ex:
@@ -33,7 +33,7 @@ Downloading:
         reraise(err)
 
     info = os.stat(target_path)
-    _log.info("Downloaded bytes: %s" % info.st_size)
+    _log.info("Downloaded bytes: %s", info.st_size)
 
 
 def create_download_metadata(url, datetime_utc):
@@ -54,6 +54,8 @@ def create_download_metadata(url, datetime_utc):
 
     return data
 
+def _iso_to_datetime(iso_string):
+    return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S")
 
 class DownloadMetadata(object):
 
@@ -63,12 +65,9 @@ class DownloadMetadata(object):
         self.iso_datetime_local = ""
         self.local_tzname = ""
 
-    def _iso_to_datetime(self, iso_string):
-        return datetime.strptime(iso_string, "%Y-%m-%dT%H:%M:%S")
-
     @property
     def datetime_utc(self):
-        return self._iso_to_datetime(self.iso_datetime_utc)
+        return _iso_to_datetime(self.iso_datetime_utc)
 
     @datetime_utc.setter
     def datetime_utc(self, value):
@@ -76,7 +75,7 @@ class DownloadMetadata(object):
 
     @property
     def datetime_local(self):
-        return self._iso_to_datetime(self.iso_datetime_local)
+        return _iso_to_datetime(self.iso_datetime_local)
 
     @datetime_local.setter
     def datetime_local(self, value):

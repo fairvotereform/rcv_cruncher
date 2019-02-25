@@ -19,7 +19,6 @@ TODO: complete this.
 
 """
 
-from datetime import datetime
 import logging
 import os
 import sys
@@ -34,9 +33,7 @@ from cruncher.stats import Stats
 
 _log = logging.getLogger(__name__)
 
-
-ENCODING_OUTPUT_FILE = 'utf-8'
-STATS_HEADER = """\
+STATS_HEADER = """
 RCV RESULTS KEY
 
 Total:         total number of ballots, including undervotes.
@@ -60,8 +57,6 @@ Irregular:     number of voted ballots with at least one of the following:
                an overvoted ranking.
 
 R1-Overvotes:  number of ballots counting as an overvote in the first round.
-
-
 """
 
 def configure_logging(logging_level):
@@ -145,7 +140,7 @@ def get_download_paths(ns, ec):
         if ec['input_format']['type'] == 'sf-2008':
             path_pair = get_data(ns, ec['input_format'], ec['election_label'], dir_name, urls)
         else:
-            file_prefix = contest_config['input_data']
+            file_prefix = configs[0]['input_data']
             master_file = "%s-Cntl.txt" % file_prefix
             ballot_file = "%s-Ballots.txt" % file_prefix
             make_path = lambda file_name: os.path.join(ec['input_format']['input_dir'], file_name)
@@ -153,7 +148,6 @@ def get_download_paths(ns, ec):
         path_infos.append((configs, path_pair))
 
     return path_infos
-
 
 def parse_download(input_format, reporter, contest_configs, path_pair):
     master_path, ballot_path = path_pair
@@ -183,7 +177,7 @@ def main(sys_argv):
         data['label'] = data.get('label') or data['source']
         data['finalists'] = data['finalists'] or []
 
-    #import pdb; pdb.set_trace()
+#    import pdb; pdb.set_trace()
     download_infos = get_download_paths(ns, election_config)
     reporter = Reporter(election_name=election_config['election_name'].upper(), 
                         template_path='templates/report.mustache')
