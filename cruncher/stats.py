@@ -15,7 +15,6 @@ def increment_dict_total(mapping, key):
     except KeyError:
         mapping[key] = 1
 
-
 class Stats(object):
 
     """

@@ -9,9 +9,6 @@ import urllib
 import os
 
 from . import common
-from .common import reraise
-from .common import Error
-
 
 _log = logging.getLogger(__name__)
 
@@ -21,17 +18,8 @@ def download(url, target_path):
     Download the file at the given URL to the given target path.
 
     """
-    _log.info("""\
-Downloading:
-  %s
-  to %r""", url, target_path)
-    try:
-        urllib.urlretrieve(url, target_path)
-    except Exception, ex:
-        err = Error(ex)
-        err.add("Error downloading url: %s" % url)
-        reraise(err)
-
+    _log.info("Downloading: %s to %r", url, target_path)
+    urllib.urlretrieve(url, target_path)
     info = os.stat(target_path)
     _log.info("Downloaded bytes: %s", info.st_size)
 

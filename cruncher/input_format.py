@@ -14,7 +14,7 @@ from . import common
 from .common import ensure_dir
 from .common import write_to_file
 from . import downloading
-from ballot_analyzer import UNDERVOTE, OVERVOTE
+from .ballot_analyzer import UNDERVOTE, OVERVOTE
 
 _log = logging.getLogger(__name__)
 
@@ -22,13 +22,10 @@ DOWNLOAD_DIRECTORY_PREFIX = 'download_'
 UNZIP_DIRECTORY_NAME = 'download'
 
 def parse_input_format(config):
-    format_type = config['type']
-    if format_type == 'rcv-calc':
-        return RCVCalcFormat()
-    elif format_type == 'sf-2008':
-        return SF2008Format()
-    else:
-        raise Exception("Unknown input format: %s" % repr(format_type))
+    return {
+        'rcv-calc': RCVCalcFormat,
+        'sf-2008': SF2008Format,
+        'mn': MNCalcFormat}[config]()
 
 def get_path(dir_path, file_glob):
     """
@@ -121,8 +118,19 @@ def download_data(urls, contest_dir):
     info_path = os.path.join(download_dir, common.INFO_FILE_NAME)
     write_to_file(text, info_path)
 
+class MNCalcFormat(object):
+    skip_first = True
+    
+    def read_ballot(self, f, line, line_number):
+        choices = [{'undervote': UNDERVOTE, 'overvote': OVERVOTE}.get(i,i)
+                     for i in line.split(',')[1:-1]]
+    
+        if choices == ['','','']: #MSP data sometimes ends with total line and blank candidates
+            return False
+        return 1, choices, line_number
 
 class RCVCalcFormat(object):
+    skip_first = False
 
     """
     Input format for pre-2008 elections.  Using David Cary's RcvCalc-formatted data.
@@ -163,8 +171,6 @@ class RCVCalcFormat(object):
             elif record_type == 'UnderVote':
                 undervote = parsed[1].strip()
 
-        # TODO: these values should be set more deliberately rather
-        #       than as side effects.
         self.overvote = overvote
         self.undervote = undervote
 
@@ -214,6 +220,7 @@ def get_data(ns, input_config, election_label, dir_name, urls):
 
 
 class SF2008Format(object):
+    skip_first = False
 
     def get_download_metadata(self, master_path):
         unzipped_dir = os.path.dirname(master_path)
@@ -225,29 +232,12 @@ class SF2008Format(object):
 
         return download_metadata
 
-    def _parse_master_line(self, line):
-        """
-        Parse the line, and return a tuple.
-
-        Some sample lines:
-
-        Candidate 0000111JUAN-ANTONIO CARBALLO                             0000001000002700
-        Contest   0000027Board of Supervisors, District 2                  0000038000000000
-
-        """
-        # We only care about the first three fields: Record_Type, Id, and Description.
-        record_type = line[0:10].strip()
-        record_id = int(line[10:17])
-        description = line[17:67].strip()
-        # For candidate rows, this is the contest ID.
-        other_id = int(line[74:81])
-
-        return record_type, record_id, description, other_id
-
     def parse_master_file(self, f):
         """
         Parse contest data from the given file, and return contest data.
-
+        Some sample lines:
+        Candidate 0000111JUAN-ANTONIO CARBALLO                             0000001000002700
+        Contest   0000027Board of Supervisors, District 2                  0000038000000000
         """
         contest_dict = {}
 
@@ -256,7 +246,11 @@ class SF2008Format(object):
             if not line:
                 break
 
-            record_type, record_id, description, other_id = self._parse_master_line(line)
+            record_type = line[0:10].strip()
+            record_id = int(line[10:17])
+            description = line[17:67].strip()
+            # For candidate rows, this is the contest ID.
+            other_id = int(line[74:81])
 
             if record_type == "Contest":
                 contest_data = contest_dict.setdefault(record_id, [None, {}])
@@ -310,38 +304,27 @@ class SF2008Format(object):
     
     def _parse_ballot_line(self, line, expected_rank, expected_contest_id=None, expected_voter_id=None):
         """
-        Return a parsed line, or raise an Exception on failure.
-
-        """
-        parsed_line = self.parse_line(line)
-        contest_id, voter_id, rank, _ = parsed_line
-        if expected_contest_id is not None and contest_id != expected_contest_id:
-            return False
-        if expected_voter_id is not None and voter_id != expected_voter_id:
-            return False
-        if expected_rank is not None and rank != expected_rank:
-            return False
-        return parsed_line
-
-    def parse_line(self, line):
-        """
-        Return a parsed line as a tuple.
-
+        Return a parsed line, or False on failure.
         A sample input--
 
         000000700001712400000090020000331001000012600
 
-        The corresponding return value--
-
         """
-        # TODO: consider having this function return an object.
         contest_id = int(line[0:7])
+        if expected_contest_id is not None and contest_id != expected_contest_id:
+            return False
+
         voter_id = int(line[7:16])
+        if expected_voter_id is not None and voter_id != expected_voter_id:
+            return False
+
         rank = int(line[33:36])
+        if expected_rank is not None and rank != expected_rank:
+            return False
+        
         candidate_id = int(line[36:43])
         undervote = UNDERVOTE if int(line[44]) else 0
         overvote = OVERVOTE if int(line[43]) else 0
-
         choice = candidate_id or undervote or overvote
 
         return (contest_id, voter_id, rank, choice)

@@ -22,14 +22,15 @@ TODO: complete this.
 import logging
 import os
 import sys
+from pprint import pprint
 
 from cruncher.argparser import create_argparser
 from cruncher import common
-from cruncher.common import find_in_map
 from cruncher.input_format import parse_input_format, get_data
-from cruncher.parser import parse_master, parse_ballots
+from cruncher.parser import parse_master, parse_ballots, collect_ballots
 from cruncher.reporter import Reporter
 from cruncher.stats import Stats
+from cruncher.rcv import rcv, clean
 
 _log = logging.getLogger(__name__)
 
@@ -70,8 +71,9 @@ def configure_logging(logging_level):
     logger.addHandler(handler)
     _log.debug("Debug logging enabled.")
 
-def find_candidate_id(candidate_dict, name_to_find):
-    return find_in_map(candidate_dict, name_to_find)
+def find_candidate_id(mapping, value_to_find):
+    """reverse dictionary lookup"""
+    return [k for (k, v) in mapping.items() if v == value_to_find][0]
 
 def get_contest_id(contest_config, contest_ids):
     """Return the contest_id for a contest_config."""
@@ -145,25 +147,9 @@ def get_download_paths(ns, ec):
             ballot_file = "%s-Ballots.txt" % file_prefix
             make_path = lambda file_name: os.path.join(ec['input_format']['input_dir'], file_name)
             path_pair = map(make_path, [master_file, ballot_file])
-        path_infos.append((configs, path_pair))
+        path_infos.append({'configs': configs, 'master': path_pair[0], 'ballot': path_pair[1]})
 
     return path_infos
-
-def parse_download(input_format, reporter, contest_configs, path_pair):
-    master_path, ballot_path = path_pair
-
-    # The contest_dict dictionary maps contest_id to (contest_name, candidate_dict).
-    contest_dict = parse_master(input_format, master_path)
-    contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
-
-    contest_infos = make_contest_infos(contest_configs, contest_dict, contest_ids)
-    parse_ballots(input_format, contest_infos, ballot_path)
-    download_metadata = input_format.get_download_metadata(master_path)
-
-    for contest_config in contest_configs:
-        contest_id = get_contest_id(contest_config, contest_ids)
-        contest_info = contest_infos[contest_id]
-        reporter.contest_infos.append((contest_info, download_metadata))
 
 def main(sys_argv):
     ns = create_argparser().parse_args(sys_argv[1:])
@@ -173,18 +159,48 @@ def main(sys_argv):
     configure_logging(logging.DEBUG)
     election_config = common.unserialize_yaml_file(ns.config_path)
 
-    for data in election_config['contests']:
-        data['label'] = data.get('label') or data['source']
-        data['finalists'] = data['finalists'] or []
-
-#    import pdb; pdb.set_trace()
-    download_infos = get_download_paths(ns, election_config)
     reporter = Reporter(election_name=election_config['election_name'].upper(), 
                         template_path='templates/report.mustache')
+    if election_config.get('notinsane') is not None:
+        election_config['election_label'] = election_config['election_name']
+        input_format = parse_input_format(election_config['type'])
+        ballots = clean(collect_ballots(input_format, election_config['path']))
+        candidates = set()
+        for b in ballots:
+            candidates.update(b) 
+        d = rcv(ballots)
+        print d
+        infos = {1:{
+            'contest_name': election_config['election_name'],
+            'candidate_dict': {i:i for i in candidates},
+            'candidate_ids': candidates,
+            'winner_id': d['winner'],
+            'finalists': d['finalists'],
+            'label': election_config['election_name'], 
+            'stats': Stats(candidates=candidates, winner_id=d['winner'])
+        }}
+        parse_ballots(input_format, infos, election_config['path'])
+        reporter.contest_infos = [infos[1]]
+                 
+    else:
+        input_format = parse_input_format(election_config['input_format']['type'])
+        for data in election_config['contests']:
+            data['label'] = data.get('label') or data['source']
+            data['finalists'] = data['finalists'] or []
+        download_infos = get_download_paths(ns, election_config)
+        for info in download_infos:
+            contest_dict = parse_master(input_format, info['master'])
+            contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
 
-    input_format = parse_input_format(election_config['input_format'])
-    for contest_configs, path_pair in download_infos:
-        parse_download(input_format, reporter, contest_configs, path_pair)
+            contest_infos = make_contest_infos(info['configs'], contest_dict, contest_ids)
+            parse_ballots(input_format, contest_infos, info['ballot'])
+            download_metadata = input_format.get_download_metadata(info['master'])
+
+            for contest_config in info['configs']:
+                contest_id = get_contest_id(contest_config, contest_ids)
+                contest_info = contest_infos[contest_id]
+                contest_info['download_metadata'] = download_metadata
+                reporter.contest_infos.append(contest_info)
 
     report = reporter.generate()
 

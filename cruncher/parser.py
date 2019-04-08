@@ -5,9 +5,9 @@
 
 import codecs
 import logging
-from cruncher.stats import increment_dict_total
+from .stats import increment_dict_total
 from .common import reraise, Error
-import ballot_analyzer as analyzer
+import cruncher.ballot_analyzer as analyzer
 
 _log = logging.getLogger(__name__)
 
@@ -85,20 +85,36 @@ def parse_ballots(input_format, contest_infos, path):
     _log.info("Reading ballots: %s", path)
     with open(path, "r") as f:
         line_number = 0
-        try:
-            try:
-                while True:
-                    line_number += 1
-                    line = f.readline()
-                    if not line:
-                        line_number -= 1  # since there was no line after all.
-                        _log.info("Read %d lines.", line_number)
-                        break
-                    contest_id, ballot, line_number = input_format.read_ballot(f, line, line_number)
-                    update_stats(ballot, contest_infos[contest_id])
-            except Error:
-                raise
-        except Error, err:
-            err.add("File line number: %s" % line)
-            reraise(err)
+        if input_format.skip_first:
+            f.readline()
+        while True:
+            line_number += 1
+            line = f.readline()
+            if not line:
+                line_number -= 1  # since there was no line after all.
+                _log.info("Read %d lines.", line_number)
+                break
+            parsed = input_format.read_ballot(f, line, line_number)
+            if parsed:
+                contest_id, ballot, line_number = parsed 
+                update_stats(ballot, contest_infos[contest_id])
+
+def collect_ballots(input_format, path):
+    ballots = []
+    with open(path, "r") as f:
+        line_number = 0
+        if input_format.skip_first:
+            f.readline()
+        while True:
+            line_number += 1
+            line = f.readline()
+            if not line:
+                line_number -= 1  # since there was no line after all.
+                _log.info("Read %d lines.", line_number)
+                break
+            parsed = input_format.read_ballot(f, line, line_number)
+            if parsed:
+                _, ballot, line_number = parsed 
+                ballots.append(ballot)
+    return ballots
 

@@ -334,11 +334,10 @@ class Reporter(object):
         return lines
 
 
-    def make_contest(self, contest_info):
+    def make_contest(self, contest):
         self.text = ""
 
-        contest = contest_info[0]
-        stats = contest_info[0]['stats']
+        stats = contest['stats']
 
         # TODO: eliminate the need to set self.stats.
         self.stats = stats
@@ -452,16 +451,9 @@ class Reporter(object):
         Return the metadata for the earliest downloaded contest.
 
         """
-        # Make a copy because list.sort() sorts in place.
-        contest_infos = list(self.contest_infos)
-
         def key(info):
-            metadata = info[-1]
-            return metadata.iso_datetime_utc
-
-        contest_infos.sort(key=key)
-        oldest_info = contest_infos[0]
-        return oldest_info[-1]
+            return info['download_metadata'].iso_datetime_utc
+        return min(self.contest_infos, key=key)['download_metadata']
 
 
     #streamline this 
@@ -470,13 +462,14 @@ class Reporter(object):
         contest_dicts = []
 
         for i, info in enumerate(self.contest_infos):
+            print "INFO", info.items()
 
-            contest_label = info[0]['label']
-            metadata = info[-1]
+            contest_label = info['label']
+            metadata = info.get('download_metadata')
 
-            contest_name = info[0]['contest_name']
-            contest_finalists = info[0]['finalists']
-            contest_elimination_rounds = len(info[0]['finalists']) != len(info[0]['candidate_ids'])
+            contest_name = info['contest_name']
+            contest_finalists = info['finalists']
+            contest_elimination_rounds = len(info['finalists']) != len(info['candidate_ids'])
 
             if contest_elimination_rounds and len(contest_finalists) > 2:
                 contest_name += " (%d finalists)" % len(contest_finalists)
@@ -484,11 +477,11 @@ class Reporter(object):
             title = contest_name + " RCV Stats"
 
             count = 0
-            for name in info[0]['candidate_dict'].values():
+            for name in info['candidate_dict'].values():
                 if name.upper() != "WRITE-IN":
                     count += 1
 
-            info[0]['candidate_count'] = count
+            info['candidate_count'] = count
             toc_dicts.append({
                 'candidate_count': count,
                 'label': contest_label,
@@ -497,14 +490,14 @@ class Reporter(object):
                 'elimination_rounds': contest_elimination_rounds,
             })
 
-            url = metadata.url
+            url = metadata.url if metadata else None
             datetime_string = format_metadata_datetime(metadata) if url else ''
             contest_report = self.make_contest(info)
             contest_dicts.append({
                 'label': contest_label,
                 'title': title,
                 'line': len(title) * "=",
-                'round_by_round_url': info[0].get('url'),
+                'round_by_round_url': info.get('url'),
                 'body': contest_report,
                 'download_urls': url,
                 'download_datetime': datetime_string,
@@ -512,12 +505,12 @@ class Reporter(object):
             })
 
         dt, tz = utc_datetime_to_local_datetime_tzname(datetime.utcnow())
-        metadata = self.get_oldest_contest_metadata()
+        metadata = self.get_oldest_contest_metadata() if self.contest_infos[0].get('download_metadata') else None
         return render_template(self.template_path, {
                 'file_encoding': ENCODING_TEMPLATE_FILE,
                 'election_name': self.election_name,
                 'generated_datetime': format_datetime_tzname(dt, tz),
-                'data_datetime': format_metadata_datetime(metadata) if metadata.url else '',
+                'data_datetime': format_metadata_datetime(metadata) if metadata and metadata.url else '',
                 'toc_item': toc_dicts,
                 'contest': contest_dicts,
                 })

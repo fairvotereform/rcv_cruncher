@@ -21,19 +21,6 @@ ENCODING_INTERNAL = 'utf-8'
 
 INFO_FILE_NAME = 'INFO.yaml'
 
-
-def find_in_map(mapping, value_to_find):
-    """Return the mapping key of the value to find."""
-    ### reverse dictionary lookup
-    for (key, value) in mapping.iteritems():
-        if value == value_to_find:
-            return key
-    values = mapping.values()
-    values.sort()
-    print("\n".join(values))
-    raise Error("Value %s not found in dictionary: %r" % (value_to_find, values))
-
-
 def reverse_dict(mapping, values):
     """
     Return a dict that swaps the keys and values of the given mapping.
