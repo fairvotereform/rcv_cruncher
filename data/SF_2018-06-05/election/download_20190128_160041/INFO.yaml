@@ -1,8 +1,0 @@
-# This file is auto-generated.  Do not modify this file.
-# Date time strings are in ISO 8601 format YYYY-MM-DDTHH:MM:SS.
-iso_datetime_local: '2019-01-28T11:00:41'
-iso_datetime_utc: '2019-01-28T16:00:41'
-local_tzname: EST/EDT
-url:
-- https://sfelections.org/results/20180605/data/20180621/20180621_ballotimage.txt
-- https://www.sfelections.org/results/20180605/data/20180621/20180621_masterlookup.txt

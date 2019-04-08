@@ -1,1 +1,0 @@
-This directory should be empty except for auto-downloaded directories.

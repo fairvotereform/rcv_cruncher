@@ -1,218 +1,420 @@
-#!/usr/bin/env python
-# encoding: utf-8
-#
-# Copyright (C) 2011 Chris Jerdonek.  All rights reserved.
-#
-"""
-
-YAML CONFIG FILE:
-
-Leave the "finalists" value empty if the contest was decided in the first
-round.  For example:
-
-  - label: D2
-    input_data: D02
-    winner: "Michela Alioto-Pier"
-    finalists:
-
-TODO: complete this.
-
-"""
-
-import logging
-import os
-import sys
+from functools import wraps
+from collections import Counter
+from argparse import ArgumentParser
 from pprint import pprint
+from fractions import Fraction
+import manifest
+from math import floor
+from collections import defaultdict
+from contextlib import suppress
+from glob import glob
 
-from cruncher.argparser import create_argparser
-from cruncher import common
-from cruncher.input_format import parse_input_format, get_data
-from cruncher.parser import parse_master, parse_ballots, collect_ballots
-from cruncher.reporter import Reporter
-from cruncher.stats import Stats
-from cruncher.rcv import rcv, clean
+from hashlib import sha256
+from inspect import getsource
+import pickle
+from re import sub
 
-_log = logging.getLogger(__name__)
-
-STATS_HEADER = """
-RCV RESULTS KEY
-
-Total:         total number of ballots, including undervotes.
-
-Voted:         number of ballots with at least one ranking marked (or overvoted).
-Undervoted:    total minus voted.
-
-N-Candidate:   number of voted ballots with N valid distinct candidate rankings.
-               A valid ranking is a ranking not preceded by an overvote.
-               For example, the 0-Distinct ballots are the first-round
-               overvotes, i.e. the voted ballots whose first marked ranking
-               is an overvote.
-
-Has overvote:  number of ballots with an overvoted ranking at some ranking.
-Has duplicate: number of ballots with the same candidate marked more than once.
-Has skipped:   number of ballots with an unmarked ranking before a marked ranking.
-Irregular:     number of voted ballots with at least one of the following:
-               an overvote, a duplicate candidate, or a skipped ranking (see
-               above for descriptions).  Note that these categories are not
-               mutually exclusive, for example an unmarked ranking followed by
-               an overvoted ranking.
-
-R1-Overvotes:  number of ballots counting as an overvote in the first round.
-"""
-
-def configure_logging(logging_level):
-    """Configure logging for standard purposes.
-    """
-    formatter = logging.Formatter("%(name)s: [%(levelname)s] %(message)s")
-    handler = logging.StreamHandler(sys.stderr)
-    handler.setFormatter(formatter)
-    logger = logging.getLogger()
-    logger.setLevel(logging_level)
-    logger.addHandler(handler)
-    _log.debug("Debug logging enabled.")
-
-def find_candidate_id(mapping, value_to_find):
-    """reverse dictionary lookup"""
-    return [k for (k, v) in mapping.items() if v == value_to_find][0]
-
-def get_contest_id(contest_config, contest_ids):
-    """Return the contest_id for a contest_config."""
-    contest_name = contest_config.get('name')
-    if len(contest_ids) == 1:
-        # The contest will not have a name configured if there is only one.
-        assert contest_name is None
-        contest_id = contest_ids.values()[0]
-    else:
-        contest_id = contest_ids[contest_name]
-    return contest_id
-
-
-def make_contest_infos(contest_configs, contest_dict, contest_ids):
-    """
-    Return a dict mapping contest_id to ContestInfo object.
-    """
-    contest_infos = {}
-
-    for contest_config in contest_configs:
-        contest_id = get_contest_id(contest_config, contest_ids)
-        contest_name, candidate_dict = contest_dict[contest_id]
-        winner_id = find_candidate_id(candidate_dict, contest_config['winner'])
-        
-        other_finalist_ids = []
-        for candidate in contest_config['finalists']:
-            other_finalist_ids.append(find_candidate_id(candidate_dict, candidate))
-
-        candidate_ids = candidate_dict.keys()
-        if not other_finalist_ids:
-            # Then all candidates are finalists.
-            other_finalist_ids = candidate_ids
-
-        contest_infos[contest_id] = {
-            'contest_name': contest_name, 
-            'candidate_dict': candidate_dict,
-            'candidate_ids': candidate_ids,
-            'winner_id': winner_id,
-            'finalists': [winner_id] + list(set(other_finalist_ids) - set([winner_id])),
-            'label': contest_config['label'], 
-            'stats': Stats(candidates=candidate_ids, winner_id=winner_id),
-        }
-
-    return contest_infos
-
-#separate globbing/download functionality, remove dispatch on type
-def get_download_paths(ns, ec):
-    """
-    Return an iterable of (contest_configs, path_pair).
-    """
-    download_infos = []
-    if 'single_source' in ec['input_format']:
-        download_infos.append((ec['contests'], "election", ec['input_format']['single_source']))
-    else:
-        election_sources = ec['input_format']['source']
-        if isinstance(election_sources, str):
-            election_sources = [election_sources]
-        for contest_config in ec['contests']:
-            label = contest_config['label']
-            urls = ["none"] #[source % label for source in election_sources]
-            download_infos.append(([contest_config], label, urls))
-
-    # An iterable of (contest_configs, path_pair).
-    path_infos = []
-    for configs, dir_name, urls in download_infos:
-        if ec['input_format']['type'] == 'sf-2008':
-            path_pair = get_data(ns, ec['input_format'], ec['election_label'], dir_name, urls)
+def stv(ctx):
+    rounds = []
+    bs = [(b,Fraction(1,1)) for b in cleaned(ctx) if b]
+    threshold = int(len(bs)/(number(ctx)+1)) + 1 
+    winners = []
+    while len(winners) != number(ctx):
+        totals = defaultdict(int)
+        for c,v in bs:
+            totals[c[0]] += v
+        ordered = sorted(totals.items(), key=lambda x:-x[1])
+        rounds.append(ordered)
+        names, tallies = zip(*ordered)
+        if len(names) + len(winners) == number(ctx):
+            winners.extend(names)
+            break
+        if threshold < tallies[0]:
+            winners.append(names[0])
+            bs = ((keep(names[1:], c), 
+                    v*(names[0] != c[0] or (tallies[0]-threshold)/tallies[0]))
+                   for c,v in bs)
         else:
-            file_prefix = configs[0]['input_data']
-            master_file = "%s-Cntl.txt" % file_prefix
-            ballot_file = "%s-Ballots.txt" % file_prefix
-            make_path = lambda file_name: os.path.join(ec['input_format']['input_dir'], file_name)
-            path_pair = map(make_path, [master_file, ballot_file])
-        path_infos.append({'configs': configs, 'master': path_pair[0], 'ballot': path_pair[1]})
+            bs = ((keep(names[:-1], c), v) for c,v in bs)
+        bs = [b for b in bs if b[0]]
+    return winners, rounds
 
-    return path_infos
+def rcv_stack(ballots):
+    stack = [ballots]
+    results = []
+    while stack:
+        ballots = stack.pop()
+        finalists, tallies = map(list, zip(*Counter(b[0] for b in ballots if b).most_common()))
+        if tallies[0]*2 > sum(tallies):
+            results.append((finalists, tallies))
+        else:
+            losers = finalists[tallies.index(min(tallies)):]
+            for loser in losers:
+                stack.append([keep(set(finalists)-set([loser]), b) for b in ballots])
+            if len(losers) > 1:
+                stack.append([keep(set(finalists)-set(losers), b) for b in ballots])
+    return results
 
-def main(sys_argv):
-    ns = create_argparser().parse_args(sys_argv[1:])
-    if not os.path.exists(ns.output_dir):
-        os.mkdir(ns.output_dir)
+UNDERVOTE = -1
+OVERVOTE = -2
+WRITEIN = -3
 
-    configure_logging(logging.DEBUG)
-    election_config = common.unserialize_yaml_file(ns.config_path)
+def save(f):
+    @wraps(f)
+    def fun(ctx):
+        if f.__name__ in ctx:
+            return ctx[f.__name__]
+        h = hasher(ctx).copy()
+        h.update(bytes(getsource(f), 'utf-8'))
+        file_name = '.pickled/.{}.pickle'.format(h.hexdigest())
+        with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
+            return ctx.setdefault(f.__name__, pickle.load(file_object))
+        with open(file_name, 'wb') as file_object:
+            pickle.dump(ctx.setdefault(f.__name__, f(ctx)), file_object)
+        return ctx[f.__name__]
+    return fun
 
-    reporter = Reporter(election_name=election_config['election_name'].upper(), 
-                        template_path='templates/report.mustache')
-    if election_config.get('notinsane') is not None:
-        election_config['election_label'] = election_config['election_name']
-        input_format = parse_input_format(election_config['type'])
-        ballots = clean(collect_ballots(input_format, election_config['path']))
-        candidates = set()
-        for b in ballots:
-            candidates.update(b) 
-        d = rcv(ballots)
-        print d
-        infos = {1:{
-            'contest_name': election_config['election_name'],
-            'candidate_dict': {i:i for i in candidates},
-            'candidate_ids': candidates,
-            'winner_id': d['winner'],
-            'finalists': d['finalists'],
-            'label': election_config['election_name'], 
-            'stats': Stats(candidates=candidates, winner_id=d['winner'])
-        }}
-        parse_ballots(input_format, infos, election_config['path'])
-        reporter.contest_infos = [infos[1]]
-                 
-    else:
-        input_format = parse_input_format(election_config['input_format']['type'])
-        for data in election_config['contests']:
-            data['label'] = data.get('label') or data['source']
-            data['finalists'] = data['finalists'] or []
-        download_infos = get_download_paths(ns, election_config)
-        for info in download_infos:
-            contest_dict = parse_master(input_format, info['master'])
-            contest_ids = {contest_dict[contest_id][0]: contest_id for contest_id in contest_dict.keys()}
+def tmpsave(f):
+    @wraps(f)
+    def fun(ctx):
+        if f.__name__ in ctx:
+            return ctx[f.__name__]
+        return ctx.setdefault(f.__name__, f(ctx))
+    return fun
 
-            contest_infos = make_contest_infos(info['configs'], contest_dict, contest_ids)
-            parse_ballots(input_format, contest_infos, info['ballot'])
-            download_metadata = input_format.get_download_metadata(info['master'])
+def remove(x,l): 
+    return [i for i in l if i != x]
 
-            for contest_config in info['configs']:
-                contest_id = get_contest_id(contest_config, contest_ids)
-                contest_info = contest_infos[contest_id]
-                contest_info['download_metadata'] = download_metadata
-                reporter.contest_infos.append(contest_info)
+def keep(x,l): 
+    return [i for i in l if i in x]
 
-    report = reporter.generate()
+@save #d
+def cleaned(ctx):
+    new = []
+    for b in ballots(ctx):
+        result = []
+        for a,b in zip(b,b[1:]+[None]):
+            if break_on_repeated_undervotes(ctx) and {a,b} == {UNDERVOTE}:
+                break
+            if break_on_overvote(ctx) and a == OVERVOTE:
+                break
+            if a not in (result + [OVERVOTE,UNDERVOTE]):
+                result.append(a)
+        new.append(result)
+    return new
 
-    try:
-        print report
-    except UnicodeEncodeError:
-        # Windows seems to have trouble with some unicode characters, e.g. the "Ó" in GASCÓN.
-        _log.warn("Error printing report to console (probably because of special characters.")
+@save #d
+def minneapolis_undervote(ctx):
+    return effective_ballot_length(ctx).get(0,0)
 
-    output_path = os.path.join(ns.output_dir, "rcv_stats_%s.html" % election_config['election_label'])
-    common.write_to_file(report, output_path)
+@save #d
+def minneapolis_total(ctx):
+    return total(ctx) - minneapolis_undervote(ctx)  
 
-if __name__ == "__main__":
-    main(sys.argv)
+@save
+def naive_tally(ctx):
+    """ Sometimes reported if only one round, only nominal 1st place rankings count"""
+    return Counter(b[0] if b else None for b in ballots(ctx))
 
+@save #d
+def winner_ranking(ctx):
+    return Counter(b.index(winner(ctx))+1 if winner(ctx) in b else None
+                    for b in cleaned(ctx))
+
+@save #d
+def winner_in_top_3(ctx):
+    return sum(v for k,v in winner_ranking(ctx).items() if k is not None and k<4)
+
+@save #d
+def consensus(ctx):
+    return winner_in_top_3(ctx) / (total(ctx) - undervote(ctx)) 
+
+       
+@save #d 
+def rcv(ctx):
+    rounds = []
+    ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
+    while True:
+        rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+        finalists, tallies = rounds[-1] 
+        if tallies[0]*2 > sum(tallies):
+            return rounds
+        ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+@save #d
+def winner(ctx):
+    return rcv(ctx)[-1][0][0]
+
+@save #d
+def finalists(ctx):
+    return rcv(ctx)[-1][0]
+
+@save #should be dependant
+def first_round(ctx):
+    return [next((c for c in b if c != UNDERVOTE), UNDERVOTE)
+            for b in ballots(ctx)]
+
+@save #should be dependant
+def undervote(ctx):
+    return sum(c == UNDERVOTE for c in first_round(ctx))
+
+
+@save #d
+def ranked2(ctx):
+    return sum(len(b) == 2 for b in cleaned(ctx))
+
+@save #d
+def ranked_multiple(ctx): 
+    return sum(len(b) > 1 for b in cleaned(ctx))
+
+@save #d
+def effective_ballot_length(ctx):
+    return Counter(len(b) for b in cleaned(ctx))
+
+@save #d
+def exhausted(ctx):
+    return [not set(finalists(ctx)) & set(b) for b in cleaned(ctx)]
+
+@save #d
+def total_exhausted(ctx):
+    return sum(exhausted(ctx))
+
+@save #d fixme
+def involuntarily_exhausted(ctx):
+    return [a and b for a,b in zip(fully_ranked(ctx), exhausted(ctx))]
+
+@save #d
+def total_involuntarily_exhausted(ctx):
+    return sum(involuntarily_exhausted(ctx))
+
+@save #d
+def voluntarily_exhausted(ctx):
+    return [a and not b 
+            for a,b in zip(exhausted(ctx),involuntarily_exhausted(ctx))]
+
+@save #d
+def total_voluntarily_exhausted(ctx):
+    return sum(voluntarily_exhausted(ctx))
+
+@save #d
+def exhausted_by_repeated_choices(ctx):
+    return total_exhausted(ctx) - sum([exhausted_by_undervote(ctx), 
+                                        total_exhausted_by_overvote(ctx),
+                                        total_involuntarily_exhausted(ctx)])
+
+@save #d
+def exhausted_by_undervote(ctx):
+    if break_on_repeated_undervotes(ctx):
+        return sum(all([ex, not ex_over, has_under]) for ex,ex_over,has_under in 
+                  zip(exhausted(ctx),exhausted_by_overvote(ctx), has_undervote(ctx)))
+    return 0
+
+@save #d
+def exhausted_by_overvote(ctx):
+    if break_on_repeated_undervotes(ctx):
+        return [ex and over<under for ex,over,under in 
+                    zip(exhausted(ctx),overvote_ind(ctx), repeated_undervote_ind(ctx))]
+    return [ex and over for ex,over in zip(exhausted(ctx),overvote(ctx))]
+
+@save #d
+def total_exhausted_by_overvote(ctx):
+    return sum(exhausted_by_overvote(ctx))
+
+@save #d
+def total_exhausted_not_by_overvote(ctx):
+    return sum(ex and not ov 
+                for ex,ov in zip(exhausted(ctx), exhausted_by_overvote(ctx)))
+
+@save #d
+def ranked_winner(ctx):
+    return sum(winner(ctx) in b for b in cleaned(ctx))
+
+def before(x, y, l):
+    for i in l:
+        if i == x:
+            return 1
+        if i == y:
+            return -1
+    return 0
+
+@save #d
+def losers(ctx):
+    return set(finalists(ctx)) - {winner(ctx)}
+
+@save #d
+def condorcet(ctx):
+    net = Counter()
+    for b in ballots(ctx):
+        for loser in losers(ctx):
+            net.update({loser: before(winner(ctx), loser, b)})
+    return net.most_common()[-1][1] > 0
+        
+@save #d
+def combinations(ctx):
+    return Counter(tuple(sorted(b) for b in cleaned(ctx)))
+
+@save #d
+def orderings(ctx):
+    return Counter(map(tuple,cleaned(ctx)))
+
+@save
+def repeated_undervote_ind(ctx):
+    rs = []
+    for b in ballots(ctx):
+        rs.append(float('inf'))
+        with suppress(ValueError):
+            rs[-1] = list(zip(b, b[1:])).index((UNDERVOTE,)*2)
+    return rs
+
+@save
+def overvote_ind(ctx):
+    return [b.index(OVERVOTE) if OVERVOTE in b else float('inf')
+            for b in ballots(ctx)]
+
+@save
+def has_undervote(ctx):
+    return [UNDERVOTE in b #[:len(b)-write_ins(ctx)+b.count(WRITEIN)] 
+            for b in ballots(ctx)]
+
+@save
+def max_repeats(ctx):
+    return [max(0,0,*map(b.count,set(b)-{UNDERVOTE,OVERVOTE}))
+            for b in ballots(ctx)]
+
+@save
+def count_duplicates(ctx):
+    return Counter(max_repeats(ctx))
+
+@save
+def duplicates(ctx):
+    return [v > 1 for v in max_repeats(ctx)]
+
+@save
+def two_repeated(ctx):
+    return count_duplicates(ctx)[2]
+
+@save
+def three_repeated(ctx):
+    return count_duplicates(ctx)[3]
+
+@save
+def overvote(ctx):
+    return [OVERVOTE in b for b in ballots(ctx)]
+
+@save
+def total_overvote(ctx):
+    return sum(overvote(ctx))
+
+@save
+def skipped(ctx):
+    return [any({UNDERVOTE} & {x} - {y} for x,y in zip(b, b[1:]))
+            for b in ballots(ctx)]
+
+@save
+def total_skipped(ctx):
+    return sum(skipped(ctx))
+
+@save
+def irregular(ctx):
+    return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx)))) 
+
+@save
+def first_round_overvote(ctx):
+    return sum(c == OVERVOTE for c in first_round(ctx))
+
+@save
+def fully_ranked(ctx):
+    return [len(a) <= len(b)+write_ins(ctx)
+            for a,b in zip(ballots(ctx), cleaned(ctx))]
+
+@save
+def total_fully_ranked(ctx):
+    return sum(fully_ranked(ctx))
+
+@save
+def candidates(ctx):
+    cans = set()
+    for b in ballots(ctx):
+        cans.update(b) 
+    return cans - {OVERVOTE, UNDERVOTE}
+
+@save
+def total(ctx):
+    return len(ballots(ctx))
+
+@save
+def ballots(ctx):
+    return ctx['parser'](ctx['path'])
+
+@tmpsave
+def break_on_repeated_undervotes(ctx):
+    return False
+
+@tmpsave
+def break_on_overvote(ctx):
+    return True
+
+@tmpsave
+def write_ins(ctx):
+    return 0
+
+@tmpsave
+def number(ctx):
+    return 1
+
+@save
+def ballot_length(ctx):
+    return len(ballots(ctx)[0])
+
+@save 
+def number_of_candidates(ctx):
+    return len(candidates(ctx)) 
+
+@tmpsave
+def hasher(ctx):
+    h = sha256(bytes(sub(r'0x[0-9a-f]+','',str(ctx)),'utf-8')) #stripping pointer addrs
+    for path in glob(ctx['path']):
+        with open(path, 'rb') as f:
+            for i in f:
+                h.update(i)
+    return h
+
+FUNCTIONS = [
+    total, undervote, total_overvote, first_round_overvote, 
+    total_exhausted_by_overvote, total_fully_ranked, ranked2, ranked_winner, 
+    two_repeated, three_repeated, total_skipped, irregular, total_exhausted, 
+    total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
+    total_voluntarily_exhausted, condorcet, effective_ballot_length,rcv,
+    finalists,winner,exhausted_by_undervote, exhausted_by_repeated_choices,
+    minneapolis_undervote, minneapolis_total, naive_tally, candidates]
+
+def calc(competition, functions):
+    ctx = dict(manifest.competitions[competition])
+    hasher(ctx) 
+    return {f.__name__: f(ctx) for f in functions}
+
+def main():
+    p = ArgumentParser()
+    p.add_argument('-e', '--elections', nargs='*')
+    p.add_argument('-s', '--stats', nargs='*')
+    p.add_argument('-ef', '--election_file', nargs='?')
+    p.add_argument('-sf', '--stats_file', nargs='?')
+    a = p.parse_args()
+    possible_elections = list(a.elections or [])
+    if a.election_file:
+        with open(a.election_file) as f:
+            possible_elections.extend([i.strip() for i in f])
+    elections = [(election, manifest.competitions[election]) for election in possible_elections] or manifest.competitions.items()
+    possible_stats = list(a.stats or [])
+    if a.stats_file:
+        with open(a.stats_file) as f:
+            possible_stats.extend([i.strip() for i in f])
+    stats = [globals()[i] for i in possible_stats] or FUNCTIONS
+    print('\t'.join(['name'] + possible_stats))
+    for k,v in elections:
+        result = calc(k, stats)
+        print('\t'.join([k] + [str(result[s.__name__]) for s in stats]))
+    
+if __name__== '__main__':
+    main()
+ 

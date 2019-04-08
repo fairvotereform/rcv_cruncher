@@ -1,3 +1,0 @@
-pystache==0.5.4
-PyYAML==3.11
-wheel==0.24.0
