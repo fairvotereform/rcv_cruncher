@@ -1,5 +1,6 @@
 from pathlib import Path
 from glob import glob
+from collections import UserList
 import os
 import csv
 UNDERVOTE = -1
@@ -17,10 +18,6 @@ def burlington(path):
     return ballots
    
 def prm(glob_path):
-    #parent = Path(path).parent
-    #with open(path, 'r') as f:
-    #    paths = [os.path.join(parent, *i.split()[1].split('\\')) 
-    #                for i in f if i.split()[:1] == ['.INCLUDE']]
     ballots = []
     for path in glob(glob_path):
         with open(path, 'r') as f:
@@ -77,7 +74,8 @@ def sfnoid(path):
             undervote = UNDERVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             
-            #Alameda County incorrectly reported 0 for write in candidates for races in 2012 and treated write-ins as undervotes in their reports
+            #Alameda County incorrectly reported 0 for write in candidates for 
+            #races in 2012 and treated write-ins as undervotes in their reports
             #for city attorney, the undervote ID was 92. This snippit was used to validate rcv results
             #with the counties official report here:
             #https://www.acvote.org/acvote-assets/pdf/elections/2012/11062012/results/rcv/oakland/city_attorney/nov-6-2012-pass-report-oakland-city-attorney.pdf
@@ -163,6 +161,42 @@ def santafe(column_id, contest_id, path):
                 ballots.append(choices)
     return [b[:ballot_length] for b in ballots]
 
+def santafe_id(column_id, contest_id, path):
+    ballots = []
+    ballot_length = 0
+    with open(path, "r") as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
+        rinds = []
+        cinds = [] 
+        for i in range(len(header)):
+            try:
+                rinds.append(header.index(s.format(column_id, i, 'Rank')))
+            except ValueError:
+                break
+            cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
+        col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
+        for i, line in enumerate(reader):
+            if line[col] == str(contest_id):
+                choices = UserList([])
+                choices.voter_id = i
+                ranks = [int(line[i]) for i in rinds if line[i] != '']
+                ballot_length = max(ranks + [ballot_length])
+                candidates = iter(cinds)
+                for i in range(len(rinds)):
+                    c = ranks.count(i+1)
+                    if c == 0:
+                        choices.append(UNDERVOTE)
+                    elif c == 1:
+                        choices.append(line[next(candidates)])
+                    else:
+                        choices.append(OVERVOTE)
+                ballots.append(choices)
+    for b in ballots:
+        b.data = b.data[:ballot_length]
+    return ballots
+
 def sf2005(contest_ids, over, under, sep, path):
     ballots = []
     with open(path, 'r') as f:
@@ -178,3 +212,5 @@ def sf2005(contest_ids, over, under, sep, path):
                 ballots.append([{over: OVERVOTE, under: UNDERVOTE}.get(i,i)
                                 for i in raw])
     return ballots
+
+
