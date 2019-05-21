@@ -333,7 +333,7 @@ def before(x, y, l):
 
 @save #d
 def losers(ctx):
-    return set(finalists(ctx)) - {winner(ctx)}
+    return set(candidates(ctx)) - {winner(ctx)}
 
 @save #d
 def condorcet(ctx):
@@ -343,7 +343,7 @@ def condorcet(ctx):
             net.update({loser: before(winner(ctx), loser, b)})
     if not net: #Uncontested Race -> net == {}
         return True
-    return net.most_common()[-1][1] > 0
+    return min(net.values()) > 0
         
 @save #d
 def candidate_combinations(ctx):
@@ -513,7 +513,14 @@ def total(ctx):
 
 @save
 def ballots(ctx):
-    return ctx['parser'](ctx['path'])
+    raw = ctx['parser'](ctx['path'])
+    can_set = set()
+    for b in raw:
+        can_set.update(b)
+    special = {UNDERVOTE, OVERVOTE, WRITEIN}
+    can_map = sorted(can_set - special)
+    return [[c if c in special else hex(can_map.index(c))[1:] for c in b] 
+            for b in raw]
 
 @tmpsave
 def break_on_repeated_undervotes(ctx):
