@@ -1168,5 +1168,164 @@ competitions = {
         'break_on_overvote': False,
         'break_on_repeated undervotes': False
     },
+    'Burlington Mayor 2009': {'office': 'Mayor', 'date': '2009', 'place': 'Burlington',
+        'path': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.PRM' ,
+        'parser': prm,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+    },
+    'San Leandro Mayor 2018': {
+        'office': 'Mayor',  
+        'date': '2018', 
+        'place': 'San Leandro',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroMayor2018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'San Leandro Council D5 2018': {
+        'office': 'Council D5',  
+        'date': '2018', 
+        'place': 'San Leandro',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD52018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'San Leandro Council D3 2018': {
+        'office': 'Council D3',  
+        'date': '2018', 
+        'place': 'San Leandro',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD32018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'San Leandro Council D1 2018': {
+        'office': 'Council D1',  
+        'date': '2018', 
+        'place': 'San Leandro',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD12018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland School D6 2018': {
+        'office': 'School D6',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD62018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland School D4 2018': {
+        'office': 'School D4',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD42018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland School D2 2018': {
+        'office': 'School D2',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD22018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland Council D6 2018': {
+        'office': 'Council D6',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD62018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland Council D4 2018': {
+        'office': 'Council D4',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD42018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland Council D2 2018': {
+        'office': 'Council D2',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD22018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland Mayor 2018': {
+        'office': 'Mayor',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandMayor2018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Oakland City Auditor 2018': {
+        'office': 'City Auditor',  
+        'date': '2018', 
+        'place': 'Oakland',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCityAuditor2018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Berkeley Council D8 2018': {
+        'office': 'Council D8',  
+        'date': '2018', 
+        'place': 'Berkeley',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD82018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Berkeley Council D7 2018': {
+        'office': 'Council D7',  
+        'date': '2018', 
+        'place': 'Berkeley',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD72018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Berkeley Council D4 2018':  {
+        'office': 'Council D4',  
+        'date': '2018', 
+        'place': 'Berkeley',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD42018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Berkeley Council D1 2018': {
+        'office': 'Council D1',  
+        'date': '2018', 
+        'place': 'Berkeley',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD12018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
+    'Berkeley City Auditor 2018': {
+        'office': 'City Auditor',  
+        'date': '2018', 
+        'place': 'Berkeley',
+        'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCityAuditor2018ballot_image.txt',
+        'parser': sfnoid,
+        'break_on_overvote': True,
+        'break_on_repeated undervotes': False
+     },
 }
  

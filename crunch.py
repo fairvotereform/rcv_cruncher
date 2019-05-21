@@ -75,6 +75,14 @@ def seq_stv(ctx):
         ballots = remove([], (remove(winners[-1], b) for b in ballots))
     return winners
 
+@save
+def rank_and_add_borda(ctx):
+    """https://voterschoose.info/wp-content/uploads/2019/04/Tustin-White-Paper.pdf"""
+    c = Counter()
+    for b in cleaned(ctx):
+        c.update({v:1/(i+1) for i,v in enumerate(b)})
+    return [i for i,_ in c.most_common()[:number(ctx)]]
+
 @save     
 def bottom_up_stv(ctx):
     ballots = deepcopy(cleaned(ctx))
@@ -173,6 +181,7 @@ def cleaned(ctx):
 
 @save #d
 def minneapolis_undervote(ctx):
+    """Ballots containing only"""
     return effective_ballot_length(ctx).get(0,0)
 
 @save #d

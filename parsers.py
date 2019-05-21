@@ -16,7 +16,13 @@ def burlington(path):
     for b in ballots:
         b.extend([UNDERVOTE]*(maxlen)-len(b))
     return ballots
-   
+
+
+#TODO: add functionality to allow resolvalbe overvotes
+#       i.e. overvotes that are tabulated after all but
+#       one of the candidates in the overvote is eliminated
+#       burlington, and possibly cambridge will still count
+#       this vote
 def prm(glob_path):
     ballots = []
     for path in glob(glob_path):
