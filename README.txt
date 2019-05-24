@@ -41,3 +41,6 @@ Improve cache-to-disk method to be simpler and more robust
 - lean on git status or os modified time
 - don't just blindly overwrite old file
 
+Meaningful file paths?
+
+

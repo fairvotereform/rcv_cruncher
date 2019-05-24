@@ -229,6 +229,14 @@ def rcv(ctx):
             return rounds
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
 
+@save
+def rounds(ctx):
+    return len(rcv(ctx))
+
+@save
+def last10rcv(ctx):
+    return rcv(ctx)[-10:]
+
 @save #d
 def winner(ctx):
     return rcv(ctx)[-1][0][0]
@@ -344,6 +352,10 @@ def condorcet(ctx):
     if not net: #Uncontested Race -> net == {}
         return True
     return min(net.values()) > 0
+
+@save
+def come_from_behind(ctx):
+    return winner(ctx) != rcv(ctx)[0][0][0]
         
 @save #d
 def candidate_combinations(ctx):
@@ -581,10 +593,10 @@ FUNCTIONS = [office, date, place,
     total_exhausted_by_overvote, total_fully_ranked, ranked2, ranked_winner, 
     two_repeated, three_repeated, total_skipped, irregular, total_exhausted, 
     total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
-    total_voluntarily_exhausted, condorcet, effective_ballot_length,rcv,
-    finalists,winner,exhausted_by_undervote, exhausted_by_repeated_choices,
-    minneapolis_undervote, minneapolis_total, naive_tally, candidates, 
-    count_duplicates, any_repeat, validly_ranked_winner]
+    total_voluntarily_exhausted, condorcet, come_from_behind, 
+    effective_ballot_length,rounds, last10rcv, finalists, winner,exhausted_by_undervote, 
+    exhausted_by_repeated_choices, minneapolis_undervote, minneapolis_total, 
+    naive_tally, candidates, count_duplicates, any_repeat, validly_ranked_winner]
 
 def calc(competition, functions):
     ctx = dict(manifest.competitions[competition])
@@ -622,7 +634,7 @@ def main():
         w.writerow(['name'] + a.stats)
         for k in sorted(set(matched_elections)):
             result = calc(k, stats)
-            w.writerow([k] + [result[s] for s in a.stats])
+            w.writerow([k.replace(',','')] + [result[s] for s in a.stats])
 
 if __name__== '__main__':
     main()
