@@ -14,7 +14,7 @@ def burlington(path):
             ballots.append([OVERVOTE if '=' in i else i for i in line.split()[3:]])
     maxlen = max(map(len,ballots))
     for b in ballots:
-        b.extend([UNDERVOTE]*(maxlen)-len(b))
+        b.extend([UNDERVOTE]*(maxlen-len(b)))
     return ballots
 
 

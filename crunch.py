@@ -234,8 +234,8 @@ def rounds(ctx):
     return len(rcv(ctx))
 
 @save
-def last10rcv(ctx):
-    return rcv(ctx)[-10:]
+def last5rcv(ctx):
+    return rcv(ctx)[-5:]
 
 @save #d
 def winner(ctx):
@@ -594,7 +594,7 @@ FUNCTIONS = [office, date, place,
     two_repeated, three_repeated, total_skipped, irregular, total_exhausted, 
     total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
     total_voluntarily_exhausted, condorcet, come_from_behind, 
-    effective_ballot_length,rounds, last10rcv, finalists, winner,exhausted_by_undervote, 
+    effective_ballot_length,rounds, last5rcv, finalists, winner,exhausted_by_undervote, 
     exhausted_by_repeated_choices, minneapolis_undervote, minneapolis_total, 
     naive_tally, candidates, count_duplicates, any_repeat, validly_ranked_winner]
 

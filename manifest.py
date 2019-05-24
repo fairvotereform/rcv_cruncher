@@ -1,4 +1,4 @@
-from parsers import santafe, santafe_id, maine, minneapolis, sf, sf2005, sfnoid, old, prm
+from parsers import santafe, santafe_id, maine, minneapolis, sf, sf2005, sfnoid, old, prm, burlington
 from functools import partial
 competitions = {
     'Santa Fe Mayor 2018' : {'office': 'Mayor',  'date': '2018', 'place' : 'Santa Fe',
@@ -1166,6 +1166,15 @@ competitions = {
         'path': 'Ballot_Images/Cambridge/2001/Council - Wednesday/*.PRM',
         'parser': prm,
         'break_on_overvote': False,
+        'break_on_repeated undervotes': False
+    },
+    'Burlington Mayor 2006': {
+        'office': 'Mayor',
+        'date': '2006',
+        'place': 'Burlington',
+        'path': 'Ballot_Images/Burlington/Burlington Mayor 2006.txt',
+        'parser': burlington,
+        'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
     'Burlington Mayor 2009': {'office': 'Mayor', 'date': '2009', 'place': 'Burlington',
