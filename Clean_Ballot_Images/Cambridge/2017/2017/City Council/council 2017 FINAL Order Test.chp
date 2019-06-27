@@ -1,0 +1,43 @@
+.TITLE November 17, 2017 -- Cambridge, MA
+.TITLE City Council Election
+.TITLE Cambridge, Massachusetts
+.TITLE Final Election Results
+
+.ELECT 9
+.CONTEST "Council Order"
+.STATISTICS-ON
+.COMPLY-WITH CAMBRIDGE
+.BALLOT-FORMAT-SEPS ,)
+.BALLOT-FORMAT-FIELDS BALLOT-ID-ALPHA BALLOT-TOP-ALPHA IGNORE-FIELD IGNORE-FIELD RANKINGS-ALPHA
+
+.CANDIDATE C01, "Benjamin, Ronald"
+.CANDIDATE C02, "Burgin, Josh M."
+.CANDIDATE C03, "Carlone, Dennis J."
+.CANDIDATE C04, "D'Ambrosio, Olivia"
+.CANDIDATE C05, "Devereux, Jan"
+.CANDIDATE C06, "Gebru, Samuel"
+.CANDIDATE C07, "Harding, Jr., Richard"
+.CANDIDATE C08, "Kelley, Craig A."
+.CANDIDATE C09, "Lenke, Dan"
+.CANDIDATE C10, "Levy, Ilan"
+.CANDIDATE C11, "Mallon, Alanna M."
+.CANDIDATE C12, "McGovern, Marc C."
+.CANDIDATE C13, "Moree, Gregg J."
+.CANDIDATE C14, "Musgrave, Adriane B."
+.CANDIDATE C15, "Okamoto, Nadya T."
+.CANDIDATE C16, "Pillai, Hari I."
+.CANDIDATE C17, "Santos, Jeff"
+.CANDIDATE C18, "Siddiqui, Sumbul"
+.CANDIDATE C19, "Simmons, E. Denise"
+.CANDIDATE C20, "Sivongxay, Vatsady"
+.CANDIDATE C21, "Sutton, Bryan"
+.CANDIDATE C22, "Tierney, Sean"
+.CANDIDATE C23, "Toner, Paul F."
+.CANDIDATE C24, "Toomey, Jr., Timothy J."
+.CANDIDATE C25, "Volmar, Gwen Thomas"
+.CANDIDATE C26, "Zondervan, Quinton Y."
+.CANDIDATE WI01, "Write-In 1"
+
+### 2017 council final order test
+
+.INCLUDE Council2017FinalOrder.prm

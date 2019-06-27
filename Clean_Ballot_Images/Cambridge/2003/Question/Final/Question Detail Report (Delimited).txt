@@ -1,0 +1,25 @@
+D:\Cambridge\Election2003\Question\Final\Question Detail Report (Delimited)
+10|NOV. 4, 2003 -- Cambridge, MA
+10|BALLOT QUESTION #1
+10|CAMBRIDGE, MA
+20|C01|"Yes"
+20|C02|"No"
+30|system|Choice Voting
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st round)
+30|ties|1) Previous Round method|2) By election official|3) Random (by computer)
+40|20299|20299|1|10150|640
+50|1|Tally of 1st place votes.
+60|C02|+12467|12467|ELECTED -- 1st round
+60|C01|+7832|7832|DEFEATED -- 1st round
+60|CAND_EXHAUSTED|0|0|
+70|No has been ELECTED because s/he has met the threshold.
+70|Yes is declared DEFEATED, because all of the seats have been filled.
+50|2|Yes has been DEFEATED -- transferring all votes.
+60|C02|0|12467|ELECTED -- 1st round
+60|C01|-7832|0|DEFEATED -- 1st round
+60|CAND_EXHAUSTED|+7832|7832|
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Wednesday, November 5, 2003 5:51 PM
+80|ChoicePlus Pro -- Version 2.1
+80|(c) 1993-2001 Voting Solutions -- All Rights Reserved

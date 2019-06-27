@@ -1,0 +1,565 @@
+D:\Cambridge\Election2005\Council\Wednesday\Council Detail Report
+
+
+November 8, 2005 -- Cambridge, MA
+CITY COUNCIL ELECTION
+CAMBRIDGE, MA
+Wednesday Preliminary Results
+
+CANDIDATES:
+	Adkins, Lawrence J.
+	Condit, James E., III
+	Davis, Henrietta
+	Decker, Marjorie C.
+	Galluccio, Anthony D.
+	Gordon, Jesse A.
+	Green, Andre Lerone
+	Hall, Robert Lee, Sr.
+	Hees, Bill
+	Kelley, Craig A.
+	LaTremouille, Robert J.
+	Maher, David P.
+	Murphy, Brian
+	Reeves, Kenneth E.
+	Seidel, Sam
+	Simmons, Denise
+	Sullivan, Michael A.
+	Toomey, Timothy J., Jr.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+	Write-In 7
+	Write-In 8
+	Write-In 9
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+16,070 valid ballots.
+Electing 9 candidates.
+Winning threshold is 1608 votes.
+There were 132 invalid ballots.
+(16,202 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.            +2001           2001  ELECTED -- 1st round
+Decker, Marjorie C.              +1524           1524  CONTINUING
+Sullivan, Michael A.             +1464           1464  CONTINUING
+Davis, Henrietta                 +1459           1459  CONTINUING
+Toomey, Timothy J., Jr.          +1432           1432  CONTINUING
+Simmons, Denise                  +1330           1330  CONTINUING
+Murphy, Brian                    +1236           1236  CONTINUING
+Reeves, Kenneth E.               +1207           1207  CONTINUING
+Kelley, Craig A.                 +1042           1042  CONTINUING
+Seidel, Sam                       +973            973  CONTINUING
+Maher, David P.                   +902            902  CONTINUING
+Gordon, Jesse A.                  +626            626  CONTINUING
+Adkins, Lawrence J.               +243            243  CONTINUING
+Hees, Bill                        +198            198  CONTINUING
+Green, Andre Lerone               +181            181  CONTINUING
+LaTremouille, Robert J.           +118            118  CONTINUING
+Hall, Robert Lee, Sr.              +75             75  CONTINUING
+Condit, James E., III              +42             42  CONTINUING
+Write-In 1                         +17             17  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +16070          16070  
+
+
+
+-- Galluccio, Anthony D. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ROUND 2 -- Galluccio, Anthony D. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.             -393           1608  ELECTED -- 1st round
+Sullivan, Michael A.              +122           1586  CONTINUING
+Decker, Marjorie C.                +31           1555  CONTINUING
+Toomey, Timothy J., Jr.            +57           1489  CONTINUING
+Davis, Henrietta                   +23           1482  CONTINUING
+Simmons, Denise                    +20           1350  CONTINUING
+Murphy, Brian                       +7           1243  CONTINUING
+Reeves, Kenneth E.                 +35           1242  CONTINUING
+Kelley, Craig A.                   +12           1054  CONTINUING
+Seidel, Sam                         +4            977  CONTINUING
+Maher, David P.                    +55            957  CONTINUING
+Gordon, Jesse A.                   +11            637  CONTINUING
+Adkins, Lawrence J.                 +4            247  CONTINUING
+Hees, Bill                          +1            199  CONTINUING
+Green, Andre Lerone                 +4            185  CONTINUING
+LaTremouille, Robert J.             +2            120  CONTINUING
+Hall, Robert Lee, Sr.               +4             79  CONTINUING
+Condit, James E., III                0             42  DEFEATED -- 2nd round
+Write-In 1                          +1             18  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16070  
+
+
+
+-- Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+-- Condit, James E., III is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+ROUND 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                +3           1589  CONTINUING
+Decker, Marjorie C.                 +6           1561  CONTINUING
+Toomey, Timothy J., Jr.             +1           1490  CONTINUING
+Davis, Henrietta                    +5           1487  CONTINUING
+Simmons, Denise                     +2           1352  CONTINUING
+Murphy, Brian                       +1           1244  CONTINUING
+Reeves, Kenneth E.                  +1           1243  CONTINUING
+Kelley, Craig A.                     0           1054  CONTINUING
+Seidel, Sam                         +3            980  CONTINUING
+Maher, David P.                     +3            960  CONTINUING
+Gordon, Jesse A.                    +4            641  CONTINUING
+Adkins, Lawrence J.                 +2            249  CONTINUING
+Hees, Bill                          +5            204  CONTINUING
+Green, Andre Lerone                 +3            188  CONTINUING
+LaTremouille, Robert J.             +2            122  CONTINUING
+Hall, Robert Lee, Sr.               +2             81  DEFEATED -- 3rd round
+Condit, James E., III              -42              0  DEFEATED -- 2nd round
+Write-In 1                         -18              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +17             17  
+TOTALS:                              0          16070  
+
+
+
+-- Hall, Robert Lee, Sr. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 4 -- Hall, Robert Lee, Sr. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                +7           1596  CONTINUING
+Decker, Marjorie C.                 +2           1563  CONTINUING
+Davis, Henrietta                    +3           1490  CONTINUING
+Toomey, Timothy J., Jr.              0           1490  CONTINUING
+Simmons, Denise                     +7           1359  CONTINUING
+Reeves, Kenneth E.                 +12           1255  CONTINUING
+Murphy, Brian                       +2           1246  CONTINUING
+Kelley, Craig A.                    +5           1059  CONTINUING
+Seidel, Sam                         +4            984  CONTINUING
+Maher, David P.                     +5            965  CONTINUING
+Gordon, Jesse A.                    +5            646  CONTINUING
+Adkins, Lawrence J.                 +3            252  CONTINUING
+Hees, Bill                          +7            211  CONTINUING
+Green, Andre Lerone                 +6            194  CONTINUING
+LaTremouille, Robert J.              0            122  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.              -81              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +13             30  
+TOTALS:                              0          16070  
+
+
+
+-- LaTremouille, Robert J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 5 -- LaTremouille, Robert J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                +8           1604  CONTINUING
+Decker, Marjorie C.                 +6           1569  CONTINUING
+Davis, Henrietta                   +11           1501  CONTINUING
+Toomey, Timothy J., Jr.             +2           1492  CONTINUING
+Simmons, Denise                     +7           1366  CONTINUING
+Reeves, Kenneth E.                 +10           1265  CONTINUING
+Murphy, Brian                       +8           1254  CONTINUING
+Kelley, Craig A.                   +15           1074  CONTINUING
+Seidel, Sam                         +9            993  CONTINUING
+Maher, David P.                     +7            972  CONTINUING
+Gordon, Jesse A.                    +6            652  CONTINUING
+Adkins, Lawrence J.                 +4            256  CONTINUING
+Hees, Bill                          +7            218  CONTINUING
+Green, Andre Lerone                 +5            199  DEFEATED -- 5th round
+LaTremouille, Robert J.           -122              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +17             47  
+TOTALS:                              0          16070  
+
+
+
+-- Green, Andre Lerone is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 6 -- Green, Andre Lerone has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                +4           1608  ELECTED -- 6th round
+Decker, Marjorie C.                 +6           1575  CONTINUING
+Davis, Henrietta                    +6           1507  CONTINUING
+Toomey, Timothy J., Jr.            +11           1503  CONTINUING
+Simmons, Denise                    +14           1380  CONTINUING
+Reeves, Kenneth E.                  +8           1273  CONTINUING
+Murphy, Brian                       +5           1259  CONTINUING
+Kelley, Craig A.                   +14           1088  CONTINUING
+Seidel, Sam                         +9           1002  CONTINUING
+Maher, David P.                    +10            982  CONTINUING
+Gordon, Jesse A.                   +23            675  CONTINUING
+Hees, Bill                         +55            273  CONTINUING
+Adkins, Lawrence J.                 +3            259  DEFEATED -- 6th round
+Green, Andre Lerone               -199              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +31             78  
+TOTALS:                              0          16070  
+
+
+
+-- Sullivan, Michael A. has been ELECTED because s/he has met the threshold.
+-- Adkins, Lawrence J. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 7 -- Adkins, Lawrence J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1608  ELECTED -- 6th round
+Decker, Marjorie C.                +24           1599  CONTINUING
+Davis, Henrietta                   +22           1529  CONTINUING
+Toomey, Timothy J., Jr.            +10           1513  CONTINUING
+Simmons, Denise                    +44           1424  CONTINUING
+Reeves, Kenneth E.                 +57           1330  CONTINUING
+Murphy, Brian                       +7           1266  CONTINUING
+Kelley, Craig A.                   +25           1113  CONTINUING
+Seidel, Sam                        +18           1020  CONTINUING
+Maher, David P.                     +8            990  CONTINUING
+Gordon, Jesse A.                   +15            690  CONTINUING
+Hees, Bill                          +5            278  DEFEATED -- 7th round
+Adkins, Lawrence J.               -259              0  DEFEATED -- 6th round
+Green, Andre Lerone                  0              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +24            102  
+TOTALS:                              0          16070  
+
+
+
+-- Hees, Bill is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+ROUND 8 -- Hees, Bill has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1608  ELECTED -- 6th round
+Decker, Marjorie C.                 +5           1604  CONTINUING
+Davis, Henrietta                   +10           1539  CONTINUING
+Toomey, Timothy J., Jr.            +16           1529  CONTINUING
+Simmons, Denise                     +6           1430  CONTINUING
+Reeves, Kenneth E.                  +4           1334  CONTINUING
+Murphy, Brian                      +16           1282  CONTINUING
+Kelley, Craig A.                   +53           1166  CONTINUING
+Seidel, Sam                        +24           1044  CONTINUING
+Maher, David P.                    +47           1037  CONTINUING
+Gordon, Jesse A.                   +28            718  DEFEATED -- 8th round
+Hees, Bill                        -278              0  DEFEATED -- 7th round
+Adkins, Lawrence J.                  0              0  DEFEATED -- 6th round
+Green, Andre Lerone                  0              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +69            171  
+TOTALS:                              0          16070  
+
+
+
+-- Gordon, Jesse A. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 9 -- Gordon, Jesse A. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1608  ELECTED -- 6th round
+Decker, Marjorie C.                 +4           1608  ELECTED -- 9th round
+Davis, Henrietta                   +69           1608  ELECTED -- 9th round
+Toomey, Timothy J., Jr.            +27           1556  CONTINUING
+Simmons, Denise                    +78           1508  CONTINUING
+Reeves, Kenneth E.                 +54           1388  CONTINUING
+Murphy, Brian                      +97           1379  CONTINUING
+Kelley, Craig A.                  +114           1280  CONTINUING
+Seidel, Sam                       +163           1207  CONTINUING
+Maher, David P.                    +30           1067  DEFEATED -- 9th round
+Gordon, Jesse A.                  -718              0  DEFEATED -- 8th round
+Hees, Bill                           0              0  DEFEATED -- 7th round
+Adkins, Lawrence J.                  0              0  DEFEATED -- 6th round
+Green, Andre Lerone                  0              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +82            253  
+TOTALS:                              0          16070  
+
+
+
+-- Decker, Marjorie C. has been ELECTED because s/he has met the threshold.
+-- Davis, Henrietta has been ELECTED because s/he has met the threshold.
+-- Maher, David P. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 10 -- Maher, David P. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1608  ELECTED -- 6th round
+Decker, Marjorie C.                  0           1608  ELECTED -- 9th round
+Davis, Henrietta                     0           1608  ELECTED -- 9th round
+Toomey, Timothy J., Jr.            +52           1608  ELECTED -- 10th round
+Murphy, Brian                     +229           1608  ELECTED -- 10th round
+Simmons, Denise                   +100           1608  ELECTED -- 10th round
+Reeves, Kenneth E.                +115           1503  CONTINUING
+Kelley, Craig A.                   +82           1362  CONTINUING
+Seidel, Sam                        +65           1272  DEFEATED -- 10th round
+Maher, David P.                  -1067              0  DEFEATED -- 9th round
+Gordon, Jesse A.                     0              0  DEFEATED -- 8th round
+Hees, Bill                           0              0  DEFEATED -- 7th round
+Adkins, Lawrence J.                  0              0  DEFEATED -- 6th round
+Green, Andre Lerone                  0              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +424            677  
+TOTALS:                              0          16070  
+
+
+
+-- Toomey, Timothy J., Jr. has been ELECTED because s/he has met the threshold.
+-- Murphy, Brian has been ELECTED because s/he has met the threshold.
+-- Simmons, Denise has been ELECTED because s/he has met the threshold.
+-- Seidel, Sam is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+ROUND 11 -- Seidel, Sam has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1608  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1608  ELECTED -- 6th round
+Decker, Marjorie C.                  0           1608  ELECTED -- 9th round
+Davis, Henrietta                     0           1608  ELECTED -- 9th round
+Toomey, Timothy J., Jr.              0           1608  ELECTED -- 10th round
+Murphy, Brian                        0           1608  ELECTED -- 10th round
+Simmons, Denise                      0           1608  ELECTED -- 10th round
+Kelley, Craig A.                  +246           1608  ELECTED -- 11th round
+Reeves, Kenneth E.                +105           1608  ELECTED -- 11th round
+Seidel, Sam                      -1272              0  DEFEATED -- 10th round
+Maher, David P.                      0              0  DEFEATED -- 9th round
+Gordon, Jesse A.                     0              0  DEFEATED -- 8th round
+Hees, Bill                           0              0  DEFEATED -- 7th round
+Adkins, Lawrence J.                  0              0  DEFEATED -- 6th round
+Green, Andre Lerone                  0              0  DEFEATED -- 5th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 4th round
+Hall, Robert Lee, Sr.                0              0  DEFEATED -- 3rd round
+Condit, James E., III                0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +921           1598  
+TOTALS:                              0          16070  
+
+
+
+-- Kelley, Craig A. has been ELECTED because s/he has met the threshold.
+-- Reeves, Kenneth E. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 9, 2005 4:36 PM
+ChoicePlus Pro -- Version 2.2
+(c) 1993-2005 Voting Solutions -- All Rights Reserved

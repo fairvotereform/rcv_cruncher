@@ -1,0 +1,38 @@
+.TITLE November 17, 2017 -- Cambridge, MA
+.TITLE School Committee Election
+.TITLE Cambridge, Massachusetts
+.TITLE Final Election Results
+
+.ELECT 6
+.CONTEST "School Order"
+.STATISTICS-ON
+.COMPLY-WITH CAMBRIDGE
+.BALLOT-FORMAT-SEPS ,)
+.BALLOT-FORMAT-FIELDS BALLOT-ID-ALPHA BALLOT-TOP-ALPHA IGNORE-FIELD IGNORE-FIELD RANKINGS-ALPHA
+
+.CANDIDATE C01, "Bowman, Manikka L."
+.CANDIDATE C02, "Cronin, Fran A."
+.CANDIDATE C03, "Crutchfield, Jake W."
+.CANDIDATE C04, "Dexter, Emily R."
+.CANDIDATE C05, "Fantini, Alfred B."
+
+.CANDIDATE C06, "Kadete, Elechi M."
+.CANDIDATE C07, "Kelly, Kathleen M."
+.CANDIDATE C08, "Kimbrough, Laurance V."
+.CANDIDATE C09, "MacArthur, William"
+.CANDIDATE C10, "Mitros, Piotr Flawiusz"
+
+.CANDIDATE C11, "Nolan, Patricia M."
+.CANDIDATE C12, "Weinstein, David J."
+
+.CANDIDATE WI01, "Write-In 01"
+.CANDIDATE WI02, "Write-In 02"
+.CANDIDATE WI03, "Write-In 03"
+.CANDIDATE WI04, "Write-In 04"
+.CANDIDATE WI05, "Write-In 05"
+
+.CANDIDATE WI06, "Write-In 06"
+
+### 2017 final order test
+
+.INCLUDE School2017FinalOrder.prm

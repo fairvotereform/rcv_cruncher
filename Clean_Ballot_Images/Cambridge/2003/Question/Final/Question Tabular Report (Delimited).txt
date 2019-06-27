@@ -1,0 +1,20 @@
+D:\Cambridge\Election2003\Question\Final\Question Tabular Report (Delimited)
+NOV. 4, 2003 -- Cambridge, MA
+BALLOT QUESTION #1
+CAMBRIDGE, MA
+
+20,299 valid ballots.
+Electing 1 candidate.
+Winning threshold is 10150 votes.
+There were 640 invalid ballots.
+(20,939 total ballots processed.)
+
+|Round 1|Round 2|
+Yes|7832.0000000000|0|DEFEATED -- 1st round
+No|12467.0000000000|12467.0000000000|ELECTED -- 1st round
+
+
+
+Wednesday, November 5, 2003 5:51 PM
+ChoicePlus Pro -- Version 2.1
+(c) 1993-2001 Voting Solutions -- All Rights Reserved

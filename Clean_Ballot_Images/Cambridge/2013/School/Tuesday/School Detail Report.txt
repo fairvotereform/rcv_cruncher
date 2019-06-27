@@ -1,0 +1,316 @@
+C:\Cambridge\Election2013\School\Tuesday\School Detail Report
+
+
+November 5, 2013 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+CANDIDATES:
+	Cronin, Fran Albin
+	Fantini, Alfred B.
+	Gerber, Joyce C.
+	Harding, Jr., Richard
+	Holland, John J.
+	Kadete, Elechi M.
+	Kelly, Kathleen M.
+	Nolan, Patricia M.
+	Osborne, Mervan F.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+16,040 valid ballots.
+Electing 6 candidates.
+Quota is 2292 votes.
+There were no invalid ballots.
+(16,040 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.               +3794           3794  ELECTED -- 1st count
+Fantini, Alfred B.               +2785           2785  ELECTED -- 1st count
+Harding, Jr., Richard            +2295           2295  ELECTED -- 1st count
+Kelly, Kathleen M.               +2041           2041  CONTINUING
+Cronin, Fran Albin               +1781           1781  CONTINUING
+Osborne, Mervan F.               +1204           1204  CONTINUING
+Gerber, Joyce C.                 +1093           1093  CONTINUING
+Holland, John J.                  +566            566  CONTINUING
+Kadete, Elechi M.                 +481            481  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +16040          16040  
+
+
+
+-- Nolan, Patricia M. has been ELECTED because s/he has met the quota.
+-- Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+-- Harding, Jr., Richard has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- Nolan, Patricia M. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.               -1502           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2785  ELECTED -- 1st count
+Harding, Jr., Richard                0           2295  ELECTED -- 1st count
+Kelly, Kathleen M.                +251           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                +267           2048  CONTINUING
+Osborne, Mervan F.                +480           1684  CONTINUING
+Gerber, Joyce C.                  +333           1426  CONTINUING
+Holland, John J.                   +97            663  CONTINUING
+Kadete, Elechi M.                  +74            555  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16040  
+
+
+
+-- Kelly, Kathleen M. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 3 -- Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                -493           2292  ELECTED -- 1st count
+Harding, Jr., Richard                0           2295  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                 +83           2131  CONTINUING
+Osborne, Mervan F.                +182           1866  CONTINUING
+Gerber, Joyce C.                   +74           1500  CONTINUING
+Holland, John J.                  +115            778  CONTINUING
+Kadete, Elechi M.                  +39            594  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16040  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 4 -- Harding, Jr., Richard has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2292  ELECTED -- 1st count
+Harding, Jr., Richard               -3           2292  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                   0           2131  CONTINUING
+Osborne, Mervan F.                  +1           1867  CONTINUING
+Gerber, Joyce C.                    +1           1501  CONTINUING
+Holland, John J.                     0            778  CONTINUING
+Kadete, Elechi M.                   +1            595  CONTINUING
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16040  
+
+
+
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2292  ELECTED -- 1st count
+Harding, Jr., Richard                0           2292  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                   0           2131  CONTINUING
+Osborne, Mervan F.                   0           1867  CONTINUING
+Gerber, Joyce C.                     0           1501  CONTINUING
+Holland, John J.                     0            778  CONTINUING
+Kadete, Elechi M.                    0            595  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16040  
+
+
+
+-- Kadete, Elechi M. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- Kadete, Elechi M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2292  ELECTED -- 1st count
+Harding, Jr., Richard                0           2292  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                +101           2232  CONTINUING
+Osborne, Mervan F.                +150           2017  CONTINUING
+Gerber, Joyce C.                   +77           1578  CONTINUING
+Holland, John J.                   +61            839  DEFEATED -- 6th count
+Kadete, Elechi M.                 -595              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +206            206  
+TOTALS:                              0          16040  
+
+
+
+-- Holland, John J. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- Holland, John J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2292  ELECTED -- 1st count
+Harding, Jr., Richard                0           2292  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                 +60           2292  ELECTED -- 7th count
+Osborne, Mervan F.                +132           2149  CONTINUING
+Gerber, Joyce C.                  +206           1784  DEFEATED -- 7th count
+Holland, John J.                  -839              0  DEFEATED -- 6th count
+Kadete, Elechi M.                    0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +441            647  
+TOTALS:                              0          16040  
+
+
+
+-- Cronin, Fran Albin has been ELECTED because s/he has met the quota.
+-- Gerber, Joyce C. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- Gerber, Joyce C. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2292  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2292  ELECTED -- 1st count
+Harding, Jr., Richard                0           2292  ELECTED -- 1st count
+Kelly, Kathleen M.                   0           2292  ELECTED -- 2nd count
+Cronin, Fran Albin                   0           2292  ELECTED -- 7th count
+Osborne, Mervan F.                +143           2292  ELECTED -- 8th count
+Gerber, Joyce C.                 -1784              0  DEFEATED -- 7th count
+Holland, John J.                     0              0  DEFEATED -- 6th count
+Kadete, Elechi M.                    0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                  +1641           2288  
+TOTALS:                              0          16040  
+
+
+
+-- Osborne, Mervan F. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Tuesday, November 5, 2013 10:17 PM
+ChoicePlus Pro -- Version 2.3.4
+(c) 1993-2009 Voting Solutions -- All Rights Reserved

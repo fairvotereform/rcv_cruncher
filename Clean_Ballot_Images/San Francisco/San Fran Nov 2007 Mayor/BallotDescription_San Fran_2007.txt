@@ -1,0 +1,154 @@
+  15     BALLOTS CAST - TOTAL                                                     
+  20     BALLOTS CAST - TOTAL CARD 1                                              
+  25     BALLOTS CAST - TOTAL CARD 2                                              
+ 100     MAYOR CITY OF SAN FRANCISCO
+ 100-01       GEORGE DAVIS
+ 100-02       GRASSHOPPER ALEC KAPLAN
+ 100-03       JOHN RINALDI                                                        
+ 100-04       H. BROWN                                                            
+ 100-05       AHIMSA PORTER SUMCHAI                                               
+ 100-06       MICHAEL POWERS                                                      
+ 100-07       WILMA PANG                                                          
+ 100-08       GAVIN NEWSOM                                                        
+ 100-09       LONNIE S. HOLMES                                                    
+ 100-10       HAROLD M. HOOGASIAN                                                 
+ 100-11       JOSH WOLF                                                           
+ 100-12       QUINTIN MECKE                                                       
+ 100-13       WRITE-IN RODNEY HAUGE
+ 100-14       WRITE-IN KENNETH KAHN
+ 100-15       WRITE-IN ROBERT KULLY
+ 100-16       WRITE-IN ROBERT MCCULLOUGH
+ 100-17       WRITE-IN PATRICK MONETTE-SHAW
+ 100-18       WRITE-IN LEA SHERMAN
+ 100-19       OVER VOTES
+ 100-20       UNDER VOTES                                                         
+ 101     MAYOR CITY OF SAN FRANCISCO - SECOND CHOICE
+ 101-01       GEORGE DAVIS                                                        
+ 101-02       GRASSHOPPER ALEC KAPLAN                                             
+ 101-03       JOHN RINALDI                                                        
+ 101-04       H. BROWN                                                            
+ 101-05       AHIMSA PORTER SUMCHAI                                               
+ 101-06       MICHAEL POWERS                                                      
+ 101-07       WILMA PANG                                                          
+ 101-08       GAVIN NEWSOM                                                        
+ 101-09       LONNIE S. HOLMES                                                    
+ 101-10       HAROLD M. HOOGASIAN                                                 
+ 101-11       JOSH WOLF                                                           
+ 101-12       QUINTIN MECKE                                                       
+ 101-13       WRITE-IN RODNEY HAUGE
+ 101-14       WRITE-IN KENNETH KAHN
+ 101-15       WRITE-IN ROBERT KULLY
+ 101-16       WRITE-IN ROBERT MCCULLOUGH
+ 101-17       WRITE-IN PATRICK MONETTE-SHAW
+ 101-18       WRITE-IN LEA SHERMAN
+ 101-19       OVER VOTES                                                          
+ 101-20       UNDER VOTES                                                         
+ 102     MAYOR CITY OF SAN FRANCISCO - THIRD CHOICE
+ 102-01       GEORGE DAVIS                                                        
+ 102-02       GRASSHOPPER ALEC KAPLAN                                             
+ 102-03       JOHN RINALDI                                                        
+ 102-04       H. BROWN                                                            
+ 102-05       AHIMSA PORTER SUMCHAI                                               
+ 102-06       MICHAEL POWERS                                                      
+ 102-07       WILMA PANG                                                          
+ 102-08       GAVIN NEWSOM                                                        
+ 102-09       LONNIE S. HOLMES                                                    
+ 102-10       HAROLD M. HOOGASIAN                                                 
+ 102-11       JOSH WOLF                                                           
+ 102-12       QUINTIN MECKE                                                       
+ 102-13       WRITE-IN RODNEY HAUGE
+ 102-14       WRITE-IN KENNETH KAHN
+ 102-15       WRITE-IN ROBERT KULLY
+ 102-16       WRITE-IN ROBERT MCCULLOUGH
+ 102-17       WRITE-IN PATRICK MONETTE-SHAW
+ 102-18       WRITE-IN LEA SHERMAN
+ 102-19       OVER VOTES
+ 102-20       UNDER VOTES                                                         
+ 103     DISTRICT ATTORNEY CITY OF SAN FRANCISCO
+ 103-01       KAMALA D. HARRIS                                                    
+ 103-02       WRITE-IN                                                            
+ 103-03       OVER VOTES
+ 103-04       UNDER VOTES                                                         
+ 104     DISTRICT ATTORNEY CITY OF SAN FRANCISCO - SECOND CHOICE
+ 104-01       KAMALA D. HARRIS                                                    
+ 104-02       WRITE-IN                                                            
+ 104-03       OVER VOTES
+ 104-04       UNDER VOTES                                                         
+ 105     DISTRICT ATTORNEY CITY OF SAN FRANCISCO - THIRD CHOICE
+ 105-01       KAMALA D. HARRIS                                                    
+ 105-02       WRITE-IN                                                            
+ 105-03       OVER VOTES
+ 105-04       UNDER VOTES                                                         
+ 106     SHERIFF CITY OF SAN FRANCISCO
+ 106-01       MICHAEL HENNESSEY                                                   
+ 106-02       DAVID WONG                                                          
+ 106-03       WRITE-IN                                                            
+ 106-04       OVER VOTES
+ 106-05       UNDER VOTES                                                         
+ 107     SHERIFF CITY OF SAN FRANCISCO - SECOND CHOICE
+ 107-01       MICHAEL HENNESSEY                                                   
+ 107-02       DAVID WONG                                                          
+ 107-03       WRITE-IN
+ 107-04       OVER VOTES                                                          
+ 107-05       UNDER VOTES                                                         
+ 108     SHERIFF CITY OF SAN FRANCISCO - THIRD CHOICE
+ 108-01       MICHAEL HENNESSEY                                                   
+ 108-02       DAVID WONG                                                          
+ 108-03       WRITE-IN                                                            
+ 108-04       OVER VOTES
+ 108-05       UNDER VOTES                                                         
+ 109     MEASURE A
+ 109-01       YES                                                                  
+ 109-02       NO                                                                   
+ 109-03       OVER VOTES                                                          
+ 109-04       UNDER VOTES                                                          
+ 110     MEASURE B
+ 110-01       YES                                                                 
+ 110-02       NO                                                                  
+ 110-03       OVER VOTES
+ 110-04       UNDER VOTES                                                         
+ 111     MEASURE C
+ 111-01       YES                                                                 
+ 111-02       NO                                                                  
+ 111-03       OVER VOTES
+ 111-04       UNDER VOTES                                                         
+ 112     MEASURE D
+ 112-01       YES                                                                 
+ 112-02       NO                                                                  
+ 112-03       OVER VOTES
+ 112-04       UNDER VOTES                                                         
+ 113     MEASURE E
+ 113-01       YES                                                                  
+ 113-02       NO                                                                   
+ 113-03       OVER VOTES
+ 113-04       UNDER VOTES                                                          
+ 114     MEASURE F
+ 114-01       YES                                                                  
+ 114-02       NO                                                                   
+ 114-03       OVER VOTES
+ 114-04       UNDER VOTES                                                          
+ 115     MEASURE G
+ 115-01       YES                                                                  
+ 115-02       NO                                                                   
+ 115-03       OVER VOTES
+ 115-04       UNDER VOTES                                                          
+ 116     MEASURE H
+ 116-01       Yes                                                                 
+ 116-02       No                                                                  
+ 116-03       OVER VOTES
+ 116-04       UNDER VOTES                                                         
+ 117     MEASURE I
+ 117-01       YES                                                                 
+ 117-02       NO                                                                  
+ 117-03       OVER VOTES
+ 117-04       UNDER VOTES                                                         
+ 118     MEASURE J
+ 118-01       YES                                                                 
+ 118-02       NO                                                                  
+ 118-03       OVER VOTES
+ 118-04       UNDER VOTES                                                         
+ 119     MEASURE K
+ 119-01       YES                                                                 
+ 119-02       NO                                                                  
+ 119-03       OVER VOTES
+ 119-04       UNDER VOTES                                                         

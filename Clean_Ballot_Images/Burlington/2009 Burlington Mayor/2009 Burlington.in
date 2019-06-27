@@ -1,0 +1,59 @@
+###################################################
+# Input file for 2009 Burlington mayoral election #
+# Official tally, Tues, March 3, 2009             #
+#                                                 #
+# Prepared by Caleb Kleppner, TrueBallot, Inc.    #
+#                                                 #
+# Note:  Lines beginning with # are comments      #
+###################################################
+
+
+# Headers and file names for output files
+
+.TITLE 2009 Burlington Mayor Election
+.TITLE Tuesday, March 3, 2009
+.CONTEST "2009 Burlington Mayor"
+
+# Comply with Burlington's rules for IRV
+
+.COMPLY-WITH BURLINGTON-IRV
+
+
+# Input file format
+
+.BALLOT-FORMAT-SEPS ,)
+.BALLOT-FORMAT-FIELDS BALLOT-ID-ALPHA BALLOT-TOP-ALPHA IGNORE-FIELD IGNORE-FIELD RANKINGS-ALPHA
+.STATISTICS-ON
+
+# List of candidates and codes
+
+.CANDIDATE C01, "Bob Kiss"
+.CANDIDATE C02, "Andy Montroll"
+.CANDIDATE C03, "James Simpson"
+.CANDIDATE C04, "Dan Smith"
+.CANDIDATE C05, "Kurt Wright"
+.CANDIDATE C06, "Write-in"
+
+#####################################################################
+# Note:  Before running ChoicePlus Pro, make sure the lines below   #
+#        refer to the correct file names. Edit file names and/or    #
+#        place # symbols in front of any unneeded lines.            #
+#####################################################################
+
+# File names containing rankings
+
+.INCLUDE 1.PRM
+.INCLUDE 2.PRM
+.INCLUDE 3.PRM
+.INCLUDE 4.PRM
+.INCLUDE 5.PRM
+.INCLUDE 6.PRM
+.INCLUDE 7.PRM
+
+#.INCLUDE 12.PRM
+#.INCLUDE 22.PRM
+#.INCLUDE 32.PRM
+#.INCLUDE 42.PRM
+#.INCLUDE 52.PRM
+#.INCLUDE 62.PRM
+#.INCLUDE 72.PRM

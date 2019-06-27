@@ -1,0 +1,80 @@
+D:\Cambridge\Election2003\Question\Final\Question Detail Report
+
+
+NOV. 4, 2003 -- Cambridge, MA
+BALLOT QUESTION #1
+CAMBRIDGE, MA
+
+CANDIDATES:
+	Yes
+	No
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+20,299 valid ballots.
+Electing 1 candidate.
+Winning threshold is 10150 votes.
+There were 640 invalid ballots.
+(20,939 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+No                              +12467          12467  ELECTED -- 1st round
+Yes                              +7832           7832  DEFEATED -- 1st round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +20299          20299  
+
+
+
+-- No has been ELECTED because s/he has met the threshold.
+-- Yes is declared DEFEATED, because all of the seats have been filled.
+
+
+********************************************************************************
+
+
+ROUND 2 -- Yes has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+No                                   0          12467  ELECTED -- 1st round
+Yes                              -7832              0  DEFEATED -- 1st round
+
+EXHAUSTED PILE:                  +7832           7832  
+TOTALS:                              0          20299  
+
+
+
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 5, 2003 5:51 PM
+ChoicePlus Pro -- Version 2.1
+(c) 1993-2001 Voting Solutions -- All Rights Reserved

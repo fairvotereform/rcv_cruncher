@@ -1,0 +1,387 @@
+D:\Cambridge\Election2005\Council\Wednesday\Council Detail Report (Delimited)
+10|November 8, 2005 -- Cambridge, MA
+10|CITY COUNCIL ELECTION
+10|CAMBRIDGE, MA
+10|Wednesday Preliminary Results
+20|C01|"Adkins, Lawrence J."
+20|C02|"Condit, James E., III"
+20|C03|"Davis, Henrietta"
+20|C04|"Decker, Marjorie C."
+20|C05|"Galluccio, Anthony D."
+20|C06|"Gordon, Jesse A."
+20|C07|"Green, Andre Lerone"
+20|C08|"Hall, Robert Lee, Sr."
+20|C09|"Hees, Bill"
+20|C10|"Kelley, Craig A."
+20|C11|"LaTremouille, Robert J."
+20|C12|"Maher, David P."
+20|C13|"Murphy, Brian"
+20|C14|"Reeves, Kenneth E."
+20|C15|"Seidel, Sam"
+20|C16|"Simmons, Denise"
+20|C17|"Sullivan, Michael A."
+20|C18|"Toomey, Timothy J., Jr."
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+20|WI07|"Write-In 7"
+20|WI08|"Write-In 8"
+20|WI09|"Write-In 9"
+30|system|Choice Voting
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st round)
+30|ties|1) Previous Round method|2) By election official|3) Random (by computer)
+40|16070|16070|9|1608|132
+50|1|Tally of 1st place votes.
+60|C05|+2001|2001|ELECTED -- 1st round
+60|C04|+1524|1524|CONTINUING
+60|C17|+1464|1464|CONTINUING
+60|C03|+1459|1459|CONTINUING
+60|C18|+1432|1432|CONTINUING
+60|C16|+1330|1330|CONTINUING
+60|C13|+1236|1236|CONTINUING
+60|C14|+1207|1207|CONTINUING
+60|C10|+1042|1042|CONTINUING
+60|C15|+973|973|CONTINUING
+60|C12|+902|902|CONTINUING
+60|C06|+626|626|CONTINUING
+60|C01|+243|243|CONTINUING
+60|C09|+198|198|CONTINUING
+60|C07|+181|181|CONTINUING
+60|C11|+118|118|CONTINUING
+60|C08|+75|75|CONTINUING
+60|C02|+42|42|CONTINUING
+60|WI01|+17|17|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|WI07|0|0|CONTINUING
+60|WI08|0|0|CONTINUING
+60|WI09|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Galluccio, Anthony D. has been ELECTED because s/he has met the threshold.
+50|2|Galluccio, Anthony D. has been ELECTED -- transferring surplus votes.
+60|C05|-393|1608|ELECTED -- 1st round
+60|C17|+122|1586|CONTINUING
+60|C04|+31|1555|CONTINUING
+60|C18|+57|1489|CONTINUING
+60|C03|+23|1482|CONTINUING
+60|C16|+20|1350|CONTINUING
+60|C13|+7|1243|CONTINUING
+60|C14|+35|1242|CONTINUING
+60|C10|+12|1054|CONTINUING
+60|C15|+4|977|CONTINUING
+60|C12|+55|957|CONTINUING
+60|C06|+11|637|CONTINUING
+60|C01|+4|247|CONTINUING
+60|C09|+1|199|CONTINUING
+60|C07|+4|185|CONTINUING
+60|C11|+2|120|CONTINUING
+60|C08|+4|79|CONTINUING
+60|C02|0|42|DEFEATED -- 2nd round
+60|WI01|+1|18|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+70|Condit, James E., III is declared DEFEATED, as s/he has less than 50 votes.
+50|3|Transferring all votes simultaneously from all defeated candidates.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|+3|1589|CONTINUING
+60|C04|+6|1561|CONTINUING
+60|C18|+1|1490|CONTINUING
+60|C03|+5|1487|CONTINUING
+60|C16|+2|1352|CONTINUING
+60|C13|+1|1244|CONTINUING
+60|C14|+1|1243|CONTINUING
+60|C10|0|1054|CONTINUING
+60|C15|+3|980|CONTINUING
+60|C12|+3|960|CONTINUING
+60|C06|+4|641|CONTINUING
+60|C01|+2|249|CONTINUING
+60|C09|+5|204|CONTINUING
+60|C07|+3|188|CONTINUING
+60|C11|+2|122|CONTINUING
+60|C08|+2|81|DEFEATED -- 3rd round
+60|C02|-42|0|DEFEATED -- 2nd round
+60|WI01|-18|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+17|17|
+70|Hall, Robert Lee, Sr. is declared DEFEATED because s/he has the lowest number of votes.
+50|4|Hall, Robert Lee, Sr. has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|+7|1596|CONTINUING
+60|C04|+2|1563|CONTINUING
+60|C03|+3|1490|CONTINUING
+60|C18|0|1490|CONTINUING
+60|C16|+7|1359|CONTINUING
+60|C14|+12|1255|CONTINUING
+60|C13|+2|1246|CONTINUING
+60|C10|+5|1059|CONTINUING
+60|C15|+4|984|CONTINUING
+60|C12|+5|965|CONTINUING
+60|C06|+5|646|CONTINUING
+60|C01|+3|252|CONTINUING
+60|C09|+7|211|CONTINUING
+60|C07|+6|194|CONTINUING
+60|C11|0|122|DEFEATED -- 4th round
+60|C08|-81|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+13|30|
+70|LaTremouille, Robert J. is declared DEFEATED because s/he has the lowest number of votes.
+50|5|LaTremouille, Robert J. has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|+8|1604|CONTINUING
+60|C04|+6|1569|CONTINUING
+60|C03|+11|1501|CONTINUING
+60|C18|+2|1492|CONTINUING
+60|C16|+7|1366|CONTINUING
+60|C14|+10|1265|CONTINUING
+60|C13|+8|1254|CONTINUING
+60|C10|+15|1074|CONTINUING
+60|C15|+9|993|CONTINUING
+60|C12|+7|972|CONTINUING
+60|C06|+6|652|CONTINUING
+60|C01|+4|256|CONTINUING
+60|C09|+7|218|CONTINUING
+60|C07|+5|199|DEFEATED -- 5th round
+60|C11|-122|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+17|47|
+70|Green, Andre Lerone is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Green, Andre Lerone has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|+4|1608|ELECTED -- 6th round
+60|C04|+6|1575|CONTINUING
+60|C03|+6|1507|CONTINUING
+60|C18|+11|1503|CONTINUING
+60|C16|+14|1380|CONTINUING
+60|C14|+8|1273|CONTINUING
+60|C13|+5|1259|CONTINUING
+60|C10|+14|1088|CONTINUING
+60|C15|+9|1002|CONTINUING
+60|C12|+10|982|CONTINUING
+60|C06|+23|675|CONTINUING
+60|C09|+55|273|CONTINUING
+60|C01|+3|259|DEFEATED -- 6th round
+60|C07|-199|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+31|78|
+70|Sullivan, Michael A. has been ELECTED because s/he has met the threshold.
+70|Adkins, Lawrence J. is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Adkins, Lawrence J. has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|0|1608|ELECTED -- 6th round
+60|C04|+24|1599|CONTINUING
+60|C03|+22|1529|CONTINUING
+60|C18|+10|1513|CONTINUING
+60|C16|+44|1424|CONTINUING
+60|C14|+57|1330|CONTINUING
+60|C13|+7|1266|CONTINUING
+60|C10|+25|1113|CONTINUING
+60|C15|+18|1020|CONTINUING
+60|C12|+8|990|CONTINUING
+60|C06|+15|690|CONTINUING
+60|C09|+5|278|DEFEATED -- 7th round
+60|C01|-259|0|DEFEATED -- 6th round
+60|C07|0|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+24|102|
+70|Hees, Bill is declared DEFEATED because s/he has the lowest number of votes.
+50|8|Hees, Bill has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|0|1608|ELECTED -- 6th round
+60|C04|+5|1604|CONTINUING
+60|C03|+10|1539|CONTINUING
+60|C18|+16|1529|CONTINUING
+60|C16|+6|1430|CONTINUING
+60|C14|+4|1334|CONTINUING
+60|C13|+16|1282|CONTINUING
+60|C10|+53|1166|CONTINUING
+60|C15|+24|1044|CONTINUING
+60|C12|+47|1037|CONTINUING
+60|C06|+28|718|DEFEATED -- 8th round
+60|C09|-278|0|DEFEATED -- 7th round
+60|C01|0|0|DEFEATED -- 6th round
+60|C07|0|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+69|171|
+70|Gordon, Jesse A. is declared DEFEATED because s/he has the lowest number of votes.
+50|9|Gordon, Jesse A. has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|0|1608|ELECTED -- 6th round
+60|C04|+4|1608|ELECTED -- 9th round
+60|C03|+69|1608|ELECTED -- 9th round
+60|C18|+27|1556|CONTINUING
+60|C16|+78|1508|CONTINUING
+60|C14|+54|1388|CONTINUING
+60|C13|+97|1379|CONTINUING
+60|C10|+114|1280|CONTINUING
+60|C15|+163|1207|CONTINUING
+60|C12|+30|1067|DEFEATED -- 9th round
+60|C06|-718|0|DEFEATED -- 8th round
+60|C09|0|0|DEFEATED -- 7th round
+60|C01|0|0|DEFEATED -- 6th round
+60|C07|0|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+82|253|
+70|Decker, Marjorie C. has been ELECTED because s/he has met the threshold.
+70|Davis, Henrietta has been ELECTED because s/he has met the threshold.
+70|Maher, David P. is declared DEFEATED because s/he has the lowest number of votes.
+50|10|Maher, David P. has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|0|1608|ELECTED -- 6th round
+60|C04|0|1608|ELECTED -- 9th round
+60|C03|0|1608|ELECTED -- 9th round
+60|C18|+52|1608|ELECTED -- 10th round
+60|C13|+229|1608|ELECTED -- 10th round
+60|C16|+100|1608|ELECTED -- 10th round
+60|C14|+115|1503|CONTINUING
+60|C10|+82|1362|CONTINUING
+60|C15|+65|1272|DEFEATED -- 10th round
+60|C12|-1067|0|DEFEATED -- 9th round
+60|C06|0|0|DEFEATED -- 8th round
+60|C09|0|0|DEFEATED -- 7th round
+60|C01|0|0|DEFEATED -- 6th round
+60|C07|0|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+424|677|
+70|Toomey, Timothy J., Jr. has been ELECTED because s/he has met the threshold.
+70|Murphy, Brian has been ELECTED because s/he has met the threshold.
+70|Simmons, Denise has been ELECTED because s/he has met the threshold.
+70|Seidel, Sam is declared DEFEATED because s/he has the lowest number of votes.
+50|11|Seidel, Sam has been DEFEATED -- transferring all votes.
+60|C05|0|1608|ELECTED -- 1st round
+60|C17|0|1608|ELECTED -- 6th round
+60|C04|0|1608|ELECTED -- 9th round
+60|C03|0|1608|ELECTED -- 9th round
+60|C18|0|1608|ELECTED -- 10th round
+60|C13|0|1608|ELECTED -- 10th round
+60|C16|0|1608|ELECTED -- 10th round
+60|C10|+246|1608|ELECTED -- 11th round
+60|C14|+105|1608|ELECTED -- 11th round
+60|C15|-1272|0|DEFEATED -- 10th round
+60|C12|0|0|DEFEATED -- 9th round
+60|C06|0|0|DEFEATED -- 8th round
+60|C09|0|0|DEFEATED -- 7th round
+60|C01|0|0|DEFEATED -- 6th round
+60|C07|0|0|DEFEATED -- 5th round
+60|C11|0|0|DEFEATED -- 4th round
+60|C08|0|0|DEFEATED -- 3rd round
+60|C02|0|0|DEFEATED -- 2nd round
+60|WI01|0|0|DEFEATED -- 2nd round
+60|WI02|0|0|DEFEATED -- 2nd round
+60|WI03|0|0|DEFEATED -- 2nd round
+60|WI04|0|0|DEFEATED -- 2nd round
+60|WI05|0|0|DEFEATED -- 2nd round
+60|WI06|0|0|DEFEATED -- 2nd round
+60|WI07|0|0|DEFEATED -- 2nd round
+60|WI08|0|0|DEFEATED -- 2nd round
+60|WI09|0|0|DEFEATED -- 2nd round
+60|CAND_EXHAUSTED|+921|1598|
+70|Kelley, Craig A. has been ELECTED because s/he has met the threshold.
+70|Reeves, Kenneth E. has been ELECTED because s/he has met the threshold.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Wednesday, November 9, 2005 4:36 PM
+80|ChoicePlus Pro -- Version 2.2
+80|(c) 1993-2005 Voting Solutions -- All Rights Reserved

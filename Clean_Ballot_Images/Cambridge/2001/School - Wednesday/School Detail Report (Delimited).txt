@@ -1,0 +1,208 @@
+D:\2001 Election\school\School Detail Report (Delimited)
+10|NOV. 6, 2001 -- Cambridge, MA
+10|SCHOOL COMMITTEE ELECTION ELECTION
+10|CAMBRIDGE, MA
+10|<font size=-1><a href="http://www.ci.cambridge.ma.us">Back to Cambridge Home Page</a></font>
+20|C01|"Baker, Fred"
+20|C02|"Delaney, Vincent J."
+20|C03|"Erlien, Marla L."
+20|C04|"Fantini, Alfred B."
+20|C05|"Grassi, Joseph G."
+20|C06|"Harding, Richard, Jr."
+20|C07|"Price, Alan C."
+20|C08|"Segat, Susana M."
+20|C09|"Turkel, Alice L."
+20|C10|"Walser, Nancy"
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+30|system|Proportional Representation
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st count)
+30|ties|1) Previous Count method|2) By election official|3) Random (by computer)
+40|16489|16489|6|2356|1160
+50|1|Tally of 1st place votes.
+60|C09|+2862|2862|ELECTED -- 1st count
+60|C04|+2854|2854|ELECTED -- 1st count
+60|C05|+2135|2135|CONTINUING
+60|C07|+1873|1873|CONTINUING
+60|C06|+1689|1689|CONTINUING
+60|C10|+1677|1677|CONTINUING
+60|C08|+1590|1590|CONTINUING
+60|C03|+1193|1193|CONTINUING
+60|C01|+324|324|CONTINUING
+60|C02|+240|240|CONTINUING
+60|WI01|+50|50|CONTINUING
+60|WI02|+1|1|CONTINUING
+60|WI04|+1|1|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Turkel, Alice L. has been ELECTED because s/he has met the quota.
+70|Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+50|2|Turkel, Alice L. has been ELECTED -- transferring surplus votes.
+60|C09|-506|2356|ELECTED -- 1st count
+60|C04|0|2854|ELECTED -- 1st count
+60|C05|+30|2165|CONTINUING
+60|C07|+44|1917|CONTINUING
+60|C10|+188|1865|CONTINUING
+60|C08|+146|1736|CONTINUING
+60|C06|+32|1721|CONTINUING
+60|C03|+46|1239|CONTINUING
+60|C01|+6|330|CONTINUING
+60|C02|+14|254|CONTINUING
+60|WI01|0|50|CONTINUING
+60|WI02|0|1|CONTINUING
+60|WI04|0|1|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+50|3|Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|-498|2356|ELECTED -- 1st count
+60|C05|+191|2356|ELECTED -- 3rd count
+60|C07|+19|1936|CONTINUING
+60|C10|+49|1914|CONTINUING
+60|C08|+95|1831|CONTINUING
+60|C06|+60|1781|CONTINUING
+60|C03|+16|1255|CONTINUING
+60|C01|+40|370|CONTINUING
+60|C02|+28|282|CONTINUING
+60|WI01|0|50|CONTINUING
+60|WI02|0|1|DEFEATED -- 3rd count
+60|WI04|0|1|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|0|0|
+70|Grassi, Joseph G. has been ELECTED because s/he has met the quota.
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+50|4|Transferring all votes simultaneously from all defeated candidates.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C07|0|1936|CONTINUING
+60|C10|0|1914|CONTINUING
+60|C08|0|1831|CONTINUING
+60|C06|0|1781|CONTINUING
+60|C03|0|1255|CONTINUING
+60|C01|0|370|CONTINUING
+60|C02|0|282|CONTINUING
+60|WI01|+1|51|DEFEATED -- 4th count
+60|WI02|-1|0|DEFEATED -- 3rd count
+60|WI04|-1|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+1|1|
+70|Write-In 1 is declared DEFEATED because s/he has the lowest number of votes.
+50|5|Write-In 1 has been DEFEATED -- transferring all votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C07|+3|1939|CONTINUING
+60|C10|+1|1915|CONTINUING
+60|C08|+5|1836|CONTINUING
+60|C06|+4|1785|CONTINUING
+60|C03|+2|1257|CONTINUING
+60|C01|+2|372|CONTINUING
+60|C02|+2|284|DEFEATED -- 5th count
+60|WI01|-51|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+32|33|
+70|Delaney, Vincent J. is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Delaney, Vincent J. has been DEFEATED -- transferring all votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C07|+27|1966|CONTINUING
+60|C10|+27|1942|CONTINUING
+60|C08|+24|1860|CONTINUING
+60|C06|+46|1831|CONTINUING
+60|C03|+37|1294|CONTINUING
+60|C01|+42|414|DEFEATED -- 6th count
+60|C02|-284|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+81|114|
+70|Baker, Fred is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Baker, Fred has been DEFEATED -- transferring all votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C07|+52|2018|CONTINUING
+60|C10|+33|1975|CONTINUING
+60|C08|+36|1896|CONTINUING
+60|C06|+64|1895|CONTINUING
+60|C03|+42|1336|DEFEATED -- 7th count
+60|C01|-414|0|DEFEATED -- 6th count
+60|C02|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+187|301|
+70|Erlien, Marla L. is declared DEFEATED because s/he has the lowest number of votes.
+50|8|Erlien, Marla L. has been DEFEATED -- transferring all votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C07|+265|2283|CONTINUING
+60|C10|+245|2220|CONTINUING
+60|C06|+324|2219|CONTINUING
+60|C08|+317|2213|DEFEATED -- 8th count
+60|C03|-1336|0|DEFEATED -- 7th count
+60|C01|0|0|DEFEATED -- 6th count
+60|C02|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+185|486|
+70|Segat, Susana M. is declared DEFEATED because s/he has the lowest number of votes.
+50|9|Segat, Susana M. has been DEFEATED -- transferring all votes.
+60|C09|0|2356|ELECTED -- 1st count
+60|C04|0|2356|ELECTED -- 1st count
+60|C05|0|2356|ELECTED -- 3rd count
+60|C10|+136|2356|ELECTED -- 9th count
+60|C07|+73|2356|ELECTED -- 9th count
+60|C06|+137|2356|ELECTED -- 9th count
+60|C08|-2213|0|DEFEATED -- 8th count
+60|C03|0|0|DEFEATED -- 7th count
+60|C01|0|0|DEFEATED -- 6th count
+60|C02|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+1867|2353|
+70|Walser, Nancy has been ELECTED because s/he has met the quota.
+70|Price, Alan C. has been ELECTED because s/he has met the quota.
+70|Harding, Richard, Jr. has been ELECTED because s/he has met the quota.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Wednesday, November 7, 2001 5:21 PM
+80|ChoicePlus Pro -- Version 2.1
+80|(c) 1993-2001 Voting Solutions -- All Rights Reserved

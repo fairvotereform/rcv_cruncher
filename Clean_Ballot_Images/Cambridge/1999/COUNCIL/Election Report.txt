@@ -1,0 +1,793 @@
+C:\PRMaster\1999\COUNCIL\Detail Report
+
+
+NOV. 2, 1999 -- Cambridge, MA
+CITY COUNCIL ELECTION
+CAMBRIDGE, MA
+
+CANDIDATES:
+	BORN, KATHLEEN LEAHY
+	BRAUDE, JIM
+	CHASE, JEFFREY JAY
+	CHRISTENSON, CHARLES O.
+	DAVIS, HENRIETTA
+	DECKER, MARJORIE C.
+	DIXON, VINCENT LAWRENCE
+	GALLUCCIO, ANTHONY D.
+	GIACOBBE, DOROTHY M.
+	GOODWIN, BOB
+	HOICKA, DAVID
+	JONES, WILLIAM C.
+	MAHER, DAVID P.
+	NIDLE, ALAN KINGFISH
+	PEIXOTO, HELDER
+	REEVES, KENNETH E.
+	SNOWBERG, ERIK C.
+	SULLIVAN, MICHAEL A.
+	TOOMEY, JR., TIMOTHY J.
+	TRIANTAFILLOU, KATHERINE
+	TRUMBULL, DAVID
+	WILLIAMSON, JAMES M.
+	WINTERS, ROBERT
+	WORMWOOD-MALONE, DAEJANNA P.
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+18,777 valid ballots.
+Electing 9 candidates.
+Quota is 1878 votes.
+There were 384 invalid ballots.
+(19,161 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.            +2716           2716  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY             +1662           1662  CONTINUING
+DECKER, MARJORIE C.              +1652           1652  CONTINUING
+TOOMEY, JR., TIMOTHY J.          +1510           1510  CONTINUING
+BRAUDE, JIM                      +1490           1490  CONTINUING
+DAVIS, HENRIETTA                 +1470           1470  CONTINUING
+REEVES, KENNETH E.               +1431           1431  CONTINUING
+SULLIVAN, MICHAEL A.             +1339           1339  CONTINUING
+TRIANTAFILLOU, KATHERI.          +1176           1176  CONTINUING
+MAHER, DAVID P.                  +1040           1040  CONTINUING
+GOODWIN, BOB                      +813            813  CONTINUING
+TRUMBULL, DAVID                   +536            536  CONTINUING
+SNOWBERG, ERIK C.                 +429            429  CONTINUING
+HOICKA, DAVID                     +330            330  CONTINUING
+PEIXOTO, HELDER                   +315            315  CONTINUING
+WINTERS, ROBERT                   +304            304  CONTINUING
+WILLIAMSON, JAMES M.              +129            129  CONTINUING
+GIACOBBE, DOROTHY M.              +113            113  CONTINUING
+CHASE, JEFFREY JAY                +107            107  CONTINUING
+DIXON, VINCENT LAWRENCE            +50             50  CONTINUING
+NIDLE, ALAN KINGFISH               +42             42  CONTINUING
+JONES, WILLIAM C.                  +34             34  CONTINUING
+WORMWOOD-MALONE, DAEJA.            +31             31  CONTINUING
+CHRISTENSON, CHARLES O.            +29             29  CONTINUING
+WRITE-INS                          +28             28  CONTINUING
+WRITE-INS                           +1              1  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +18777          18777  
+
+
+
+-- GALLUCCIO, ANTHONY D. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- GALLUCCIO, ANTHONY D. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.             -838           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY               +37           1699  CONTINUING
+DECKER, MARJORIE C.                +20           1672  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +61           1571  CONTINUING
+SULLIVAN, MICHAEL A.              +180           1519  CONTINUING
+BRAUDE, JIM                        +24           1514  CONTINUING
+DAVIS, HENRIETTA                   +38           1508  CONTINUING
+REEVES, KENNETH E.                 +53           1484  CONTINUING
+TRIANTAFILLOU, KATHERI.            +23           1199  CONTINUING
+MAHER, DAVID P.                   +137           1177  CONTINUING
+GOODWIN, BOB                      +105            918  CONTINUING
+TRUMBULL, DAVID                    +50            586  CONTINUING
+SNOWBERG, ERIK C.                   +4            433  CONTINUING
+PEIXOTO, HELDER                    +35            350  CONTINUING
+HOICKA, DAVID                       +2            332  CONTINUING
+WINTERS, ROBERT                     +7            311  CONTINUING
+CHASE, JEFFREY JAY                 +27            134  CONTINUING
+WILLIAMSON, JAMES M.                +1            130  CONTINUING
+GIACOBBE, DOROTHY M.               +16            129  CONTINUING
+DIXON, VINCENT LAWRENCE             +3             53  CONTINUING
+NIDLE, ALAN KINGFISH                +2             44  DEFEATED -- 2nd count
+JONES, WILLIAM C.                   +4             38  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.             +7             36  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.             +2             33  DEFEATED -- 2nd count
+WRITE-INS                            0             28  DEFEATED -- 2nd count
+WRITE-INS                            0              1  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          18777  
+
+
+
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WORMWOOD-MALONE, DAEJANNA P. is declared DEFEATED, as s/he has less than 50
+   votes.
+-- CHRISTENSON, CHARLES O. is declared DEFEATED, as s/he has less than 50 votes.
+-- JONES, WILLIAM C. is declared DEFEATED, as s/he has less than 50 votes.
+-- NIDLE, ALAN KINGFISH is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                +7           1706  CONTINUING
+DECKER, MARJORIE C.                +15           1687  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +12           1583  CONTINUING
+SULLIVAN, MICHAEL A.               +12           1531  CONTINUING
+BRAUDE, JIM                        +10           1524  CONTINUING
+DAVIS, HENRIETTA                   +13           1521  CONTINUING
+REEVES, KENNETH E.                  +5           1489  CONTINUING
+TRIANTAFILLOU, KATHERI.             +6           1205  CONTINUING
+MAHER, DAVID P.                     +5           1182  CONTINUING
+GOODWIN, BOB                        +3            921  CONTINUING
+TRUMBULL, DAVID                    +11            597  CONTINUING
+SNOWBERG, ERIK C.                   +8            441  CONTINUING
+PEIXOTO, HELDER                     +5            355  CONTINUING
+HOICKA, DAVID                      +10            342  CONTINUING
+WINTERS, ROBERT                     +7            318  CONTINUING
+CHASE, JEFFREY JAY                 +10            144  CONTINUING
+WILLIAMSON, JAMES M.               +10            140  CONTINUING
+GIACOBBE, DOROTHY M.                +3            132  CONTINUING
+DIXON, VINCENT LAWRENCE             +2             55  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH               -44              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                  -38              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.            -36              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.            -33              0  DEFEATED -- 2nd count
+WRITE-INS                          -28              0  DEFEATED -- 2nd count
+WRITE-INS                           -1              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +26             26  
+TOTALS:                              0          18777  
+
+
+
+-- DIXON, VINCENT LAWRENCE is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 4 -- DIXON, VINCENT LAWRENCE has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY               +10           1716  CONTINUING
+DECKER, MARJORIE C.                 +1           1688  CONTINUING
+TOOMEY, JR., TIMOTHY J.             +2           1585  CONTINUING
+SULLIVAN, MICHAEL A.                +3           1534  CONTINUING
+BRAUDE, JIM                         +3           1527  CONTINUING
+DAVIS, HENRIETTA                    +3           1524  CONTINUING
+REEVES, KENNETH E.                  +3           1492  CONTINUING
+TRIANTAFILLOU, KATHERI.             +2           1207  CONTINUING
+MAHER, DAVID P.                     +3           1185  CONTINUING
+GOODWIN, BOB                        +2            923  CONTINUING
+TRUMBULL, DAVID                     +2            599  CONTINUING
+SNOWBERG, ERIK C.                   +1            442  CONTINUING
+PEIXOTO, HELDER                     +1            356  CONTINUING
+HOICKA, DAVID                       +4            346  CONTINUING
+WINTERS, ROBERT                     +2            320  CONTINUING
+CHASE, JEFFREY JAY                   0            144  CONTINUING
+WILLIAMSON, JAMES M.                +1            141  CONTINUING
+GIACOBBE, DOROTHY M.                +4            136  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE            -55              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                     +8             34  
+TOTALS:                              0          18777  
+
+
+
+-- GIACOBBE, DOROTHY M. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- GIACOBBE, DOROTHY M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                +6           1722  CONTINUING
+DECKER, MARJORIE C.                 +6           1694  CONTINUING
+TOOMEY, JR., TIMOTHY J.             +4           1589  CONTINUING
+SULLIVAN, MICHAEL A.               +24           1558  CONTINUING
+BRAUDE, JIM                         +2           1529  CONTINUING
+DAVIS, HENRIETTA                    +5           1529  CONTINUING
+REEVES, KENNETH E.                 +15           1507  CONTINUING
+TRIANTAFILLOU, KATHERI.            +13           1220  CONTINUING
+MAHER, DAVID P.                    +15           1200  CONTINUING
+GOODWIN, BOB                       +13            936  CONTINUING
+TRUMBULL, DAVID                     +2            601  CONTINUING
+SNOWBERG, ERIK C.                   +3            445  CONTINUING
+PEIXOTO, HELDER                     +1            357  CONTINUING
+HOICKA, DAVID                       +3            349  CONTINUING
+WINTERS, ROBERT                      0            320  CONTINUING
+WILLIAMSON, JAMES M.                +5            146  CONTINUING
+CHASE, JEFFREY JAY                  +1            145  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.              -136              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +18             52  
+TOTALS:                              0          18777  
+
+
+
+-- CHASE, JEFFREY JAY is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- CHASE, JEFFREY JAY has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                +3           1725  CONTINUING
+DECKER, MARJORIE C.                 +3           1697  CONTINUING
+TOOMEY, JR., TIMOTHY J.             +3           1592  CONTINUING
+SULLIVAN, MICHAEL A.                +7           1565  CONTINUING
+DAVIS, HENRIETTA                    +8           1537  CONTINUING
+BRAUDE, JIM                          0           1529  CONTINUING
+REEVES, KENNETH E.                  +2           1509  CONTINUING
+MAHER, DAVID P.                    +47           1247  CONTINUING
+TRIANTAFILLOU, KATHERI.             +2           1222  CONTINUING
+GOODWIN, BOB                        +1            937  CONTINUING
+TRUMBULL, DAVID                    +38            639  CONTINUING
+SNOWBERG, ERIK C.                   +1            446  CONTINUING
+PEIXOTO, HELDER                    +10            367  CONTINUING
+HOICKA, DAVID                        0            349  CONTINUING
+WINTERS, ROBERT                     +2            322  CONTINUING
+WILLIAMSON, JAMES M.                +2            148  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                -145              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +16             68  
+TOTALS:                              0          18777  
+
+
+
+-- WILLIAMSON, JAMES M. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- WILLIAMSON, JAMES M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                +9           1734  CONTINUING
+DECKER, MARJORIE C.                 +9           1706  CONTINUING
+TOOMEY, JR., TIMOTHY J.             +7           1599  CONTINUING
+SULLIVAN, MICHAEL A.                +3           1568  CONTINUING
+BRAUDE, JIM                        +19           1548  CONTINUING
+DAVIS, HENRIETTA                   +10           1547  CONTINUING
+REEVES, KENNETH E.                 +14           1523  CONTINUING
+MAHER, DAVID P.                     +3           1250  CONTINUING
+TRIANTAFILLOU, KATHERI.            +13           1235  CONTINUING
+GOODWIN, BOB                        +2            939  CONTINUING
+TRUMBULL, DAVID                     +3            642  CONTINUING
+SNOWBERG, ERIK C.                  +10            456  CONTINUING
+HOICKA, DAVID                      +30            379  CONTINUING
+PEIXOTO, HELDER                     +5            372  CONTINUING
+WINTERS, ROBERT                     +4            326  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.              -148              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                     +7             75  
+TOTALS:                              0          18777  
+
+
+
+-- WINTERS, ROBERT is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- WINTERS, ROBERT has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY               +57           1791  CONTINUING
+DECKER, MARJORIE C.                +35           1741  CONTINUING
+TOOMEY, JR., TIMOTHY J.             +6           1605  CONTINUING
+DAVIS, HENRIETTA                   +56           1603  CONTINUING
+BRAUDE, JIM                        +39           1587  CONTINUING
+SULLIVAN, MICHAEL A.               +17           1585  CONTINUING
+REEVES, KENNETH E.                 +10           1533  CONTINUING
+MAHER, DAVID P.                    +25           1275  CONTINUING
+TRIANTAFILLOU, KATHERI.            +18           1253  CONTINUING
+GOODWIN, BOB                         0            939  CONTINUING
+TRUMBULL, DAVID                    +16            658  CONTINUING
+SNOWBERG, ERIK C.                  +22            478  CONTINUING
+HOICKA, DAVID                       +4            383  CONTINUING
+PEIXOTO, HELDER                     +4            376  DEFEATED -- 8th count
+WINTERS, ROBERT                   -326              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +17             92  
+TOTALS:                              0          18777  
+
+
+
+-- PEIXOTO, HELDER is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 9 -- PEIXOTO, HELDER has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                +7           1798  CONTINUING
+DECKER, MARJORIE C.                +16           1757  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +83           1688  CONTINUING
+SULLIVAN, MICHAEL A.               +35           1620  CONTINUING
+DAVIS, HENRIETTA                    +8           1611  CONTINUING
+BRAUDE, JIM                         +6           1593  CONTINUING
+REEVES, KENNETH E.                 +17           1550  CONTINUING
+MAHER, DAVID P.                    +36           1311  CONTINUING
+TRIANTAFILLOU, KATHERI.            +15           1268  CONTINUING
+GOODWIN, BOB                       +16            955  CONTINUING
+TRUMBULL, DAVID                    +53            711  CONTINUING
+SNOWBERG, ERIK C.                   +7            485  CONTINUING
+HOICKA, DAVID                       +3            386  DEFEATED -- 9th count
+PEIXOTO, HELDER                   -376              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +74            166  
+TOTALS:                              0          18777  
+
+
+
+-- HOICKA, DAVID is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 10 -- HOICKA, DAVID has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY               +26           1824  CONTINUING
+DECKER, MARJORIE C.                +40           1797  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +12           1700  CONTINUING
+BRAUDE, JIM                        +94           1687  CONTINUING
+DAVIS, HENRIETTA                   +24           1635  CONTINUING
+SULLIVAN, MICHAEL A.               +11           1631  CONTINUING
+REEVES, KENNETH E.                 +29           1579  CONTINUING
+MAHER, DAVID P.                    +10           1321  CONTINUING
+TRIANTAFILLOU, KATHERI.            +36           1304  CONTINUING
+GOODWIN, BOB                        +5            960  CONTINUING
+TRUMBULL, DAVID                     +7            718  CONTINUING
+SNOWBERG, ERIK C.                  +51            536  DEFEATED -- 10th count
+HOICKA, DAVID                     -386              0  DEFEATED -- 9th count
+PEIXOTO, HELDER                      0              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +41            207  
+TOTALS:                              0          18777  
+
+
+
+-- SNOWBERG, ERIK C. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 11 -- SNOWBERG, ERIK C. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY               +54           1878  ELECTED -- 11th count
+DECKER, MARJORIE C.                +55           1852  CONTINUING
+BRAUDE, JIM                        +93           1780  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +17           1717  CONTINUING
+DAVIS, HENRIETTA                   +52           1687  CONTINUING
+SULLIVAN, MICHAEL A.               +16           1647  CONTINUING
+REEVES, KENNETH E.                 +49           1628  CONTINUING
+TRIANTAFILLOU, KATHERI.            +40           1344  CONTINUING
+MAHER, DAVID P.                    +12           1333  CONTINUING
+GOODWIN, BOB                        +8            968  CONTINUING
+TRUMBULL, DAVID                    +38            756  DEFEATED -- 11th count
+SNOWBERG, ERIK C.                 -536              0  DEFEATED -- 10th count
+HOICKA, DAVID                        0              0  DEFEATED -- 9th count
+PEIXOTO, HELDER                      0              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +102            309  
+TOTALS:                              0          18777  
+
+
+
+-- BORN, KATHLEEN LEAHY has been ELECTED because s/he has met the quota.
+-- TRUMBULL, DAVID is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 12 -- TRUMBULL, DAVID has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                 0           1878  ELECTED -- 11th count
+DECKER, MARJORIE C.                +25           1877  CONTINUING
+BRAUDE, JIM                        +32           1812  CONTINUING
+TOOMEY, JR., TIMOTHY J.            +52           1769  CONTINUING
+SULLIVAN, MICHAEL A.              +101           1748  CONTINUING
+DAVIS, HENRIETTA                   +40           1727  CONTINUING
+REEVES, KENNETH E.                 +21           1649  CONTINUING
+MAHER, DAVID P.                   +241           1574  CONTINUING
+TRIANTAFILLOU, KATHERI.            +14           1358  CONTINUING
+GOODWIN, BOB                       +29            997  DEFEATED -- 12th count
+TRUMBULL, DAVID                   -756              0  DEFEATED -- 11th count
+SNOWBERG, ERIK C.                    0              0  DEFEATED -- 10th count
+HOICKA, DAVID                        0              0  DEFEATED -- 9th count
+PEIXOTO, HELDER                      0              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +201            510  
+TOTALS:                              0          18777  
+
+
+
+-- GOODWIN, BOB is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 13 -- GOODWIN, BOB has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                 0           1878  ELECTED -- 11th count
+DECKER, MARJORIE C.                 +1           1878  ELECTED -- 13th count
+SULLIVAN, MICHAEL A.              +130           1878  ELECTED -- 13th count
+TOOMEY, JR., TIMOTHY J.           +109           1878  ELECTED -- 13th count
+BRAUDE, JIM                        +59           1871  CONTINUING
+MAHER, DAVID P.                   +281           1855  CONTINUING
+DAVIS, HENRIETTA                   +62           1789  CONTINUING
+REEVES, KENNETH E.                 +93           1742  CONTINUING
+TRIANTAFILLOU, KATHERI.            +70           1428  DEFEATED -- 13th count
+GOODWIN, BOB                      -997              0  DEFEATED -- 12th count
+TRUMBULL, DAVID                      0              0  DEFEATED -- 11th count
+SNOWBERG, ERIK C.                    0              0  DEFEATED -- 10th count
+HOICKA, DAVID                        0              0  DEFEATED -- 9th count
+PEIXOTO, HELDER                      0              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +192            702  
+TOTALS:                              0          18777  
+
+
+
+-- DECKER, MARJORIE C. has been ELECTED because s/he has met the quota.
+-- SULLIVAN, MICHAEL A. has been ELECTED because s/he has met the quota.
+-- TOOMEY, JR., TIMOTHY J. has been ELECTED because s/he has met the quota.
+-- TRIANTAFILLOU, KATHERINE is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 14 -- TRIANTAFILLOU, KATHERINE has been DEFEATED -- transferring all
+            votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+GALLUCCIO, ANTHONY D.                0           1878  ELECTED -- 1st count
+BORN, KATHLEEN LEAHY                 0           1878  ELECTED -- 11th count
+DECKER, MARJORIE C.                  0           1878  ELECTED -- 13th count
+SULLIVAN, MICHAEL A.                 0           1878  ELECTED -- 13th count
+TOOMEY, JR., TIMOTHY J.              0           1878  ELECTED -- 13th count
+BRAUDE, JIM                         +7           1878  ELECTED -- 14th count
+DAVIS, HENRIETTA                   +89           1878  ELECTED -- 14th count
+REEVES, KENNETH E.                +136           1878  ELECTED -- 14th count
+MAHER, DAVID P.                    +23           1878  ELECTED -- 14th count
+TRIANTAFILLOU, KATHERI.          -1428              0  DEFEATED -- 13th count
+GOODWIN, BOB                         0              0  DEFEATED -- 12th count
+TRUMBULL, DAVID                      0              0  DEFEATED -- 11th count
+SNOWBERG, ERIK C.                    0              0  DEFEATED -- 10th count
+HOICKA, DAVID                        0              0  DEFEATED -- 9th count
+PEIXOTO, HELDER                      0              0  DEFEATED -- 8th count
+WINTERS, ROBERT                      0              0  DEFEATED -- 7th count
+WILLIAMSON, JAMES M.                 0              0  DEFEATED -- 6th count
+CHASE, JEFFREY JAY                   0              0  DEFEATED -- 5th count
+GIACOBBE, DOROTHY M.                 0              0  DEFEATED -- 4th count
+DIXON, VINCENT LAWRENCE              0              0  DEFEATED -- 3rd count
+NIDLE, ALAN KINGFISH                 0              0  DEFEATED -- 2nd count
+JONES, WILLIAM C.                    0              0  DEFEATED -- 2nd count
+CHRISTENSON, CHARLES O.              0              0  DEFEATED -- 2nd count
+WORMWOOD-MALONE, DAEJA.              0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                  +1173           1875  
+TOTALS:                              0          18777  
+
+
+
+-- BRAUDE, JIM has been ELECTED because s/he has met the quota.
+-- DAVIS, HENRIETTA has been ELECTED because s/he has met the quota.
+-- REEVES, KENNETH E. has been ELECTED because s/he has met the quota.
+-- MAHER, DAVID P. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 3, 1999 7:37 PM
+PRMaster Governmental Edition -- Version 2.02
+(c) 1993-1999 Jerel Software -- All Rights Reserved

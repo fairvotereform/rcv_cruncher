@@ -1,0 +1,3 @@
+rem copy schoolTuesBlank.txt+*.prm schooltues.txt
+
+copy SchoolTuesBlank.txt +  403.PRM + 203.PRM +  502.PRM + 1103.PRM +  501.PRM +  901.PRM +  102.PRM +  903.PRM +  401.PRM +  103.PRM +  902.PRM +  803.PRM +  202.PRM +  201.PRM +  701.PRM +  503.PRM +  801.PRM +  304.PRM +  303.PRM + 1102.PRM + 1002.PRM + 1001.PRM +  101.PRM +  402.PRM +  703.PRM +  302.PRM + 1101.PRM +  301.PRM +  603.PRM +  602.PRM +  702.PRM +  802.PRM + 1003.PRM +  601.PRM SchoolTuesOrder.txt 

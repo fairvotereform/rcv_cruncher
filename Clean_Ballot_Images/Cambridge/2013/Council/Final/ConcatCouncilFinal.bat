@@ -1,0 +1,1 @@
+copy ..\Tuesday\councilTues.txt+*.prm councilFINAL.txt

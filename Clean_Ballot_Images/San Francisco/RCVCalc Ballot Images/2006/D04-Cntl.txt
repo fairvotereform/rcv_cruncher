@@ -1,0 +1,16 @@
+Title: D04 : Member, Board of Supervisors Dist. 4
+SubTitle: San Francisco, CA, 2006, November
+Candidate: RD : Ron Dudum
+Candidate: EJ : Ed Jew
+Candidate: JM : Jaynry Mak
+Candidate: DC : Doug Chan
+Candidate: HZ : Houston Zheng
+Candidate: DF : David Ferguson
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: D04-Ballots.txt

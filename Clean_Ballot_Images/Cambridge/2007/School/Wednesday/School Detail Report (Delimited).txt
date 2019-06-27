@@ -1,0 +1,163 @@
+D:\Cambridge\Election2007\School\Wednesday\School Detail Report (Delimited)
+10|NOVEMBER 7, 2007 -- Cambridge, MA
+10|SCHOOL COMMITTEE ELECTION
+10|CAMBRIDGE, MA
+10|Unofficial Results (Wednesday Count)
+20|C01|"Fantini, Alfred B."
+20|C02|"Grassi, Joseph G."
+20|C03|"Harding, Richard, Jr."
+20|C04|"Lemily Wiggins, Gail"
+20|C05|"Malner, Stefan"
+20|C06|"McGovern, Marc C."
+20|C07|"Nolan, Patricia M."
+20|C08|"Schuster, Luc"
+20|C09|"Tauber, Nancy"
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+30|system|Choice Voting
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st round)
+30|ties|1) Previous Round method|2) By drawing lots|3) Random (by computer)
+40|13276|13276|6|1897|433
+50|1|Tally of 1st place votes.
+60|C06|+2277|2277|ELECTED -- 1st round
+60|C01|+2017|2017|ELECTED -- 1st round
+60|C08|+1680|1680|CONTINUING
+60|C07|+1672|1672|CONTINUING
+60|C02|+1629|1629|CONTINUING
+60|C03|+1562|1562|CONTINUING
+60|C09|+1246|1246|CONTINUING
+60|C04|+1024|1024|CONTINUING
+60|C05|+133|133|CONTINUING
+60|WI01|+35|35|CONTINUING
+60|WI02|+1|1|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|McGovern, Marc C. has been ELECTED because s/he has met the threshold.
+70|Fantini, Alfred B. has been ELECTED because s/he has met the threshold.
+50|2|McGovern, Marc C. has been ELECTED -- transferring surplus votes.
+60|C06|-380|1897|ELECTED -- 1st round
+60|C01|0|2017|ELECTED -- 1st round
+60|C07|+134|1806|CONTINUING
+60|C08|+78|1758|CONTINUING
+60|C02|+36|1665|CONTINUING
+60|C03|+46|1608|CONTINUING
+60|C09|+57|1303|CONTINUING
+60|C04|+23|1047|CONTINUING
+60|C05|+6|139|CONTINUING
+60|WI01|0|35|CONTINUING
+60|WI02|0|1|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+50|3|Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+60|C06|0|1897|ELECTED -- 1st round
+60|C01|-120|1897|ELECTED -- 1st round
+60|C07|+17|1823|CONTINUING
+60|C08|+4|1762|CONTINUING
+60|C02|+69|1734|CONTINUING
+60|C03|+13|1621|CONTINUING
+60|C09|+10|1313|CONTINUING
+60|C04|+5|1052|CONTINUING
+60|C05|+2|141|CONTINUING
+60|WI01|0|35|DEFEATED -- 3rd round
+60|WI02|0|1|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+50|4|Transferring all votes simultaneously from all defeated candidates.
+60|C06|0|1897|ELECTED -- 1st round
+60|C01|0|1897|ELECTED -- 1st round
+60|C07|+3|1826|CONTINUING
+60|C08|+1|1763|CONTINUING
+60|C02|+2|1736|CONTINUING
+60|C03|+2|1623|CONTINUING
+60|C09|+3|1316|CONTINUING
+60|C04|+1|1053|CONTINUING
+60|C05|+1|142|DEFEATED -- 4th round
+60|WI01|-35|0|DEFEATED -- 3rd round
+60|WI02|-1|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+23|23|
+70|Malner, Stefan is declared DEFEATED because s/he has the lowest number of votes.
+50|5|Malner, Stefan has been DEFEATED -- transferring all votes.
+60|C06|0|1897|ELECTED -- 1st round
+60|C01|0|1897|ELECTED -- 1st round
+60|C07|+23|1849|CONTINUING
+60|C08|+16|1779|CONTINUING
+60|C02|+7|1743|CONTINUING
+60|C03|+11|1634|CONTINUING
+60|C09|+28|1344|CONTINUING
+60|C04|+31|1084|DEFEATED -- 5th round
+60|C05|-142|0|DEFEATED -- 4th round
+60|WI01|0|0|DEFEATED -- 3rd round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+26|49|
+70|Lemily Wiggins, Gail is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Lemily Wiggins, Gail has been DEFEATED -- transferring all votes.
+60|C06|0|1897|ELECTED -- 1st round
+60|C01|0|1897|ELECTED -- 1st round
+60|C07|+48|1897|ELECTED -- 6th round
+60|C08|+118|1897|ELECTED -- 6th round
+60|C02|+111|1854|CONTINUING
+60|C09|+475|1819|CONTINUING
+60|C03|+90|1724|DEFEATED -- 6th round
+60|C04|-1084|0|DEFEATED -- 5th round
+60|C05|0|0|DEFEATED -- 4th round
+60|WI01|0|0|DEFEATED -- 3rd round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+242|291|
+70|Nolan, Patricia M. has been ELECTED because s/he has met the threshold.
+70|Schuster, Luc has been ELECTED because s/he has met the threshold.
+70|Harding, Richard, Jr. is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Harding, Richard, Jr. has been DEFEATED -- transferring all votes.
+60|C06|0|1897|ELECTED -- 1st round
+60|C01|0|1897|ELECTED -- 1st round
+60|C07|0|1897|ELECTED -- 6th round
+60|C08|0|1897|ELECTED -- 6th round
+60|C02|+43|1897|ELECTED -- 7th round
+60|C09|+78|1897|ELECTED -- 7th round
+60|C03|-1724|0|DEFEATED -- 6th round
+60|C04|0|0|DEFEATED -- 5th round
+60|C05|0|0|DEFEATED -- 4th round
+60|WI01|0|0|DEFEATED -- 3rd round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+1603|1894|
+70|Grassi, Joseph G. has been ELECTED because s/he has met the threshold.
+70|Tauber, Nancy has been ELECTED because s/he has met the threshold.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Wednesday, November 7, 2007 6:20 PM
+80|ChoicePlus Pro -- Version 2.3.2
+80|(c) 1993-2006 Voting Solutions -- All Rights Reserved

@@ -1,0 +1,53 @@
+Statistical Report
+
+
+November 8, 2005 -- Cambridge, MA
+SCHOOL COMMITTEE ELECTION
+CAMBRIDGE, MA
+Wednesday Preliminary Results
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+676.0 voters ranked 0 candidates -- 4.1756748409413795%.
+2452.0 voters ranked 1 candidates -- 15.146086849095063%.
+2915.0 voters ranked 2 candidates -- 18.006053493112606%.
+3320.0 voters ranked 3 candidates -- 20.50775217740441%.
+1980.0 voters ranked 4 candidates -- 12.230526900982149%.
+1346.0 voters ranked 5 candidates -- 8.314287479152512%.
+1391.0 voters ranked 6 candidates -- 8.592253999629378%.
+554.0 voters ranked 7 candidates -- 3.4220767187596515%.
+1552.0 voters ranked 8 candidates -- 9.586756439557725%.
+1.0 voters ranked 9 candidates -- 0.006177033788374823%.
+1.0 voters ranked 10 candidates -- 0.006177033788374823%.
+0.0 voters ranked 11 candidates -- 0.0%.
+0.0 voters ranked 12 candidates -- 0.0%.
+1.0 voters ranked 13 candidates -- 0.006177033788374823%.
+0.0 voters ranked 14 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+16189.0 votes.
+12534.0 voters elected their #1 choice -- 77.42294150349002%.
+2136.0 voters elected their #2 choice -- 13.194144171968622%.
+409.0 voters elected their #3 choice -- 2.5264068194453024%.
+0.0 voters elected their #4 choice -- 0.0%.
+0.0 voters elected their #5 choice -- 0.0%.
+0.0 voters elected their #6 choice -- 0.0%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+1110.0 voters did not elect any candidates -- 6.856507505096053%.

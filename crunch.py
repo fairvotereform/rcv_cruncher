@@ -9,9 +9,11 @@ import csv
 
 #from fractions import Fraction
 from gmpy2 import mpq as Fraction
+from scipy.stats import linregress
 
 import manifest
-from math import floor
+from math import floor, sqrt
+from statistics import pvariance
 from collections import defaultdict
 from contextlib import suppress
 from glob import glob
@@ -42,6 +44,21 @@ def save(f):
         return ctx[f.__name__]
     return fun
 
+def pick(f):
+    @wraps(f)
+    def fun(*args, **kwargs):
+        h = md5(bytes(getsource(f),'utf-8')) 
+        for arg in chain(args, kwargs):
+            h.update(bytes(str(arg),'utf-8'))
+        file_name = '.pickled/.{}.pickle'.format(h.hexdigest())
+        with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
+            return pickle.load(file_object)
+        res = f(*args, **kwargs)
+        with open(file_name, 'wb') as file_object:
+            pickle.dump(res, file_object)
+        return res
+    return fun
+
 def tmpsave(f):
     @wraps(f)
     def fun(ctx):
@@ -49,6 +66,13 @@ def tmpsave(f):
             return ctx[f.__name__]
         return ctx.setdefault(f.__name__, f(ctx))
     return fun
+
+def ci(p, n):
+    """adapted from stackoverflow.com/q/10029588/"""
+    z = 1.96 
+    z2 = z*z 
+    v = z * sqrt((p*(1-p)+z2/(4*n))/n)
+    return tuple([p, *[max(0, (p + z2/(2*n) + i) / (1+z2/n)) for i in [-v,v]]])
 
 def remove(x,l): 
     return [i for i in l if i != x]
@@ -80,7 +104,7 @@ def rank_and_add_borda(ctx):
     """https://voterschoose.info/wp-content/uploads/2019/04/Tustin-White-Paper.pdf"""
     c = Counter()
     for b in cleaned(ctx):
-        c.update({v:1/(i+1) for i,v in enumerate(b)})
+        c.update({v:1/i for i,v in enumerate(b,1)})
     return [i for i,_ in c.most_common()[:number(ctx)]]
 
 @save     
@@ -214,14 +238,20 @@ def winners_first_round_share(ctx):
 def winners_final_round_share(ctx):
     return rcv(ctx)[-1][1][0] / (total(ctx) - undervote(ctx))
 
-def foop(ctxs):
-    for ctx in ctxs:
-        ballots(ctx)
-       
 @save #d 
 def rcv(ctx):
     rounds = []
     ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
+    while True:
+        rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+        finalists, tallies = rounds[-1] 
+        if tallies[0]*2 > sum(tallies):
+            pprint(rounds)
+            return rounds
+        ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+def rcvreg(ballots):
+    rounds = []
     while True:
         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
         finalists, tallies = rounds[-1] 
@@ -254,7 +284,6 @@ def first_round(ctx):
 def undervote(ctx):
     return sum(c == UNDERVOTE for c in first_round(ctx))
 
-
 @save #d
 def ranked2(ctx):
     return sum(len(b) == 2 for b in cleaned(ctx))
@@ -266,7 +295,6 @@ def ranked_multiple(ctx):
 @save #d
 def effective_ballot_length(ctx):
     return Counter(len(b) for b in cleaned(ctx))
-
 
 ### TODO: exhausted should not include straight undervotes nor
 ### per Drew
@@ -332,6 +360,7 @@ def ranked_winner(ctx):
     return sum(winner(ctx) in b for b in ballots(ctx))
 
 def before(x, y, l):
+    # return next(filter(None,map({x:1,y:-1}.get,l)),0)
     for i in l:
         if i == x:
             return 1
@@ -524,6 +553,199 @@ def total(ctx):
     return len(ballots(ctx))
 
 @save
+def precincts(ctx):
+    return [i.precinct for i in ctx['parser'](ctx['path'])]
+
+@save
+def precinct_totals(ctx):
+    return Counter(precincts(ctx))
+
+@save
+def precinct_overvotes(ctx):
+    return Counter(p for p,o in zip(precincts(ctx), overvote(ctx)) if o)
+
+@save
+def precinct_overvote_rate(ctx):
+    return {k: precinct_overvotes(ctx)[k]/v for k,v in precinct_totals(ctx).items()}
+
+@save
+def precinct_overvote_rate_variance(ctx):
+    return pvariance(list(precinct_overvote_rate(ctx).values()))
+
+@save
+def unique_precincts(ctx):
+    return set(precincts(ctx))
+
+@save
+def precinct_overvote_rate_range(ctx):
+    return {k: ci(precinct_overvotes(ctx)[k]/v, v) for k, v in precinct_totals(ctx).items()}
+
+@save
+def precinct_blockgroups(ctx):
+    path = '/'.join([
+                'precinct_block_maps',
+                state(ctx), 
+                county(ctx), 
+                'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),str(date(ctx))[-2:])
+                ])
+    info = []
+    with open(path) as f:
+        next(f)
+        for line in f:
+            p,t,b,xpop,ppop,_,bpop,_ = line.strip().replace('"','').split(',')
+            if p != 'NULL':
+                info.append({
+                    'precinct': p,
+                    'tract': t,
+                    'block': b,
+                    'xpop': int(xpop),
+                    'ppop': int(ppop),
+                    'bpop': int(bpop)
+                })
+    block_totals = {(i['tract'], i['block']): i['bpop'] for i in info}
+
+    blockgroup_totals = defaultdict(int)
+    for (tract, block),v in block_totals.items():
+        blockgroup_totals[(tract, block[0])] += v
+
+    precincts = defaultdict(int)
+    for i in info:
+        precincts[(i['precinct'], i['tract'], i['block'][0])] += i['xpop']
+
+    return {(p, state(ctx)+county(ctx)+t+bg) : (v, blockgroup_totals[(t, bg)])
+            for (p, t, bg), v in precincts.items()}
+
+def processed_sov(file_name):
+    result = {}
+    asian_ethnicities = ['kor','jpn','chi', 'ind', 'viet', 'fil']
+    with open(file_name) as f:
+        reader = csv.DictReader(f)
+        for i in reader:
+            result[i['srprec']] = {
+                'total': int(i['totreg_r']),
+                'latinx': sum(int(i[k]) for k in i if k.startswith('hisp')),
+                'asian': sum(int(i[k]) for k in i 
+                            if any(map(k.startswith, asian_ethnicities)))
+            }
+    return result
+
+@pick
+def processed_cvap(file_name):
+    result = defaultdict(dict)
+    states = {'06'}
+    counties = {'001','075'}
+    with open(file_name, encoding='latin-1') as f:
+        next(f)
+        for line in f:
+            demo, block_group,*_,tally,_ = line.split(',')[4:]
+            blockgroup = block_group.split('US')[1]
+            if blockgroup[:2] in states and blockgroup[2:5] in counties:
+                result[blockgroup][demo] = int(tally)
+    return result
+
+def cvap(year, blockgroup):
+    year = max(min(year,2017),2009)
+    file_name = 'CVAP/CVAP_{}-{}_ACS_csv_files/BlockGr.csv'.format(year-4,year)
+    return processed_cvap(file_name)[blockgroup]
+
+@pick
+def ethnicities():
+    s = set()
+    with open(glob('CVAP/*/BlockGr.csv')[0],encoding='latin-1') as f:
+        for i in f:
+            ethnicity = i.split(',')[4]
+            if ethnicity in s:
+                return s - {'Total','CIT_EST', 'Not Hispanic or Latino'}
+            s.add(ethnicity)
+
+def precinct_cvap(ethnicity, est, ctx, precinct):
+    block_groups = {bg: v for (p,bg),v in precinct_blockgroups(ctx).items()
+                    if p == precinct}
+
+    precinct_total = sum(n for n,_ in block_groups.values())
+    ethnicity_total = 0
+    for k,(n,_) in block_groups.items():
+        demos = cvap(int(date(ctx)), k)
+        demos.pop('Total')
+        demos.pop('Not Hispanic or Latino')
+        ethnicity_total += est(ethnicity, demos, n)
+
+    return ethnicity_total, precinct_total
+
+def high_est(demo, demos, number):
+    return min(demos[demo], number)
+
+def mean_est(demo, demos, number):
+    return ((demos[demo]/sum(demos.values()) * number) if demos[demo] else 0)
+
+def low_est(demo, demos, number):
+    return number - min(sum(v for k,v in demos.items() if k != demo), number)
+    
+@pick
+def precinct_ethnicity(ctx, eth, est):
+    d = {}
+    for precinct in unique_precincts(ctx):
+        part, whole = precinct_cvap(eth, est, ctx, precinct)
+        d[precinct] = part/whole if whole else 0
+    return d
+
+def overvote_ratio(ctx, eth):
+    num_over = 0
+    num_votes = 0
+    denom_over = 0
+    denom_votes = 0
+    for precinct in unique_precincts(ctx):
+        pct_eth = precinct_ethnicity(ctx, eth, mean_est)[precinct]
+        over = precinct_overvotes(ctx)[precinct]
+        total = precinct_totals(ctx)[precinct]
+        num_over += pct_eth*over
+        num_votes += pct_eth*total
+        denom_over += (1-pct_eth)*over
+        denom_votes += (1-pct_eth)*total
+    return (num_over/num_votes)/(denom_over/denom_votes)
+
+def black_overvote_ratio(ctx):
+    return overvote_ratio(ctx,'Black or African American Alone')
+        
+@save
+def high_white_overvote(ctx):
+    y = [v for _,v in sorted(precinct_overvote_rate(ctx).items())]
+    x = [v for _,v in sorted(precinct_ethnicity(ctx, 'White Alone', high_est).items())]
+    slope, _, r, p, _= linregress(x,y)
+    return {'slope':slope, 'r': r, 'p': p}
+    
+@save
+def low_white_overvote(ctx):
+    y = [v for _,v in sorted(precinct_overvote_rate(ctx).items())]
+    x = [v for _,v in sorted(precinct_ethnicity(ctx, 'White Alone', low_est).items())]
+    slope, _, r, p, _= linregress(x,y)
+    return {'slope':slope, 'r': r, 'p': p}
+
+
+def state(ctx):
+    return {
+        'Oakland': '06',
+        'San Francisco': '06',
+        'San Leandro': '06',
+        'Berkeley': '06'
+        }.get(place(ctx))
+
+def county(ctx):
+    return {
+        'Oakland': '001',
+        'Berkeley': '001',
+        'San Leandro': '001',
+        'San Francisco': '075'
+        }.get(place(ctx))
+
+def election_type(ctx):
+    return 'g'
+
+def tdpo(ctx):
+        for i in precinct_overvote_rate(ctx).values():
+            print(ctx['date'], i, sep='\t')
+
+@save
 def ballots(ctx):
     raw = ctx['parser'](ctx['path'])
     can_set = set()
@@ -619,15 +841,15 @@ def main():
     p.add_argument('-j', '--json', action='store_true')
     a = p.parse_args()
     stats = [globals()[i] for i in a.stats]
-    if a.json:
-        for k in a.elections:
-            pprint(calc(k, stats))
-        return
-
     matched_elections = [] 
     for k,g in product(manifest.competitions.keys(), a.elections):
         if fnmatch(k,g):
             matched_elections.append(k)
+
+    if a.json:
+        for k in matched_elections:
+            pprint(calc(k, stats))
+        return
 
     with open('results.csv', 'w') as f:
         w = csv.writer(f)

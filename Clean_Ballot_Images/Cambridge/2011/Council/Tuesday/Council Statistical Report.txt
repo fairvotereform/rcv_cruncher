@@ -1,0 +1,79 @@
+Statistical Report
+
+
+November 8, 2011 -- Cambridge, MA
+City Council Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+0.0 voters ranked 0 candidates -- 0.0%.
+1450.0 voters ranked 1 candidates -- 9.41986617293575%.
+1395.0 voters ranked 2 candidates -- 9.062560904307153%.
+2704.0 voters ranked 3 candidates -- 17.56642629766777%.
+1991.0 voters ranked 4 candidates -- 12.934450724355226%.
+1746.0 voters ranked 5 candidates -- 11.342818164100565%.
+1446.0 voters ranked 6 candidates -- 9.393880335217307%.
+1038.0 voters ranked 7 candidates -- 6.743324887936075%.
+877.0 voters ranked 8 candidates -- 5.697394919768726%.
+1144.0 voters ranked 9 candidates -- 7.431949587474826%.
+430.0 voters ranked 10 candidates -- 2.7934775547326707%.
+197.0 voters ranked 11 candidates -- 1.27980250763334%.
+109.0 voters ranked 12 candidates -- 0.708114077827584%.
+71.0 voters ranked 13 candidates -- 0.4612486195023712%.
+44.0 voters ranked 14 candidates -- 0.2858442149028779%.
+42.0 voters ranked 15 candidates -- 0.2728512960436562%.
+52.0 voters ranked 16 candidates -- 0.33781589033976483%.
+115.0 voters ranked 17 candidates -- 0.7470928344052491%.
+542.0 voters ranked 18 candidates -- 3.521081010849087%.
+0.0 voters ranked 19 candidates -- 0.0%.
+0.0 voters ranked 20 candidates -- 0.0%.
+0.0 voters ranked 21 candidates -- 0.0%.
+0.0 voters ranked 22 candidates -- 0.0%.
+0.0 voters ranked 23 candidates -- 0.0%.
+0.0 voters ranked 24 candidates -- 0.0%.
+0.0 voters ranked 25 candidates -- 0.0%.
+0.0 voters ranked 26 candidates -- 0.0%.
+0.0 voters ranked 27 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+15393.0 votes.
+12052.0 voters elected their #1 choice -- 78.29532904567012%.
+2293.0 voters elected their #2 choice -- 14.896381472097705%.
+450.0 voters elected their #3 choice -- 2.923406743324888%.
+80.0 voters elected their #4 choice -- 0.519716754368869%.
+28.0 voters elected their #5 choice -- 0.18190086402910413%.
+24.0 voters elected their #6 choice -- 0.15591502631066068%.
+20.0 voters elected their #7 choice -- 0.12992918859221725%.
+10.0 voters elected their #8 choice -- 0.06496459429610862%.
+5.0 voters elected their #9 choice -- 0.03248229714805431%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+0.0 voters elected their #16 choice -- 0.0%.
+0.0 voters elected their #17 choice -- 0.0%.
+0.0 voters elected their #18 choice -- 0.0%.
+0.0 voters elected their #19 choice -- 0.0%.
+0.0 voters elected their #20 choice -- 0.0%.
+0.0 voters elected their #21 choice -- 0.0%.
+0.0 voters elected their #22 choice -- 0.0%.
+0.0 voters elected their #23 choice -- 0.0%.
+0.0 voters elected their #24 choice -- 0.0%.
+0.0 voters elected their #25 choice -- 0.0%.
+0.0 voters elected their #26 choice -- 0.0%.
+0.0 voters elected their #27 choice -- 0.0%.
+431.0 voters did not elect any candidates -- 2.7999740141622818%.

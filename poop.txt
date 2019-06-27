@@ -1,0 +1,117 @@
+Jacob Frey	Nekima Levy-Pounds	Raymond Dehn
+Tom Hoch	Jacob Frey	Betsy Hodges
+Jacob Frey	undervote	undervote
+Nekima Levy-Pounds	Betsy Hodges	Raymond Dehn
+Jacob Frey	undervote	undervote
+Jacob Frey	Nekima Levy-Pounds	Aswar Rahman
+Betsy Hodges	undervote	undervote
+Tom Hoch	Betsy Hodges	Aswar Rahman
+Tom Hoch	Nekima Levy-Pounds	undervote
+Raymond Dehn	Tom Hoch	Betsy Hodges
+UWI	undervote	undervote
+Jacob Frey	Tom Hoch	Betsy Hodges
+Raymond Dehn	Nekima Levy-Pounds	Betsy Hodges
+Jacob Frey	Betsy Hodges	Nekima Levy-Pounds
+Jacob Frey	Raymond Dehn	Ronald Lischeid
+Tom Hoch	undervote	undervote
+Nekima Levy-Pounds	Jacob Frey	Tom Hoch
+Nekima Levy-Pounds	Aswar Rahman	undervote
+Betsy Hodges	Jacob Frey	Tom Hoch
+Betsy Hodges	Tom Hoch	Raymond Dehn
+Tom Hoch	Jacob Frey	Betsy Hodges
+Nekima Levy-Pounds	Tom Hoch	Betsy Hodges
+Jacob Frey	undervote	undervote
+Raymond Dehn	Tom Hoch	Aswar Rahman
+Jacob Frey	Tom Hoch	Raymond Dehn
+Tom Hoch	Jacob Frey	undervote
+Nekima Levy-Pounds	Raymond Dehn	Betsy Hodges
+Raymond Dehn	Betsy Hodges	Nekima Levy-Pounds
+David Rosenfeld	Tom Hoch	Ronald Lischeid
+Betsy Hodges	Jacob Frey	undervote
+Betsy Hodges	Nekima Levy-Pounds	Raymond Dehn
+Jacob Frey	Tom Hoch	undervote
+Tom Hoch	undervote	undervote
+Raymond Dehn	Nekima Levy-Pounds	undervote
+Betsy Hodges	Jacob Frey	Tom Hoch
+Nekima Levy-Pounds	Raymond Dehn	undervote
+Jacob Frey	Betsy Hodges	undervote
+Betsy Hodges	undervote	undervote
+Betsy Hodges	Raymond Dehn	Tom Hoch
+Raymond Dehn	Betsy Hodges	Nekima Levy-Pounds
+Jacob Frey	undervote	undervote
+Betsy Hodges	Nekima Levy-Pounds	Raymond Dehn
+Raymond Dehn	Nekima Levy-Pounds	David Rosenfeld
+Betsy Hodges	Raymond Dehn	Nekima Levy-Pounds
+Nekima Levy-Pounds	Betsy Hodges	Aswar Rahman
+Tom Hoch	Jacob Frey	Betsy Hodges
+Betsy Hodges	Tom Hoch	Jacob Frey
+Jacob Frey	Tom Hoch	Nekima Levy-Pounds
+Nekima Levy-Pounds	Al Flowers	Betsy Hodges
+Jacob Frey	undervote	undervote
+Jacob Frey	undervote	undervote
+Jacob Frey	Tom Hoch	Captain Jack Sparrow
+Raymond Dehn	Nekima Levy-Pounds	undervote
+Jacob Frey	Raymond Dehn	Tom Hoch
+Betsy Hodges	Nekima Levy-Pounds	Raymond Dehn
+Raymond Dehn	Nekima Levy-Pounds	Jacob Frey
+Jacob Frey	Tom Hoch	Raymond Dehn
+Raymond Dehn	Betsy Hodges	Tom Hoch
+Raymond Dehn	Tom Hoch	undervote
+Raymond Dehn	Betsy Hodges	Tom Hoch
+Tom Hoch	Jacob Frey	Aswar Rahman
+Betsy Hodges	Raymond Dehn	undervote
+Jacob Frey	undervote	undervote
+Jacob Frey	Tom Hoch	Aswar Rahman
+Jacob Frey	undervote	undervote
+Betsy Hodges	Gregg A. Iverson	Jacob Frey
+Betsy Hodges	Betsy Hodges	Betsy Hodges
+Jacob Frey	Tom Hoch	Betsy Hodges
+Raymond Dehn	Betsy Hodges	Nekima Levy-Pounds
+Tom Hoch	Jacob Frey	Betsy Hodges
+Tom Hoch	Betsy Hodges	Jacob Frey
+Jacob Frey	undervote	undervote
+Jacob Frey	undervote	undervote
+Captain Jack Sparrow	Jacob Frey	Tom Hoch
+Betsy Hodges	undervote	undervote
+Raymond Dehn	Nekima Levy-Pounds	Betsy Hodges
+Nekima Levy-Pounds	Raymond Dehn	Betsy Hodges
+Betsy Hodges	Raymond Dehn	Jacob Frey
+Betsy Hodges	Jacob Frey	Nekima Levy-Pounds
+Tom Hoch	undervote	undervote
+Nekima Levy-Pounds	Raymond Dehn	Betsy Hodges
+Al Flowers	Al Flowers	Raymond Dehn
+Tom Hoch	Raymond Dehn	Betsy Hodges
+Tom Hoch	undervote	undervote
+Tom Hoch	Jacob Frey	Aswar Rahman
+Raymond Dehn	Nekima Levy-Pounds	Betsy Hodges
+Tom Hoch	Jacob Frey	undervote
+Jacob Frey	undervote	undervote
+Nekima Levy-Pounds	Betsy Hodges	undervote
+Betsy Hodges	Jacob Frey	Tom Hoch
+Jacob Frey	Jacob Frey	Jacob Frey
+Tom Hoch	Jacob Frey	UWI
+Nekima Levy-Pounds	Betsy Hodges	undervote
+Betsy Hodges	Betsy Hodges	Betsy Hodges
+Jacob Frey	Tom Hoch	Raymond Dehn
+Charlie Gers	undervote	undervote
+undervote	undervote	undervote
+Raymond Dehn	Betsy Hodges	Jacob Frey
+Jacob Frey	Raymond Dehn	Nekima Levy-Pounds
+Raymond Dehn	Nekima Levy-Pounds	Jacob Frey
+Betsy Hodges	Tom Hoch	Raymond Dehn
+Tom Hoch	Raymond Dehn	Jacob Frey
+Troy Benjegerdes	undervote	undervote
+Jacob Frey	Tom Hoch	Al Flowers
+Jacob Frey	Tom Hoch	Betsy Hodges
+Tom Hoch	Jacob Frey	undervote
+Charlie Gers	L.A. Nik	Ronald Lischeid
+Jacob Frey	Raymond Dehn	Tom Hoch
+Tom Hoch	Jacob Frey	Captain Jack Sparrow
+Jacob Frey	L.A. Nik	Charlie Gers
+Jacob Frey	Tom Hoch	Al Flowers
+Jacob Frey	Tom Hoch	Betsy Hodges
+Jacob Frey	Tom Hoch	Raymond Dehn
+Tom Hoch	Betsy Hodges	Ronald Lischeid
+Betsy Hodges	Nekima Levy-Pounds	Raymond Dehn
+Tom Hoch	undervote	undervote
+

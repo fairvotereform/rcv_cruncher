@@ -1,0 +1,28 @@
+Statistical Report
+
+
+NOV. 4, 2003 -- Cambridge, MA
+BALLOT QUESTION #1
+CAMBRIDGE, MA
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+640.0 voters ranked 0 candidates -- 3.056497444959167%.
+20299.0 voters ranked 1 candidates -- 96.94350255504082%.
+0.0 voters ranked 2 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+20939.0 votes.
+12467.0 voters elected their #1 choice -- 59.53961507235302%.
+0.0 voters elected their #2 choice -- 0.0%.
+8472.0 voters did not elect any candidates -- 40.46038492764698%.

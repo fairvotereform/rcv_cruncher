@@ -1,0 +1,427 @@
+C:\PRMaster\1999\SCHOOL\Detail Report
+
+
+NOV. 2, 1999 -- Cambridge, MA
+SCHOOL COMMITTEE ELECTION ELECTION
+CAMBRIDGE, MA
+
+CANDIDATES:
+	BRAZO, MELODY L.
+	BURKE, SHAWN M.
+	FANTINI, ALFRED B.
+	GRASSI, JOSEPH G.
+	HARDING, DONALD
+	HARSHBARGER, MICHAEL
+	KENNEY, ELIZABETH TAD
+	PATTERSON, JAMISEAN F.
+	SEGAT, SUSANA M.
+	SIMMONS, DENISE
+	THOMPSON, ALVIN E.
+	TURKEL, ALICE L.
+	WALSER, NANCY
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+	WRITE-INS
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+17,961 valid ballots.
+Electing 6 candidates.
+Quota is 2566 votes.
+There were 307 invalid ballots.
+(18,268 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                 +2629           2629  ELECTED -- 1st count
+SIMMONS, DENISE                  +2424           2424  CONTINUING
+FANTINI, ALFRED B.               +2289           2289  CONTINUING
+GRASSI, JOSEPH G.                +2283           2283  CONTINUING
+SEGAT, SUSANA M.                 +2001           2001  CONTINUING
+WALSER, NANCY                    +1908           1908  CONTINUING
+HARSHBARGER, MICHAEL             +1568           1568  CONTINUING
+KENNEY, ELIZABETH TAD             +753            753  CONTINUING
+HARDING, DONALD                   +712            712  CONTINUING
+BRAZO, MELODY L.                  +475            475  CONTINUING
+THOMPSON, ALVIN E.                +389            389  CONTINUING
+PATTERSON, JAMISEAN F.            +284            284  CONTINUING
+BURKE, SHAWN M.                   +219            219  CONTINUING
+WRITE-INS                          +26             26  CONTINUING
+WRITE-INS                           +1              1  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+WRITE-INS                            0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +17961          17961  
+
+
+
+-- TURKEL, ALICE L. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- TURKEL, ALICE L. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                   -63           2566  ELECTED -- 1st count
+SIMMONS, DENISE                    +11           2435  CONTINUING
+FANTINI, ALFRED B.                  +2           2291  CONTINUING
+GRASSI, JOSEPH G.                   +4           2287  CONTINUING
+SEGAT, SUSANA M.                   +21           2022  CONTINUING
+WALSER, NANCY                      +12           1920  CONTINUING
+HARSHBARGER, MICHAEL                +2           1570  CONTINUING
+KENNEY, ELIZABETH TAD               +5            758  CONTINUING
+HARDING, DONALD                      0            712  CONTINUING
+BRAZO, MELODY L.                    +4            479  CONTINUING
+THOMPSON, ALVIN E.                  +2            391  CONTINUING
+PATTERSON, JAMISEAN F.               0            284  CONTINUING
+BURKE, SHAWN M.                      0            219  CONTINUING
+WRITE-INS                            0             26  DEFEATED -- 2nd count
+WRITE-INS                            0              1  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          17961  
+
+
+
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+-- WRITE-INS is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                     +2           2437  CONTINUING
+FANTINI, ALFRED B.                  +4           2295  CONTINUING
+GRASSI, JOSEPH G.                   +1           2288  CONTINUING
+SEGAT, SUSANA M.                    +1           2023  CONTINUING
+WALSER, NANCY                       +2           1922  CONTINUING
+HARSHBARGER, MICHAEL                +4           1574  CONTINUING
+KENNEY, ELIZABETH TAD               +1            759  CONTINUING
+HARDING, DONALD                     +1            713  CONTINUING
+BRAZO, MELODY L.                    +1            480  CONTINUING
+THOMPSON, ALVIN E.                  +3            394  CONTINUING
+PATTERSON, JAMISEAN F.              +1            285  CONTINUING
+BURKE, SHAWN M.                      0            219  DEFEATED -- 3rd count
+WRITE-INS                          -26              0  DEFEATED -- 2nd count
+WRITE-INS                           -1              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                     +6              6  
+TOTALS:                              0          17961  
+
+
+
+-- BURKE, SHAWN M. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 4 -- BURKE, SHAWN M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                     +6           2443  CONTINUING
+FANTINI, ALFRED B.                 +36           2331  CONTINUING
+GRASSI, JOSEPH G.                  +40           2328  CONTINUING
+SEGAT, SUSANA M.                    +8           2031  CONTINUING
+WALSER, NANCY                       +8           1930  CONTINUING
+HARSHBARGER, MICHAEL               +25           1599  CONTINUING
+KENNEY, ELIZABETH TAD               +7            766  CONTINUING
+HARDING, DONALD                    +16            729  CONTINUING
+BRAZO, MELODY L.                   +10            490  CONTINUING
+THOMPSON, ALVIN E.                 +11            405  CONTINUING
+PATTERSON, JAMISEAN F.              +9            294  DEFEATED -- 4th count
+BURKE, SHAWN M.                   -219              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +43             49  
+TOTALS:                              0          17961  
+
+
+
+-- PATTERSON, JAMISEAN F. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- PATTERSON, JAMISEAN F. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                    +23           2466  CONTINUING
+GRASSI, JOSEPH G.                  +41           2369  CONTINUING
+FANTINI, ALFRED B.                 +37           2368  CONTINUING
+SEGAT, SUSANA M.                   +50           2081  CONTINUING
+WALSER, NANCY                      +16           1946  CONTINUING
+HARSHBARGER, MICHAEL               +33           1632  CONTINUING
+KENNEY, ELIZABETH TAD              +21            787  CONTINUING
+HARDING, DONALD                    +16            745  CONTINUING
+BRAZO, MELODY L.                    +4            494  CONTINUING
+THOMPSON, ALVIN E.                  +9            414  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.            -294              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +44             93  
+TOTALS:                              0          17961  
+
+
+
+-- THOMPSON, ALVIN E. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- THOMPSON, ALVIN E. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                    +90           2556  CONTINUING
+FANTINI, ALFRED B.                 +48           2416  CONTINUING
+GRASSI, JOSEPH G.                  +40           2409  CONTINUING
+SEGAT, SUSANA M.                   +28           2109  CONTINUING
+WALSER, NANCY                      +32           1978  CONTINUING
+HARSHBARGER, MICHAEL               +44           1676  CONTINUING
+KENNEY, ELIZABETH TAD               +6            793  CONTINUING
+HARDING, DONALD                    +27            772  CONTINUING
+BRAZO, MELODY L.                    +8            502  DEFEATED -- 6th count
+THOMPSON, ALVIN E.                -414              0  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.               0              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +91            184  
+TOTALS:                              0          17961  
+
+
+
+-- BRAZO, MELODY L. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- BRAZO, MELODY L. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                    +10           2566  ELECTED -- 7th count
+FANTINI, ALFRED B.                 +20           2436  CONTINUING
+GRASSI, JOSEPH G.                  +13           2422  CONTINUING
+SEGAT, SUSANA M.                  +135           2244  CONTINUING
+WALSER, NANCY                     +104           2082  CONTINUING
+HARSHBARGER, MICHAEL               +32           1708  CONTINUING
+KENNEY, ELIZABETH TAD             +107            900  CONTINUING
+HARDING, DONALD                    +17            789  DEFEATED -- 7th count
+BRAZO, MELODY L.                  -502              0  DEFEATED -- 6th count
+THOMPSON, ALVIN E.                   0              0  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.               0              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +64            248  
+TOTALS:                              0          17961  
+
+
+
+-- SIMMONS, DENISE has been ELECTED because s/he has met the quota.
+-- HARDING, DONALD is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- HARDING, DONALD has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                      0           2566  ELECTED -- 7th count
+GRASSI, JOSEPH G.                 +144           2566  ELECTED -- 8th count
+FANTINI, ALFRED B.                +102           2538  CONTINUING
+SEGAT, SUSANA M.                   +75           2319  CONTINUING
+WALSER, NANCY                      +73           2155  CONTINUING
+HARSHBARGER, MICHAEL              +121           1829  CONTINUING
+KENNEY, ELIZABETH TAD              +36            936  DEFEATED -- 8th count
+HARDING, DONALD                   -789              0  DEFEATED -- 7th count
+BRAZO, MELODY L.                     0              0  DEFEATED -- 6th count
+THOMPSON, ALVIN E.                   0              0  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.               0              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +238            486  
+TOTALS:                              0          17961  
+
+
+
+-- GRASSI, JOSEPH G. has been ELECTED because s/he has met the quota.
+-- KENNEY, ELIZABETH TAD is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 9 -- KENNEY, ELIZABETH TAD has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                      0           2566  ELECTED -- 7th count
+GRASSI, JOSEPH G.                    0           2566  ELECTED -- 8th count
+FANTINI, ALFRED B.                 +28           2566  ELECTED -- 9th count
+SEGAT, SUSANA M.                  +247           2566  ELECTED -- 9th count
+WALSER, NANCY                     +342           2497  CONTINUING
+HARSHBARGER, MICHAEL               +84           1913  DEFEATED -- 9th count
+KENNEY, ELIZABETH TAD             -936              0  DEFEATED -- 8th count
+HARDING, DONALD                      0              0  DEFEATED -- 7th count
+BRAZO, MELODY L.                     0              0  DEFEATED -- 6th count
+THOMPSON, ALVIN E.                   0              0  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.               0              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +235            721  
+TOTALS:                              0          17961  
+
+
+
+-- FANTINI, ALFRED B. has been ELECTED because s/he has met the quota.
+-- SEGAT, SUSANA M. has been ELECTED because s/he has met the quota.
+-- HARSHBARGER, MICHAEL is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 10 -- HARSHBARGER, MICHAEL has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+TURKEL, ALICE L.                     0           2566  ELECTED -- 1st count
+SIMMONS, DENISE                      0           2566  ELECTED -- 7th count
+GRASSI, JOSEPH G.                    0           2566  ELECTED -- 8th count
+FANTINI, ALFRED B.                   0           2566  ELECTED -- 9th count
+SEGAT, SUSANA M.                     0           2566  ELECTED -- 9th count
+WALSER, NANCY                      +69           2566  ELECTED -- 10th count
+HARSHBARGER, MICHAEL             -1913              0  DEFEATED -- 9th count
+KENNEY, ELIZABETH TAD                0              0  DEFEATED -- 8th count
+HARDING, DONALD                      0              0  DEFEATED -- 7th count
+BRAZO, MELODY L.                     0              0  DEFEATED -- 6th count
+THOMPSON, ALVIN E.                   0              0  DEFEATED -- 5th count
+PATTERSON, JAMISEAN F.               0              0  DEFEATED -- 4th count
+BURKE, SHAWN M.                      0              0  DEFEATED -- 3rd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+WRITE-INS                            0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                  +1844           2565  
+TOTALS:                              0          17961  
+
+
+
+-- WALSER, NANCY has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 3, 1999 7:52 PM
+PRMaster Governmental Edition -- Version 2.02
+(c) 1993-1999 Jerel Software -- All Rights Reserved

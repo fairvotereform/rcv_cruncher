@@ -1,0 +1,12 @@
+Title: D02 : Member, Board of Supervisors Dist. 2
+SubTitle: San Francisco, CA, 2006, November
+Candidate: VP : Vilma Guinto Peoro
+Candidate: MA : Michela Alioto-pier
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: D02-Ballots.txt

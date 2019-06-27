@@ -1,0 +1,55 @@
+Statistical Report
+
+
+November 15, 2013 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Final Election Results
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+1104.0 voters ranked 0 candidates -- 6.230248306997742%.
+3199.0 voters ranked 1 candidates -- 18.053047404063204%.
+2443.0 voters ranked 2 candidates -- 13.786681715575622%.
+3393.0 voters ranked 3 candidates -- 19.14785553047404%.
+2623.0 voters ranked 4 candidates -- 14.802483069977427%.
+1566.0 voters ranked 5 candidates -- 8.837471783295712%.
+1346.0 voters ranked 6 candidates -- 7.595936794582394%.
+380.0 voters ranked 7 candidates -- 2.144469525959368%.
+355.0 voters ranked 8 candidates -- 2.0033860045146725%.
+1308.0 voters ranked 9 candidates -- 7.381489841986457%.
+2.0 voters ranked 10 candidates -- 0.01128668171557562%.
+0.0 voters ranked 11 candidates -- 0.0%.
+1.0 voters ranked 12 candidates -- 0.00564334085778781%.
+0.0 voters ranked 13 candidates -- 0.0%.
+0.0 voters ranked 14 candidates -- 0.0%.
+0.0 voters ranked 15 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+17720.0 votes.
+14335.0 voters elected their #1 choice -- 80.89729119638827%.
+1621.0 voters elected their #2 choice -- 9.14785553047404%.
+206.0 voters elected their #3 choice -- 1.162528216704289%.
+47.0 voters elected their #4 choice -- 0.2652370203160271%.
+1.0 voters elected their #5 choice -- 0.00564334085778781%.
+0.0 voters elected their #6 choice -- 0.0%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+1510.0 voters did not elect any candidates -- 8.521444695259593%.

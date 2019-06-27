@@ -1,0 +1,695 @@
+C:\Cambridge\Election2011\Council\Tuesday\Council Detail Report
+
+
+November 8, 2011 -- Cambridge, MA
+City Council Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+CANDIDATES:
+	Cheung, Leland
+	Davis, Henrietta
+	Decker, Marjorie C.
+	Kelley, Craig A.
+	Maher, David P.
+	Marquardt, Charles J.
+	Mello, Gary W.
+	Moree, Gregg J.
+	Nelson, Matthew P.
+	Pascual, Jamake
+	Reeves, Kenneth E.
+	Seidel, Sam
+	Simmons, E. Denise
+	Stohlman, Jr., Thomas J.
+	Toomey, Jr., Timothy J.
+	vanBeuzekom, Minka Y.
+	Ward, Larry W.
+	Williamson, James M.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+	Write-In 7
+	Write-In 8
+	Write-In 9
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+15,393 valid ballots.
+Electing 9 candidates.
+Quota is 1540 votes.
+There were no invalid ballots.
+(15,393 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                   +1974           1974  ELECTED -- 1st count
+Toomey, Jr., Timothy J.          +1654           1654  ELECTED -- 1st count
+Maher, David P.                  +1636           1636  ELECTED -- 1st count
+Davis, Henrietta                 +1407           1407  CONTINUING
+Simmons, E. Denise               +1224           1224  CONTINUING
+Decker, Marjorie C.              +1092           1092  CONTINUING
+Kelley, Craig A.                 +1075           1075  CONTINUING
+vanBeuzekom, Minka Y.            +1011           1011  CONTINUING
+Reeves, Kenneth E.                +979            979  CONTINUING
+Ward, Larry W.                    +816            816  CONTINUING
+Seidel, Sam                       +768            768  CONTINUING
+Nelson, Matthew P.                +523            523  CONTINUING
+Marquardt, Charles J.             +488            488  CONTINUING
+Stohlman, Jr., Thomas .           +336            336  CONTINUING
+Williamson, James M.              +171            171  CONTINUING
+Mello, Gary W.                    +128            128  CONTINUING
+Pascual, Jamake                    +57             57  CONTINUING
+Moree, Gregg J.                    +54             54  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +15393          15393  
+
+
+
+-- Cheung, Leland has been ELECTED because s/he has met the quota.
+-- Toomey, Jr., Timothy J. has been ELECTED because s/he has met the quota.
+-- Maher, David P. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- Cheung, Leland has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                    -434           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1654  ELECTED -- 1st count
+Maher, David P.                      0           1636  ELECTED -- 1st count
+Davis, Henrietta                   +91           1498  CONTINUING
+Simmons, E. Denise                 +41           1265  CONTINUING
+Decker, Marjorie C.                +48           1140  CONTINUING
+Kelley, Craig A.                   +47           1122  CONTINUING
+vanBeuzekom, Minka Y.              +56           1067  CONTINUING
+Reeves, Kenneth E.                 +35           1014  CONTINUING
+Ward, Larry W.                     +13            829  CONTINUING
+Seidel, Sam                        +40            808  CONTINUING
+Nelson, Matthew P.                 +11            534  CONTINUING
+Marquardt, Charles J.              +21            509  CONTINUING
+Stohlman, Jr., Thomas .            +20            356  CONTINUING
+Williamson, James M.                +2            173  CONTINUING
+Mello, Gary W.                      +6            134  CONTINUING
+Pascual, Jamake                     +1             58  CONTINUING
+Moree, Gregg J.                     +2             56  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15393  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 3 -- Toomey, Jr., Timothy J. has been ELECTED -- transferring surplus
+           votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.           -114           1540  ELECTED -- 1st count
+Maher, David P.                      0           1636  ELECTED -- 1st count
+Davis, Henrietta                    +7           1505  CONTINUING
+Simmons, E. Denise                 +18           1283  CONTINUING
+Decker, Marjorie C.                +18           1158  CONTINUING
+Kelley, Craig A.                   +12           1134  CONTINUING
+vanBeuzekom, Minka Y.               +6           1073  CONTINUING
+Reeves, Kenneth E.                 +18           1032  CONTINUING
+Ward, Larry W.                     +11            840  CONTINUING
+Seidel, Sam                         +5            813  CONTINUING
+Nelson, Matthew P.                  +5            539  CONTINUING
+Marquardt, Charles J.               +6            515  CONTINUING
+Stohlman, Jr., Thomas .             +2            358  CONTINUING
+Williamson, James M.                +2            175  CONTINUING
+Mello, Gary W.                      +1            135  CONTINUING
+Moree, Gregg J.                     +3             59  CONTINUING
+Pascual, Jamake                      0             58  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15393  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 4 -- Maher, David P. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                    -96           1540  ELECTED -- 1st count
+Davis, Henrietta                   +11           1516  CONTINUING
+Simmons, E. Denise                 +10           1293  CONTINUING
+Decker, Marjorie C.                +17           1175  CONTINUING
+Kelley, Craig A.                   +11           1145  CONTINUING
+vanBeuzekom, Minka Y.               +4           1077  CONTINUING
+Reeves, Kenneth E.                 +13           1045  CONTINUING
+Ward, Larry W.                      +9            849  CONTINUING
+Seidel, Sam                         +5            818  CONTINUING
+Nelson, Matthew P.                  +3            542  CONTINUING
+Marquardt, Charles J.               +4            519  CONTINUING
+Stohlman, Jr., Thomas .             +3            361  CONTINUING
+Williamson, James M.                +2            177  CONTINUING
+Mello, Gary W.                      +1            136  CONTINUING
+Moree, Gregg J.                     +2             61  CONTINUING
+Pascual, Jamake                     +1             59  CONTINUING
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15393  
+
+
+
+-- Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1516  CONTINUING
+Simmons, E. Denise                   0           1293  CONTINUING
+Decker, Marjorie C.                  0           1175  CONTINUING
+Kelley, Craig A.                     0           1145  CONTINUING
+vanBeuzekom, Minka Y.                0           1077  CONTINUING
+Reeves, Kenneth E.                   0           1045  CONTINUING
+Ward, Larry W.                       0            849  CONTINUING
+Seidel, Sam                          0            818  CONTINUING
+Nelson, Matthew P.                   0            542  CONTINUING
+Marquardt, Charles J.                0            519  CONTINUING
+Stohlman, Jr., Thomas .              0            361  CONTINUING
+Williamson, James M.                 0            177  CONTINUING
+Mello, Gary W.                       0            136  CONTINUING
+Moree, Gregg J.                      0             61  CONTINUING
+Pascual, Jamake                      0             59  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15393  
+
+
+
+-- Pascual, Jamake is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- Pascual, Jamake has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                    +2           1518  CONTINUING
+Simmons, E. Denise                  +3           1296  CONTINUING
+Decker, Marjorie C.                 +1           1176  CONTINUING
+Kelley, Craig A.                    +6           1151  CONTINUING
+vanBeuzekom, Minka Y.               +2           1079  CONTINUING
+Reeves, Kenneth E.                  +2           1047  CONTINUING
+Ward, Larry W.                      +5            854  CONTINUING
+Seidel, Sam                         +1            819  CONTINUING
+Nelson, Matthew P.                  +2            544  CONTINUING
+Marquardt, Charles J.               +2            521  CONTINUING
+Stohlman, Jr., Thomas .             +9            370  CONTINUING
+Williamson, James M.                +6            183  CONTINUING
+Mello, Gary W.                      +6            142  CONTINUING
+Moree, Gregg J.                     +1             62  DEFEATED -- 6th count
+Pascual, Jamake                    -59              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +11             11  
+TOTALS:                              0          15393  
+
+
+
+-- Moree, Gregg J. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- Moree, Gregg J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                    +3           1521  CONTINUING
+Simmons, E. Denise                  +5           1301  CONTINUING
+Decker, Marjorie C.                 +2           1178  CONTINUING
+Kelley, Craig A.                    +3           1154  CONTINUING
+vanBeuzekom, Minka Y.               +5           1084  CONTINUING
+Reeves, Kenneth E.                  +4           1051  CONTINUING
+Ward, Larry W.                      +1            855  CONTINUING
+Seidel, Sam                         +3            822  CONTINUING
+Nelson, Matthew P.                  +4            548  CONTINUING
+Marquardt, Charles J.               +3            524  CONTINUING
+Stohlman, Jr., Thomas .             +3            373  CONTINUING
+Williamson, James M.                +2            185  CONTINUING
+Mello, Gary W.                      +7            149  DEFEATED -- 7th count
+Moree, Gregg J.                    -62              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +17             28  
+TOTALS:                              0          15393  
+
+
+
+-- Mello, Gary W. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- Mello, Gary W. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                    +7           1528  CONTINUING
+Simmons, E. Denise                  +8           1309  CONTINUING
+Decker, Marjorie C.                 +9           1187  CONTINUING
+Kelley, Craig A.                    +8           1162  CONTINUING
+vanBeuzekom, Minka Y.              +15           1099  CONTINUING
+Reeves, Kenneth E.                  +9           1060  CONTINUING
+Ward, Larry W.                     +13            868  CONTINUING
+Seidel, Sam                         +3            825  CONTINUING
+Nelson, Matthew P.                  +9            557  CONTINUING
+Marquardt, Charles J.              +15            539  CONTINUING
+Stohlman, Jr., Thomas .            +12            385  CONTINUING
+Williamson, James M.                +7            192  DEFEATED -- 8th count
+Mello, Gary W.                    -149              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +34             62  
+TOTALS:                              0          15393  
+
+
+
+-- Williamson, James M. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 9 -- Williamson, James M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                   +12           1540  ELECTED -- 9th count
+Simmons, E. Denise                 +17           1326  CONTINUING
+Decker, Marjorie C.                +13           1200  CONTINUING
+Kelley, Craig A.                   +10           1172  CONTINUING
+vanBeuzekom, Minka Y.              +30           1129  CONTINUING
+Reeves, Kenneth E.                  +8           1068  CONTINUING
+Ward, Larry W.                     +24            892  CONTINUING
+Seidel, Sam                        +14            839  CONTINUING
+Nelson, Matthew P.                 +13            570  CONTINUING
+Marquardt, Charles J.               +7            546  CONTINUING
+Stohlman, Jr., Thomas .            +19            404  DEFEATED -- 9th count
+Williamson, James M.              -192              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +25             87  
+TOTALS:                              0          15393  
+
+
+
+-- Davis, Henrietta has been ELECTED because s/he has met the quota.
+-- Stohlman, Jr., Thomas J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 10 -- Stohlman, Jr., Thomas J. has been DEFEATED -- transferring all
+            votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1540  ELECTED -- 9th count
+Simmons, E. Denise                 +22           1348  CONTINUING
+Decker, Marjorie C.                +39           1239  CONTINUING
+Kelley, Craig A.                   +52           1224  CONTINUING
+vanBeuzekom, Minka Y.              +93           1222  CONTINUING
+Reeves, Kenneth E.                 +16           1084  CONTINUING
+Ward, Larry W.                     +25            917  CONTINUING
+Seidel, Sam                        +53            892  CONTINUING
+Nelson, Matthew P.                 +19            589  CONTINUING
+Marquardt, Charles J.              +24            570  DEFEATED -- 10th count
+Stohlman, Jr., Thomas .           -404              0  DEFEATED -- 9th count
+Williamson, James M.                 0              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +61            148  
+TOTALS:                              0          15393  
+
+
+
+-- Marquardt, Charles J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 11 -- Marquardt, Charles J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1540  ELECTED -- 9th count
+Simmons, E. Denise                 +23           1371  CONTINUING
+Kelley, Craig A.                  +138           1362  CONTINUING
+vanBeuzekom, Minka Y.              +62           1284  CONTINUING
+Decker, Marjorie C.                +33           1272  CONTINUING
+Reeves, Kenneth E.                 +21           1105  CONTINUING
+Ward, Larry W.                     +52            969  CONTINUING
+Seidel, Sam                        +34            926  CONTINUING
+Nelson, Matthew P.                 +66            655  DEFEATED -- 11th count
+Marquardt, Charles J.             -570              0  DEFEATED -- 10th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 9th count
+Williamson, James M.                 0              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +141            289  
+TOTALS:                              0          15393  
+
+
+
+-- Nelson, Matthew P. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 12 -- Nelson, Matthew P. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1540  ELECTED -- 9th count
+Simmons, E. Denise                 +67           1438  CONTINUING
+Kelley, Craig A.                   +41           1403  CONTINUING
+vanBeuzekom, Minka Y.              +93           1377  CONTINUING
+Decker, Marjorie C.                +72           1344  CONTINUING
+Reeves, Kenneth E.                 +53           1158  CONTINUING
+Ward, Larry W.                    +119           1088  CONTINUING
+Seidel, Sam                        +84           1010  DEFEATED -- 12th count
+Nelson, Matthew P.                -655              0  DEFEATED -- 11th count
+Marquardt, Charles J.                0              0  DEFEATED -- 10th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 9th count
+Williamson, James M.                 0              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +126            415  
+TOTALS:                              0          15393  
+
+
+
+-- Seidel, Sam is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+COUNT 13 -- Seidel, Sam has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1540  ELECTED -- 9th count
+Kelley, Craig A.                  +137           1540  ELECTED -- 13th count
+Simmons, E. Denise                +102           1540  ELECTED -- 13th count
+vanBeuzekom, Minka Y.             +160           1537  CONTINUING
+Decker, Marjorie C.               +184           1528  CONTINUING
+Reeves, Kenneth E.                +107           1265  CONTINUING
+Ward, Larry W.                     +98           1186  DEFEATED -- 13th count
+Seidel, Sam                      -1010              0  DEFEATED -- 12th count
+Nelson, Matthew P.                   0              0  DEFEATED -- 11th count
+Marquardt, Charles J.                0              0  DEFEATED -- 10th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 9th count
+Williamson, James M.                 0              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +222            637  
+TOTALS:                              0          15393  
+
+
+
+-- Simmons, E. Denise has been ELECTED because s/he has met the quota.
+-- Kelley, Craig A. has been ELECTED because s/he has met the quota.
+-- Ward, Larry W. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 14 -- Ward, Larry W. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Cheung, Leland                       0           1540  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1540  ELECTED -- 1st count
+Maher, David P.                      0           1540  ELECTED -- 1st count
+Davis, Henrietta                     0           1540  ELECTED -- 9th count
+Kelley, Craig A.                     0           1540  ELECTED -- 13th count
+Simmons, E. Denise                   0           1540  ELECTED -- 13th count
+Decker, Marjorie C.                +12           1540  ELECTED -- 14th count
+vanBeuzekom, Minka Y.               +3           1540  ELECTED -- 14th count
+Reeves, Kenneth E.                +275           1540  ELECTED -- 14th count
+Ward, Larry W.                   -1186              0  DEFEATED -- 13th count
+Seidel, Sam                          0              0  DEFEATED -- 12th count
+Nelson, Matthew P.                   0              0  DEFEATED -- 11th count
+Marquardt, Charles J.                0              0  DEFEATED -- 10th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 9th count
+Williamson, James M.                 0              0  DEFEATED -- 8th count
+Mello, Gary W.                       0              0  DEFEATED -- 7th count
+Moree, Gregg J.                      0              0  DEFEATED -- 6th count
+Pascual, Jamake                      0              0  DEFEATED -- 5th count
+Write-In 1                           0              0  DEFEATED -- 4th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +896           1533  
+TOTALS:                              0          15393  
+
+
+
+-- vanBeuzekom, Minka Y. has been ELECTED because s/he has met the quota.
+-- Decker, Marjorie C. has been ELECTED because s/he has met the quota.
+-- Reeves, Kenneth E. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Tuesday, November 8, 2011 10:34 PM
+ChoicePlus Pro -- Version 2.3.4
+(c) 1993-2009 Voting Solutions -- All Rights Reserved

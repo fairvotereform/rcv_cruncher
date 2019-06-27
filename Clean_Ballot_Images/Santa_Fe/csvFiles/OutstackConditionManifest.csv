@@ -1,0 +1,13 @@
+Description,Id
+Ambiguous,0
+Writein,1
+BlankBallot,2
+Overvote,5
+Undervote,4
+BlankContest,6
+OvervotedRanking,9
+InconsistentRcvOrdering,10
+SkippedRanking,11
+DuplicatedRcvCandidate,12
+UnvotedRcvContest,13
+UnusedRanking,14

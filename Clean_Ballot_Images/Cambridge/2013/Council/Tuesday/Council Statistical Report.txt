@@ -1,0 +1,93 @@
+Statistical Report
+
+
+November 5, 2013 -- Cambridge, MA
+City Council Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+0.0 voters ranked 0 candidates -- 0.0%.
+1515.0 voters ranked 1 candidates -- 8.845165810368986%.
+1344.0 voters ranked 2 candidates -- 7.846800560485755%.
+2897.0 voters ranked 3 candidates -- 16.913825315273236%.
+2099.0 voters ranked 4 candidates -- 12.25478748248482%.
+1919.0 voters ranked 5 candidates -- 11.203876693134049%.
+1588.0 voters ranked 6 candidates -- 9.271368519383467%.
+1316.0 voters ranked 7 candidates -- 7.683325548808968%.
+945.0 voters ranked 8 candidates -- 5.517281644091546%.
+1531.0 voters ranked 9 candidates -- 8.938580102755722%.
+560.0 voters ranked 10 candidates -- 3.269500233535731%.
+251.0 voters ranked 11 candidates -- 1.465436711816908%.
+204.0 voters ranked 12 candidates -- 1.1910322279308736%.
+125.0 voters ranked 13 candidates -- 0.7297991592713685%.
+78.0 voters ranked 14 candidates -- 0.45539467538533396%.
+55.0 voters ranked 15 candidates -- 0.32111163007940213%.
+43.0 voters ranked 16 candidates -- 0.25105091078935077%.
+41.0 voters ranked 17 candidates -- 0.23937412424100885%.
+32.0 voters ranked 18 candidates -- 0.18682858477347034%.
+23.0 voters ranked 19 candidates -- 0.1342830453059318%.
+20.0 voters ranked 20 candidates -- 0.11676786548341896%.
+13.0 voters ranked 21 candidates -- 0.07589911256422233%.
+21.0 voters ranked 22 candidates -- 0.12260625875758992%.
+28.0 voters ranked 23 candidates -- 0.16347501167678655%.
+57.0 voters ranked 24 candidates -- 0.33278841662774405%.
+423.0 voters ranked 25 candidates -- 2.469640354974311%.
+0.0 voters ranked 26 candidates -- 0.0%.
+0.0 voters ranked 27 candidates -- 0.0%.
+0.0 voters ranked 28 candidates -- 0.0%.
+0.0 voters ranked 29 candidates -- 0.0%.
+0.0 voters ranked 30 candidates -- 0.0%.
+0.0 voters ranked 31 candidates -- 0.0%.
+0.0 voters ranked 32 candidates -- 0.0%.
+0.0 voters ranked 33 candidates -- 0.0%.
+0.0 voters ranked 34 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+17128.0 votes.
+11808.0 voters elected their #1 choice -- 68.93974778141056%.
+3303.0 voters elected their #2 choice -- 19.28421298458664%.
+895.0 voters elected their #3 choice -- 5.225361980382998%.
+255.0 voters elected their #4 choice -- 1.4887902849135917%.
+72.0 voters elected their #5 choice -- 0.42036431574030825%.
+25.0 voters elected their #6 choice -- 0.1459598318542737%.
+7.0 voters elected their #7 choice -- 0.04086875291919664%.
+4.0 voters elected their #8 choice -- 0.023353573096683792%.
+3.0 voters elected their #9 choice -- 0.017515179822512845%.
+1.0 voters elected their #10 choice -- 0.005838393274170948%.
+0.0 voters elected their #11 choice -- 0.0%.
+1.0 voters elected their #12 choice -- 0.005838393274170948%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+0.0 voters elected their #16 choice -- 0.0%.
+0.0 voters elected their #17 choice -- 0.0%.
+0.0 voters elected their #18 choice -- 0.0%.
+0.0 voters elected their #19 choice -- 0.0%.
+0.0 voters elected their #20 choice -- 0.0%.
+0.0 voters elected their #21 choice -- 0.0%.
+0.0 voters elected their #22 choice -- 0.0%.
+0.0 voters elected their #23 choice -- 0.0%.
+0.0 voters elected their #24 choice -- 0.0%.
+0.0 voters elected their #25 choice -- 0.0%.
+0.0 voters elected their #26 choice -- 0.0%.
+0.0 voters elected their #27 choice -- 0.0%.
+0.0 voters elected their #28 choice -- 0.0%.
+0.0 voters elected their #29 choice -- 0.0%.
+0.0 voters elected their #30 choice -- 0.0%.
+0.0 voters elected their #31 choice -- 0.0%.
+0.0 voters elected their #32 choice -- 0.0%.
+0.0 voters elected their #33 choice -- 0.0%.
+0.0 voters elected their #34 choice -- 0.0%.
+754.0 voters did not elect any candidates -- 4.4021485287248945%.

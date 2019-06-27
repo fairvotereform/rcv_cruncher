@@ -1,0 +1,55 @@
+Statistical Report
+
+
+November 5, 2013 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+0.0 voters ranked 0 candidates -- 0.0%.
+3093.0 voters ranked 1 candidates -- 19.283042394014963%.
+2372.0 voters ranked 2 candidates -- 14.788029925187033%.
+3294.0 voters ranked 3 candidates -- 20.536159600997507%.
+2536.0 voters ranked 4 candidates -- 15.810473815461346%.
+1512.0 voters ranked 5 candidates -- 9.42643391521197%.
+1300.0 voters ranked 6 candidates -- 8.104738154613466%.
+361.0 voters ranked 7 candidates -- 2.2506234413965087%.
+321.0 voters ranked 8 candidates -- 2.0012468827930174%.
+1251.0 voters ranked 9 candidates -- 7.7992518703241895%.
+0.0 voters ranked 10 candidates -- 0.0%.
+0.0 voters ranked 11 candidates -- 0.0%.
+0.0 voters ranked 12 candidates -- 0.0%.
+0.0 voters ranked 13 candidates -- 0.0%.
+0.0 voters ranked 14 candidates -- 0.0%.
+0.0 voters ranked 15 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+16040.0 votes.
+13900.0 voters elected their #1 choice -- 86.65835411471322%.
+1565.0 voters elected their #2 choice -- 9.756857855361597%.
+197.0 voters elected their #3 choice -- 1.2281795511221945%.
+45.0 voters elected their #4 choice -- 0.2805486284289277%.
+0.0 voters elected their #5 choice -- 0.0%.
+0.0 voters elected their #6 choice -- 0.0%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+333.0 voters did not elect any candidates -- 2.076059850374065%.

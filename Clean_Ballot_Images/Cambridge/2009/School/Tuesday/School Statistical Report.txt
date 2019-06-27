@@ -1,0 +1,55 @@
+Statistical Report
+
+
+November 3, 2009 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+0.0 voters ranked 0 candidates -- 0.0%.
+2260.0 voters ranked 1 candidates -- 15.123126338329765%.
+2328.0 voters ranked 2 candidates -- 15.578158458244113%.
+3381.0 voters ranked 3 candidates -- 22.62446466809422%.
+2154.0 voters ranked 4 candidates -- 14.413811563169165%.
+1742.0 voters ranked 5 candidates -- 11.656852248394005%.
+1224.0 voters ranked 6 candidates -- 8.190578158458244%.
+401.0 voters ranked 7 candidates -- 2.683351177730193%.
+352.0 voters ranked 8 candidates -- 2.355460385438972%.
+1102.0 voters ranked 9 candidates -- 7.374197002141328%.
+0.0 voters ranked 10 candidates -- 0.0%.
+0.0 voters ranked 11 candidates -- 0.0%.
+0.0 voters ranked 12 candidates -- 0.0%.
+0.0 voters ranked 13 candidates -- 0.0%.
+0.0 voters ranked 14 candidates -- 0.0%.
+0.0 voters ranked 15 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+14944.0 votes.
+11314.0 voters elected their #1 choice -- 75.70931477516059%.
+2673.0 voters elected their #2 choice -- 17.886777301927197%.
+204.0 voters elected their #3 choice -- 1.3650963597430408%.
+8.0 voters elected their #4 choice -- 0.05353319057815846%.
+0.0 voters elected their #5 choice -- 0.0%.
+0.0 voters elected their #6 choice -- 0.0%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+745.0 voters did not elect any candidates -- 4.985278372591006%.

@@ -3,9 +3,22 @@ from glob import glob
 from collections import UserList
 import os
 import csv
+
 UNDERVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
+
+def sf_precinct_map(path):
+    master_lookup_path = path.replace('ballot_image', 'master_lookup')
+    precinct_map = {}
+    with open(master_lookup_path) as f:
+        for i in f:
+            if i.startswith('Precinct'):
+                kv = i.split()[1]
+                precinct_map[kv[:7]] = kv[7:]
+    return precinct_map
+
+#TODO:  add ability to attach metadata to list
 
 def burlington(path):
     ballots = []
@@ -16,7 +29,6 @@ def burlington(path):
     for b in ballots:
         b.extend([UNDERVOTE]*(maxlen-len(b)))
     return ballots
-
 
 #TODO: add functionality to allow resolvalbe overvotes
 #       i.e. overvotes that are tabulated after all but
@@ -67,15 +79,17 @@ def sf(contest_id, path):
     return ballots[1:]
 
 def sfnoid(path):
+    precinct_map = sf_precinct_map(path)
     ballots = []
     with open(path, "r") as f:
-        b = []
+        b = UserList([])
         voter_id = None
         for line in f:
             if line[7:16] != voter_id:
                 ballots.append(b)
                 voter_id = line[7:16]
-                b = []
+                b = UserList([])
+            precinct_id = line[26:33]
             candidate_id = int(line[36:43])
             undervote = UNDERVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
@@ -92,7 +106,8 @@ def sfnoid(path):
             b.append(candidate_id or undervote or overvote)
             if b[-1] == 0 or len(b) != int(line[33:36]):
                 raise Exception("Invalid Choice or Rank")
-        if b != []:
+            b.precinct = precinct_map[precinct_id]
+        if b:
             ballots.append(b)
     return ballots[1:]
 

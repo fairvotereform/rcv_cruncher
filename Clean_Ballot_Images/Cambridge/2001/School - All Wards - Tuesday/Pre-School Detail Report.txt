@@ -1,0 +1,326 @@
+D:\2001 Election\school\prelim\Pre-School Detail Report
+
+
+NOV. 6, 2001 -- Cambridge, MA
+SCHOOL COMMITTEE ELECTION ELECTION
+CAMBRIDGE, MA
+PRELIMINARY DATA
+
+CANDIDATES:
+	Baker, Fred
+	Delaney, Vincent J.
+	Erlien, Marla L.
+	Fantini, Alfred B.
+	Grassi, Joseph G.
+	Harding, Richard, Jr.
+	Price, Alan C.
+	Segat, Susana M.
+	Turkel, Alice L.
+	Walser, Nancy
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+16,102 valid ballots.
+Electing 6 candidates.
+Quota is 2301 votes.
+There were 307 invalid ballots.
+(16,409 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                 +2816           2816  ELECTED -- 1st count
+Fantini, Alfred B.               +2789           2789  ELECTED -- 1st count
+Grassi, Joseph G.                +2063           2063  CONTINUING
+Price, Alan C.                   +1843           1843  CONTINUING
+Walser, Nancy                    +1653           1653  CONTINUING
+Harding, Richard, Jr.            +1651           1651  CONTINUING
+Segat, Susana M.                 +1566           1566  CONTINUING
+Erlien, Marla L.                 +1180           1180  CONTINUING
+Baker, Fred                       +307            307  CONTINUING
+Delaney, Vincent J.               +234            234  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +16102          16102  
+
+
+
+-- Turkel, Alice L. has been ELECTED because s/he has met the quota.
+-- Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- Turkel, Alice L. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                  -515           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2789  ELECTED -- 1st count
+Grassi, Joseph G.                  +37           2100  CONTINUING
+Price, Alan C.                     +54           1897  CONTINUING
+Walser, Nancy                     +184           1837  CONTINUING
+Segat, Susana M.                  +153           1719  CONTINUING
+Harding, Richard, Jr.              +39           1690  CONTINUING
+Erlien, Marla L.                   +32           1212  CONTINUING
+Baker, Fred                         +5            312  CONTINUING
+Delaney, Vincent J.                +11            245  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16102  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 3 -- Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                -488           2301  ELECTED -- 1st count
+Grassi, Joseph G.                 +201           2301  ELECTED -- 3rd count
+Price, Alan C.                     +11           1908  CONTINUING
+Walser, Nancy                      +48           1885  CONTINUING
+Segat, Susana M.                  +101           1820  CONTINUING
+Harding, Richard, Jr.              +66           1756  CONTINUING
+Erlien, Marla L.                    +9           1221  CONTINUING
+Baker, Fred                        +30            342  CONTINUING
+Delaney, Vincent J.                +22            267  CONTINUING
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16102  
+
+
+
+-- Grassi, Joseph G. has been ELECTED because s/he has met the quota.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 4 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2301  ELECTED -- 1st count
+Grassi, Joseph G.                    0           2301  ELECTED -- 3rd count
+Price, Alan C.                       0           1908  CONTINUING
+Walser, Nancy                        0           1885  CONTINUING
+Segat, Susana M.                     0           1820  CONTINUING
+Harding, Richard, Jr.                0           1756  CONTINUING
+Erlien, Marla L.                     0           1221  CONTINUING
+Baker, Fred                          0            342  CONTINUING
+Delaney, Vincent J.                  0            267  DEFEATED -- 4th count
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          16102  
+
+
+
+-- Delaney, Vincent J. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- Delaney, Vincent J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2301  ELECTED -- 1st count
+Grassi, Joseph G.                    0           2301  ELECTED -- 3rd count
+Price, Alan C.                     +24           1932  CONTINUING
+Walser, Nancy                      +23           1908  CONTINUING
+Segat, Susana M.                   +21           1841  CONTINUING
+Harding, Richard, Jr.              +44           1800  CONTINUING
+Erlien, Marla L.                   +29           1250  CONTINUING
+Baker, Fred                        +39            381  DEFEATED -- 5th count
+Delaney, Vincent J.               -267              0  DEFEATED -- 4th count
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                    +87             87  
+TOTALS:                              0          16102  
+
+
+
+-- Baker, Fred is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- Baker, Fred has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2301  ELECTED -- 1st count
+Grassi, Joseph G.                    0           2301  ELECTED -- 3rd count
+Price, Alan C.                     +44           1976  CONTINUING
+Walser, Nancy                      +29           1937  CONTINUING
+Segat, Susana M.                   +37           1878  CONTINUING
+Harding, Richard, Jr.              +61           1861  CONTINUING
+Erlien, Marla L.                   +41           1291  DEFEATED -- 6th count
+Baker, Fred                       -381              0  DEFEATED -- 5th count
+Delaney, Vincent J.                  0              0  DEFEATED -- 4th count
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                   +169            256  
+TOTALS:                              0          16102  
+
+
+
+-- Erlien, Marla L. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- Erlien, Marla L. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2301  ELECTED -- 1st count
+Grassi, Joseph G.                    0           2301  ELECTED -- 3rd count
+Price, Alan C.                    +252           2228  CONTINUING
+Segat, Susana M.                  +318           2196  CONTINUING
+Harding, Richard, Jr.             +320           2181  CONTINUING
+Walser, Nancy                     +231           2168  DEFEATED -- 7th count
+Erlien, Marla L.                 -1291              0  DEFEATED -- 6th count
+Baker, Fred                          0              0  DEFEATED -- 5th count
+Delaney, Vincent J.                  0              0  DEFEATED -- 4th count
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                   +170            426  
+TOTALS:                              0          16102  
+
+
+
+-- Walser, Nancy is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- Walser, Nancy has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Turkel, Alice L.                     0           2301  ELECTED -- 1st count
+Fantini, Alfred B.                   0           2301  ELECTED -- 1st count
+Grassi, Joseph G.                    0           2301  ELECTED -- 3rd count
+Segat, Susana M.                  +105           2301  ELECTED -- 8th count
+Price, Alan C.                     +73           2301  ELECTED -- 8th count
+Harding, Richard, Jr.             +120           2301  ELECTED -- 8th count
+Walser, Nancy                    -2168              0  DEFEATED -- 7th count
+Erlien, Marla L.                     0              0  DEFEATED -- 6th count
+Baker, Fred                          0              0  DEFEATED -- 5th count
+Delaney, Vincent J.                  0              0  DEFEATED -- 4th count
+Write-In 1                           0              0  DEFEATED -- 3rd count
+Write-In 2                           0              0  DEFEATED -- 3rd count
+Write-In 3                           0              0  DEFEATED -- 3rd count
+Write-In 4                           0              0  DEFEATED -- 3rd count
+Write-In 5                           0              0  DEFEATED -- 3rd count
+Write-In 6                           0              0  DEFEATED -- 3rd count
+
+EXHAUSTED PILE:                  +1870           2296  
+TOTALS:                              0          16102  
+
+
+
+-- Segat, Susana M. has been ELECTED because s/he has met the quota.
+-- Price, Alan C. has been ELECTED because s/he has met the quota.
+-- Harding, Richard, Jr. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Tuesday, November 6, 2001 10:49 PM
+ChoicePlus Pro -- Version 2.1
+(c) 1993-2001 Voting Solutions -- All Rights Reserved

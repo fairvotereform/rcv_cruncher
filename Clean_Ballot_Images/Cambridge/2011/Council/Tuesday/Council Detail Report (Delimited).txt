@@ -1,0 +1,474 @@
+C:\Cambridge\Election2011\Council\Tuesday\Council Detail Report (Delimited)
+10|November 8, 2011 -- Cambridge, MA
+10|City Council Election
+10|Cambridge, Massachusetts
+10|Preliminary Results (Election Night)
+20|C01|"Cheung, Leland"
+20|C02|"Davis, Henrietta"
+20|C03|"Decker, Marjorie C."
+20|C04|"Kelley, Craig A."
+20|C05|"Maher, David P."
+20|C06|"Marquardt, Charles J."
+20|C07|"Mello, Gary W."
+20|C08|"Moree, Gregg J."
+20|C09|"Nelson, Matthew P."
+20|C10|"Pascual, Jamake"
+20|C11|"Reeves, Kenneth E."
+20|C12|"Seidel, Sam"
+20|C13|"Simmons, E. Denise"
+20|C14|"Stohlman, Jr., Thomas J."
+20|C15|"Toomey, Jr., Timothy J."
+20|C16|"vanBeuzekom, Minka Y."
+20|C17|"Ward, Larry W."
+20|C18|"Williamson, James M."
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+20|WI07|"Write-In 7"
+20|WI08|"Write-In 8"
+20|WI09|"Write-In 9"
+30|system|Proportional Representation
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st count)
+30|ties|1) Previous Count method|2) By election official|3) Random (by computer)
+40|15393|15393|9|1540|0
+50|1|Tally of 1st place votes.
+60|C01|+1974|1974|ELECTED -- 1st count
+60|C15|+1654|1654|ELECTED -- 1st count
+60|C05|+1636|1636|ELECTED -- 1st count
+60|C02|+1407|1407|CONTINUING
+60|C13|+1224|1224|CONTINUING
+60|C03|+1092|1092|CONTINUING
+60|C04|+1075|1075|CONTINUING
+60|C16|+1011|1011|CONTINUING
+60|C11|+979|979|CONTINUING
+60|C17|+816|816|CONTINUING
+60|C12|+768|768|CONTINUING
+60|C09|+523|523|CONTINUING
+60|C06|+488|488|CONTINUING
+60|C14|+336|336|CONTINUING
+60|C18|+171|171|CONTINUING
+60|C07|+128|128|CONTINUING
+60|C10|+57|57|CONTINUING
+60|C08|+54|54|CONTINUING
+60|WI01|0|0|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|WI07|0|0|CONTINUING
+60|WI08|0|0|CONTINUING
+60|WI09|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Cheung, Leland has been ELECTED because s/he has met the quota.
+70|Toomey, Jr., Timothy J. has been ELECTED because s/he has met the quota.
+70|Maher, David P. has been ELECTED because s/he has met the quota.
+50|2|Cheung, Leland has been ELECTED -- transferring surplus votes.
+60|C01|-434|1540|ELECTED -- 1st count
+60|C15|0|1654|ELECTED -- 1st count
+60|C05|0|1636|ELECTED -- 1st count
+60|C02|+91|1498|CONTINUING
+60|C13|+41|1265|CONTINUING
+60|C03|+48|1140|CONTINUING
+60|C04|+47|1122|CONTINUING
+60|C16|+56|1067|CONTINUING
+60|C11|+35|1014|CONTINUING
+60|C17|+13|829|CONTINUING
+60|C12|+40|808|CONTINUING
+60|C09|+11|534|CONTINUING
+60|C06|+21|509|CONTINUING
+60|C14|+20|356|CONTINUING
+60|C18|+2|173|CONTINUING
+60|C07|+6|134|CONTINUING
+60|C10|+1|58|CONTINUING
+60|C08|+2|56|CONTINUING
+60|WI01|0|0|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|WI07|0|0|CONTINUING
+60|WI08|0|0|CONTINUING
+60|WI09|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+50|3|Toomey, Jr., Timothy J. has been ELECTED -- transferring surplus votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|-114|1540|ELECTED -- 1st count
+60|C05|0|1636|ELECTED -- 1st count
+60|C02|+7|1505|CONTINUING
+60|C13|+18|1283|CONTINUING
+60|C03|+18|1158|CONTINUING
+60|C04|+12|1134|CONTINUING
+60|C16|+6|1073|CONTINUING
+60|C11|+18|1032|CONTINUING
+60|C17|+11|840|CONTINUING
+60|C12|+5|813|CONTINUING
+60|C09|+5|539|CONTINUING
+60|C06|+6|515|CONTINUING
+60|C14|+2|358|CONTINUING
+60|C18|+2|175|CONTINUING
+60|C07|+1|135|CONTINUING
+60|C08|+3|59|CONTINUING
+60|C10|0|58|CONTINUING
+60|WI01|0|0|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|WI07|0|0|CONTINUING
+60|WI08|0|0|CONTINUING
+60|WI09|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+50|4|Maher, David P. has been ELECTED -- transferring surplus votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|-96|1540|ELECTED -- 1st count
+60|C02|+11|1516|CONTINUING
+60|C13|+10|1293|CONTINUING
+60|C03|+17|1175|CONTINUING
+60|C04|+11|1145|CONTINUING
+60|C16|+4|1077|CONTINUING
+60|C11|+13|1045|CONTINUING
+60|C17|+9|849|CONTINUING
+60|C12|+5|818|CONTINUING
+60|C09|+3|542|CONTINUING
+60|C06|+4|519|CONTINUING
+60|C14|+3|361|CONTINUING
+60|C18|+2|177|CONTINUING
+60|C07|+1|136|CONTINUING
+60|C08|+2|61|CONTINUING
+60|C10|+1|59|CONTINUING
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+50|5|Transferring all votes simultaneously from all defeated candidates.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1516|CONTINUING
+60|C13|0|1293|CONTINUING
+60|C03|0|1175|CONTINUING
+60|C04|0|1145|CONTINUING
+60|C16|0|1077|CONTINUING
+60|C11|0|1045|CONTINUING
+60|C17|0|849|CONTINUING
+60|C12|0|818|CONTINUING
+60|C09|0|542|CONTINUING
+60|C06|0|519|CONTINUING
+60|C14|0|361|CONTINUING
+60|C18|0|177|CONTINUING
+60|C07|0|136|CONTINUING
+60|C08|0|61|CONTINUING
+60|C10|0|59|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|0|0|
+70|Pascual, Jamake is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Pascual, Jamake has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|+2|1518|CONTINUING
+60|C13|+3|1296|CONTINUING
+60|C03|+1|1176|CONTINUING
+60|C04|+6|1151|CONTINUING
+60|C16|+2|1079|CONTINUING
+60|C11|+2|1047|CONTINUING
+60|C17|+5|854|CONTINUING
+60|C12|+1|819|CONTINUING
+60|C09|+2|544|CONTINUING
+60|C06|+2|521|CONTINUING
+60|C14|+9|370|CONTINUING
+60|C18|+6|183|CONTINUING
+60|C07|+6|142|CONTINUING
+60|C08|+1|62|DEFEATED -- 6th count
+60|C10|-59|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+11|11|
+70|Moree, Gregg J. is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Moree, Gregg J. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|+3|1521|CONTINUING
+60|C13|+5|1301|CONTINUING
+60|C03|+2|1178|CONTINUING
+60|C04|+3|1154|CONTINUING
+60|C16|+5|1084|CONTINUING
+60|C11|+4|1051|CONTINUING
+60|C17|+1|855|CONTINUING
+60|C12|+3|822|CONTINUING
+60|C09|+4|548|CONTINUING
+60|C06|+3|524|CONTINUING
+60|C14|+3|373|CONTINUING
+60|C18|+2|185|CONTINUING
+60|C07|+7|149|DEFEATED -- 7th count
+60|C08|-62|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+17|28|
+70|Mello, Gary W. is declared DEFEATED because s/he has the lowest number of votes.
+50|8|Mello, Gary W. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|+7|1528|CONTINUING
+60|C13|+8|1309|CONTINUING
+60|C03|+9|1187|CONTINUING
+60|C04|+8|1162|CONTINUING
+60|C16|+15|1099|CONTINUING
+60|C11|+9|1060|CONTINUING
+60|C17|+13|868|CONTINUING
+60|C12|+3|825|CONTINUING
+60|C09|+9|557|CONTINUING
+60|C06|+15|539|CONTINUING
+60|C14|+12|385|CONTINUING
+60|C18|+7|192|DEFEATED -- 8th count
+60|C07|-149|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+34|62|
+70|Williamson, James M. is declared DEFEATED because s/he has the lowest number of votes.
+50|9|Williamson, James M. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|+12|1540|ELECTED -- 9th count
+60|C13|+17|1326|CONTINUING
+60|C03|+13|1200|CONTINUING
+60|C04|+10|1172|CONTINUING
+60|C16|+30|1129|CONTINUING
+60|C11|+8|1068|CONTINUING
+60|C17|+24|892|CONTINUING
+60|C12|+14|839|CONTINUING
+60|C09|+13|570|CONTINUING
+60|C06|+7|546|CONTINUING
+60|C14|+19|404|DEFEATED -- 9th count
+60|C18|-192|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+25|87|
+70|Davis, Henrietta has been ELECTED because s/he has met the quota.
+70|Stohlman, Jr., Thomas J. is declared DEFEATED because s/he has the lowest number of votes.
+50|10|Stohlman, Jr., Thomas J. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1540|ELECTED -- 9th count
+60|C13|+22|1348|CONTINUING
+60|C03|+39|1239|CONTINUING
+60|C04|+52|1224|CONTINUING
+60|C16|+93|1222|CONTINUING
+60|C11|+16|1084|CONTINUING
+60|C17|+25|917|CONTINUING
+60|C12|+53|892|CONTINUING
+60|C09|+19|589|CONTINUING
+60|C06|+24|570|DEFEATED -- 10th count
+60|C14|-404|0|DEFEATED -- 9th count
+60|C18|0|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+61|148|
+70|Marquardt, Charles J. is declared DEFEATED because s/he has the lowest number of votes.
+50|11|Marquardt, Charles J. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1540|ELECTED -- 9th count
+60|C13|+23|1371|CONTINUING
+60|C04|+138|1362|CONTINUING
+60|C16|+62|1284|CONTINUING
+60|C03|+33|1272|CONTINUING
+60|C11|+21|1105|CONTINUING
+60|C17|+52|969|CONTINUING
+60|C12|+34|926|CONTINUING
+60|C09|+66|655|DEFEATED -- 11th count
+60|C06|-570|0|DEFEATED -- 10th count
+60|C14|0|0|DEFEATED -- 9th count
+60|C18|0|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+141|289|
+70|Nelson, Matthew P. is declared DEFEATED because s/he has the lowest number of votes.
+50|12|Nelson, Matthew P. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1540|ELECTED -- 9th count
+60|C13|+67|1438|CONTINUING
+60|C04|+41|1403|CONTINUING
+60|C16|+93|1377|CONTINUING
+60|C03|+72|1344|CONTINUING
+60|C11|+53|1158|CONTINUING
+60|C17|+119|1088|CONTINUING
+60|C12|+84|1010|DEFEATED -- 12th count
+60|C09|-655|0|DEFEATED -- 11th count
+60|C06|0|0|DEFEATED -- 10th count
+60|C14|0|0|DEFEATED -- 9th count
+60|C18|0|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+126|415|
+70|Seidel, Sam is declared DEFEATED because s/he has the lowest number of votes.
+50|13|Seidel, Sam has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1540|ELECTED -- 9th count
+60|C04|+137|1540|ELECTED -- 13th count
+60|C13|+102|1540|ELECTED -- 13th count
+60|C16|+160|1537|CONTINUING
+60|C03|+184|1528|CONTINUING
+60|C11|+107|1265|CONTINUING
+60|C17|+98|1186|DEFEATED -- 13th count
+60|C12|-1010|0|DEFEATED -- 12th count
+60|C09|0|0|DEFEATED -- 11th count
+60|C06|0|0|DEFEATED -- 10th count
+60|C14|0|0|DEFEATED -- 9th count
+60|C18|0|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+222|637|
+70|Simmons, E. Denise has been ELECTED because s/he has met the quota.
+70|Kelley, Craig A. has been ELECTED because s/he has met the quota.
+70|Ward, Larry W. is declared DEFEATED because s/he has the lowest number of votes.
+50|14|Ward, Larry W. has been DEFEATED -- transferring all votes.
+60|C01|0|1540|ELECTED -- 1st count
+60|C15|0|1540|ELECTED -- 1st count
+60|C05|0|1540|ELECTED -- 1st count
+60|C02|0|1540|ELECTED -- 9th count
+60|C04|0|1540|ELECTED -- 13th count
+60|C13|0|1540|ELECTED -- 13th count
+60|C03|+12|1540|ELECTED -- 14th count
+60|C16|+3|1540|ELECTED -- 14th count
+60|C11|+275|1540|ELECTED -- 14th count
+60|C17|-1186|0|DEFEATED -- 13th count
+60|C12|0|0|DEFEATED -- 12th count
+60|C09|0|0|DEFEATED -- 11th count
+60|C06|0|0|DEFEATED -- 10th count
+60|C14|0|0|DEFEATED -- 9th count
+60|C18|0|0|DEFEATED -- 8th count
+60|C07|0|0|DEFEATED -- 7th count
+60|C08|0|0|DEFEATED -- 6th count
+60|C10|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 4th count
+60|WI03|0|0|DEFEATED -- 4th count
+60|WI04|0|0|DEFEATED -- 4th count
+60|WI05|0|0|DEFEATED -- 4th count
+60|WI06|0|0|DEFEATED -- 4th count
+60|WI07|0|0|DEFEATED -- 4th count
+60|WI08|0|0|DEFEATED -- 4th count
+60|WI09|0|0|DEFEATED -- 4th count
+60|CAND_EXHAUSTED|+896|1533|
+70|vanBeuzekom, Minka Y. has been ELECTED because s/he has met the quota.
+70|Decker, Marjorie C. has been ELECTED because s/he has met the quota.
+70|Reeves, Kenneth E. has been ELECTED because s/he has met the quota.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Tuesday, November 8, 2011 10:34 PM
+80|ChoicePlus Pro -- Version 2.3.4
+80|(c) 1993-2009 Voting Solutions -- All Rights Reserved

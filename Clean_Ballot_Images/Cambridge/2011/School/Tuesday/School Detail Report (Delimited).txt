@@ -1,0 +1,200 @@
+C:\Cambridge\Election2011\School\Tuesday\School Detail Report (Delimited)
+10|November 8, 2011 -- Cambridge, MA
+10|School Committee Election
+10|Cambridge, Massachusetts
+10|Preliminary Results (Election Night)
+20|C01|"Fantini, Alfred B."
+20|C02|"Forster, Bill"
+20|C03|"Gerber, Joyce C."
+20|C04|"Harding, Jr., Richard"
+20|C05|"Holland, John J."
+20|C06|"McGovern, Marc C."
+20|C07|"Nolan, Patricia M."
+20|C08|"Osborne, Mervan F."
+20|C09|"Stead, Sr., Charles Lewis"
+20|C10|"Tauber, Nancy"
+20|C11|"Turkel, Alice L."
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+30|system|Proportional Representation
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st count)
+30|ties|1) Previous Count method|2) By election official|3) Random (by computer)
+40|14939|14939|6|2135|0
+50|1|Tally of 1st place votes.
+60|C01|+2318|2318|ELECTED -- 1st count
+60|C07|+2090|2090|CONTINUING
+60|C11|+2075|2075|CONTINUING
+60|C08|+2036|2036|CONTINUING
+60|C04|+1801|1801|CONTINUING
+60|C06|+1744|1744|CONTINUING
+60|C10|+1463|1463|CONTINUING
+60|C03|+430|430|CONTINUING
+60|C05|+379|379|CONTINUING
+60|C02|+321|321|CONTINUING
+60|C09|+282|282|CONTINUING
+60|WI01|0|0|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+50|2|Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+60|C01|-183|2135|ELECTED -- 1st count
+60|C07|+19|2109|CONTINUING
+60|C11|+22|2097|CONTINUING
+60|C08|+4|2040|CONTINUING
+60|C04|+39|1840|CONTINUING
+60|C06|+35|1779|CONTINUING
+60|C10|+25|1488|CONTINUING
+60|C03|+6|436|CONTINUING
+60|C05|+13|392|CONTINUING
+60|C02|+13|334|CONTINUING
+60|C09|+7|289|CONTINUING
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+50|3|Transferring all votes simultaneously from all defeated candidates.
+60|C01|0|2135|ELECTED -- 1st count
+60|C07|0|2109|CONTINUING
+60|C11|0|2097|CONTINUING
+60|C08|0|2040|CONTINUING
+60|C04|0|1840|CONTINUING
+60|C06|0|1779|CONTINUING
+60|C10|0|1488|CONTINUING
+60|C03|0|436|CONTINUING
+60|C05|0|392|CONTINUING
+60|C02|0|334|CONTINUING
+60|C09|0|289|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|0|0|
+70|Stead, Sr., Charles Lewis is declared DEFEATED because s/he has the lowest number of votes.
+50|4|Stead, Sr., Charles Lewis has been DEFEATED -- transferring all votes.
+60|C01|0|2135|ELECTED -- 1st count
+60|C11|+25|2122|CONTINUING
+60|C07|+11|2120|CONTINUING
+60|C08|+36|2076|CONTINUING
+60|C04|+71|1911|CONTINUING
+60|C06|+21|1800|CONTINUING
+60|C10|+27|1515|CONTINUING
+60|C03|+11|447|CONTINUING
+60|C05|+8|400|CONTINUING
+60|C02|+20|354|DEFEATED -- 4th count
+60|C09|-289|0|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|+59|59|
+70|Forster, Bill is declared DEFEATED because s/he has the lowest number of votes.
+50|5|Forster, Bill has been DEFEATED -- transferring all votes.
+60|C01|0|2135|ELECTED -- 1st count
+60|C07|+15|2135|ELECTED -- 5th count
+60|C11|+13|2135|ELECTED -- 5th count
+60|C08|+43|2119|CONTINUING
+60|C04|+22|1933|CONTINUING
+60|C06|+40|1840|CONTINUING
+60|C10|+27|1542|CONTINUING
+60|C03|+108|555|CONTINUING
+60|C05|+30|430|DEFEATED -- 5th count
+60|C02|-354|0|DEFEATED -- 4th count
+60|C09|0|0|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|+56|115|
+70|Nolan, Patricia M. has been ELECTED because s/he has met the quota.
+70|Turkel, Alice L. has been ELECTED because s/he has met the quota.
+70|Holland, John J. is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Holland, John J. has been DEFEATED -- transferring all votes.
+60|C01|0|2135|ELECTED -- 1st count
+60|C07|0|2135|ELECTED -- 5th count
+60|C11|0|2135|ELECTED -- 5th count
+60|C08|+16|2135|ELECTED -- 6th count
+60|C04|+41|1974|CONTINUING
+60|C06|+81|1921|CONTINUING
+60|C10|+59|1601|CONTINUING
+60|C03|+73|628|DEFEATED -- 6th count
+60|C05|-430|0|DEFEATED -- 5th count
+60|C02|0|0|DEFEATED -- 4th count
+60|C09|0|0|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|+160|275|
+70|Osborne, Mervan F. has been ELECTED because s/he has met the quota.
+70|Gerber, Joyce C. is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Gerber, Joyce C. has been DEFEATED -- transferring all votes.
+60|C01|0|2135|ELECTED -- 1st count
+60|C07|0|2135|ELECTED -- 5th count
+60|C11|0|2135|ELECTED -- 5th count
+60|C08|0|2135|ELECTED -- 6th count
+60|C04|+108|2082|CONTINUING
+60|C06|+92|2013|CONTINUING
+60|C10|+140|1741|DEFEATED -- 7th count
+60|C03|-628|0|DEFEATED -- 6th count
+60|C05|0|0|DEFEATED -- 5th count
+60|C02|0|0|DEFEATED -- 4th count
+60|C09|0|0|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|+288|563|
+70|Tauber, Nancy is declared DEFEATED because s/he has the lowest number of votes.
+50|8|Tauber, Nancy has been DEFEATED -- transferring all votes.
+60|C01|0|2135|ELECTED -- 1st count
+60|C07|0|2135|ELECTED -- 5th count
+60|C11|0|2135|ELECTED -- 5th count
+60|C08|0|2135|ELECTED -- 6th count
+60|C04|+53|2135|ELECTED -- 8th count
+60|C06|+122|2135|ELECTED -- 8th count
+60|C10|-1741|0|DEFEATED -- 7th count
+60|C03|0|0|DEFEATED -- 6th count
+60|C05|0|0|DEFEATED -- 5th count
+60|C02|0|0|DEFEATED -- 4th count
+60|C09|0|0|DEFEATED -- 3rd count
+60|WI01|0|0|DEFEATED -- 2nd count
+60|WI02|0|0|DEFEATED -- 2nd count
+60|WI03|0|0|DEFEATED -- 2nd count
+60|WI04|0|0|DEFEATED -- 2nd count
+60|WI05|0|0|DEFEATED -- 2nd count
+60|WI06|0|0|DEFEATED -- 2nd count
+60|CAND_EXHAUSTED|+1566|2129|
+70|Harding, Jr., Richard has been ELECTED because s/he has met the quota.
+70|McGovern, Marc C. has been ELECTED because s/he has met the quota.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Tuesday, November 8, 2011 10:32 PM
+80|ChoicePlus Pro -- Version 2.3.4
+80|(c) 1993-2009 Voting Solutions -- All Rights Reserved

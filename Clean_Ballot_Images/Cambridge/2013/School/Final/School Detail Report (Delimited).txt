@@ -1,0 +1,180 @@
+C:\Cambridge\Election2013\School\Final\School Detail Report (Delimited)
+10|November 15, 2013 -- Cambridge, MA
+10|School Committee Election
+10|Cambridge, Massachusetts
+10|Final Election Results
+20|C01|"Cronin, Fran Albin"
+20|C02|"Fantini, Alfred B."
+20|C03|"Gerber, Joyce C."
+20|C04|"Harding, Jr., Richard"
+20|C05|"Holland, John J."
+20|C06|"Kadete, Elechi M."
+20|C07|"Kelly, Kathleen M."
+20|C08|"Nolan, Patricia M."
+20|C09|"Osborne, Mervan F."
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+30|system|Proportional Representation
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st count)
+30|ties|1) Previous Count method|2) By election official|3) Random (by computer)
+40|16592|16592|6|2371|1128
+50|1|Tally of 1st place votes.
+60|C08|+3921|3921|ELECTED -- 1st count
+60|C02|+2859|2859|ELECTED -- 1st count
+60|C04|+2359|2359|CONTINUING
+60|C07|+2102|2102|CONTINUING
+60|C01|+1832|1832|CONTINUING
+60|C09|+1238|1238|CONTINUING
+60|C03|+1126|1126|CONTINUING
+60|C05|+589|589|CONTINUING
+60|C06|+494|494|CONTINUING
+60|WI01|+71|71|CONTINUING
+60|WI06|+1|1|CONTINUING
+60|WI02|0|0|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Nolan, Patricia M. has been ELECTED because s/he has met the quota.
+70|Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+50|2|Nolan, Patricia M. has been ELECTED -- transferring surplus votes.
+60|C08|-1550|2371|ELECTED -- 1st count
+60|C02|0|2859|ELECTED -- 1st count
+60|C04|+12|2371|ELECTED -- 2nd count
+60|C07|+269|2371|ELECTED -- 2nd count
+60|C01|+272|2104|CONTINUING
+60|C09|+501|1739|CONTINUING
+60|C03|+308|1434|CONTINUING
+60|C05|+91|680|CONTINUING
+60|C06|+88|582|CONTINUING
+60|WI01|+8|79|CONTINUING
+60|WI02|+1|1|CONTINUING
+60|WI06|0|1|CONTINUING
+60|WI03|0|0|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Harding, Jr., Richard has been ELECTED because s/he has met the quota.
+70|Kelly, Kathleen M. has been ELECTED because s/he has met the quota.
+50|3|Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|-488|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|+91|2195|CONTINUING
+60|C09|+167|1906|CONTINUING
+60|C03|+79|1513|CONTINUING
+60|C05|+118|798|CONTINUING
+60|C06|+31|613|CONTINUING
+60|WI01|+2|81|CONTINUING
+60|WI02|0|1|DEFEATED -- 3rd count
+60|WI06|0|1|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+50|4|Transferring all votes simultaneously from all defeated candidates.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|0|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|0|2195|CONTINUING
+60|C09|0|1906|CONTINUING
+60|C03|0|1513|CONTINUING
+60|C05|0|798|CONTINUING
+60|C06|0|613|CONTINUING
+60|WI01|0|81|DEFEATED -- 4th count
+60|WI02|-1|0|DEFEATED -- 3rd count
+60|WI06|-1|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+2|2|
+70|Write-In 1 is declared DEFEATED because s/he has the lowest number of votes.
+50|5|Write-In 1 has been DEFEATED -- transferring all votes.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|0|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|+7|2202|CONTINUING
+60|C09|+4|1910|CONTINUING
+60|C03|+3|1516|CONTINUING
+60|C05|+2|800|CONTINUING
+60|C06|+2|615|DEFEATED -- 5th count
+60|WI01|-81|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+63|65|
+70|Kadete, Elechi M. is declared DEFEATED because s/he has the lowest number of votes.
+50|6|Kadete, Elechi M. has been DEFEATED -- transferring all votes.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|0|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|+108|2310|CONTINUING
+60|C09|+155|2065|CONTINUING
+60|C03|+79|1595|CONTINUING
+60|C05|+59|859|DEFEATED -- 6th count
+60|C06|-615|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+214|279|
+70|Holland, John J. is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Holland, John J. has been DEFEATED -- transferring all votes.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|0|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|+61|2371|ELECTED -- 7th count
+60|C09|+133|2198|CONTINUING
+60|C03|+206|1801|DEFEATED -- 7th count
+60|C05|-859|0|DEFEATED -- 6th count
+60|C06|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+459|738|
+70|Cronin, Fran Albin has been ELECTED because s/he has met the quota.
+70|Gerber, Joyce C. is declared DEFEATED because s/he has the lowest number of votes.
+50|8|Gerber, Joyce C. has been DEFEATED -- transferring all votes.
+60|C08|0|2371|ELECTED -- 1st count
+60|C02|0|2371|ELECTED -- 1st count
+60|C04|0|2371|ELECTED -- 2nd count
+60|C07|0|2371|ELECTED -- 2nd count
+60|C01|0|2371|ELECTED -- 7th count
+60|C09|+173|2371|ELECTED -- 8th count
+60|C03|-1801|0|DEFEATED -- 7th count
+60|C05|0|0|DEFEATED -- 6th count
+60|C06|0|0|DEFEATED -- 5th count
+60|WI01|0|0|DEFEATED -- 4th count
+60|WI02|0|0|DEFEATED -- 3rd count
+60|WI06|0|0|DEFEATED -- 3rd count
+60|WI03|0|0|DEFEATED -- 3rd count
+60|WI04|0|0|DEFEATED -- 3rd count
+60|WI05|0|0|DEFEATED -- 3rd count
+60|CAND_EXHAUSTED|+1628|2366|
+70|Osborne, Mervan F. has been ELECTED because s/he has met the quota.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Friday, November 15, 2013 5:53 PM
+80|ChoicePlus Pro -- Version 2.3.4
+80|(c) 1993-2009 Voting Solutions -- All Rights Reserved

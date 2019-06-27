@@ -323,7 +323,10 @@ competitions = {
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
-    'San Francisco Public Defender 2018': {'office': 'Public Defender',  'date': '2018', 'place': 'San Francisco',
+    'San Francisco Public Defender 2018': {
+        'office': 'Public Defender',  
+        'date': '2018', 
+        'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_defender_ballotimage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
@@ -772,7 +775,7 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2014 City Auditor - Oakland Nov 2014': {'office': 'City Auditor',  'date': '2014', 'place': 'Oakland',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_ City Auditor - Oakland_Nov 2014.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_City Auditor - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
@@ -784,13 +787,13 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2014 Mayor of San Leandro Nov 2014': {'office': 'Mayor',  'date': '2014', 'place': 'San Leandro',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_ Mayor of San Leandro_Nov 2014.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Mayor of San Leandro_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
      },
     '2014 Mayor - Oakland Nov 2014': {'office': 'Mayor',  'date': '2014', 'place': 'Oakland',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_ Mayor - Oakland_Nov 2014.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Mayor - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
@@ -946,7 +949,7 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2010 Member, City Council, District 4 - Oakland Nov 2010': {'office': 'Member City Council District 4',  'date': '2010', 'place': 'Oakland',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 4 - Oakland_Nov 2010.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 4 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
@@ -1012,7 +1015,7 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2010 School Director, District 6 - Oakland Nov 2010': {'office': 'School Director District 6',  'date': '2010', 'place': 'Oakland',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ School Director, District 6 - Oakland_Nov 2010.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 6 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
@@ -1030,7 +1033,7 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2010 School Director, District 4 - Oakland Nov 2010': {'office': 'School Director District 4',  'date': '2010', 'place': 'Oakland',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ School Director, District 4 - Oakland_Nov 2010.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 4 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
@@ -1042,7 +1045,7 @@ competitions = {
          'break_on_repeated undervotes': False
      },
     '2010 Member, City Council, District 3 - San Leandro Nov 2010': {'office': 'Member City Council District 3',  'date': '2010', 'place': 'San Leandro',
-         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_ Member, City Council, District 3 - San Leandro_Nov 2010.txt',
+         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 3 - San Leandro_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
          'break_on_repeated undervotes': False

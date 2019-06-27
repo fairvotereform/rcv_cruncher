@@ -1,0 +1,154 @@
+D:\Cambridge\Election2005\School\Wednesday\School Detail Report (Delimited)
+10|November 8, 2005 -- Cambridge, MA
+10|SCHOOL COMMITTEE ELECTION
+10|CAMBRIDGE, MA
+10|Wednesday Preliminary Results
+20|C01|"Fantini, Alfred B."
+20|C02|"Grassi, Joseph G."
+20|C03|"Harding, Richard, Jr."
+20|C04|"Lummis, Ben"
+20|C05|"McGovern, Marc C."
+20|C06|"Nolan, Patricia M."
+20|C07|"Schuster, Luc"
+20|C08|"Walser, Nancy"
+20|WI01|"Write-In 1"
+20|WI02|"Write-In 2"
+20|WI03|"Write-In 3"
+20|WI04|"Write-In 4"
+20|WI05|"Write-In 5"
+20|WI06|"Write-In 6"
+30|system|Choice Voting
+30|threshold|Droop
+30|surplusTransfers|Random, every nth ballot (Cambridge style)|Avoid exhausted ballots if possible|Elected immediately (after the 1st round)
+30|ties|1) Previous Round method|2) By election official|3) Random (by computer)
+40|15470|15470|6|2211|719
+50|1|Tally of 1st place votes.
+60|C06|+2387|2387|ELECTED -- 1st round
+60|C01|+2281|2281|ELECTED -- 1st round
+60|C08|+2004|2004|CONTINUING
+60|C02|+1990|1990|CONTINUING
+60|C03|+1981|1981|CONTINUING
+60|C07|+1843|1843|CONTINUING
+60|C04|+1514|1514|CONTINUING
+60|C05|+1413|1413|CONTINUING
+60|WI01|+54|54|CONTINUING
+60|WI02|+2|2|CONTINUING
+60|WI03|+1|1|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+70|Nolan, Patricia M. has been ELECTED because s/he has met the threshold.
+70|Fantini, Alfred B. has been ELECTED because s/he has met the threshold.
+50|2|Nolan, Patricia M. has been ELECTED -- transferring surplus votes.
+60|C06|-176|2211|ELECTED -- 1st round
+60|C01|0|2281|ELECTED -- 1st round
+60|C08|+40|2044|CONTINUING
+60|C02|+11|2001|CONTINUING
+60|C03|+18|1999|CONTINUING
+60|C07|+58|1901|CONTINUING
+60|C04|+18|1532|CONTINUING
+60|C05|+31|1444|CONTINUING
+60|WI01|0|54|CONTINUING
+60|WI02|0|2|CONTINUING
+60|WI03|0|1|CONTINUING
+60|WI04|0|0|CONTINUING
+60|WI05|0|0|CONTINUING
+60|WI06|0|0|CONTINUING
+60|CAND_EXHAUSTED|0|0|
+50|3|Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+60|C06|0|2211|ELECTED -- 1st round
+60|C01|-70|2211|ELECTED -- 1st round
+60|C08|+5|2049|CONTINUING
+60|C02|+41|2042|CONTINUING
+60|C03|+10|2009|CONTINUING
+60|C07|+1|1902|CONTINUING
+60|C04|+5|1537|CONTINUING
+60|C05|+8|1452|CONTINUING
+60|WI01|0|54|CONTINUING
+60|WI02|0|2|DEFEATED -- 3rd round
+60|WI03|0|1|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|0|0|
+70|Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+70|Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+50|4|Transferring all votes simultaneously from all defeated candidates.
+60|C06|0|2211|ELECTED -- 1st round
+60|C01|0|2211|ELECTED -- 1st round
+60|C08|0|2049|CONTINUING
+60|C02|+1|2043|CONTINUING
+60|C03|0|2009|CONTINUING
+60|C07|0|1902|CONTINUING
+60|C04|0|1537|CONTINUING
+60|C05|0|1452|CONTINUING
+60|WI01|+1|55|DEFEATED -- 4th round
+60|WI02|-2|0|DEFEATED -- 3rd round
+60|WI03|-1|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+1|1|
+70|Write-In 1 is declared DEFEATED because s/he has the lowest number of votes.
+50|5|Write-In 1 has been DEFEATED -- transferring all votes.
+60|C06|0|2211|ELECTED -- 1st round
+60|C01|0|2211|ELECTED -- 1st round
+60|C08|+6|2055|CONTINUING
+60|C02|0|2043|CONTINUING
+60|C03|+6|2015|CONTINUING
+60|C07|+1|1903|CONTINUING
+60|C04|0|1537|CONTINUING
+60|C05|+2|1454|DEFEATED -- 5th round
+60|WI01|-55|0|DEFEATED -- 4th round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+40|41|
+70|McGovern, Marc C. is declared DEFEATED because s/he has the lowest number of votes.
+50|6|McGovern, Marc C. has been DEFEATED -- transferring all votes.
+60|C06|0|2211|ELECTED -- 1st round
+60|C01|0|2211|ELECTED -- 1st round
+60|C08|+156|2211|ELECTED -- 6th round
+60|C03|+196|2211|ELECTED -- 6th round
+60|C07|+287|2190|CONTINUING
+60|C02|+142|2185|CONTINUING
+60|C04|+334|1871|DEFEATED -- 6th round
+60|C05|-1454|0|DEFEATED -- 5th round
+60|WI01|0|0|DEFEATED -- 4th round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+339|380|
+70|Walser, Nancy has been ELECTED because s/he has met the threshold.
+70|Harding, Richard, Jr. has been ELECTED because s/he has met the threshold.
+70|Lummis, Ben is declared DEFEATED because s/he has the lowest number of votes.
+50|7|Lummis, Ben has been DEFEATED -- transferring all votes.
+60|C06|0|2211|ELECTED -- 1st round
+60|C01|0|2211|ELECTED -- 1st round
+60|C08|0|2211|ELECTED -- 6th round
+60|C03|0|2211|ELECTED -- 6th round
+60|C02|+26|2211|ELECTED -- 7th round
+60|C07|+21|2211|ELECTED -- 7th round
+60|C04|-1871|0|DEFEATED -- 6th round
+60|C05|0|0|DEFEATED -- 5th round
+60|WI01|0|0|DEFEATED -- 4th round
+60|WI02|0|0|DEFEATED -- 3rd round
+60|WI03|0|0|DEFEATED -- 3rd round
+60|WI04|0|0|DEFEATED -- 3rd round
+60|WI05|0|0|DEFEATED -- 3rd round
+60|WI06|0|0|DEFEATED -- 3rd round
+60|CAND_EXHAUSTED|+1824|2204|
+70|Schuster, Luc has been ELECTED because s/he has met the threshold.
+70|Grassi, Joseph G. has been ELECTED because s/he has met the threshold.
+80|ELECTION COUNT SUCCESSFULLY COMPLETED
+80|Wednesday, November 9, 2005 4:42 PM
+80|ChoicePlus Pro -- Version 2.2
+80|(c) 1993-2005 Voting Solutions -- All Rights Reserved

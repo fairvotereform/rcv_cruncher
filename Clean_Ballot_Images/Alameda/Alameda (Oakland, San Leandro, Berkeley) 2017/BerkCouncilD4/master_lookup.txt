@@ -1,0 +1,24 @@
+Candidate 0000002KATE HARRISON                                     0000001000000100
+Candidate 0000003BEN GOULD                                         0000002000000100
+Candidate 0000001Write-In                                          0000003000000110
+Contest   0000001Member, City Council, Dist 4,Short Term - Berkeley0000001000000000
+Precinct  0000001201900                                            0000001000000000
+Precinct  0000002202010                                            0000002000000000
+Precinct  0000003202110                                            0000003000000000
+Precinct  0000004206600                                            0000004000000000
+Precinct  0000005207600                                            0000005000000000
+Precinct  0000006207630                                            0000006000000000
+Precinct  0000007207640                                            0000007000000000
+Precinct  0000008207700                                            0000008000000000
+Precinct  0000009208000                                            0000009000000000
+Precinct  0000010208010                                            0000010000000000
+Precinct  0000011208100                                            0000011000000000
+Precinct  0000012208110                                            0000012000000000
+Precinct  0000013208200                                            0000013000000000
+Tally Type0000001Election Day - Insight                            0000001000000000
+Tally Type0000002Election Day - 400C                               0000002000000000
+Tally Type0000003Vote by Mail - 400C                               0000003000000000
+Tally Type0000004Provisional - 400C                                0000004000000000
+Tally Type0000005Election Day - Edge                               0000005000000000
+Tally Type0000006MVBM - 400C                                       0000006000000000
+Tally Type0000007Election Day - External                           0000007000000000

@@ -1,0 +1,275 @@
+D:\Cambridge\Election2005\School\Wednesday\School Detail Report
+
+
+November 8, 2005 -- Cambridge, MA
+SCHOOL COMMITTEE ELECTION
+CAMBRIDGE, MA
+Wednesday Preliminary Results
+
+CANDIDATES:
+	Fantini, Alfred B.
+	Grassi, Joseph G.
+	Harding, Richard, Jr.
+	Lummis, Ben
+	McGovern, Marc C.
+	Nolan, Patricia M.
+	Schuster, Luc
+	Walser, Nancy
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+15,470 valid ballots.
+Electing 6 candidates.
+Winning threshold is 2211 votes.
+There were 719 invalid ballots.
+(16,189 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.               +2387           2387  ELECTED -- 1st round
+Fantini, Alfred B.               +2281           2281  ELECTED -- 1st round
+Walser, Nancy                    +2004           2004  CONTINUING
+Grassi, Joseph G.                +1990           1990  CONTINUING
+Harding, Richard, Jr.            +1981           1981  CONTINUING
+Schuster, Luc                    +1843           1843  CONTINUING
+Lummis, Ben                      +1514           1514  CONTINUING
+McGovern, Marc C.                +1413           1413  CONTINUING
+Write-In 1                         +54             54  CONTINUING
+Write-In 2                          +2              2  CONTINUING
+Write-In 3                          +1              1  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +15470          15470  
+
+
+
+-- Nolan, Patricia M. has been ELECTED because s/he has met the threshold.
+-- Fantini, Alfred B. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ROUND 2 -- Nolan, Patricia M. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                -176           2211  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2281  ELECTED -- 1st round
+Walser, Nancy                      +40           2044  CONTINUING
+Grassi, Joseph G.                  +11           2001  CONTINUING
+Harding, Richard, Jr.              +18           1999  CONTINUING
+Schuster, Luc                      +58           1901  CONTINUING
+Lummis, Ben                        +18           1532  CONTINUING
+McGovern, Marc C.                  +31           1444  CONTINUING
+Write-In 1                           0             54  CONTINUING
+Write-In 2                           0              2  CONTINUING
+Write-In 3                           0              1  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15470  
+
+
+
+
+
+********************************************************************************
+
+
+ROUND 3 -- Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2211  ELECTED -- 1st round
+Fantini, Alfred B.                 -70           2211  ELECTED -- 1st round
+Walser, Nancy                       +5           2049  CONTINUING
+Grassi, Joseph G.                  +41           2042  CONTINUING
+Harding, Richard, Jr.              +10           2009  CONTINUING
+Schuster, Luc                       +1           1902  CONTINUING
+Lummis, Ben                         +5           1537  CONTINUING
+McGovern, Marc C.                   +8           1452  CONTINUING
+Write-In 1                           0             54  CONTINUING
+Write-In 2                           0              2  DEFEATED -- 3rd round
+Write-In 3                           0              1  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15470  
+
+
+
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+ROUND 4 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2211  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2211  ELECTED -- 1st round
+Walser, Nancy                        0           2049  CONTINUING
+Grassi, Joseph G.                   +1           2043  CONTINUING
+Harding, Richard, Jr.                0           2009  CONTINUING
+Schuster, Luc                        0           1902  CONTINUING
+Lummis, Ben                          0           1537  CONTINUING
+McGovern, Marc C.                    0           1452  CONTINUING
+Write-In 1                          +1             55  DEFEATED -- 4th round
+Write-In 2                          -2              0  DEFEATED -- 3rd round
+Write-In 3                          -1              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                     +1              1  
+TOTALS:                              0          15470  
+
+
+
+-- Write-In 1 is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+ROUND 5 -- Write-In 1 has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2211  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2211  ELECTED -- 1st round
+Walser, Nancy                       +6           2055  CONTINUING
+Grassi, Joseph G.                    0           2043  CONTINUING
+Harding, Richard, Jr.               +6           2015  CONTINUING
+Schuster, Luc                       +1           1903  CONTINUING
+Lummis, Ben                          0           1537  CONTINUING
+McGovern, Marc C.                   +2           1454  DEFEATED -- 5th round
+Write-In 1                         -55              0  DEFEATED -- 4th round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                    +40             41  
+TOTALS:                              0          15470  
+
+
+
+-- McGovern, Marc C. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 6 -- McGovern, Marc C. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2211  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2211  ELECTED -- 1st round
+Walser, Nancy                     +156           2211  ELECTED -- 6th round
+Harding, Richard, Jr.             +196           2211  ELECTED -- 6th round
+Schuster, Luc                     +287           2190  CONTINUING
+Grassi, Joseph G.                 +142           2185  CONTINUING
+Lummis, Ben                       +334           1871  DEFEATED -- 6th round
+McGovern, Marc C.                -1454              0  DEFEATED -- 5th round
+Write-In 1                           0              0  DEFEATED -- 4th round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                   +339            380  
+TOTALS:                              0          15470  
+
+
+
+-- Walser, Nancy has been ELECTED because s/he has met the threshold.
+-- Harding, Richard, Jr. has been ELECTED because s/he has met the threshold.
+-- Lummis, Ben is declared DEFEATED because s/he has the lowest number of votes.
+
+
+********************************************************************************
+
+
+ROUND 7 -- Lummis, Ben has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Nolan, Patricia M.                   0           2211  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2211  ELECTED -- 1st round
+Walser, Nancy                        0           2211  ELECTED -- 6th round
+Harding, Richard, Jr.                0           2211  ELECTED -- 6th round
+Grassi, Joseph G.                  +26           2211  ELECTED -- 7th round
+Schuster, Luc                      +21           2211  ELECTED -- 7th round
+Lummis, Ben                      -1871              0  DEFEATED -- 6th round
+McGovern, Marc C.                    0              0  DEFEATED -- 5th round
+Write-In 1                           0              0  DEFEATED -- 4th round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                  +1824           2204  
+TOTALS:                              0          15470  
+
+
+
+-- Schuster, Luc has been ELECTED because s/he has met the threshold.
+-- Grassi, Joseph G. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 9, 2005 4:42 PM
+ChoicePlus Pro -- Version 2.2
+(c) 1993-2005 Voting Solutions -- All Rights Reserved

@@ -1,0 +1,16 @@
+Title: D09 : MEMBER, BOARD OF SUPERVISORS DIST. 9
+SubTitle: San Francisco, CA, 2004, November
+Candidate: SZ : Steve Zeltzer
+Candidate: JP : James Boris Perez
+Candidate: RS : Renee Saucedo
+Candidate: TA : Tom Ammiano
+Candidate: LB : Lucrecia Bermudez
+Candidate: MB : Miguel Bustos
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod: Ask
+MultipleEliminations: Never
+MoVEstimate: MoVLB2
+StartBallots: 
+Include: D09-Ballots.txt

@@ -1,0 +1,339 @@
+C:\Cambridge\Election2011\School\Final\School Detail Report
+
+
+November 18, 2011 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Final Election Results
+
+CANDIDATES:
+	Fantini, Alfred B.
+	Forster, Bill
+	Gerber, Joyce C.
+	Harding, Jr., Richard
+	Holland, John J.
+	McGovern, Marc C.
+	Nolan, Patricia M.
+	Osborne, Mervan F.
+	Stead, Sr., Charles Lewis
+	Tauber, Nancy
+	Turkel, Alice L.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+15,290 valid ballots.
+Electing 6 candidates.
+Quota is 2185 votes.
+There were 614 invalid ballots.
+(15,904 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.               +2372           2372  ELECTED -- 1st count
+Nolan, Patricia M.               +2126           2126  CONTINUING
+Turkel, Alice L.                 +2112           2112  CONTINUING
+Osborne, Mervan F.               +2065           2065  CONTINUING
+Harding, Jr., Richard            +1851           1851  CONTINUING
+McGovern, Marc C.                +1771           1771  CONTINUING
+Tauber, Nancy                    +1490           1490  CONTINUING
+Gerber, Joyce C.                  +434            434  CONTINUING
+Holland, John J.                  +388            388  CONTINUING
+Forster, Bill                     +330            330  CONTINUING
+Stead, Sr., Charles Le.           +293            293  CONTINUING
+Write-In 1                         +43             43  CONTINUING
+Write-In 2                         +14             14  CONTINUING
+Write-In 5                          +1              1  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +15290          15290  
+
+
+
+-- Fantini, Alfred B. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                -187           2185  ELECTED -- 1st count
+Nolan, Patricia M.                 +20           2146  CONTINUING
+Turkel, Alice L.                   +21           2133  CONTINUING
+Osborne, Mervan F.                  +9           2074  CONTINUING
+Harding, Jr., Richard              +42           1893  CONTINUING
+McGovern, Marc C.                  +30           1801  CONTINUING
+Tauber, Nancy                      +19           1509  CONTINUING
+Gerber, Joyce C.                    +7            441  CONTINUING
+Holland, John J.                   +18            406  CONTINUING
+Forster, Bill                      +12            342  CONTINUING
+Stead, Sr., Charles Le.             +9            302  CONTINUING
+Write-In 1                           0             43  DEFEATED -- 2nd count
+Write-In 2                           0             14  DEFEATED -- 2nd count
+Write-In 5                           0              1  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15290  
+
+
+
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                  +2           2148  CONTINUING
+Turkel, Alice L.                    +1           2134  CONTINUING
+Osborne, Mervan F.                  +2           2076  CONTINUING
+Harding, Jr., Richard               +2           1895  CONTINUING
+McGovern, Marc C.                   +2           1803  CONTINUING
+Tauber, Nancy                        0           1509  CONTINUING
+Gerber, Joyce C.                    +1            442  CONTINUING
+Holland, John J.                    +1            407  CONTINUING
+Forster, Bill                       +2            344  CONTINUING
+Stead, Sr., Charles Le.             +2            304  DEFEATED -- 3rd count
+Write-In 1                         -43              0  DEFEATED -- 2nd count
+Write-In 2                         -14              0  DEFEATED -- 2nd count
+Write-In 5                          -1              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +43             43  
+TOTALS:                              0          15290  
+
+
+
+-- Stead, Sr., Charles Lewis is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 4 -- Stead, Sr., Charles Lewis has been DEFEATED -- transferring all
+           votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                 +11           2159  CONTINUING
+Turkel, Alice L.                   +25           2159  CONTINUING
+Osborne, Mervan F.                 +36           2112  CONTINUING
+Harding, Jr., Richard              +75           1970  CONTINUING
+McGovern, Marc C.                  +24           1827  CONTINUING
+Tauber, Nancy                      +30           1539  CONTINUING
+Gerber, Joyce C.                   +12            454  CONTINUING
+Holland, John J.                    +9            416  CONTINUING
+Forster, Bill                      +21            365  DEFEATED -- 4th count
+Stead, Sr., Charles Le.           -304              0  DEFEATED -- 3rd count
+Write-In 1                           0              0  DEFEATED -- 2nd count
+Write-In 2                           0              0  DEFEATED -- 2nd count
+Write-In 5                           0              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +61            104  
+TOTALS:                              0          15290  
+
+
+
+-- Forster, Bill is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- Forster, Bill has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                 +26           2185  ELECTED -- 5th count
+Turkel, Alice L.                   +23           2182  CONTINUING
+Osborne, Mervan F.                 +41           2153  CONTINUING
+Harding, Jr., Richard              +20           1990  CONTINUING
+McGovern, Marc C.                  +33           1860  CONTINUING
+Tauber, Nancy                      +22           1561  CONTINUING
+Gerber, Joyce C.                  +115            569  CONTINUING
+Holland, John J.                   +32            448  DEFEATED -- 5th count
+Forster, Bill                     -365              0  DEFEATED -- 4th count
+Stead, Sr., Charles Le.              0              0  DEFEATED -- 3rd count
+Write-In 1                           0              0  DEFEATED -- 2nd count
+Write-In 2                           0              0  DEFEATED -- 2nd count
+Write-In 5                           0              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                    +53            157  
+TOTALS:                              0          15290  
+
+
+
+-- Nolan, Patricia M. has been ELECTED because s/he has met the quota.
+-- Holland, John J. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- Holland, John J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                   0           2185  ELECTED -- 5th count
+Turkel, Alice L.                    +3           2185  ELECTED -- 6th count
+Osborne, Mervan F.                 +32           2185  ELECTED -- 6th count
+Harding, Jr., Richard              +41           2031  CONTINUING
+McGovern, Marc C.                  +80           1940  CONTINUING
+Tauber, Nancy                      +59           1620  CONTINUING
+Gerber, Joyce C.                   +72            641  DEFEATED -- 6th count
+Holland, John J.                  -448              0  DEFEATED -- 5th count
+Forster, Bill                        0              0  DEFEATED -- 4th count
+Stead, Sr., Charles Le.              0              0  DEFEATED -- 3rd count
+Write-In 1                           0              0  DEFEATED -- 2nd count
+Write-In 2                           0              0  DEFEATED -- 2nd count
+Write-In 5                           0              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +161            318  
+TOTALS:                              0          15290  
+
+
+
+-- Turkel, Alice L. has been ELECTED because s/he has met the quota.
+-- Osborne, Mervan F. has been ELECTED because s/he has met the quota.
+-- Gerber, Joyce C. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- Gerber, Joyce C. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                   0           2185  ELECTED -- 5th count
+Turkel, Alice L.                     0           2185  ELECTED -- 6th count
+Osborne, Mervan F.                   0           2185  ELECTED -- 6th count
+Harding, Jr., Richard             +107           2138  CONTINUING
+McGovern, Marc C.                  +92           2032  CONTINUING
+Tauber, Nancy                     +142           1762  DEFEATED -- 7th count
+Gerber, Joyce C.                  -641              0  DEFEATED -- 6th count
+Holland, John J.                     0              0  DEFEATED -- 5th count
+Forster, Bill                        0              0  DEFEATED -- 4th count
+Stead, Sr., Charles Le.              0              0  DEFEATED -- 3rd count
+Write-In 1                           0              0  DEFEATED -- 2nd count
+Write-In 2                           0              0  DEFEATED -- 2nd count
+Write-In 5                           0              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                   +300            618  
+TOTALS:                              0          15290  
+
+
+
+-- Tauber, Nancy is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- Tauber, Nancy has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Fantini, Alfred B.                   0           2185  ELECTED -- 1st count
+Nolan, Patricia M.                   0           2185  ELECTED -- 5th count
+Turkel, Alice L.                     0           2185  ELECTED -- 6th count
+Osborne, Mervan F.                   0           2185  ELECTED -- 6th count
+Harding, Jr., Richard              +47           2185  ELECTED -- 8th count
+McGovern, Marc C.                 +153           2185  ELECTED -- 8th count
+Tauber, Nancy                    -1762              0  DEFEATED -- 7th count
+Gerber, Joyce C.                     0              0  DEFEATED -- 6th count
+Holland, John J.                     0              0  DEFEATED -- 5th count
+Forster, Bill                        0              0  DEFEATED -- 4th count
+Stead, Sr., Charles Le.              0              0  DEFEATED -- 3rd count
+Write-In 1                           0              0  DEFEATED -- 2nd count
+Write-In 2                           0              0  DEFEATED -- 2nd count
+Write-In 5                           0              0  DEFEATED -- 2nd count
+Write-In 3                           0              0  DEFEATED -- 2nd count
+Write-In 6                           0              0  DEFEATED -- 2nd count
+Write-In 4                           0              0  DEFEATED -- 2nd count
+
+EXHAUSTED PILE:                  +1562           2180  
+TOTALS:                              0          15290  
+
+
+
+-- Harding, Jr., Richard has been ELECTED because s/he has met the quota.
+-- McGovern, Marc C. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Friday, November 18, 2011 6:17 PM
+ChoicePlus Pro -- Version 2.3.4
+(c) 1993-2009 Voting Solutions -- All Rights Reserved

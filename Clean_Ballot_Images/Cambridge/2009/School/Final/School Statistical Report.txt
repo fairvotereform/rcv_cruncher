@@ -1,0 +1,55 @@
+Statistical Report
+
+
+November 13, 2009 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Final Election Results
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+523.0 voters ranked 0 candidates -- 3.274480340596043%.
+2334.0 voters ranked 1 candidates -- 14.613072877535688%.
+2391.0 voters ranked 2 candidates -- 14.969947407963938%.
+3482.0 voters ranked 3 candidates -- 21.800651139494114%.
+2224.0 voters ranked 4 candidates -- 13.924367643375907%.
+1800.0 voters ranked 5 candidates -- 11.269722013523667%.
+1261.0 voters ranked 6 candidates -- 7.895066366140746%.
+428.0 voters ranked 7 candidates -- 2.6796894565489606%.
+371.0 voters ranked 8 candidates -- 2.322814926120711%.
+1153.0 voters ranked 9 candidates -- 7.218883045329326%.
+4.0 voters ranked 10 candidates -- 0.025043826696719257%.
+0.0 voters ranked 11 candidates -- 0.0%.
+0.0 voters ranked 12 candidates -- 0.0%.
+0.0 voters ranked 13 candidates -- 0.0%.
+1.0 voters ranked 14 candidates -- 0.006260956674179814%.
+0.0 voters ranked 15 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+15972.0 votes.
+11592.0 voters elected their #1 choice -- 72.57700976709242%.
+2800.0 voters elected their #2 choice -- 17.530678687703478%.
+231.0 voters elected their #3 choice -- 1.4462809917355373%.
+11.0 voters elected their #4 choice -- 0.06887052341597796%.
+0.0 voters elected their #5 choice -- 0.0%.
+1.0 voters elected their #6 choice -- 0.006260956674179814%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+1337.0 voters did not elect any candidates -- 8.370899073378412%.

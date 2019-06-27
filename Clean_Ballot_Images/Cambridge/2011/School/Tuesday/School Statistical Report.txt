@@ -1,0 +1,59 @@
+Statistical Report
+
+
+November 8, 2011 -- Cambridge, MA
+School Committee Election
+Cambridge, Massachusetts
+Preliminary Results (Election Night)
+
+
+
+VOTING DEPTH
+
+This report shows how many candidates voters ranked.
+
+0.0 voters ranked 0 candidates -- 0.0%.
+2432.0 voters ranked 1 candidates -- 16.279536782917198%.
+2002.0 voters ranked 2 candidates -- 13.401164736595488%.
+3133.0 voters ranked 3 candidates -- 20.97195260726956%.
+2110.0 voters ranked 4 candidates -- 14.124104692415823%.
+1642.0 voters ranked 5 candidates -- 10.991364883861035%.
+1706.0 voters ranked 6 candidates -- 11.419773746569382%.
+505.0 voters ranked 7 candidates -- 3.3804136823080526%.
+231.0 voters ranked 8 candidates -- 1.5462882388379409%.
+160.0 voters ranked 9 candidates -- 1.0710221567708682%.
+233.0 voters ranked 10 candidates -- 1.5596760157975766%.
+785.0 voters ranked 11 candidates -- 5.254702456657072%.
+0.0 voters ranked 12 candidates -- 0.0%.
+0.0 voters ranked 13 candidates -- 0.0%.
+0.0 voters ranked 14 candidates -- 0.0%.
+0.0 voters ranked 15 candidates -- 0.0%.
+0.0 voters ranked 16 candidates -- 0.0%.
+0.0 voters ranked 17 candidates -- 0.0%.
+
+
+
+VOTING SUCCESS
+
+This report shows how many voters successfully elected their #1 choice, their #2 choice (but
+not their #1), their #3 choice, etc.
+
+14939.0 votes.
+12064.0 voters elected their #1 choice -- 80.75507062052345%.
+1973.0 voters elected their #2 choice -- 13.20704197068077%.
+298.0 voters elected their #3 choice -- 1.9947787669857422%.
+106.0 voters elected their #4 choice -- 0.7095521788607002%.
+33.0 voters elected their #5 choice -- 0.22089831983399155%.
+0.0 voters elected their #6 choice -- 0.0%.
+0.0 voters elected their #7 choice -- 0.0%.
+0.0 voters elected their #8 choice -- 0.0%.
+0.0 voters elected their #9 choice -- 0.0%.
+0.0 voters elected their #10 choice -- 0.0%.
+0.0 voters elected their #11 choice -- 0.0%.
+0.0 voters elected their #12 choice -- 0.0%.
+0.0 voters elected their #13 choice -- 0.0%.
+0.0 voters elected their #14 choice -- 0.0%.
+0.0 voters elected their #15 choice -- 0.0%.
+0.0 voters elected their #16 choice -- 0.0%.
+0.0 voters elected their #17 choice -- 0.0%.
+465.0 voters did not elect any candidates -- 3.1126581431153357%.

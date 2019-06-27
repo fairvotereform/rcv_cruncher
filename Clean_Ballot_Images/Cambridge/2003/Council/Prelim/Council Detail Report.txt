@@ -1,0 +1,683 @@
+D:\Cambridge\Election2003\Council\Prelim\Council Detail Report
+
+
+NOV. 4, 2003 -- Cambridge, MA
+CITY COUNCIL ELECTION
+CAMBRIDGE, MA
+Unofficial Election-Night Results Only
+
+CANDIDATES:
+	Bellew, Carole K.
+	Davis, Henrietta
+	DeBergalis, Matt S.
+	Decker, Marjorie C.
+	Dixon, Vincent Lawrence
+	Galluccio, Anthony D.
+	Greenwood, Dan J.
+	Hall, Robert L., Sr.
+	Kelley, Craig A.
+	King, Ethridge A., Jr.
+	LaTremouille, Robert J.
+	Maher, David P.
+	Murphy, Brian
+	Pitkin, John
+	Reeves, Kenneth E.
+	Simmons, Denise
+	Smith, Aimee Louise
+	Sullivan, Michael A.
+	Taymorberry, Laurie
+	Toomey, Timothy J., Jr.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+	Write-In 7
+	Write-In 8
+	Write-In 9
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+19,490 valid ballots.
+Electing 9 candidates.
+Winning threshold is 1950 votes.
+There were 856 invalid ballots.
+(20,346 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.            +2908           2908  ELECTED -- 1st round
+Davis, Henrietta                 +1797           1797  CONTINUING
+Sullivan, Michael A.             +1620           1620  CONTINUING
+Toomey, Timothy J., Jr.          +1582           1582  CONTINUING
+Reeves, Kenneth E.               +1506           1506  CONTINUING
+Decker, Marjorie C.              +1354           1354  CONTINUING
+Murphy, Brian                    +1293           1293  CONTINUING
+DeBergalis, Matt S.              +1172           1172  CONTINUING
+Simmons, Denise                  +1163           1163  CONTINUING
+Maher, David P.                  +1134           1134  CONTINUING
+Kelley, Craig A.                  +976            976  CONTINUING
+Pitkin, John                      +974            974  CONTINUING
+Bellew, Carole K.                 +706            706  CONTINUING
+Smith, Aimee Louise               +465            465  CONTINUING
+King, Ethridge A., Jr.            +348            348  CONTINUING
+Taymorberry, Laurie               +179            179  CONTINUING
+LaTremouille, Robert J.           +122            122  CONTINUING
+Hall, Robert L., Sr.               +93             93  CONTINUING
+Dixon, Vincent Lawrence            +62             62  CONTINUING
+Greenwood, Dan J.                  +36             36  CONTINUING
+Write-In 1                           0              0  CONTINUING
+Write-In 2                           0              0  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +19490          19490  
+
+
+
+-- Galluccio, Anthony D. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ROUND 2 -- Galluccio, Anthony D. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.             -958           1950  ELECTED -- 1st round
+Sullivan, Michael A.              +233           1853  CONTINUING
+Davis, Henrietta                   +44           1841  CONTINUING
+Toomey, Timothy J., Jr.           +127           1709  CONTINUING
+Reeves, Kenneth E.                 +71           1577  CONTINUING
+Decker, Marjorie C.                +50           1404  CONTINUING
+Maher, David P.                   +240           1374  CONTINUING
+Murphy, Brian                      +37           1330  CONTINUING
+Simmons, Denise                    +37           1200  CONTINUING
+DeBergalis, Matt S.                +10           1182  CONTINUING
+Kelley, Craig A.                   +27           1003  CONTINUING
+Pitkin, John                       +29           1003  CONTINUING
+Bellew, Carole K.                  +20            726  CONTINUING
+Smith, Aimee Louise                 +2            467  CONTINUING
+King, Ethridge A., Jr.             +14            362  CONTINUING
+Taymorberry, Laurie                 +4            183  CONTINUING
+LaTremouille, Robert J.             +1            123  CONTINUING
+Hall, Robert L., Sr.                +7            100  CONTINUING
+Dixon, Vincent Lawrence             +1             63  CONTINUING
+Greenwood, Dan J.                   +4             40  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          19490  
+
+
+
+-- Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+-- Greenwood, Dan J. is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+ROUND 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Sullivan, Michael A.                 0           1853  CONTINUING
+Davis, Henrietta                    +2           1843  CONTINUING
+Toomey, Timothy J., Jr.              0           1709  CONTINUING
+Reeves, Kenneth E.                  +1           1578  CONTINUING
+Decker, Marjorie C.                 +2           1406  CONTINUING
+Maher, David P.                     +3           1377  CONTINUING
+Murphy, Brian                       +2           1332  CONTINUING
+Simmons, Denise                      0           1200  CONTINUING
+DeBergalis, Matt S.                 +4           1186  CONTINUING
+Kelley, Craig A.                    +1           1004  CONTINUING
+Pitkin, John                        +1           1004  CONTINUING
+Bellew, Carole K.                   +1            727  CONTINUING
+Smith, Aimee Louise                 +4            471  CONTINUING
+King, Ethridge A., Jr.              +2            364  CONTINUING
+Taymorberry, Laurie                  0            183  CONTINUING
+LaTremouille, Robert J.             +2            125  CONTINUING
+Hall, Robert L., Sr.               +12            112  CONTINUING
+Dixon, Vincent Lawrence              0             63  DEFEATED -- 3rd round
+Greenwood, Dan J.                  -40              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                     +3              3  
+TOTALS:                              0          19490  
+
+
+
+-- Dixon, Vincent Lawrence is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 4 -- Dixon, Vincent Lawrence has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Sullivan, Michael A.                +5           1858  CONTINUING
+Davis, Henrietta                    +3           1846  CONTINUING
+Toomey, Timothy J., Jr.             +2           1711  CONTINUING
+Reeves, Kenneth E.                  +4           1582  CONTINUING
+Decker, Marjorie C.                 +4           1410  CONTINUING
+Maher, David P.                     +2           1379  CONTINUING
+Murphy, Brian                       +3           1335  CONTINUING
+Simmons, Denise                     +6           1206  CONTINUING
+DeBergalis, Matt S.                 +7           1193  CONTINUING
+Pitkin, John                        +3           1007  CONTINUING
+Kelley, Craig A.                    +2           1006  CONTINUING
+Bellew, Carole K.                   +1            728  CONTINUING
+Smith, Aimee Louise                 +1            472  CONTINUING
+King, Ethridge A., Jr.              +4            368  CONTINUING
+Taymorberry, Laurie                 +1            184  CONTINUING
+LaTremouille, Robert J.             +3            128  CONTINUING
+Hall, Robert L., Sr.                +9            121  DEFEATED -- 4th round
+Dixon, Vincent Lawrence            -63              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                     +3              6  
+TOTALS:                              0          19490  
+
+
+
+-- Hall, Robert L., Sr. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 5 -- Hall, Robert L., Sr. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Sullivan, Michael A.                +5           1863  CONTINUING
+Davis, Henrietta                    +5           1851  CONTINUING
+Toomey, Timothy J., Jr.             +2           1713  CONTINUING
+Reeves, Kenneth E.                  +7           1589  CONTINUING
+Decker, Marjorie C.                 +5           1415  CONTINUING
+Maher, David P.                     +8           1387  CONTINUING
+Murphy, Brian                       +2           1337  CONTINUING
+Simmons, Denise                    +11           1217  CONTINUING
+DeBergalis, Matt S.                 +2           1195  CONTINUING
+Kelley, Craig A.                   +30           1036  CONTINUING
+Pitkin, John                        +7           1014  CONTINUING
+Bellew, Carole K.                   +5            733  CONTINUING
+Smith, Aimee Louise                 +1            473  CONTINUING
+King, Ethridge A., Jr.              +7            375  CONTINUING
+Taymorberry, Laurie                 +3            187  CONTINUING
+LaTremouille, Robert J.             +5            133  DEFEATED -- 5th round
+Hall, Robert L., Sr.              -121              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +16             22  
+TOTALS:                              0          19490  
+
+
+
+-- LaTremouille, Robert J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 6 -- LaTremouille, Robert J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Sullivan, Michael A.                +3           1866  CONTINUING
+Davis, Henrietta                   +11           1862  CONTINUING
+Toomey, Timothy J., Jr.             +6           1719  CONTINUING
+Reeves, Kenneth E.                 +12           1601  CONTINUING
+Decker, Marjorie C.                 +5           1420  CONTINUING
+Maher, David P.                     +4           1391  CONTINUING
+Murphy, Brian                       +7           1344  CONTINUING
+Simmons, Denise                     +8           1225  CONTINUING
+DeBergalis, Matt S.                 +4           1199  CONTINUING
+Kelley, Craig A.                   +11           1047  CONTINUING
+Pitkin, John                       +11           1025  CONTINUING
+Bellew, Carole K.                   +4            737  CONTINUING
+Smith, Aimee Louise                 +8            481  CONTINUING
+King, Ethridge A., Jr.             +12            387  CONTINUING
+Taymorberry, Laurie                +10            197  DEFEATED -- 6th round
+LaTremouille, Robert J.           -133              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +17             39  
+TOTALS:                              0          19490  
+
+
+
+-- Taymorberry, Laurie is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 7 -- Taymorberry, Laurie has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                   +27           1889  CONTINUING
+Sullivan, Michael A.                +5           1871  CONTINUING
+Toomey, Timothy J., Jr.            +12           1731  CONTINUING
+Reeves, Kenneth E.                  +6           1607  CONTINUING
+Decker, Marjorie C.                +20           1440  CONTINUING
+Maher, David P.                     +6           1397  CONTINUING
+Murphy, Brian                      +13           1357  CONTINUING
+Simmons, Denise                    +15           1240  CONTINUING
+DeBergalis, Matt S.                 +8           1207  CONTINUING
+Kelley, Craig A.                    +7           1054  CONTINUING
+Pitkin, John                        +9           1034  CONTINUING
+Bellew, Carole K.                  +17            754  CONTINUING
+Smith, Aimee Louise                +18            499  CONTINUING
+King, Ethridge A., Jr.              +6            393  DEFEATED -- 7th round
+Taymorberry, Laurie               -197              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +28             67  
+TOTALS:                              0          19490  
+
+
+
+-- King, Ethridge A., Jr. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 8 -- King, Ethridge A., Jr. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                   +27           1916  CONTINUING
+Sullivan, Michael A.               +32           1903  CONTINUING
+Toomey, Timothy J., Jr.            +14           1745  CONTINUING
+Reeves, Kenneth E.                 +32           1639  CONTINUING
+Decker, Marjorie C.                +23           1463  CONTINUING
+Maher, David P.                    +42           1439  CONTINUING
+Murphy, Brian                      +23           1380  CONTINUING
+Simmons, Denise                    +25           1265  CONTINUING
+DeBergalis, Matt S.                +40           1247  CONTINUING
+Kelley, Craig A.                   +20           1074  CONTINUING
+Pitkin, John                       +23           1057  CONTINUING
+Bellew, Carole K.                  +24            778  CONTINUING
+Smith, Aimee Louise                 +8            507  DEFEATED -- 8th round
+King, Ethridge A., Jr.            -393              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +60            127  
+TOTALS:                              0          19490  
+
+
+
+-- Smith, Aimee Louise is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 9 -- Smith, Aimee Louise has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                   +34           1950  ELECTED -- 9th round
+Sullivan, Michael A.               +22           1925  CONTINUING
+Toomey, Timothy J., Jr.            +14           1759  CONTINUING
+Reeves, Kenneth E.                 +28           1667  CONTINUING
+Decker, Marjorie C.                +39           1502  CONTINUING
+Maher, David P.                     +4           1443  CONTINUING
+Murphy, Brian                      +31           1411  CONTINUING
+Simmons, Denise                   +106           1371  CONTINUING
+DeBergalis, Matt S.                +54           1301  CONTINUING
+Kelley, Craig A.                   +24           1098  CONTINUING
+Pitkin, John                       +37           1094  CONTINUING
+Bellew, Carole K.                  +48            826  DEFEATED -- 9th round
+Smith, Aimee Louise               -507              0  DEFEATED -- 8th round
+King, Ethridge A., Jr.               0              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +66            193  
+TOTALS:                              0          19490  
+
+
+
+-- Davis, Henrietta has been ELECTED because s/he has met the threshold.
+-- Bellew, Carole K. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 10 -- Bellew, Carole K. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                     0           1950  ELECTED -- 9th round
+Sullivan, Michael A.               +25           1950  ELECTED -- 10th round
+Toomey, Timothy J., Jr.            +57           1816  CONTINUING
+Reeves, Kenneth E.                 +40           1707  CONTINUING
+Decker, Marjorie C.               +109           1611  CONTINUING
+Murphy, Brian                     +113           1524  CONTINUING
+Maher, David P.                    +60           1503  CONTINUING
+Simmons, Denise                    +70           1441  CONTINUING
+DeBergalis, Matt S.                +92           1393  CONTINUING
+Pitkin, John                       +91           1185  CONTINUING
+Kelley, Craig A.                   +61           1159  DEFEATED -- 10th round
+Bellew, Carole K.                 -826              0  DEFEATED -- 9th round
+Smith, Aimee Louise                  0              0  DEFEATED -- 8th round
+King, Ethridge A., Jr.               0              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +108            301  
+TOTALS:                              0          19490  
+
+
+
+-- Sullivan, Michael A. has been ELECTED because s/he has met the threshold.
+-- Kelley, Craig A. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 11 -- Kelley, Craig A. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                     0           1950  ELECTED -- 9th round
+Sullivan, Michael A.                 0           1950  ELECTED -- 10th round
+Toomey, Timothy J., Jr.            +63           1879  CONTINUING
+Reeves, Kenneth E.                 +70           1777  CONTINUING
+Decker, Marjorie C.               +143           1754  CONTINUING
+Murphy, Brian                     +142           1666  CONTINUING
+Maher, David P.                   +122           1625  CONTINUING
+Simmons, Denise                    +90           1531  CONTINUING
+Pitkin, John                      +268           1453  CONTINUING
+DeBergalis, Matt S.                +52           1445  DEFEATED -- 11th round
+Kelley, Craig A.                 -1159              0  DEFEATED -- 10th round
+Bellew, Carole K.                    0              0  DEFEATED -- 9th round
+Smith, Aimee Louise                  0              0  DEFEATED -- 8th round
+King, Ethridge A., Jr.               0              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +209            510  
+TOTALS:                              0          19490  
+
+
+
+-- DeBergalis, Matt S. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 12 -- DeBergalis, Matt S. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                     0           1950  ELECTED -- 9th round
+Sullivan, Michael A.                 0           1950  ELECTED -- 10th round
+Toomey, Timothy J., Jr.            +71           1950  ELECTED -- 12th round
+Murphy, Brian                     +284           1950  ELECTED -- 12th round
+Decker, Marjorie C.               +190           1944  CONTINUING
+Reeves, Kenneth E.                +106           1883  CONTINUING
+Maher, David P.                    +96           1721  CONTINUING
+Simmons, Denise                   +117           1648  CONTINUING
+Pitkin, John                      +129           1582  DEFEATED -- 12th round
+DeBergalis, Matt S.              -1445              0  DEFEATED -- 11th round
+Kelley, Craig A.                     0              0  DEFEATED -- 10th round
+Bellew, Carole K.                    0              0  DEFEATED -- 9th round
+Smith, Aimee Louise                  0              0  DEFEATED -- 8th round
+King, Ethridge A., Jr.               0              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +452            962  
+TOTALS:                              0          19490  
+
+
+
+-- Toomey, Timothy J., Jr. has been ELECTED because s/he has met the threshold.
+-- Murphy, Brian has been ELECTED because s/he has met the threshold.
+-- Pitkin, John is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 13 -- Pitkin, John has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Galluccio, Anthony D.                0           1950  ELECTED -- 1st round
+Davis, Henrietta                     0           1950  ELECTED -- 9th round
+Sullivan, Michael A.                 0           1950  ELECTED -- 10th round
+Toomey, Timothy J., Jr.              0           1950  ELECTED -- 12th round
+Murphy, Brian                        0           1950  ELECTED -- 12th round
+Decker, Marjorie C.                 +6           1950  ELECTED -- 13th round
+Reeves, Kenneth E.                 +67           1950  ELECTED -- 13th round
+Simmons, Denise                   +302           1950  ELECTED -- 13th round
+Maher, David P.                   +229           1950  ELECTED -- 13th round
+Pitkin, John                     -1582              0  DEFEATED -- 12th round
+DeBergalis, Matt S.                  0              0  DEFEATED -- 11th round
+Kelley, Craig A.                     0              0  DEFEATED -- 10th round
+Bellew, Carole K.                    0              0  DEFEATED -- 9th round
+Smith, Aimee Louise                  0              0  DEFEATED -- 8th round
+King, Ethridge A., Jr.               0              0  DEFEATED -- 7th round
+Taymorberry, Laurie                  0              0  DEFEATED -- 6th round
+LaTremouille, Robert J.              0              0  DEFEATED -- 5th round
+Hall, Robert L., Sr.                 0              0  DEFEATED -- 4th round
+Dixon, Vincent Lawrence              0              0  DEFEATED -- 3rd round
+Greenwood, Dan J.                    0              0  DEFEATED -- 2nd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +978           1940  
+TOTALS:                              0          19490  
+
+
+
+-- Decker, Marjorie C. has been ELECTED because s/he has met the threshold.
+-- Reeves, Kenneth E. has been ELECTED because s/he has met the threshold.
+-- Simmons, Denise has been ELECTED because s/he has met the threshold.
+-- Maher, David P. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 5, 2003 12:47 AM
+ChoicePlus Pro -- Version 2.1
+(c) 1993-2001 Voting Solutions -- All Rights Reserved

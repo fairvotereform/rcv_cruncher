@@ -1,0 +1,31 @@
+.TITLE November 13, 2015 -- Cambridge, MA
+.TITLE School Committee Election
+.TITLE Cambridge, Massachusetts
+.TITLE Test by Robert Winters (Nov 13, 2015)
+
+.ELECT 6
+.CONTEST "School"
+.STATISTICS-ON
+.COMPLY-WITH CAMBRIDGE
+.BALLOT-FORMAT-SEPS ,)
+.BALLOT-FORMAT-FIELDS BALLOT-ID-ALPHA BALLOT-TOP-ALPHA IGNORE-FIELD IGNORE-FIELD RANKINGS-ALPHA
+
+.CANDIDATE C01, "Bowman, Manikka L."
+.CANDIDATE C02, "Cisternino, Pia"
+.CANDIDATE C03, "Cronin, Fran Albin"
+.CANDIDATE C04, "Crutchfield, Jake W."
+.CANDIDATE C05, "Dexter, Emily R."
+.CANDIDATE C06, "Fantini, Alfred B."
+.CANDIDATE C07, "Harding, Jr., Richard"
+.CANDIDATE C08, "Kadete, Elechi M."
+.CANDIDATE C09, "Kelly, Kathleen M."
+.CANDIDATE C10, "Nolan, Patricia M."
+.CANDIDATE C11, "Weinstein, David J."
+.CANDIDATE WI01, "Write-In 1"
+.CANDIDATE WI02, "Write-In 2"
+.CANDIDATE WI03, "Write-In 3"
+.CANDIDATE WI04, "Write-In 4"
+.CANDIDATE WI05, "Write-In 5"
+.CANDIDATE WI06, "Write-In 6"
+
+.INCLUDE School2015.prm

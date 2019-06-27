@@ -1,0 +1,13 @@
+FormattedFor: RcvCalc 0.5a
+Title: PCA : Pierce County Auditor
+SubTitle: 
+Candidate: JS : Jan Shabro
+Candidate: JA : Julie Anderson
+Candidate: WB : Will Baker
+Candidate: WI : Write-In
+OverVote: ++
+UnderVote: --
+TieBreakMethod:  Ask
+MultipleEliminations: Allow
+StartBallots:
+Include: PCA-RcvInBallots.txt 

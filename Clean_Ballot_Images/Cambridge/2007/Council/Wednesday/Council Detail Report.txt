@@ -1,0 +1,500 @@
+D:\Cambridge\Election2007\Council\Wednesday\Council Detail Report
+
+
+NOVEMBER 7, 2007 -- Cambridge, MA
+CITY COUNCIL ELECTION
+CAMBRIDGE, MA
+Unofficial Results (Wednesday Count)
+
+CANDIDATES:
+	Davis, Henrietta
+	Decker, Marjorie C.
+	Galluccio, Anthony D.
+	Janik, Jonathan S.
+	Kelley, Craig A.
+	Maher, David P.
+	Moore, M. Kevin
+	Moree, Gregg J.
+	Murphy, Brian
+	Podgers, Kathy
+	Reeves, Kenneth E.
+	Seidel, Sam
+	Simmons, E. Denise
+	Sullivan, Edward J.
+	Toomey, Timothy J., Jr.
+	Ward, Larry W.
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+	Write-In 7
+	Write-In 8
+	Write-In 9
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By drawing lots
+                        3) Random (by computer)
+
+--------------------------------------------------
+13,633 valid ballots.
+Electing 9 candidates.
+Winning threshold is 1364 votes.
+There were 88 invalid ballots.
+(13,721 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                 +1592           1592  ELECTED -- 1st round
+Toomey, Timothy J., Jr.          +1339           1339  CONTINUING
+Maher, David P.                  +1312           1312  CONTINUING
+Reeves, Kenneth E.               +1217           1217  CONTINUING
+Murphy, Brian                    +1160           1160  CONTINUING
+Kelley, Craig A.                 +1118           1118  CONTINUING
+Decker, Marjorie C.              +1069           1069  CONTINUING
+Seidel, Sam                      +1037           1037  CONTINUING
+Simmons, E. Denise                +996            996  CONTINUING
+Sullivan, Edward J.               +831            831  CONTINUING
+Ward, Larry W.                    +699            699  CONTINUING
+Galluccio, Anthony D.             +522            522  CONTINUING
+Janik, Jonathan S.                +261            261  CONTINUING
+Moore, M. Kevin                   +251            251  CONTINUING
+Moree, Gregg J.                   +111            111  CONTINUING
+Podgers, Kathy                     +92             92  CONTINUING
+Write-In 1                         +25             25  CONTINUING
+Write-In 2                          +1              1  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +13633          13633  
+
+
+
+-- Davis, Henrietta has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ROUND 2 -- Davis, Henrietta has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                  -228           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.             +8           1347  CONTINUING
+Maher, David P.                    +15           1327  CONTINUING
+Reeves, Kenneth E.                  +5           1222  CONTINUING
+Murphy, Brian                      +46           1206  CONTINUING
+Decker, Marjorie C.                +71           1140  CONTINUING
+Kelley, Craig A.                   +20           1138  CONTINUING
+Seidel, Sam                        +13           1050  CONTINUING
+Simmons, E. Denise                 +23           1019  CONTINUING
+Sullivan, Edward J.                 +1            832  CONTINUING
+Ward, Larry W.                     +10            709  CONTINUING
+Galluccio, Anthony D.              +12            534  CONTINUING
+Janik, Jonathan S.                  +3            264  CONTINUING
+Moore, M. Kevin                      0            251  CONTINUING
+Moree, Gregg J.                     +1            112  CONTINUING
+Podgers, Kathy                       0             92  CONTINUING
+Write-In 1                           0             25  DEFEATED -- 2nd round
+Write-In 2                           0              1  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          13633  
+
+
+
+-- Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+ROUND 3 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.             +1           1348  CONTINUING
+Maher, David P.                      0           1327  CONTINUING
+Reeves, Kenneth E.                  +2           1224  CONTINUING
+Murphy, Brian                       +1           1207  CONTINUING
+Decker, Marjorie C.                 +1           1141  CONTINUING
+Kelley, Craig A.                     0           1138  CONTINUING
+Seidel, Sam                         +4           1054  CONTINUING
+Simmons, E. Denise                  +1           1020  CONTINUING
+Sullivan, Edward J.                 +1            833  CONTINUING
+Ward, Larry W.                       0            709  CONTINUING
+Galluccio, Anthony D.               +1            535  CONTINUING
+Janik, Jonathan S.                  +1            265  CONTINUING
+Moore, M. Kevin                     +1            252  CONTINUING
+Moree, Gregg J.                      0            112  CONTINUING
+Podgers, Kathy                      +1             93  DEFEATED -- 3rd round
+Write-In 1                         -25              0  DEFEATED -- 2nd round
+Write-In 2                          -1              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +11             11  
+TOTALS:                              0          13633  
+
+
+
+-- Podgers, Kathy is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 4 -- Podgers, Kathy has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.             +2           1350  CONTINUING
+Maher, David P.                     +2           1329  CONTINUING
+Reeves, Kenneth E.                  +8           1232  CONTINUING
+Murphy, Brian                       +5           1212  CONTINUING
+Kelley, Craig A.                   +11           1149  CONTINUING
+Decker, Marjorie C.                 +6           1147  CONTINUING
+Seidel, Sam                        +16           1070  CONTINUING
+Simmons, E. Denise                 +10           1030  CONTINUING
+Sullivan, Edward J.                 +4            837  CONTINUING
+Ward, Larry W.                      +4            713  CONTINUING
+Galluccio, Anthony D.                0            535  CONTINUING
+Janik, Jonathan S.                  +4            269  CONTINUING
+Moore, M. Kevin                    +14            266  CONTINUING
+Moree, Gregg J.                     +1            113  DEFEATED -- 4th round
+Podgers, Kathy                     -93              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                     +6             17  
+TOTALS:                              0          13633  
+
+
+
+-- Moree, Gregg J. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 5 -- Moree, Gregg J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.            +10           1360  CONTINUING
+Maher, David P.                     +8           1337  CONTINUING
+Reeves, Kenneth E.                  +7           1239  CONTINUING
+Murphy, Brian                       +9           1221  CONTINUING
+Kelley, Craig A.                    +7           1156  CONTINUING
+Decker, Marjorie C.                 +6           1153  CONTINUING
+Seidel, Sam                         +6           1076  CONTINUING
+Simmons, E. Denise                  +7           1037  CONTINUING
+Sullivan, Edward J.                 +8            845  CONTINUING
+Ward, Larry W.                      +5            718  CONTINUING
+Galluccio, Anthony D.               +3            538  CONTINUING
+Moore, M. Kevin                    +18            284  CONTINUING
+Janik, Jonathan S.                  +7            276  DEFEATED -- 5th round
+Moree, Gregg J.                   -113              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +12             29  
+TOTALS:                              0          13633  
+
+
+
+-- Janik, Jonathan S. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 6 -- Janik, Jonathan S. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.             +4           1364  ELECTED -- 6th round
+Maher, David P.                    +21           1358  CONTINUING
+Reeves, Kenneth E.                 +16           1255  CONTINUING
+Murphy, Brian                      +28           1249  CONTINUING
+Decker, Marjorie C.                +24           1177  CONTINUING
+Kelley, Craig A.                   +18           1174  CONTINUING
+Seidel, Sam                        +36           1112  CONTINUING
+Simmons, E. Denise                 +11           1048  CONTINUING
+Sullivan, Edward J.                 +9            854  CONTINUING
+Ward, Larry W.                     +33            751  CONTINUING
+Galluccio, Anthony D.              +16            554  CONTINUING
+Moore, M. Kevin                    +23            307  DEFEATED -- 6th round
+Janik, Jonathan S.                -276              0  DEFEATED -- 5th round
+Moree, Gregg J.                      0              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +37             66  
+TOTALS:                              0          13633  
+
+
+
+-- Toomey, Timothy J., Jr. has been ELECTED because s/he has met the threshold.
+-- Moore, M. Kevin is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 7 -- Moore, M. Kevin has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.              0           1364  ELECTED -- 6th round
+Maher, David P.                     +6           1364  ELECTED -- 7th round
+Reeves, Kenneth E.                 +57           1312  CONTINUING
+Murphy, Brian                      +23           1272  CONTINUING
+Decker, Marjorie C.                +21           1198  CONTINUING
+Kelley, Craig A.                    +7           1181  CONTINUING
+Seidel, Sam                        +43           1155  CONTINUING
+Simmons, E. Denise                 +35           1083  CONTINUING
+Sullivan, Edward J.                +11            865  CONTINUING
+Ward, Larry W.                     +55            806  CONTINUING
+Galluccio, Anthony D.              +12            566  DEFEATED -- 7th round
+Moore, M. Kevin                   -307              0  DEFEATED -- 6th round
+Janik, Jonathan S.                   0              0  DEFEATED -- 5th round
+Moree, Gregg J.                      0              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                    +37            103  
+TOTALS:                              0          13633  
+
+
+
+-- Maher, David P. has been ELECTED because s/he has met the threshold.
+-- Galluccio, Anthony D. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 8 -- Galluccio, Anthony D. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.              0           1364  ELECTED -- 6th round
+Maher, David P.                      0           1364  ELECTED -- 7th round
+Reeves, Kenneth E.                 +52           1364  ELECTED -- 8th round
+Murphy, Brian                      +35           1307  CONTINUING
+Decker, Marjorie C.                +82           1280  CONTINUING
+Kelley, Craig A.                   +47           1228  CONTINUING
+Seidel, Sam                        +20           1175  CONTINUING
+Simmons, E. Denise                 +72           1155  CONTINUING
+Sullivan, Edward J.               +121            986  CONTINUING
+Ward, Larry W.                     +29            835  DEFEATED -- 8th round
+Galluccio, Anthony D.             -566              0  DEFEATED -- 7th round
+Moore, M. Kevin                      0              0  DEFEATED -- 6th round
+Janik, Jonathan S.                   0              0  DEFEATED -- 5th round
+Moree, Gregg J.                      0              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +108            211  
+TOTALS:                              0          13633  
+
+
+
+-- Reeves, Kenneth E. has been ELECTED because s/he has met the threshold.
+-- Ward, Larry W. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 9 -- Ward, Larry W. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.              0           1364  ELECTED -- 6th round
+Maher, David P.                      0           1364  ELECTED -- 7th round
+Reeves, Kenneth E.                   0           1364  ELECTED -- 8th round
+Decker, Marjorie C.                +84           1364  ELECTED -- 9th round
+Murphy, Brian                      +57           1364  ELECTED -- 9th round
+Simmons, E. Denise                +209           1364  ELECTED -- 9th round
+Seidel, Sam                       +173           1348  CONTINUING
+Kelley, Craig A.                  +114           1342  CONTINUING
+Sullivan, Edward J.                +52           1038  DEFEATED -- 9th round
+Ward, Larry W.                    -835              0  DEFEATED -- 8th round
+Galluccio, Anthony D.                0              0  DEFEATED -- 7th round
+Moore, M. Kevin                      0              0  DEFEATED -- 6th round
+Janik, Jonathan S.                   0              0  DEFEATED -- 5th round
+Moree, Gregg J.                      0              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                   +146            357  
+TOTALS:                              0          13633  
+
+
+
+-- Decker, Marjorie C. has been ELECTED because s/he has met the threshold.
+-- Murphy, Brian has been ELECTED because s/he has met the threshold.
+-- Simmons, E. Denise has been ELECTED because s/he has met the threshold.
+-- Sullivan, Edward J. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 10 -- Sullivan, Edward J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1364  ELECTED -- 1st round
+Toomey, Timothy J., Jr.              0           1364  ELECTED -- 6th round
+Maher, David P.                      0           1364  ELECTED -- 7th round
+Reeves, Kenneth E.                   0           1364  ELECTED -- 8th round
+Decker, Marjorie C.                  0           1364  ELECTED -- 9th round
+Murphy, Brian                        0           1364  ELECTED -- 9th round
+Simmons, E. Denise                   0           1364  ELECTED -- 9th round
+Kelley, Craig A.                   +22           1364  ELECTED -- 10th round
+Seidel, Sam                        +16           1364  ELECTED -- 10th round
+Sullivan, Edward J.              -1038              0  DEFEATED -- 9th round
+Ward, Larry W.                       0              0  DEFEATED -- 8th round
+Galluccio, Anthony D.                0              0  DEFEATED -- 7th round
+Moore, M. Kevin                      0              0  DEFEATED -- 6th round
+Janik, Jonathan S.                   0              0  DEFEATED -- 5th round
+Moree, Gregg J.                      0              0  DEFEATED -- 4th round
+Podgers, Kathy                       0              0  DEFEATED -- 3rd round
+Write-In 1                           0              0  DEFEATED -- 2nd round
+Write-In 2                           0              0  DEFEATED -- 2nd round
+Write-In 3                           0              0  DEFEATED -- 2nd round
+Write-In 4                           0              0  DEFEATED -- 2nd round
+Write-In 5                           0              0  DEFEATED -- 2nd round
+Write-In 6                           0              0  DEFEATED -- 2nd round
+Write-In 7                           0              0  DEFEATED -- 2nd round
+Write-In 8                           0              0  DEFEATED -- 2nd round
+Write-In 9                           0              0  DEFEATED -- 2nd round
+
+EXHAUSTED PILE:                  +1000           1357  
+TOTALS:                              0          13633  
+
+
+
+-- Kelley, Craig A. has been ELECTED because s/he has met the threshold.
+-- Seidel, Sam has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 7, 2007 5:45 PM
+ChoicePlus Pro -- Version 2.3.2
+(c) 1993-2006 Voting Solutions -- All Rights Reserved

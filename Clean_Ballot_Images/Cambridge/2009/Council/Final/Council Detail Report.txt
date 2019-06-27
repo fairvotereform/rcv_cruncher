@@ -1,0 +1,863 @@
+C:\Cambridge\Election2009\Council\Final\Council Detail Report
+
+
+November 13, 2009 -- Cambridge, MA
+City Council Election
+Cambridge, Massachusetts
+Final Election Results
+
+CANDIDATES:
+	Adkins, Lawrence J.
+	Cheung, Leland
+	Davis, Henrietta
+	Flanagan, Mark F.
+	Glick, Silvia P.
+	Kelley, Craig A.
+	Leavitt, Neal W.
+	Maher, David P.
+	Marquardt, Charles J.
+	Moree, Gregg J.
+	Podgers, Kathy
+	Reeves, Kenneth E.
+	Seidel, Sam
+	Simmons, E. Denise
+	Stohlman, Jr., Thomas J.
+	Sullivan, Edward J.
+	Toomey, Jr., Timothy J.
+	vanBeuzekom, Minka Y.
+	Ward, Larry W.
+	Williamson, James M.
+	Decker, Marjorie C.
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+	Write-In 7
+	Write-In 8
+	Write-In 9
+
+ELECTION RULES:
+               System:  Proportional Representation
+           Quota Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st count)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Count method
+                        2) By election official
+                        3) Random (by computer)
+
+--------------------------------------------------
+15,955 valid ballots.
+Electing 9 candidates.
+Quota is 1596 votes.
+There were 118 invalid ballots.
+(16,073 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+COUNT 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                 +1858           1858  ELECTED -- 1st count
+Simmons, E. Denise               +1785           1785  ELECTED -- 1st count
+Toomey, Jr., Timothy J.          +1748           1748  ELECTED -- 1st count
+Maher, David P.                  +1286           1286  CONTINUING
+Decker, Marjorie C.              +1285           1285  CONTINUING
+Kelley, Craig A.                 +1250           1250  CONTINUING
+Reeves, Kenneth E.               +1166           1166  CONTINUING
+Seidel, Sam                       +900            900  CONTINUING
+Sullivan, Edward J.               +885            885  CONTINUING
+Cheung, Leland                    +756            756  CONTINUING
+Ward, Larry W.                    +736            736  CONTINUING
+vanBeuzekom, Minka Y.             +682            682  CONTINUING
+Marquardt, Charles J.             +385            385  CONTINUING
+Stohlman, Jr., Thomas .           +378            378  CONTINUING
+Glick, Silvia P.                  +256            256  CONTINUING
+Leavitt, Neal W.                  +136            136  CONTINUING
+Flanagan, Mark F.                 +112            112  CONTINUING
+Adkins, Lawrence J.               +103            103  CONTINUING
+Williamson, James M.               +90             90  CONTINUING
+Podgers, Kathy                     +78             78  CONTINUING
+Moree, Gregg J.                    +47             47  CONTINUING
+Write-In 2                         +18             18  CONTINUING
+Write-In 3                         +13             13  CONTINUING
+Write-In 6                          +2              2  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +15955          15955  
+
+
+
+-- Davis, Henrietta has been ELECTED because s/he has met the quota.
+-- Simmons, E. Denise has been ELECTED because s/he has met the quota.
+-- Toomey, Jr., Timothy J. has been ELECTED because s/he has met the quota.
+
+
+********************************************************************************
+
+
+COUNT 2 -- Davis, Henrietta has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                  -262           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1785  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1748  ELECTED -- 1st count
+Decker, Marjorie C.                +28           1313  CONTINUING
+Maher, David P.                    +21           1307  CONTINUING
+Kelley, Craig A.                   +38           1288  CONTINUING
+Reeves, Kenneth E.                 +32           1198  CONTINUING
+Seidel, Sam                        +30            930  CONTINUING
+Sullivan, Edward J.                 +3            888  CONTINUING
+Cheung, Leland                     +18            774  CONTINUING
+Ward, Larry W.                     +27            763  CONTINUING
+vanBeuzekom, Minka Y.              +31            713  CONTINUING
+Stohlman, Jr., Thomas .            +12            390  CONTINUING
+Marquardt, Charles J.               +3            388  CONTINUING
+Glick, Silvia P.                   +10            266  CONTINUING
+Leavitt, Neal W.                    +3            139  CONTINUING
+Flanagan, Mark F.                   +3            115  CONTINUING
+Adkins, Lawrence J.                 +3            106  CONTINUING
+Williamson, James M.                 0             90  CONTINUING
+Podgers, Kathy                       0             78  CONTINUING
+Moree, Gregg J.                      0             47  CONTINUING
+Write-In 2                           0             18  CONTINUING
+Write-In 3                           0             13  CONTINUING
+Write-In 6                           0              2  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15955  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 3 -- Simmons, E. Denise has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                -189           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1748  ELECTED -- 1st count
+Decker, Marjorie C.                +13           1326  CONTINUING
+Maher, David P.                    +12           1319  CONTINUING
+Kelley, Craig A.                    +9           1297  CONTINUING
+Reeves, Kenneth E.                 +63           1261  CONTINUING
+Seidel, Sam                        +22            952  CONTINUING
+Sullivan, Edward J.                +11            899  CONTINUING
+Cheung, Leland                      +9            783  CONTINUING
+Ward, Larry W.                     +18            781  CONTINUING
+vanBeuzekom, Minka Y.              +12            725  CONTINUING
+Stohlman, Jr., Thomas .             +5            395  CONTINUING
+Marquardt, Charles J.               +2            390  CONTINUING
+Glick, Silvia P.                    +3            269  CONTINUING
+Leavitt, Neal W.                     0            139  CONTINUING
+Flanagan, Mark F.                   +2            117  CONTINUING
+Adkins, Lawrence J.                 +1            107  CONTINUING
+Williamson, James M.                +1             91  CONTINUING
+Podgers, Kathy                      +4             82  CONTINUING
+Moree, Gregg J.                     +2             49  CONTINUING
+Write-In 2                           0             18  CONTINUING
+Write-In 3                           0             13  CONTINUING
+Write-In 6                           0              2  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 7                           0              0  CONTINUING
+Write-In 8                           0              0  CONTINUING
+Write-In 9                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15955  
+
+
+
+
+
+********************************************************************************
+
+
+COUNT 4 -- Toomey, Jr., Timothy J. has been ELECTED -- transferring surplus
+           votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.           -152           1596  ELECTED -- 1st count
+Maher, David P.                    +28           1347  CONTINUING
+Decker, Marjorie C.                 +5           1331  CONTINUING
+Kelley, Craig A.                   +10           1307  CONTINUING
+Reeves, Kenneth E.                 +16           1277  CONTINUING
+Seidel, Sam                        +10            962  CONTINUING
+Sullivan, Edward J.                +49            948  CONTINUING
+Ward, Larry W.                     +15            796  CONTINUING
+Cheung, Leland                      +7            790  CONTINUING
+vanBeuzekom, Minka Y.               +1            726  CONTINUING
+Stohlman, Jr., Thomas .             +2            397  CONTINUING
+Marquardt, Charles J.               +3            393  CONTINUING
+Glick, Silvia P.                     0            269  CONTINUING
+Leavitt, Neal W.                    +1            140  CONTINUING
+Flanagan, Mark F.                   +3            120  CONTINUING
+Adkins, Lawrence J.                  0            107  CONTINUING
+Williamson, James M.                +1             92  CONTINUING
+Podgers, Kathy                       0             82  CONTINUING
+Moree, Gregg J.                     +1             50  CONTINUING
+Write-In 2                           0             18  DEFEATED -- 4th count
+Write-In 3                           0             13  DEFEATED -- 4th count
+Write-In 6                           0              2  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          15955  
+
+
+
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 9 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 8 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 7 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+COUNT 5 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +1           1348  CONTINUING
+Decker, Marjorie C.                 +1           1332  CONTINUING
+Kelley, Craig A.                    +3           1310  CONTINUING
+Reeves, Kenneth E.                  +4           1281  CONTINUING
+Seidel, Sam                          0            962  CONTINUING
+Sullivan, Edward J.                  0            948  CONTINUING
+Ward, Larry W.                       0            796  CONTINUING
+Cheung, Leland                      +3            793  CONTINUING
+vanBeuzekom, Minka Y.                0            726  CONTINUING
+Stohlman, Jr., Thomas .             +1            398  CONTINUING
+Marquardt, Charles J.               +1            394  CONTINUING
+Glick, Silvia P.                    +1            270  CONTINUING
+Leavitt, Neal W.                     0            140  CONTINUING
+Flanagan, Mark F.                   +1            121  CONTINUING
+Adkins, Lawrence J.                 +1            108  CONTINUING
+Williamson, James M.                 0             92  CONTINUING
+Podgers, Kathy                      +1             83  CONTINUING
+Moree, Gregg J.                      0             50  DEFEATED -- 5th count
+Write-In 2                         -18              0  DEFEATED -- 4th count
+Write-In 3                         -13              0  DEFEATED -- 4th count
+Write-In 6                          -2              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +15             15  
+TOTALS:                              0          15955  
+
+
+
+-- Moree, Gregg J. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 6 -- Moree, Gregg J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +1           1349  CONTINUING
+Decker, Marjorie C.                 +1           1333  CONTINUING
+Kelley, Craig A.                    +5           1315  CONTINUING
+Reeves, Kenneth E.                  +5           1286  CONTINUING
+Seidel, Sam                         +2            964  CONTINUING
+Sullivan, Edward J.                 +4            952  CONTINUING
+Ward, Larry W.                      +2            798  CONTINUING
+Cheung, Leland                      +2            795  CONTINUING
+vanBeuzekom, Minka Y.               +2            728  CONTINUING
+Stohlman, Jr., Thomas .             +3            401  CONTINUING
+Marquardt, Charles J.               +1            395  CONTINUING
+Glick, Silvia P.                    +2            272  CONTINUING
+Leavitt, Neal W.                    +1            141  CONTINUING
+Flanagan, Mark F.                    0            121  CONTINUING
+Adkins, Lawrence J.                  0            108  CONTINUING
+Podgers, Kathy                     +13             96  CONTINUING
+Williamson, James M.                 0             92  DEFEATED -- 6th count
+Moree, Gregg J.                    -50              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                     +6             21  
+TOTALS:                              0          15955  
+
+
+
+-- Williamson, James M. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 7 -- Williamson, James M. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +1           1350  CONTINUING
+Decker, Marjorie C.                 +1           1334  CONTINUING
+Kelley, Craig A.                    +6           1321  CONTINUING
+Reeves, Kenneth E.                  +8           1294  CONTINUING
+Seidel, Sam                         +7            971  CONTINUING
+Sullivan, Edward J.                 +1            953  CONTINUING
+Ward, Larry W.                     +10            808  CONTINUING
+Cheung, Leland                      +7            802  CONTINUING
+vanBeuzekom, Minka Y.               +5            733  CONTINUING
+Stohlman, Jr., Thomas .             +5            406  CONTINUING
+Marquardt, Charles J.               +1            396  CONTINUING
+Glick, Silvia P.                    +6            278  CONTINUING
+Leavitt, Neal W.                    +1            142  CONTINUING
+Flanagan, Mark F.                   +6            127  CONTINUING
+Adkins, Lawrence J.                +13            121  CONTINUING
+Podgers, Kathy                      +6            102  DEFEATED -- 7th count
+Williamson, James M.               -92              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                     +8             29  
+TOTALS:                              0          15955  
+
+
+
+-- Podgers, Kathy is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 8 -- Podgers, Kathy has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +7           1357  CONTINUING
+Decker, Marjorie C.                 +2           1336  CONTINUING
+Kelley, Craig A.                    +7           1328  CONTINUING
+Reeves, Kenneth E.                 +10           1304  CONTINUING
+Seidel, Sam                         +6            977  CONTINUING
+Sullivan, Edward J.                 +2            955  CONTINUING
+Ward, Larry W.                      +4            812  CONTINUING
+Cheung, Leland                      +7            809  CONTINUING
+vanBeuzekom, Minka Y.               +6            739  CONTINUING
+Stohlman, Jr., Thomas .             +6            412  CONTINUING
+Marquardt, Charles J.               +5            401  CONTINUING
+Glick, Silvia P.                   +11            289  CONTINUING
+Leavitt, Neal W.                    +2            144  CONTINUING
+Flanagan, Mark F.                   +4            131  CONTINUING
+Adkins, Lawrence J.                 +5            126  DEFEATED -- 8th count
+Podgers, Kathy                    -102              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +18             47  
+TOTALS:                              0          15955  
+
+
+
+-- Adkins, Lawrence J. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 9 -- Adkins, Lawrence J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +1           1358  CONTINUING
+Decker, Marjorie C.                 +3           1339  CONTINUING
+Kelley, Craig A.                    +9           1337  CONTINUING
+Reeves, Kenneth E.                 +30           1334  CONTINUING
+Seidel, Sam                         +3            980  CONTINUING
+Sullivan, Edward J.                 +1            956  CONTINUING
+Cheung, Leland                     +15            824  CONTINUING
+Ward, Larry W.                     +12            824  CONTINUING
+vanBeuzekom, Minka Y.              +10            749  CONTINUING
+Stohlman, Jr., Thomas .             +2            414  CONTINUING
+Marquardt, Charles J.               +7            408  CONTINUING
+Glick, Silvia P.                    +6            295  CONTINUING
+Leavitt, Neal W.                    +3            147  CONTINUING
+Flanagan, Mark F.                   +9            140  DEFEATED -- 9th count
+Adkins, Lawrence J.               -126              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +15             62  
+TOTALS:                              0          15955  
+
+
+
+-- Flanagan, Mark F. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 10 -- Flanagan, Mark F. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                     +7           1365  CONTINUING
+Reeves, Kenneth E.                 +13           1347  CONTINUING
+Kelley, Craig A.                    +6           1343  CONTINUING
+Decker, Marjorie C.                 +1           1340  CONTINUING
+Seidel, Sam                         +5            985  CONTINUING
+Sullivan, Edward J.                 +7            963  CONTINUING
+Cheung, Leland                     +15            839  CONTINUING
+Ward, Larry W.                      +5            829  CONTINUING
+vanBeuzekom, Minka Y.               +9            758  CONTINUING
+Stohlman, Jr., Thomas .             +5            419  CONTINUING
+Marquardt, Charles J.               +5            413  CONTINUING
+Glick, Silvia P.                   +25            320  CONTINUING
+Leavitt, Neal W.                    +8            155  DEFEATED -- 10th count
+Flanagan, Mark F.                 -140              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +29             91  
+TOTALS:                              0          15955  
+
+
+
+-- Leavitt, Neal W. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 11 -- Leavitt, Neal W. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Maher, David P.                    +12           1377  CONTINUING
+Kelley, Craig A.                   +13           1356  CONTINUING
+Reeves, Kenneth E.                  +9           1356  CONTINUING
+Decker, Marjorie C.                 +3           1343  CONTINUING
+Seidel, Sam                        +19           1004  CONTINUING
+Sullivan, Edward J.                 +6            969  CONTINUING
+Cheung, Leland                     +19            858  CONTINUING
+Ward, Larry W.                      +7            836  CONTINUING
+vanBeuzekom, Minka Y.               +8            766  CONTINUING
+Stohlman, Jr., Thomas .            +14            433  CONTINUING
+Marquardt, Charles J.              +10            423  CONTINUING
+Glick, Silvia P.                   +10            330  DEFEATED -- 11th count
+Leavitt, Neal W.                  -155              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +25            116  
+TOTALS:                              0          15955  
+
+
+
+-- Glick, Silvia P. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 12 -- Glick, Silvia P. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                   +42           1398  CONTINUING
+Maher, David P.                    +13           1390  CONTINUING
+Reeves, Kenneth E.                 +26           1382  CONTINUING
+Decker, Marjorie C.                +23           1366  CONTINUING
+Seidel, Sam                        +30           1034  CONTINUING
+Sullivan, Edward J.                 +7            976  CONTINUING
+Cheung, Leland                     +37            895  CONTINUING
+Ward, Larry W.                     +20            856  CONTINUING
+vanBeuzekom, Minka Y.              +51            817  CONTINUING
+Marquardt, Charles J.              +29            452  CONTINUING
+Stohlman, Jr., Thomas .            +14            447  DEFEATED -- 12th count
+Glick, Silvia P.                  -330              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +38            154  
+TOTALS:                              0          15955  
+
+
+
+-- Stohlman, Jr., Thomas J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 13 -- Stohlman, Jr., Thomas J. has been DEFEATED -- transferring all
+            votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                   +50           1448  CONTINUING
+Maher, David P.                    +38           1428  CONTINUING
+Reeves, Kenneth E.                 +13           1395  CONTINUING
+Decker, Marjorie C.                +13           1379  CONTINUING
+Seidel, Sam                        +94           1128  CONTINUING
+Sullivan, Edward J.                +30           1006  CONTINUING
+Cheung, Leland                     +43            938  CONTINUING
+Ward, Larry W.                     +31            887  CONTINUING
+vanBeuzekom, Minka Y.              +47            864  CONTINUING
+Marquardt, Charles J.              +20            472  DEFEATED -- 13th count
+Stohlman, Jr., Thomas .           -447              0  DEFEATED -- 12th count
+Glick, Silvia P.                     0              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                    +68            222  
+TOTALS:                              0          15955  
+
+
+
+-- Marquardt, Charles J. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 14 -- Marquardt, Charles J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                   +58           1506  CONTINUING
+Maher, David P.                    +39           1467  CONTINUING
+Reeves, Kenneth E.                 +24           1419  CONTINUING
+Decker, Marjorie C.                +14           1393  CONTINUING
+Seidel, Sam                        +34           1162  CONTINUING
+Sullivan, Edward J.                +61           1067  CONTINUING
+Cheung, Leland                     +74           1012  CONTINUING
+Ward, Larry W.                     +25            912  CONTINUING
+vanBeuzekom, Minka Y.              +35            899  DEFEATED -- 14th count
+Marquardt, Charles J.             -472              0  DEFEATED -- 13th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 12th count
+Glick, Silvia P.                     0              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +108            330  
+TOTALS:                              0          15955  
+
+
+
+-- vanBeuzekom, Minka Y. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+COUNT 15 -- vanBeuzekom, Minka Y. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                   +90           1596  ELECTED -- 15th count
+Maher, David P.                    +45           1512  CONTINUING
+Reeves, Kenneth E.                 +53           1472  CONTINUING
+Decker, Marjorie C.                +49           1442  CONTINUING
+Seidel, Sam                       +165           1327  CONTINUING
+Cheung, Leland                    +193           1205  CONTINUING
+Sullivan, Edward J.                +38           1105  CONTINUING
+Ward, Larry W.                    +100           1012  DEFEATED -- 15th count
+vanBeuzekom, Minka Y.             -899              0  DEFEATED -- 14th count
+Marquardt, Charles J.                0              0  DEFEATED -- 13th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 12th count
+Glick, Silvia P.                     0              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +166            496  
+TOTALS:                              0          15955  
+
+
+
+-- Kelley, Craig A. has been ELECTED because s/he has met the quota.
+-- Ward, Larry W. is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+COUNT 16 -- Ward, Larry W. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                     0           1596  ELECTED -- 15th count
+Maher, David P.                    +84           1596  ELECTED -- 16th count
+Reeves, Kenneth E.                +124           1596  ELECTED -- 16th count
+Seidel, Sam                       +246           1573  CONTINUING
+Decker, Marjorie C.                +79           1521  CONTINUING
+Cheung, Leland                    +119           1324  CONTINUING
+Sullivan, Edward J.                +62           1167  DEFEATED -- 16th count
+Ward, Larry W.                   -1012              0  DEFEATED -- 15th count
+vanBeuzekom, Minka Y.                0              0  DEFEATED -- 14th count
+Marquardt, Charles J.                0              0  DEFEATED -- 13th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 12th count
+Glick, Silvia P.                     0              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +298            794  
+TOTALS:                              0          15955  
+
+
+
+-- Reeves, Kenneth E. has been ELECTED because s/he has met the quota.
+-- Maher, David P. has been ELECTED because s/he has met the quota.
+-- Sullivan, Edward J. is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+COUNT 17 -- Sullivan, Edward J. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS COUNT          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+Davis, Henrietta                     0           1596  ELECTED -- 1st count
+Simmons, E. Denise                   0           1596  ELECTED -- 1st count
+Toomey, Jr., Timothy J.              0           1596  ELECTED -- 1st count
+Kelley, Craig A.                     0           1596  ELECTED -- 15th count
+Maher, David P.                      0           1596  ELECTED -- 16th count
+Reeves, Kenneth E.                   0           1596  ELECTED -- 16th count
+Seidel, Sam                        +23           1596  ELECTED -- 17th count
+Decker, Marjorie C.                +75           1596  ELECTED -- 17th count
+Cheung, Leland                    +208           1532  ELECTED -- 17th count
+Sullivan, Edward J.              -1167              0  DEFEATED -- 16th count
+Ward, Larry W.                       0              0  DEFEATED -- 15th count
+vanBeuzekom, Minka Y.                0              0  DEFEATED -- 14th count
+Marquardt, Charles J.                0              0  DEFEATED -- 13th count
+Stohlman, Jr., Thomas .              0              0  DEFEATED -- 12th count
+Glick, Silvia P.                     0              0  DEFEATED -- 11th count
+Leavitt, Neal W.                     0              0  DEFEATED -- 10th count
+Flanagan, Mark F.                    0              0  DEFEATED -- 9th count
+Adkins, Lawrence J.                  0              0  DEFEATED -- 8th count
+Podgers, Kathy                       0              0  DEFEATED -- 7th count
+Williamson, James M.                 0              0  DEFEATED -- 6th count
+Moree, Gregg J.                      0              0  DEFEATED -- 5th count
+Write-In 2                           0              0  DEFEATED -- 4th count
+Write-In 3                           0              0  DEFEATED -- 4th count
+Write-In 6                           0              0  DEFEATED -- 4th count
+Write-In 4                           0              0  DEFEATED -- 4th count
+Write-In 7                           0              0  DEFEATED -- 4th count
+Write-In 8                           0              0  DEFEATED -- 4th count
+Write-In 9                           0              0  DEFEATED -- 4th count
+Write-In 5                           0              0  DEFEATED -- 4th count
+
+EXHAUSTED PILE:                   +861           1655  
+TOTALS:                              0          15955  
+
+
+
+-- Seidel, Sam has been ELECTED because s/he has met the quota.
+-- Decker, Marjorie C. has been ELECTED because s/he has met the quota.
+-- Cheung, Leland has been ELECTED, by the process of elimination.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Friday, November 13, 2009 6:47 PM
+ChoicePlus Pro -- Version 2.3.4
+(c) 1993-2009 Voting Solutions -- All Rights Reserved

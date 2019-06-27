@@ -1,0 +1,286 @@
+D:\Cambridge\Election2007\School\Wednesday\School Detail Report
+
+
+NOVEMBER 7, 2007 -- Cambridge, MA
+SCHOOL COMMITTEE ELECTION
+CAMBRIDGE, MA
+Unofficial Results (Wednesday Count)
+
+CANDIDATES:
+	Fantini, Alfred B.
+	Grassi, Joseph G.
+	Harding, Richard, Jr.
+	Lemily Wiggins, Gail
+	Malner, Stefan
+	McGovern, Marc C.
+	Nolan, Patricia M.
+	Schuster, Luc
+	Tauber, Nancy
+	Write-In 1
+	Write-In 2
+	Write-In 3
+	Write-In 4
+	Write-In 5
+	Write-In 6
+
+ELECTION RULES:
+               System:  Choice Voting
+       Threshold Type:  Droop
+    Surplus Transfers:  Random, every nth ballot (Cambridge style)
+                        Avoid exhausted ballots if possible
+                        Elected immediately (after the 1st round)
+    Simultaneous Drop:  Those with less than 50 votes
+                 Ties:  1) Previous Round method
+                        2) By drawing lots
+                        3) Random (by computer)
+
+--------------------------------------------------
+13,276 valid ballots.
+Electing 6 candidates.
+Winning threshold is 1897 votes.
+There were 433 invalid ballots.
+(13,709 total ballots processed.)
+--------------------------------------------------
+
+
+
+********************************************************************************
+
+
+ROUND 1 -- Tally of 1st place votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                +2277           2277  ELECTED -- 1st round
+Fantini, Alfred B.               +2017           2017  ELECTED -- 1st round
+Schuster, Luc                    +1680           1680  CONTINUING
+Nolan, Patricia M.               +1672           1672  CONTINUING
+Grassi, Joseph G.                +1629           1629  CONTINUING
+Harding, Richard, Jr.            +1562           1562  CONTINUING
+Tauber, Nancy                    +1246           1246  CONTINUING
+Lemily Wiggins, Gail             +1024           1024  CONTINUING
+Malner, Stefan                    +133            133  CONTINUING
+Write-In 1                         +35             35  CONTINUING
+Write-In 2                          +1              1  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                         +13276          13276  
+
+
+
+-- McGovern, Marc C. has been ELECTED because s/he has met the threshold.
+-- Fantini, Alfred B. has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ROUND 2 -- McGovern, Marc C. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                 -380           1897  ELECTED -- 1st round
+Fantini, Alfred B.                   0           2017  ELECTED -- 1st round
+Nolan, Patricia M.                +134           1806  CONTINUING
+Schuster, Luc                      +78           1758  CONTINUING
+Grassi, Joseph G.                  +36           1665  CONTINUING
+Harding, Richard, Jr.              +46           1608  CONTINUING
+Tauber, Nancy                      +57           1303  CONTINUING
+Lemily Wiggins, Gail               +23           1047  CONTINUING
+Malner, Stefan                      +6            139  CONTINUING
+Write-In 1                           0             35  CONTINUING
+Write-In 2                           0              1  CONTINUING
+Write-In 3                           0              0  CONTINUING
+Write-In 4                           0              0  CONTINUING
+Write-In 5                           0              0  CONTINUING
+Write-In 6                           0              0  CONTINUING
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          13276  
+
+
+
+
+
+********************************************************************************
+
+
+ROUND 3 -- Fantini, Alfred B. has been ELECTED -- transferring surplus votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                    0           1897  ELECTED -- 1st round
+Fantini, Alfred B.                -120           1897  ELECTED -- 1st round
+Nolan, Patricia M.                 +17           1823  CONTINUING
+Schuster, Luc                       +4           1762  CONTINUING
+Grassi, Joseph G.                  +69           1734  CONTINUING
+Harding, Richard, Jr.              +13           1621  CONTINUING
+Tauber, Nancy                      +10           1313  CONTINUING
+Lemily Wiggins, Gail                +5           1052  CONTINUING
+Malner, Stefan                      +2            141  CONTINUING
+Write-In 1                           0             35  DEFEATED -- 3rd round
+Write-In 2                           0              1  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                      0              0  
+TOTALS:                              0          13276  
+
+
+
+-- Write-In 6 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 5 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 4 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 3 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 2 is declared DEFEATED, as s/he has less than 50 votes.
+-- Write-In 1 is declared DEFEATED, as s/he has less than 50 votes.
+
+
+********************************************************************************
+
+
+ROUND 4 -- Transferring all votes simultaneously from all defeated candidates.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                    0           1897  ELECTED -- 1st round
+Fantini, Alfred B.                   0           1897  ELECTED -- 1st round
+Nolan, Patricia M.                  +3           1826  CONTINUING
+Schuster, Luc                       +1           1763  CONTINUING
+Grassi, Joseph G.                   +2           1736  CONTINUING
+Harding, Richard, Jr.               +2           1623  CONTINUING
+Tauber, Nancy                       +3           1316  CONTINUING
+Lemily Wiggins, Gail                +1           1053  CONTINUING
+Malner, Stefan                      +1            142  DEFEATED -- 4th round
+Write-In 1                         -35              0  DEFEATED -- 3rd round
+Write-In 2                          -1              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                    +23             23  
+TOTALS:                              0          13276  
+
+
+
+-- Malner, Stefan is declared DEFEATED because s/he has the lowest number of
+   votes.
+
+
+********************************************************************************
+
+
+ROUND 5 -- Malner, Stefan has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                    0           1897  ELECTED -- 1st round
+Fantini, Alfred B.                   0           1897  ELECTED -- 1st round
+Nolan, Patricia M.                 +23           1849  CONTINUING
+Schuster, Luc                      +16           1779  CONTINUING
+Grassi, Joseph G.                   +7           1743  CONTINUING
+Harding, Richard, Jr.              +11           1634  CONTINUING
+Tauber, Nancy                      +28           1344  CONTINUING
+Lemily Wiggins, Gail               +31           1084  DEFEATED -- 5th round
+Malner, Stefan                    -142              0  DEFEATED -- 4th round
+Write-In 1                           0              0  DEFEATED -- 3rd round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                    +26             49  
+TOTALS:                              0          13276  
+
+
+
+-- Lemily Wiggins, Gail is declared DEFEATED because s/he has the lowest number
+   of votes.
+
+
+********************************************************************************
+
+
+ROUND 6 -- Lemily Wiggins, Gail has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                    0           1897  ELECTED -- 1st round
+Fantini, Alfred B.                   0           1897  ELECTED -- 1st round
+Nolan, Patricia M.                 +48           1897  ELECTED -- 6th round
+Schuster, Luc                     +118           1897  ELECTED -- 6th round
+Grassi, Joseph G.                 +111           1854  CONTINUING
+Tauber, Nancy                     +475           1819  CONTINUING
+Harding, Richard, Jr.              +90           1724  DEFEATED -- 6th round
+Lemily Wiggins, Gail             -1084              0  DEFEATED -- 5th round
+Malner, Stefan                       0              0  DEFEATED -- 4th round
+Write-In 1                           0              0  DEFEATED -- 3rd round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                   +242            291  
+TOTALS:                              0          13276  
+
+
+
+-- Nolan, Patricia M. has been ELECTED because s/he has met the threshold.
+-- Schuster, Luc has been ELECTED because s/he has met the threshold.
+-- Harding, Richard, Jr. is declared DEFEATED because s/he has the lowest
+   number of votes.
+
+
+********************************************************************************
+
+
+ROUND 7 -- Harding, Richard, Jr. has been DEFEATED -- transferring all votes.
+
+CANDIDATE                   THIS ROUND          TOTAL  STATUS
+-----------------------  -------------  -------------  ----------------------
+McGovern, Marc C.                    0           1897  ELECTED -- 1st round
+Fantini, Alfred B.                   0           1897  ELECTED -- 1st round
+Nolan, Patricia M.                   0           1897  ELECTED -- 6th round
+Schuster, Luc                        0           1897  ELECTED -- 6th round
+Grassi, Joseph G.                  +43           1897  ELECTED -- 7th round
+Tauber, Nancy                      +78           1897  ELECTED -- 7th round
+Harding, Richard, Jr.            -1724              0  DEFEATED -- 6th round
+Lemily Wiggins, Gail                 0              0  DEFEATED -- 5th round
+Malner, Stefan                       0              0  DEFEATED -- 4th round
+Write-In 1                           0              0  DEFEATED -- 3rd round
+Write-In 2                           0              0  DEFEATED -- 3rd round
+Write-In 3                           0              0  DEFEATED -- 3rd round
+Write-In 4                           0              0  DEFEATED -- 3rd round
+Write-In 5                           0              0  DEFEATED -- 3rd round
+Write-In 6                           0              0  DEFEATED -- 3rd round
+
+EXHAUSTED PILE:                  +1603           1894  
+TOTALS:                              0          13276  
+
+
+
+-- Grassi, Joseph G. has been ELECTED because s/he has met the threshold.
+-- Tauber, Nancy has been ELECTED because s/he has met the threshold.
+
+
+********************************************************************************
+
+
+ELECTION COUNT SUCCESSFULLY COMPLETED
+
+
+
+
+
+Wednesday, November 7, 2007 6:20 PM
+ChoicePlus Pro -- Version 2.3.2
+(c) 1993-2006 Voting Solutions -- All Rights Reserved
