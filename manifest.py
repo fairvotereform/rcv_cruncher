@@ -321,7 +321,8 @@ competitions = {
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_assessor_ballotimage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated undervotes': False,
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt'
     },
     'San Francisco Public Defender 2018': {
         'office': 'Public Defender',  
@@ -330,70 +331,82 @@ competitions = {
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_defender_ballotimage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated undervotes': False,
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt'
     },
     'San Francisco Board of Supervisors District 2 2018': {'office': 'Board of Supervisors District 2',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d2_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
     'San Francisco Board of Supervisors District 4 2018': {'office': 'Board of Supervisors District 4',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d4_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
     'San Francisco Board of Supervisors District 6 2018': {'office': 'Board of Supervisors District 6',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d6_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
     'San Francisco Board of Supervisors District 8 2018': {'office': 'Board of Supervisors District 8',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d8_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
     'San Francisco Board of Supervisors District 10 2018': {'office': 'Board of Supervisors District 10',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d10_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 1 2016': {'office': 'Board of Supervisors District 1',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000009'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 3 2016': {'office': 'Board of Supervisors District 3',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000010'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 5 2016': {'office': 'Board of Supervisors District 5',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000011'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 7 2016': {'office': 'Board of Supervisors District 7',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000012'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 9 2016': {'office': 'Board of Supervisors District 9',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000013'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 11 2016': {'office': 'Board of Supervisors District 11',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
+        'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000014'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False

@@ -8,8 +8,14 @@ UNDERVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
 
-def sf_precinct_map(path):
-    master_lookup_path = path.replace('ballot_image', 'master_lookup')
+def sf_precinct_map(ctx):
+    path = ctx['path']
+    master_lookup_path = ctx.get('master_lookup')
+    if master_lookup_path is None:
+        master_lookup_path = path.replace('ballot_image', 'master_lookup') \
+                                 .replace('BallotImage', 'MasterLookup') \
+                                 .replace('ballotimage', 'masterlookup') 
+                    
     precinct_map = {}
     with open(master_lookup_path) as f:
         for i in f:
@@ -20,7 +26,8 @@ def sf_precinct_map(path):
 
 #TODO:  add ability to attach metadata to list
 
-def burlington(path):
+def burlington(ctx):
+    path = ctx['path']
     ballots = []
     with open(path, "r") as f:
         for line in f:
@@ -35,7 +42,8 @@ def burlington(path):
 #       one of the candidates in the overvote is eliminated
 #       burlington, and possibly cambridge will still count
 #       this vote
-def prm(glob_path):
+def prm(ctx):
+    glob_path = ctx['path']
     ballots = []
     for path in glob(glob_path):
         with open(path, 'r') as f:
@@ -56,10 +64,12 @@ def prm(glob_path):
     return ballots
         
 
-def sf(contest_id, path):
+def sf(contest_id, ctx):
+    path = ctx['path']
+    precinct_map = sf_precinct_map(ctx)
     ballots = []
     with open(path, "r") as f:
-        b = []
+        b = UserList([])
         voter_id = None
         for line in f:
             if line[:7] != contest_id:
@@ -67,19 +77,22 @@ def sf(contest_id, path):
             if line[7:16] != voter_id:
                 ballots.append(b)
                 voter_id = line[7:16]
-                b = []
+                b = UserList([])
+            precinct_id = line[26:33]
             candidate_id = int(line[36:43])
             undervote = UNDERVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             b.append(candidate_id or undervote or overvote)
             if b[-1] == 0 or len(b) != int(line[33:36]):
                 raise Exception("Invalid Choice or Rank")
+            b.precinct = precinct_map[precinct_id]
         if b != []:
             ballots.append(b)
     return ballots[1:]
 
-def sfnoid(path):
-    precinct_map = sf_precinct_map(path)
+def sfnoid(ctx):
+    path = ctx['path']
+    precinct_map = sf_precinct_map(ctx)
     ballots = []
     with open(path, "r") as f:
         b = UserList([])
@@ -111,7 +124,8 @@ def sfnoid(path):
             ballots.append(b)
     return ballots[1:]
 
-def old(path):
+def old(ctx):
+    path = ctx['path']
     ballots = []
     with open(path, "r") as f:
         line = f.readline()
@@ -121,7 +135,8 @@ def old(path):
             line = f.readline()
     return ballots
     
-def minneapolis(path):
+def minneapolis(ctx):
+    path = ctx['path']
     ballots = []
     with open(path, "r") as f:
         f.readline()
@@ -134,7 +149,8 @@ def minneapolis(path):
                 ballots.extend([choices] * int(float(line[-1])))
     return ballots
 
-def maine(n, path):
+def maine(n, ctx):
+    path = ctx['path']
     lines = 0
     ballots = []
     with open(path, "r") as f:
@@ -149,7 +165,8 @@ def maine(n, path):
                 ballots.append(choices)
     return ballots
 
-def santafe(column_id, contest_id, path):
+def santafe(column_id, contest_id, ctx):
+    path = ctx['path']
     ballots = []
     ballot_length = 0
     with open(path, "r") as f:
@@ -182,7 +199,8 @@ def santafe(column_id, contest_id, path):
                 ballots.append(choices)
     return [b[:ballot_length] for b in ballots]
 
-def santafe_id(column_id, contest_id, path):
+def santafe_id(column_id, contest_id, ctx):
+    path = ctx['path']
     ballots = []
     ballot_length = 0
     with open(path, "r") as f:
@@ -218,7 +236,8 @@ def santafe_id(column_id, contest_id, path):
         b.data = b.data[:ballot_length]
     return ballots
 
-def sf2005(contest_ids, over, under, sep, path):
+def sf2005(contest_ids, over, under, sep, ctx):
+    path = ctx['path']
     ballots = []
     with open(path, 'r') as f:
         for i in f:

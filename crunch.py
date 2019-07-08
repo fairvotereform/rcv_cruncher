@@ -246,8 +246,18 @@ def rcv(ctx):
         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
         finalists, tallies = rounds[-1] 
         if tallies[0]*2 > sum(tallies):
-            pprint(rounds)
             return rounds
+        ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+@save #d 
+def margin(ctx):
+    ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
+    while True:
+        finalists, tallies = zip(*Counter(b[0] for b in ballots).most_common())
+        if len(tallies) == 1:
+            return tallies[0]
+        if len(tallies) == 2: 
+            return tallies[0] - tallies[-1]
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
 
 def rcvreg(ballots):
@@ -554,7 +564,7 @@ def total(ctx):
 
 @save
 def precincts(ctx):
-    return [i.precinct for i in ctx['parser'](ctx['path'])]
+    return [i.precinct for i in ctx['parser'](ctx)]
 
 @save
 def precinct_totals(ctx):
@@ -582,11 +592,12 @@ def precinct_overvote_rate_range(ctx):
 
 @save
 def precinct_blockgroups(ctx):
+    d = {'2017':'2016', '2015': '2014'}.get(date(ctx), date(ctx))
     path = '/'.join([
                 'precinct_block_maps',
                 state(ctx), 
                 county(ctx), 
-                'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),str(date(ctx))[-2:])
+                'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
                 ])
     info = []
     with open(path) as f:
@@ -690,6 +701,7 @@ def precinct_ethnicity(ctx, eth, est):
     return d
 
 def overvote_ratio(ctx, eth):
+    if state(ctx) is None or int(date(ctx))<2012: return None
     num_over = 0
     num_votes = 0
     denom_over = 0
@@ -702,10 +714,17 @@ def overvote_ratio(ctx, eth):
         num_votes += pct_eth*total
         denom_over += (1-pct_eth)*over
         denom_votes += (1-pct_eth)*total
-    return (num_over/num_votes)/(denom_over/denom_votes)
+    if denom_votes and num_votes:
+        return (num_over/num_votes)/(denom_over/denom_votes)
+    return 0
 
+@save
 def black_overvote_ratio(ctx):
     return overvote_ratio(ctx,'Black or African American Alone')
+
+@save
+def white_overvote_ratio(ctx):
+    return overvote_ratio(ctx,'White Alone')
         
 @save
 def high_white_overvote(ctx):
@@ -747,7 +766,7 @@ def tdpo(ctx):
 
 @save
 def ballots(ctx):
-    raw = ctx['parser'](ctx['path'])
+    raw = ctx['parser'](ctx)
     can_set = set()
     for b in raw:
         can_set.update(b)
@@ -818,21 +837,13 @@ FUNCTIONS = [office, date, place,
     total_voluntarily_exhausted, condorcet, come_from_behind, 
     effective_ballot_length,rounds, last5rcv, finalists, winner,exhausted_by_undervote, 
     exhausted_by_repeated_choices, minneapolis_undervote, minneapolis_total, 
-    naive_tally, candidates, count_duplicates, any_repeat, validly_ranked_winner]
+    naive_tally, candidates, count_duplicates, any_repeat, validly_ranked_winner,
+    margin] # black_overvote_ratio, white_overvote_ratio]
 
 def calc(competition, functions):
     ctx = dict(manifest.competitions[competition])
     hasher(ctx) 
     return {f.__name__: f(ctx) for f in functions}
-
-def inputer():
-    old = [False]
-    def cmp(text, state):
-        old[:] = old if state else [text] + self.old[:2]
-        matches = dict(enumerate(w for w in FUNCTIONS if text in w))
-        return len(set(old))<2 or matches.get(s)
-    readline.set_completer(Comp())
-    readline.parse_and_bind("tab: complete")
 
 def main():
     p = ArgumentParser()
