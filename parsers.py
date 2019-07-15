@@ -14,7 +14,8 @@ def sf_precinct_map(ctx):
     if master_lookup_path is None:
         master_lookup_path = path.replace('ballot_image', 'master_lookup') \
                                  .replace('BallotImage', 'MasterLookup') \
-                                 .replace('ballotimage', 'masterlookup') 
+                                 .replace('ballotimage', 'masterlookup') \
+                                 .replace('Ballot Image', 'Master Lookup')
                     
     precinct_map = {}
     with open(master_lookup_path) as f:

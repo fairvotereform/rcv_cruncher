@@ -454,43 +454,43 @@ competitions = {
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 1 2008': {'office': 'Board of Supervisors District 1',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000003'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 3 2008': {'office': 'Board of Supervisors District 3',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000005'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 4 2008': {'office': 'Board of Supervisors District 4',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000006'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 5 2008': {'office': 'Board of Supervisors District 5',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000007'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 7 2008': {'office': 'Board of Supervisors District 7',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000008'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 9 2008': {'office': 'Board of Supervisors District 9',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000009'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 11 2008': {'office': 'Board of Supervisors District 11',  'date': '2008', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_Ballot_Image.txt',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000004'),
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
@@ -626,7 +626,7 @@ competitions = {
         'break_on_repeated undervotes': False
     },
    'Pierce County Executive 2008': {'office': 'Executive',  'date': '2008', 'place': 'Pierce County',
-        'path': 'Ballot_Images/Pierce County/Pierce County Executive 2008 Ballot Image Data.txt',
+        'path': 'Ballot_Images/Pierce County/Pierce County Executive 2008 Ballot Image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False

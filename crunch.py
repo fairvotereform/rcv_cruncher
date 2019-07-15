@@ -250,7 +250,7 @@ def rcv(ctx):
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
 
 @save #d 
-def margin(ctx):
+def margin_when_2_left(ctx):
     ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
     while True:
         finalists, tallies = zip(*Counter(b[0] for b in ballots).most_common())
@@ -259,6 +259,14 @@ def margin(ctx):
         if len(tallies) == 2: 
             return tallies[0] - tallies[-1]
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+@save
+def margin_when_winner_has_majority(ctx):
+    last_tally = rcv(ctx)[-1][1]
+    if len(last_tally)<2:
+        return last_tally[0]
+    else:
+        return last_tally[0] - last_tally[1]
 
 def rcvreg(ballots):
     rounds = []
@@ -292,6 +300,9 @@ def first_round(ctx):
 
 @save #should be dependant
 def undervote(ctx):
+    '''
+    Ballots completely made up of undervotes (no marks).
+    '''
     return sum(c == UNDERVOTE for c in first_round(ctx))
 
 @save #d
@@ -308,12 +319,16 @@ def effective_ballot_length(ctx):
 
 ### TODO: exhausted should not include straight undervotes nor
 ### per Drew
-@save #d
+@save 
 def exhausted(ctx):
     return [not set(finalists(ctx)) & set(b) for b in cleaned(ctx)]
 
-@save #d
+@save 
 def total_exhausted(ctx):
+    '''
+    Number of ballots (including ballots made up of only undervotes or
+    overvotes) that do not rank a finalist.
+    '''
     return sum(exhausted(ctx))
 
 @save #d fixme
@@ -322,6 +337,9 @@ def involuntarily_exhausted(ctx):
 
 @save #d
 def total_involuntarily_exhausted(ctx):
+    '''
+    Number of validly fully ranked ballots that do not rank a finalist. 
+    '''
     return sum(involuntarily_exhausted(ctx))
 
 @save #d
@@ -331,7 +349,24 @@ def voluntarily_exhausted(ctx):
 
 @save #d
 def total_voluntarily_exhausted(ctx):
+    '''
+    Number of ballots that do not rank a finalists and aren't fully ranked. 
+    This number includes ballots consisting of only undervotes or overvotes.
+    '''
     return sum(voluntarily_exhausted(ctx))
+
+@save
+def margin_greater_than_all_exhausted(ctx):
+    return margin_when_2_left(ctx) > total_exhausted(ctx)
+
+
+@save
+def margin_greater_than_non_blank_exhausted(ctx):
+    return margin_when_2_left(ctx) > (total_exhausted(ctx)-no_marks(ctx))
+
+@save
+def margin_greater_than_non_blank_volunarily_exhausted(ctx):
+    return margin_when_2_left(ctx) > (total_exhausted(ctx)-no_marks(ctx))
 
 @save #d
 def exhausted_by_repeated_choices(ctx):
@@ -349,7 +384,7 @@ def exhausted_by_undervote(ctx):
 def exhausted_by_overvote(ctx):
     if break_on_repeated_undervotes(ctx):
         return [ex and over<under for ex,over,under in 
-                    zip(exhausted(ctx),overvote_ind(ctx), repeated_undervote_ind(ctx))]
+                zip(exhausted(ctx),overvote_ind(ctx),repeated_undervote_ind(ctx))]
     return [ex and over for ex,over in zip(exhausted(ctx),overvote(ctx))]
 
 @save #d
@@ -426,7 +461,8 @@ def sankey_ordered_choices(ctx):
     targets = {(str(b),i+1) for _,b,i in ordered_choices(ctx) if b is not None}
     nodes = sorted(sources | targets)
     node_map = [{"node": i, "name": k[0]} for i,k in enumerate(nodes)]
-    link_map = [{"source": nodes.index((str(s),i)), "target": nodes.index((str(t),i+1)),"value": v}
+    link_map = [{"source": nodes.index((str(s),i)), 
+                "target": nodes.index((str(t),i+1)),"value": v}
                 for (s,t,i),v in ordered_choices(ctx).items() if t is not None]
     with open('sankey/sankey-formatted.json', 'w') as f:
         json.dump({"nodes": node_map, "links": link_map}, f)
@@ -492,6 +528,9 @@ def overvote(ctx):
 
 @save
 def total_overvote(ctx):
+    '''
+    Number of ballots with at least one overvote.
+    '''
     return sum(overvote(ctx))
 
 @save
@@ -560,6 +599,9 @@ def voter_ids(ctx):
 
 @save
 def total(ctx):
+    '''
+    This includes ballots with no marks.
+    '''
     return len(ballots(ctx))
 
 @save
@@ -579,42 +621,32 @@ def precinct_overvote_rate(ctx):
     return {k: precinct_overvotes(ctx)[k]/v for k,v in precinct_totals(ctx).items()}
 
 @save
-def precinct_overvote_rate_variance(ctx):
-    return pvariance(list(precinct_overvote_rate(ctx).values()))
-
-@save
 def unique_precincts(ctx):
     return set(precincts(ctx))
-
-@save
-def precinct_overvote_rate_range(ctx):
-    return {k: ci(precinct_overvotes(ctx)[k]/v, v) for k, v in precinct_totals(ctx).items()}
 
 @save
 def precinct_blockgroups(ctx):
     d = {'2017':'2016', '2015': '2014'}.get(date(ctx), date(ctx))
     path = '/'.join([
-                'precinct_block_maps',
-                state(ctx), 
-                county(ctx), 
-                'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
-                ])
+            'precinct_block_maps',
+            state(ctx), 
+            county(ctx), 
+            'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
+            ])
     info = []
     with open(path) as f:
         next(f)
         for line in f:
-            p,t,b,xpop,ppop,_,bpop,_ = line.strip().replace('"','').split(',')
+            p,t,b,xpop,_,_,bpop,_ = line.strip().replace('"','').split(',')
             if p != 'NULL':
                 info.append({
                     'precinct': p,
                     'tract': t,
                     'block': b,
                     'xpop': int(xpop),
-                    'ppop': int(ppop),
                     'bpop': int(bpop)
                 })
     block_totals = {(i['tract'], i['block']): i['bpop'] for i in info}
-
     blockgroup_totals = defaultdict(int)
     for (tract, block),v in block_totals.items():
         blockgroup_totals[(tract, block[0])] += v
@@ -683,15 +715,9 @@ def precinct_cvap(ethnicity, est, ctx, precinct):
 
     return ethnicity_total, precinct_total
 
-def high_est(demo, demos, number):
-    return min(demos[demo], number)
-
 def mean_est(demo, demos, number):
     return ((demos[demo]/sum(demos.values()) * number) if demos[demo] else 0)
 
-def low_est(demo, demos, number):
-    return number - min(sum(v for k,v in demos.items() if k != demo), number)
-    
 @pick
 def precinct_ethnicity(ctx, eth, est):
     d = {}
@@ -725,21 +751,6 @@ def black_overvote_ratio(ctx):
 @save
 def white_overvote_ratio(ctx):
     return overvote_ratio(ctx,'White Alone')
-        
-@save
-def high_white_overvote(ctx):
-    y = [v for _,v in sorted(precinct_overvote_rate(ctx).items())]
-    x = [v for _,v in sorted(precinct_ethnicity(ctx, 'White Alone', high_est).items())]
-    slope, _, r, p, _= linregress(x,y)
-    return {'slope':slope, 'r': r, 'p': p}
-    
-@save
-def low_white_overvote(ctx):
-    y = [v for _,v in sorted(precinct_overvote_rate(ctx).items())]
-    x = [v for _,v in sorted(precinct_ethnicity(ctx, 'White Alone', low_est).items())]
-    slope, _, r, p, _= linregress(x,y)
-    return {'slope':slope, 'r': r, 'p': p}
-
 
 def state(ctx):
     return {
@@ -759,10 +770,6 @@ def county(ctx):
 
 def election_type(ctx):
     return 'g'
-
-def tdpo(ctx):
-        for i in precinct_overvote_rate(ctx).values():
-            print(ctx['date'], i, sep='\t')
 
 @save
 def ballots(ctx):
@@ -835,20 +842,38 @@ FUNCTIONS = [office, date, place,
     two_repeated, three_repeated, total_skipped, irregular, total_exhausted, 
     total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
     total_voluntarily_exhausted, condorcet, come_from_behind, 
-    effective_ballot_length,rounds, last5rcv, finalists, winner,exhausted_by_undervote, 
-    exhausted_by_repeated_choices, minneapolis_undervote, minneapolis_total, 
-    naive_tally, candidates, count_duplicates, any_repeat, validly_ranked_winner,
-    margin] # black_overvote_ratio, white_overvote_ratio]
+    effective_ballot_length,rounds, last5rcv, finalists, winner,
+    exhausted_by_undervote, exhausted_by_repeated_choices, minneapolis_undervote, 
+    minneapolis_total, naive_tally, candidates, count_duplicates, any_repeat, 
+    validly_ranked_winner, margin_when_2_left, margin_when_winner_has_majority,
+    black_overvote_ratio, white_overvote_ratio]
+
+def printcode(strfun):
+    fun = next(f for f in FUNCTIONS if f.__name__ == strfun)
+    sl = getsource(fun)
+    rl = [i.strip() for i in sl.split('\n') 
+            if i and not any(map(i.startswith, ['@','def ']))]
+    rl[-1] = rl[-1].replace('return ', '')
+    return ';'.join(rl)
 
 def calc(competition, functions):
     ctx = dict(manifest.competitions[competition])
+    pprint(ctx)
     hasher(ctx) 
     return {f.__name__: f(ctx) for f in functions}
 
 def main():
     p = ArgumentParser()
-    p.add_argument('-e', '--elections', nargs='*', default=manifest.competitions.keys())
-    p.add_argument('-s', '--stats', nargs='*', default=[i.__name__ for i in FUNCTIONS])
+    p.add_argument(
+        '-e', 
+        '--elections', 
+        nargs='*', 
+        default=manifest.competitions.keys())
+    p.add_argument(
+        '-s', 
+        '--stats', 
+        nargs='*', 
+        default=[i.__name__ for i in FUNCTIONS])
     p.add_argument('-j', '--json', action='store_true')
     a = p.parse_args()
     stats = [globals()[i] for i in a.stats]
@@ -865,6 +890,7 @@ def main():
     with open('results.csv', 'w') as f:
         w = csv.writer(f)
         w.writerow(['name'] + a.stats)
+    #    w.writerow([''] + [printcode(i) for i in a.stats])
         for k in sorted(set(matched_elections)):
             result = calc(k, stats)
             w.writerow([k.replace(',','')] + [result[s] for s in a.stats])
