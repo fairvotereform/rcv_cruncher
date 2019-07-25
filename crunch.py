@@ -376,7 +376,7 @@ def undervote(ctx):
     '''
     return sum(c == UNDERVOTE for c in first_round(ctx))
 
-@save #d
+@save 
 def ranked2(ctx):
     return sum(len(b) == 2 for b in cleaned(ctx))
 
@@ -743,7 +743,8 @@ def precinct_percent_ethnicity(ctx, precinct, ethnicity):
     ethnic = 0 
     ethnic_block_cvaps = block_ethnicities(ctx, ethnicity)
     total_block_cvaps = block_ethnicities(ctx, 'Total')
-    year = {'2015':'2014'}.get(date(ctx), date(ctx))
+    int_year = int(date(ctx))
+    year = str(int_year - int_year%2)
     precinct_block_fraction = 'blk2mprec/blk_mprec_{}_g{}_v01.txt'.format(county(ctx), year[-2:])
     precincts = precinct.split('+')
     with open(precinct_block_fraction) as f:
@@ -754,84 +755,6 @@ def precinct_percent_ethnicity(ctx, precinct, ethnicity):
                 total += block_ethnicities(ctx, 'Total')[b] * float(f)
 
     return ethnic/total if total else 0
-
-
-@pick
-def processed_cvap(file_name):
-    result = defaultdict(dict)
-    states = {'06'}
-    counties = {'001','075'}
-    with open(file_name, encoding='latin-1') as f:
-        next(f)
-        for line in f:
-            demo, block_group,*_,tally,_ = line.split(',')[4:]
-            blockgroup = block_group.split('US')[1]
-            if blockgroup[:2] in states and blockgroup[2:5] in counties:
-                result[blockgroup][demo] = int(tally)
-    return result
-
-def cvap(year, blockgroup):
-    year = max(min(int(year),2017),2009)
-    file_name = 'CVAP/CVAP_{}-{}_ACS_csv_files/BlockGr.csv'.format(year-4,year)
-    return processed_cvap(file_name)[blockgroup]
-
-@pick
-def ethnicities():
-    s = set()
-    with open(glob('CVAP/*/BlockGr.csv')[0],encoding='latin-1') as f:
-        for i in f:
-            ethnicity = i.split(',')[4]
-            if ethnicity in s:
-                return s - {'Total','CIT_EST', 'Not Hispanic or Latino'}
-            s.add(ethnicity)
-
-@save2
-def precinct_blockgroup_fractions(ctx, precinct):
-    # get precint->blockgroup file for election
-    d = {'2017':'2016', '2015': '2014'}.get(date(ctx), date(ctx))
-    path = '/'.join([
-            'precinct_block_maps',
-            state(ctx), 
-            county(ctx), 
-            'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
-            ])
-    return pbf(path, state(ctx), county(ctx))[precinct]
-
-@pick
-def pbf(path, state, county):
-    # extract population, precinct, and blockgroup info from file
-    info = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-    with open(path) as f:
-        next(f)
-        for line in f:
-            p,t,b,xpop,_,_,tpop,_ = line.strip().replace('"','').split(',')
-            p = p[-6:]
-            bg = state+county+t.zfill(6)+b[0]
-            info[p][bg]['xpop'] += int(xpop)
-            info[p][bg]['tpop'] += int(tpop)
-            
-    result = {}
-    for precinct, blockgroups in info.items():
-        result[precinct] = {}
-        for blockgroup, pop in blockgroups.items():
-            result[precinct][blockgroup] = pop['xpop'] / pop['tpop']
-    return result
-
-@save
-def all_precinct_blockgroup_fractions(ctx):
-    return {precinct: precinct_blockgroup_fractions(ctx, precinct)
-            for precinct in precinct_participation(ctx)}
-         
-@save2
-def precinct_population(ctx, precinct, ethnicity):
-    return sum(cvap(date(ctx), k)[ethnicity]*v
-        for k, v in all_precinct_blockgroup_fractions(ctx)[precinct].items())
-
-@save2
-def precinct_percentage(ctx, precinct, ethnicity):
-    ethnic_pop = precinct_population(ctx, precinct, ethnicity)
-    total_pop = precinct_population(ctx, precinct, 'Total')
-    return ethnic_pop/total_pop if total_pop else 0
 
 @save2
 def last_round_participation(ctx, eth):
@@ -882,9 +805,7 @@ def overvote_ratio(ctx, eth):
     denom_over = 0
     denom_votes = 0
     for precinct in precinct_participation(ctx):
-        ethnic_pop = precinct_population(ctx, precinct, eth)
-        total_pop = precinct_population(ctx, precinct, 'Total')
-        pct_eth = ethnic_pop/total_pop if total_pop else 0 
+        pct_eth = precinct_percent_ethnicity(ctx, precinct, eth)
         over = precinct_overvotes(ctx).get(precinct,0)
         total = precinct_totals(ctx)[precinct]
         num_over += pct_eth*over
@@ -996,7 +917,7 @@ FUNCTIONS = [office, date, place,
     exhausted_by_undervote, exhausted_by_repeated_choices, minneapolis_undervote, 
     minneapolis_total, naive_tally, candidates, count_duplicates, any_repeat, 
     validly_ranked_winner, margin_when_2_left, margin_when_winner_has_majority,
-   # black_overvote_ratio, white_overvote_ratio, 
+    black_overvote_ratio, white_overvote_ratio, 
     black_first_round_participation, 
     black_last_round_participation, white_first_round_participation, 
     white_last_round_participation]
