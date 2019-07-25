@@ -23,9 +23,9 @@ def sf_precinct_map(ctx):
             if i.startswith('Precinct'):
                 kv = i.split()[1]
                 precinct_map[kv[:7]] = kv[7:]
+                if ctx['place'] == 'San Francisco':
+                    precinct_map[kv[:7]] = i.split()[2]
     return precinct_map
-
-#TODO:  add ability to attach metadata to list
 
 def burlington(ctx):
     path = ctx['path']

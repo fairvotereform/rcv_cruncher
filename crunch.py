@@ -10,6 +10,7 @@ import csv
 #from fractions import Fraction
 from gmpy2 import mpq as Fraction
 from scipy.stats import linregress
+from dbfread import DBF
 
 import manifest
 from math import floor, sqrt
@@ -29,6 +30,65 @@ UNDERVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
 
+class DunderEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, tuple):
+            return {'__value__': list(obj), '__type__': 'tuple'}
+        if isinstance(obj, Counter):
+            return {'__value__': dict(obj), '__type__': 'counter'}
+        if isinstance(obj, set):
+            return {'__value__': list(obj), '__type__': 'set'}
+        return json.JSONEncoder.default(self, obj)
+
+def as_python_object(dct):
+    containers = {
+        'set': set,
+        'counter': Counter,
+        'tuple': tuple
+    }
+    if '__type__' in dct:
+        return containers[dct['__type__']](dct['__value__'])
+    return dct
+
+def save2(f):
+    @wraps(f)
+    def fun(ctx,*args):
+        if f.__name__ in ctx:
+            if args and args in ctx[f.__name__]:
+                return ctx[f.__name__][args]
+            elif not args:
+                return ctx[f.__name__]
+        h = hasher(ctx).copy()
+        h.update(bytes(getsource(f), 'utf-8'))
+        for arg in args:
+            h.update(bytes(str(arg), 'utf-8'))
+        file_name = 'results/{}({}).json'.format(f.__name__, dop(ctx) + ','.join(args))
+        if f.__name__ not in ctx:
+            ctx[f.__name__] = {}
+        with suppress(IOError, EOFError, FileNotFoundError, json.decoder.JSONDecodeError), \
+            open(file_name) as file_object:
+            cache = json.load(file_object, object_hook=as_python_object)
+            if h.hexdigest() == cache['check']:
+                if args:
+                    ctx[f.__name__][args] = cache['result']
+                else:
+                    ctx[f.__name__] = cache['result']
+                return cache['result']
+        with open(file_name,'w') as file_object:
+            result = f(ctx,*args)
+            json.dump(
+                {'result': result, 'check': h.hexdigest()}, 
+                file_object, 
+                indent=2,
+                cls=DunderEncoder)
+            file_object.write('\n')
+            if args:
+                ctx[f.__name__][args] = result
+            else:    
+                ctx[f.__name__] = result
+            return result
+    return fun
+
 def save(f):
     @wraps(f)
     def fun(ctx):
@@ -36,12 +96,23 @@ def save(f):
             return ctx[f.__name__]
         h = hasher(ctx).copy()
         h.update(bytes(getsource(f), 'utf-8'))
-        file_name = '.pickled/.{}.pickle'.format(h.hexdigest())
-        with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
-            return ctx.setdefault(f.__name__, pickle.load(file_object))
-        with open(file_name, 'wb') as file_object:
-            pickle.dump(ctx.setdefault(f.__name__, f(ctx)), file_object)
-        return ctx[f.__name__]
+        file_name = 'results/{}({}).json'.format(f.__name__, dop(ctx))
+        with suppress(IOError, EOFError, json.decoder.JSONDecodeError), \
+            open(file_name) as file_object:
+            cache = json.load(file_object, object_hook=as_python_object)
+            if h.hexdigest() == cache['check']:
+                ctx[f.__name__] = cache['result']
+                return cache['result']
+        with open(file_name,'w') as file_object:
+            result = f(ctx)
+            json.dump(
+                {'result': result, 'check': h.hexdigest()}, 
+                file_object, 
+                indent=2,
+                cls=DunderEncoder)
+            file_object.write('\n')
+            ctx[f.__name__] = result
+            return result
     return fun
 
 def pick(f):
@@ -238,7 +309,7 @@ def winners_first_round_share(ctx):
 def winners_final_round_share(ctx):
     return rcv(ctx)[-1][1][0] / (total(ctx) - undervote(ctx))
 
-@save #d 
+@save  
 def rcv(ctx):
     rounds = []
     ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
@@ -249,7 +320,7 @@ def rcv(ctx):
             return rounds
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
 
-@save #d 
+@save  
 def margin_when_2_left(ctx):
     ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
     while True:
@@ -403,6 +474,10 @@ def validly_ranked_winner(ctx):
 @save
 def ranked_winner(ctx):
     return sum(winner(ctx) in b for b in ballots(ctx))
+
+@save
+def ranked_finalist(ctx):
+    return [not ex for ex in exhausted(ctx)]
 
 def before(x, y, l):
     # return next(filter(None,map({x:1,y:-1}.get,l)),0)
@@ -606,7 +681,10 @@ def total(ctx):
 
 @save
 def precincts(ctx):
-    return [i.precinct for i in ctx['parser'](ctx)]
+    return [i.precinct.replace('/','+') 
+            if place(ctx) == 'San Francisco' 
+            else i.precinct[-6:] 
+                for i in ctx['parser'](ctx)]
 
 @save
 def precinct_totals(ctx):
@@ -617,46 +695,20 @@ def precinct_overvotes(ctx):
     return Counter(p for p,o in zip(precincts(ctx), overvote(ctx)) if o)
 
 @save
+def precinct_participation(ctx):
+    return Counter(p for p,o in zip(precincts(ctx), cleaned(ctx)) if o)
+
+@save
+def precinct_ranked_finalists(ctx):
+    return Counter(p for p,o in zip(precincts(ctx), exhausted(ctx)) if o)
+
+@save
 def precinct_overvote_rate(ctx):
     return {k: precinct_overvotes(ctx)[k]/v for k,v in precinct_totals(ctx).items()}
 
 @save
 def unique_precincts(ctx):
     return set(precincts(ctx))
-
-@save
-def precinct_blockgroups(ctx):
-    d = {'2017':'2016', '2015': '2014'}.get(date(ctx), date(ctx))
-    path = '/'.join([
-            'precinct_block_maps',
-            state(ctx), 
-            county(ctx), 
-            'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
-            ])
-    info = []
-    with open(path) as f:
-        next(f)
-        for line in f:
-            p,t,b,xpop,_,_,bpop,_ = line.strip().replace('"','').split(',')
-            if p != 'NULL':
-                info.append({
-                    'precinct': p,
-                    'tract': t,
-                    'block': b,
-                    'xpop': int(xpop),
-                    'bpop': int(bpop)
-                })
-    block_totals = {(i['tract'], i['block']): i['bpop'] for i in info}
-    blockgroup_totals = defaultdict(int)
-    for (tract, block),v in block_totals.items():
-        blockgroup_totals[(tract, block[0])] += v
-
-    precincts = defaultdict(int)
-    for i in info:
-        precincts[(i['precinct'], i['tract'], i['block'][0])] += i['xpop']
-
-    return {(p, state(ctx)+county(ctx)+t+bg) : (v, blockgroup_totals[(t, bg)])
-            for (p, t, bg), v in precincts.items()}
 
 def processed_sov(file_name):
     result = {}
@@ -671,6 +723,38 @@ def processed_sov(file_name):
                             if any(map(k.startswith, asian_ethnicities)))
             }
     return result
+
+@save2
+def block_ethnicities(ctx, ethnicity):
+    year = {'2018': '2017'}.get(date(ctx), date(ctx))
+    file_name = 'CVAPBLOCK/{}/{}_cvap_by_block.dbf'.format(year,ethnicity.replace(' ', '_'))
+    table = DBF(file_name)
+    result = {}
+    for row in table:
+        block = next(v for k,v in row.items() if 'BLOCK' in k) 
+        cvap = next(v for k,v in row.items() if 'CVAP' in k)
+        if block[2:5] == county(ctx):
+            result[block] = cvap
+    return result
+
+@save2
+def precinct_percent_ethnicity(ctx, precinct, ethnicity):
+    total = 0 
+    ethnic = 0 
+    ethnic_block_cvaps = block_ethnicities(ctx, ethnicity)
+    total_block_cvaps = block_ethnicities(ctx, 'Total')
+    year = {'2015':'2014'}.get(date(ctx), date(ctx))
+    precinct_block_fraction = 'blk2mprec/blk_mprec_{}_g{}_v01.txt'.format(county(ctx), year[-2:])
+    precincts = precinct.split('+')
+    with open(precinct_block_fraction) as f:
+        for line in f:
+            b, p, f = [i.strip('"') for i in line.strip('\n').split(',')]
+            if b and p in precincts:
+                ethnic += block_ethnicities(ctx, ethnicity)[b] * float(f)
+                total += block_ethnicities(ctx, 'Total')[b] * float(f)
+
+    return ethnic/total if total else 0
+
 
 @pick
 def processed_cvap(file_name):
@@ -687,7 +771,7 @@ def processed_cvap(file_name):
     return result
 
 def cvap(year, blockgroup):
-    year = max(min(year,2017),2009)
+    year = max(min(int(year),2017),2009)
     file_name = 'CVAP/CVAP_{}-{}_ACS_csv_files/BlockGr.csv'.format(year-4,year)
     return processed_cvap(file_name)[blockgroup]
 
@@ -701,40 +785,107 @@ def ethnicities():
                 return s - {'Total','CIT_EST', 'Not Hispanic or Latino'}
             s.add(ethnicity)
 
-def precinct_cvap(ethnicity, est, ctx, precinct):
-    block_groups = {bg: v for (p,bg),v in precinct_blockgroups(ctx).items()
-                    if p == precinct}
-
-    precinct_total = sum(n for n,_ in block_groups.values())
-    ethnicity_total = 0
-    for k,(n,_) in block_groups.items():
-        demos = cvap(int(date(ctx)), k)
-        demos.pop('Total')
-        demos.pop('Not Hispanic or Latino')
-        ethnicity_total += est(ethnicity, demos, n)
-
-    return ethnicity_total, precinct_total
-
-def mean_est(demo, demos, number):
-    return ((demos[demo]/sum(demos.values()) * number) if demos[demo] else 0)
+@save2
+def precinct_blockgroup_fractions(ctx, precinct):
+    # get precint->blockgroup file for election
+    d = {'2017':'2016', '2015': '2014'}.get(date(ctx), date(ctx))
+    path = '/'.join([
+            'precinct_block_maps',
+            state(ctx), 
+            county(ctx), 
+            'c{}_{}{}_sr_blk_map.csv'.format(county(ctx),election_type(ctx),d[-2:])
+            ])
+    return pbf(path, state(ctx), county(ctx))[precinct]
 
 @pick
-def precinct_ethnicity(ctx, eth, est):
-    d = {}
-    for precinct in unique_precincts(ctx):
-        part, whole = precinct_cvap(eth, est, ctx, precinct)
-        d[precinct] = part/whole if whole else 0
-    return d
+def pbf(path, state, county):
+    # extract population, precinct, and blockgroup info from file
+    info = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+    with open(path) as f:
+        next(f)
+        for line in f:
+            p,t,b,xpop,_,_,tpop,_ = line.strip().replace('"','').split(',')
+            p = p[-6:]
+            bg = state+county+t.zfill(6)+b[0]
+            info[p][bg]['xpop'] += int(xpop)
+            info[p][bg]['tpop'] += int(tpop)
+            
+    result = {}
+    for precinct, blockgroups in info.items():
+        result[precinct] = {}
+        for blockgroup, pop in blockgroups.items():
+            result[precinct][blockgroup] = pop['xpop'] / pop['tpop']
+    return result
 
+@save
+def all_precinct_blockgroup_fractions(ctx):
+    return {precinct: precinct_blockgroup_fractions(ctx, precinct)
+            for precinct in precinct_participation(ctx)}
+         
+@save2
+def precinct_population(ctx, precinct, ethnicity):
+    return sum(cvap(date(ctx), k)[ethnicity]*v
+        for k, v in all_precinct_blockgroup_fractions(ctx)[precinct].items())
+
+@save2
+def precinct_percentage(ctx, precinct, ethnicity):
+    ethnic_pop = precinct_population(ctx, precinct, ethnicity)
+    total_pop = precinct_population(ctx, precinct, 'Total')
+    return ethnic_pop/total_pop if total_pop else 0
+
+@save2
+def last_round_participation(ctx, eth):
+    if state(ctx) is None or int(date(ctx))<2013: 
+        return None
+    numerator = 0 
+    for precinct in precinct_participation(ctx):
+        numerator += precinct_ranked_finalists(ctx).get(precinct,0) \
+                        * precinct_percent_ethnicity(ctx, precinct, eth)
+    return numerator/(total(ctx)-total_exhausted(ctx))
+
+@save2
+def first_round_participation(ctx, eth):
+    if state(ctx) is None or int(date(ctx))<2013: 
+        return None
+    numerator = 0 
+    for precinct in precinct_participation(ctx):
+        numerator += precinct_participation(ctx).get(precinct,0) \
+                        * precinct_percent_ethnicity(ctx, precinct, eth)
+    return numerator/(total(ctx)-total_exhausted(ctx))
+
+@save
+def black_first_round_participation(ctx):
+    return first_round_participation(ctx, 'Black or African American Alone')
+
+@save
+def black_last_round_participation(ctx):
+    return last_round_participation(ctx, 'Black or African American Alone')
+
+@save
+def white_first_round_participation(ctx):
+    return first_round_participation(ctx, 'White Alone')
+
+@save
+def white_last_round_participation(ctx):
+    return last_round_participation(ctx, 'White Alone')
+
+@save2
 def overvote_ratio(ctx, eth):
-    if state(ctx) is None or int(date(ctx))<2012: return None
+    '''
+    assumes overvote and turnout rates are the same for all ethnicities in the 
+    same precinct.
+    '''
+    if state(ctx) is None or int(date(ctx))<2013: 
+        return None
     num_over = 0
     num_votes = 0
     denom_over = 0
     denom_votes = 0
-    for precinct in unique_precincts(ctx):
-        pct_eth = precinct_ethnicity(ctx, eth, mean_est)[precinct]
-        over = precinct_overvotes(ctx)[precinct]
+    for precinct in precinct_participation(ctx):
+        ethnic_pop = precinct_population(ctx, precinct, eth)
+        total_pop = precinct_population(ctx, precinct, 'Total')
+        pct_eth = ethnic_pop/total_pop if total_pop else 0 
+        over = precinct_overvotes(ctx).get(precinct,0)
         total = precinct_totals(ctx)[precinct]
         num_over += pct_eth*over
         num_votes += pct_eth*total
@@ -829,12 +980,11 @@ def office(ctx):
 
 @tmpsave
 def hasher(ctx):
-    h = md5(bytes(sub(r'0x[0-9a-f]+','',str(ctx)),'utf-8')) #stripping pointer addrs
-    for path in glob(ctx['path']):
-        with open(path, 'rb') as f:
-            for i in f:
-                h.update(i)
-    return h
+    return md5(bytes(dop(ctx),'utf-8'))
+
+@tmpsave
+def dop(ctx):
+    return ','.join(str(f(ctx)) for f in [date, office, place])
 
 FUNCTIONS = [office, date, place,
     total, undervote, total_overvote, first_round_overvote, 
@@ -846,7 +996,10 @@ FUNCTIONS = [office, date, place,
     exhausted_by_undervote, exhausted_by_repeated_choices, minneapolis_undervote, 
     minneapolis_total, naive_tally, candidates, count_duplicates, any_repeat, 
     validly_ranked_winner, margin_when_2_left, margin_when_winner_has_majority,
-    black_overvote_ratio, white_overvote_ratio]
+   # black_overvote_ratio, white_overvote_ratio, 
+    black_first_round_participation, 
+    black_last_round_participation, white_first_round_participation, 
+    white_last_round_participation]
 
 def printcode(strfun):
     fun = next(f for f in FUNCTIONS if f.__name__ == strfun)
@@ -858,7 +1011,7 @@ def printcode(strfun):
 
 def calc(competition, functions):
     ctx = dict(manifest.competitions[competition])
-    pprint(ctx)
+    print(dop(ctx))
     hasher(ctx) 
     return {f.__name__: f(ctx) for f in functions}
 
