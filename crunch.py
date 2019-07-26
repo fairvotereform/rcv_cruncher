@@ -764,7 +764,7 @@ def last_round_participation(ctx, eth):
     for precinct in precinct_participation(ctx):
         numerator += precinct_ranked_finalists(ctx).get(precinct,0) \
                         * precinct_percent_ethnicity(ctx, precinct, eth)
-    return numerator/(total(ctx)-total_exhausted(ctx))
+    return numerator
 
 @save2
 def first_round_participation(ctx, eth):
@@ -774,7 +774,7 @@ def first_round_participation(ctx, eth):
     for precinct in precinct_participation(ctx):
         numerator += precinct_participation(ctx).get(precinct,0) \
                         * precinct_percent_ethnicity(ctx, precinct, eth)
-    return numerator/(total(ctx)-total_exhausted(ctx))
+    return numerator
 
 @save
 def black_first_round_participation(ctx):
