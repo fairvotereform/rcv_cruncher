@@ -1,17 +1,17 @@
 {
   "result": {
     "__value__": [
-      "x5",
-      "x6",
       "x0",
-      "x3",
-      "x9",
-      "x2",
-      "x8",
       "x4",
+      "x8",
+      "x3",
+      "x5",
+      "x2",
+      "x9",
+      "x6",
       "x1"
     ],
     "__type__": "set"
   },
-  "check": "6921dbdb6c2caccc956b35d6ce491227"
+  "check": "df9d96529c8ad4f739d97c20c8dad670"
 }

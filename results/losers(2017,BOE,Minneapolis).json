@@ -1,11 +1,11 @@
 {
   "result": {
     "__value__": [
-      "x3",
       "x2",
-      "x1"
+      "x1",
+      "x3"
     ],
     "__type__": "set"
   },
-  "check": "6984c704ef5740f95f52ee02c14b0ef4"
+  "check": "32349bc55f5a2d78c4fa7aaacb0f0356"
 }

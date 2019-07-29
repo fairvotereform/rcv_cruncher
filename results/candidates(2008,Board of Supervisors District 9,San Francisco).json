@@ -1,16 +1,16 @@
 {
   "result": {
     "__value__": [
-      "x5",
-      "x6",
       "x0",
-      "x3",
-      "x7",
-      "x2",
       "x4",
+      "x7",
+      "x3",
+      "x5",
+      "x2",
+      "x6",
       "x1"
     ],
     "__type__": "set"
   },
-  "check": "aba317e78d2ae2ec605d7bc24bc75fa3"
+  "check": "ea2d0028b0399bdfdd02e9bf67be1da4"
 }

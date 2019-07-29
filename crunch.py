@@ -50,6 +50,25 @@ def as_python_object(dct):
         return containers[dct['__type__']](dct['__value__'])
     return dct
 
+#   INSANE
+#   META-PROGRAMMING
+
+def unwrap(function):
+    while '__wrapped__' in dir(function):
+        function = function.__wrapped__
+    return function
+
+def helpers(function):
+    visited = set()
+    frontier = {function}
+    while frontier:
+        fun = frontier.pop()
+        visited.add(fun)
+        for helper in set(unwrap(globals()[fun]).__code__.co_names):
+            if helper not in visited and '__code__' in dir(globals().get(helper)):
+                frontier.add(helper)
+    return visited
+
 def save2(f):
     @wraps(f)
     def fun(ctx,*args):
@@ -60,6 +79,8 @@ def save2(f):
                 return ctx[f.__name__]
         h = hasher(ctx).copy()
         h.update(bytes(getsource(f), 'utf-8'))
+        for helper in sorted(helpers(f.__name__)):
+            h.update(bytes(getsource(globals()[helper]), 'utf-8'))
         for arg in args:
             h.update(bytes(str(arg), 'utf-8'))
         file_name = 'results/{}({}).json'.format(f.__name__, dop(ctx) + ','.join(args))
@@ -96,6 +117,8 @@ def save(f):
             return ctx[f.__name__]
         h = hasher(ctx).copy()
         h.update(bytes(getsource(f), 'utf-8'))
+        for helper in sorted(helpers(f.__name__)):
+            h.update(bytes(getsource(globals()[helper]), 'utf-8'))
         file_name = 'results/{}({}).json'.format(f.__name__, dop(ctx))
         with suppress(IOError, EOFError, json.decoder.JSONDecodeError), \
             open(file_name) as file_object:
