@@ -723,7 +723,7 @@ def precinct_participation(ctx):
 
 @save
 def precinct_ranked_finalists(ctx):
-    return Counter(p for p,o in zip(precincts(ctx), exhausted(ctx)) if o)
+    return Counter(p for p,o in zip(precincts(ctx), exhausted(ctx)) if not o)
 
 @save
 def precinct_overvote_rate(ctx):
