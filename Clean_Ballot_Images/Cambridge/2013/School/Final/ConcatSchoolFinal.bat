@@ -1,1 +1,0 @@
-copy ..\Tuesday\SchoolTues.txt+*.prm SchoolFINAL.txt

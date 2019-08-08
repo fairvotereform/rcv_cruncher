@@ -62,7 +62,6 @@ def shelve_key(arg):
 def save(f):
     f.not_called = True
     f.cache = {}
-    
     @wraps(f)
     def fun(*args):
         if f.not_called:
@@ -325,7 +324,7 @@ def first_round(ctx):
     return [next((c for c in b if c != UNDERVOTE), UNDERVOTE)
             for b in ballots(ctx)]
 
-@save #should be dependant
+@save
 def undervote(ctx):
     '''
     Ballots completely made up of undervotes (no marks).
@@ -336,11 +335,11 @@ def undervote(ctx):
 def ranked2(ctx):
     return sum(len(b) == 2 for b in cleaned(ctx))
 
-@save #d
+@save 
 def ranked_multiple(ctx): 
     return sum(len(b) > 1 for b in cleaned(ctx))
 
-@save #d
+@save 
 def effective_ballot_length(ctx):
     return Counter(len(b) for b in cleaned(ctx))
 
@@ -358,18 +357,18 @@ def total_exhausted(ctx):
     '''
     return sum(exhausted(ctx))
 
-@save #d fixme
+@save #fixme
 def involuntarily_exhausted(ctx):
     return [a and b for a,b in zip(fully_ranked(ctx), exhausted(ctx))]
 
-@save #d
+@save 
 def total_involuntarily_exhausted(ctx):
     '''
     Number of validly fully ranked ballots that do not rank a finalist. 
     '''
     return sum(involuntarily_exhausted(ctx))
 
-@save #d
+@save 
 def voluntarily_exhausted(ctx):
     return [a and not b 
             for a,b in zip(exhausted(ctx),involuntarily_exhausted(ctx))]
@@ -390,30 +389,30 @@ def exhausted_by_repeated_choices(ctx):
     return total_exhausted(ctx) - sum([exhausted_by_undervote(ctx), 
                                         total_exhausted_by_overvote(ctx),
                                         total_involuntarily_exhausted(ctx)])
-@save #d
+@save 
 def exhausted_by_undervote(ctx):
     if break_on_repeated_undervotes(ctx):
         return sum(all([ex, not ex_over, has_under]) for ex,ex_over,has_under in 
                   zip(exhausted(ctx),exhausted_by_overvote(ctx), has_undervote(ctx)))
     return 0
 
-@save #d
+@save 
 def exhausted_by_overvote(ctx):
     if break_on_repeated_undervotes(ctx):
         return [ex and over<under for ex,over,under in 
                 zip(exhausted(ctx),overvote_ind(ctx),repeated_undervote_ind(ctx))]
     return [ex and over for ex,over in zip(exhausted(ctx),overvote(ctx))]
 
-@save #d
+@save 
 def total_exhausted_by_overvote(ctx):
     return sum(exhausted_by_overvote(ctx))
 
-@save #d
+@save 
 def total_exhausted_not_by_overvote(ctx):
     return sum(ex and not ov 
                 for ex,ov in zip(exhausted(ctx), exhausted_by_overvote(ctx)))
 
-@save #d
+@save 
 def validly_ranked_winner(ctx):
     return sum(winner(ctx) in b for b in cleaned(ctx))
 
@@ -453,11 +452,11 @@ def condorcet(ctx):
 def come_from_behind(ctx):
     return winner(ctx) != rcv(ctx)[0][0][0]
         
-@save #d
+@save 
 def candidate_combinations(ctx):
     return Counter(tuple(sorted(b)) for b in cleaned(ctx))
 
-@save #d
+@save 
 def orderings(ctx):
     return Counter(map(tuple,cleaned(ctx))).most_common()
 
@@ -471,34 +470,6 @@ def next_choice(ctx):
     for b in cleaned(ctx):
         c.update(zip([None, *b], [*b, None]))
     return c.most_common()
-
-def ordered_choices(ctx):
-    c = Counter()
-    for b in cleaned(ctx):
-        c.update(zip([None, *b], [*b, None], count()))
-    return c
-
-def sankey_ordered_choices(ctx):
-    sources = {(str(a),i) for a,_,i in ordered_choices(ctx)}
-    targets = {(str(b),i+1) for _,b,i in ordered_choices(ctx) if b is not None}
-    nodes = sorted(sources | targets)
-    node_map = [{"node": i, "name": k[0]} for i,k in enumerate(nodes)]
-    link_map = [{"source": nodes.index((str(s),i)), 
-                "target": nodes.index((str(t),i+1)),"value": v}
-                for (s,t,i),v in ordered_choices(ctx).items() if t is not None]
-    with open('sankey/sankey-formatted.json', 'w') as f:
-        json.dump({"nodes": node_map, "links": link_map}, f)
-    
-def sankey(ctx):
-    for (i, (a,b)), v in ordered_choices(ctx):
-        if None != b:
-            print([str(a) + '_' + str(i), str(b) + '_' + str(i+1), v],',')
-    return []
-
-def sankey_next_choice(ctx):
-    for (a,b), v in next_choice(ctx):
-        print([str(a)+'_a', str(b)+'_b', v],',')
-    return []
 
 @save
 def repeated_undervote_ind(ctx):
@@ -718,8 +689,29 @@ def sr_blk_map(file_name):
         for line in f:
             srprec,tract,block,blkreg,srtotreg,pctsrprec, blktotreg, pctblk = \
                 [i.strip('"') for i in line.strip('\n').split(',')]
-            result[srprec].append((state+county+tract.zfill(6)+block,pctblk))
+            result[srprec].append((state+county+tract.zfill(6)+block,float(pctblk)/100))
     return result
+
+@save
+def precinct_ethnicity_totals(ctx, precinct, ethnicity):
+    ethnic = 0 
+    int_year = int(date(ctx))
+    year = str(int_year - int_year%2)
+    #precinct_block_fraction = 'blk2mprec/blk_mprec_{}_g{}_v01.txt'.format(county(ctx), year[-2:])
+    precinct_block_fraction = 'precinct_block_maps/06/{}/c{}_g{}_sr_blk_map.csv'.format(county(ctx), county(ctx),year[-2:])
+    precincts = precinct.split('+')
+    for p in precincts:
+    #    for (b,f) in blk2mprec(precinct_block_fraction)[p]:
+        for (b,f) in sr_blk_map(precinct_block_fraction)[p]:
+            ethnic += block_ethnicities(ctx, ethnicity)[b] * f
+    return ethnic
+
+@save
+def election_ethnic_cvap_totals(ctx, ethnicity):
+    if state(ctx) is None or int(date(ctx))<2012:
+        return None or None
+    return sum(precinct_ethnicity_totals(ctx, p, ethnicity)
+               for p in unique_precincts(ctx))
 
 @save
 def precinct_percent_ethnicity(ctx, precinct, ethnicity):
@@ -763,51 +755,9 @@ def least_squares_ethnicity_estimate(ctx, eths, ethnicity_rate, precinct_metric)
     rate = scipy.linalg.lstsq(A,b)[0][0]
     return sum(rate * i[0] for i in A)
 
-@save
-def last_round_participation(ctx, eths):
-    if state(ctx) is None or int(date(ctx))<2012: 
-        return None
-    numerator = 0 
-    for precinct, good_ballots in precinct_ranked_finalists(ctx).items():
-        for eth in eths:
-            numerator += good_ballots * precinct_percent_ethnicity(ctx, precinct, eth)
-    return numerator
-
-@save
-def first_round_participation(ctx, eths):
-    if state(ctx) is None or int(date(ctx))<2012: 
-        return None
-    numerator = 0 
-    for precinct, good_ballots in precinct_participation(ctx).items():
-        if good_ballots > 0:
-            for eth in eths:
-                numerator += good_ballots * precinct_percent_ethnicity(ctx, precinct, eth)
-    return numerator
-
-@save
-def last_round_participation_sov(ctx, eths):
-    if state(ctx) is None or int(date(ctx))<2012: 
-        return None
-    numerator = 0 
-    for precinct, good_ballots in precinct_ranked_finalists(ctx).items():
-        for eth in eths:
-            numerator += good_ballots * precinct_percent_ethnicity_sov(ctx, precinct, eth)
-    return numerator
-
-@save
-def first_round_participation_sov(ctx, eths):
-    if state(ctx) is None or int(date(ctx))<2012: 
-        return None
-    numerator = 0 
-    for precinct, good_ballots in precinct_participation(ctx).items():
-        if good_ballots > 0:
-            for eth in eths:
-                numerator += good_ballots * precinct_percent_ethnicity_sov(ctx, precinct, eth)
-    return numerator
-
-@save
-def black_first_round_participation_lin_alg(ctx):
-    return first_round_participation_lin_alg(ctx, ('Black or African American Alone',))
+ETH_ESTIMATORS = [ethnicity_estimate, least_squares_ethnicity_estimate]
+ETH_STATS = [precinct_participation, precinct_ranked_finalists]
+ETHS = [('Black or African American Alone',),  ('White Alone',), ('Hispanic or Latino',), ('Asian Alone',)]
 
 def black_first_round_participation(ctx):
     return ethnicity_estimate(ctx, ('Black or African American Alone',), precinct_percent_ethnicity, precinct_participation)
@@ -845,21 +795,28 @@ def asian_first_round_participation_sov(ctx):
 def asian_last_round_participation_sov(ctx):
     return ethnicity_estimate(ctx, ('asian',), precinct_percent_ethnicity_sov, precinct_ranked_finalists)
 
-OTHER_ETHS = (
-        'American Indian or Alaska Native Alone',
-        'Native Hawaiian or Other Pacific Islander Alone',
-        'American Indian or Alaska Native and White',
-        'Asian and White',
-        'Black or African American and White',
-        'American Indian or Alaska Native and Black or African American',
-        'Remainder of Two or More Race Responses'
-        )
+def asian_ethnic_cvap_totals(ctx):
+    return election_ethnic_cvap_totals(ctx, 'Asian Alone')
 
-def other_first_round_participation(ctx):
-    return first_round_participation(ctx, OTHER_ETHS)
+def black_ethnic_cvap_totals(ctx):
+    return election_ethnic_cvap_totals(ctx, 'Black or African American Alone')
 
-def other_last_round_participation(ctx):
-    return last_round_participation(ctx, OTHER_ETHS)
+def latin_ethnic_cvap_totals(ctx):
+    return election_ethnic_cvap_totals(ctx, 'Hispanic or Latino')
+
+def white_ethnic_cvap_totals(ctx):
+    return election_ethnic_cvap_totals(ctx, 'White Alone')
+
+def cvap_totals(ctx):
+    return election_ethnic_cvap_totals(ctx, 'Total')
+
+OTHER_ETHS = ('American Indian or Alaska Native Alone',
+    'Native Hawaiian or Other Pacific Islander Alone', 
+    'American Indian or Alaska Native and White','Asian and White',
+    'Black or African American and White',
+    'American Indian or Alaska Native and Black or African American',
+    'Remainder of Two or More Race Responses'
+    )
 
 @save
 def overvote_ratio(ctx, eth):
@@ -965,10 +922,6 @@ def office(ctx):
     return '????'
 
 @tmpsave
-def hasher(ctx):
-    return md5(bytes(dop(ctx),'utf-8'))
-
-@tmpsave
 def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
@@ -991,20 +944,12 @@ FUNCTIONS = [office, date, place,
     asian_first_round_participation, asian_last_round_participation,
     latin_first_round_participation_sov, latin_last_round_participation_sov,
     asian_first_round_participation_sov, asian_last_round_participation_sov,
-    #other_first_round_participation, other_last_round_participation
+    cvap_totals,
+    asian_ethnic_cvap_totals, black_ethnic_cvap_totals,
+    latin_ethnic_cvap_totals, white_ethnic_cvap_totals
 ]
 
-def printcode(strfun):
-    fun = next(f for f in FUNCTIONS if f.__name__ == strfun)
-    sl = getsource(fun)
-    rl = [i.strip() for i in sl.split('\n') 
-            if i and not any(map(i.startswith, ['@','def ']))]
-    rl[-1] = rl[-1].replace('return ', '')
-    return ';'.join(rl)
-
 def calc(ctx, functions):
-    #ctx = dict(manifest.competitions[competition])
-    #hasher(ctx) 
     print(dop(ctx))
     results = {}
     for f in functions:
@@ -1039,7 +984,7 @@ def main():
         w = csv.writer(f)
         w.writerow(a.stats)
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-            if True: #county(k) in {'001','075'} and int(date(k)) in [2014, 2016]:
+            if True: #county(k) in {'001','075'} and int(date(k)) > 2012:
                 result = calc(k, stats)
                 w.writerow([result[s] for s in a.stats])
 

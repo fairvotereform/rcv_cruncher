@@ -1,1 +1,0 @@
-copy SchoolTuesBlank.txt+*.prm SchoolTues.txt

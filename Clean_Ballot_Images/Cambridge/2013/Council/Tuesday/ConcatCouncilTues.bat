@@ -1,1 +1,0 @@
-copy CouncilTuesBlank.txt+*.prm counciltues.txt
