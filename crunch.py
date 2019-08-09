@@ -1,4 +1,4 @@
-from functools import wraps, lru_cache
+from functools import wraps, lru_cache, partial
 from itertools import product, chain, combinations, count
 from collections import Counter
 from argparse import ArgumentParser
@@ -43,8 +43,13 @@ def srchash(function):
     while frontier:
         fun = frontier.pop()
         visited.add(fun)
-        for helper in set(unwrap(globals()[fun]).__code__.co_names):
-            if helper not in visited and '__code__' in dir(globals().get(helper)):
+        code = unwrap(globals()[fun]).__code__
+        helpers = list(code.co_names)
+        for const in code.co_consts:
+            if 'co_names' in dir(const):
+                helpers.extend(const.co_names)
+        for helper in set(helpers) - visited:
+            if '__code__' in dir(globals().get(helper)):
                 frontier.add(helper)
     h = md5()
     for f in sorted(visited):
@@ -62,6 +67,7 @@ def shelve_key(arg):
 def save(f):
     f.not_called = True
     f.cache = {}
+
     @wraps(f)
     def fun(*args):
         if f.not_called:
@@ -79,6 +85,7 @@ def save(f):
         key = tuple(str(shelve_key(a)) for a in args)
         if next(iter(f.cache),key)[0] != key[0]:
             f.cache = {} #evict cache if first part of key (election id usually) is different
+            f.visited_cache = False
         if key in f.cache:
             return f.cache[key]
         file_name = 'results/{}/{}'.format(f.__name__, '.'.join(key).replace('/','.'))
@@ -246,16 +253,16 @@ def naive_tally(ctx):
     """ Sometimes reported if only one round, only nominal 1st place rankings count"""
     return Counter(b[0] if b else None for b in ballots(ctx))
 
-@save #d
+@save 
 def winner_ranking(ctx):
     return Counter(b.index(winner(ctx))+1 if winner(ctx) in b else None
                     for b in cleaned(ctx))
 
-@save #d
+@save 
 def winner_in_top_3(ctx):
     return sum(v for k,v in winner_ranking(ctx).items() if k is not None and k<4)
 
-@save #d
+@save 
 def consensus(ctx):
     return winner_in_top_3(ctx) / (total(ctx) - undervote(ctx)) 
 
@@ -636,7 +643,7 @@ def processed_sov(file_name):
 
 @save
 def precinct_percent_ethnicity_sov(ctx, precinct, ethnicity):
-    total = 0 
+    total = 0
     ethnic = 0 
     int_year = int(date(ctx))
     year = str(int_year + int_year%2)
@@ -647,8 +654,8 @@ def precinct_percent_ethnicity_sov(ctx, precinct, ethnicity):
             ethnic += processed_sov(file_name)[p][ethnicity]
             total += processed_sov(file_name)[p]['total']
         except KeyError:
-            print('POSSIBLE MISSING PRECINCT IN SOV:', p)
-            print()
+            print('\tPOSSIBLE MISSING PRECINCT IN SOV:', p)
+            return 'ERROR'
             
     return ethnic/total if total else 0
 
@@ -671,16 +678,6 @@ def block_ethnicities(ctx, ethnicity):
     return cvap_by_block(file_name)
 
 @lru_cache(maxsize=2)
-def blk2mprec(file_name):
-    result = defaultdict(list)
-    with open(file_name) as f:
-        for line in f:
-            b, p, f = [i.strip('"') for i in line.strip('\n').split(',')]
-            if b:
-                result[p].append((b,f)) 
-    return result
-
-@lru_cache(maxsize=2)
 def sr_blk_map(file_name):
     _, state, county, *_ = file_name.split('/')
     result = defaultdict(list)
@@ -697,13 +694,11 @@ def precinct_ethnicity_totals(ctx, precinct, ethnicity):
     ethnic = 0 
     int_year = int(date(ctx))
     year = str(int_year - int_year%2)
-    #precinct_block_fraction = 'blk2mprec/blk_mprec_{}_g{}_v01.txt'.format(county(ctx), year[-2:])
     precinct_block_fraction = 'precinct_block_maps/06/{}/c{}_g{}_sr_blk_map.csv'.format(county(ctx), county(ctx),year[-2:])
     precincts = precinct.split('+')
     for p in precincts:
-    #    for (b,f) in blk2mprec(precinct_block_fraction)[p]:
         for (b,f) in sr_blk_map(precinct_block_fraction)[p]:
-            ethnic += block_ethnicities(ctx, ethnicity)[b] * f
+            ethnic += block_ethnicities(ctx, cvap_ethnicity(ethnicity))[b] * f
     return ethnic
 
 @save
@@ -713,99 +708,87 @@ def election_ethnic_cvap_totals(ctx, ethnicity):
     return sum(precinct_ethnicity_totals(ctx, p, ethnicity)
                for p in unique_precincts(ctx))
 
+def cvap_ethnicity(eth):
+    return {
+        'black': 'Black or African American Alone',
+        'white': 'White Alone',
+        'latin': 'Hispanic or Latino',
+        'asian': 'Asian Alone',
+        'total': 'Total',
+        'Total': 'Total'
+        }[eth]
+
 @save
 def precinct_percent_ethnicity(ctx, precinct, ethnicity):
     total = 0 
     ethnic = 0 
     int_year = int(date(ctx))
     year = str(int_year - int_year%2)
-    #precinct_block_fraction = 'blk2mprec/blk_mprec_{}_g{}_v01.txt'.format(county(ctx), year[-2:])
     precinct_block_fraction = 'precinct_block_maps/06/{}/c{}_g{}_sr_blk_map.csv'.format(county(ctx), county(ctx),year[-2:])
     precincts = precinct.split('+')
     for p in precincts:
-    #    for (b,f) in blk2mprec(precinct_block_fraction)[p]:
         for (b,f) in sr_blk_map(precinct_block_fraction)[p]:
-            ethnic += block_ethnicities(ctx, ethnicity)[b] * float(f)
+            ethnic += block_ethnicities(ctx, cvap_ethnicity(ethnicity))[b] * float(f)
             total += block_ethnicities(ctx, 'Total')[b] * float(f)
     return ethnic/total if total else 0
 
-@save
-def ethnicity_estimate(ctx, eths, ethnicity_rate, precinct_metric):
+def ethnicity_estimate(eths, ethnicity_rate, precinct_metric, ctx):
     if state(ctx) is None or int(date(ctx))<2012:
-        return None or None
+        return None
     numerator = 0
+    if str(eths) == eths:
+        eths = [eths]
     for precinct, good_ballots in precinct_metric(ctx).items():
         for eth in eths:
-            numerator += good_ballots * ethnicity_rate(ctx,precinct,eth)
+            rate = ethnicity_rate(ctx,precinct,eth)
+            if rate == 'ERROR':
+                return 'ERROR'
+            numerator += good_ballots * rate
     return numerator
 
-@save 
-def least_squares_ethnicity_estimate(ctx, eths, ethnicity_rate, precinct_metric):
+def least_squares_ethnicity_estimate(eths, ethnicity_rate, precinct_metric, ctx):
     if state(ctx) is None or int(date(ctx))<2012: 
         return None
     b = []
     A = []
     numerator = 0 
+    if str(eths) == eths:
+        eths = [eths]
     for precinct,total in precinct_metric(ctx).items():
         b.append(total)
-        pct = sum(ethnicity_rate(ctx, precinct, eth) for eth in eths)
+        pct = 0
+        for eth in eths:
+            rate = ethnicity_rate(ctx, precinct, eth) 
+            if rate == 'ERROR':
+                return rate
+            pct += rate
         specific = total * pct
         general = total * (1-pct)
         A.append([specific, general])
     rate = scipy.linalg.lstsq(A,b)[0][0]
     return sum(rate * i[0] for i in A)
 
-ETH_ESTIMATORS = [ethnicity_estimate, least_squares_ethnicity_estimate]
-ETH_STATS = [precinct_participation, precinct_ranked_finalists]
-ETHS = [('Black or African American Alone',),  ('White Alone',), ('Hispanic or Latino',), ('Asian Alone',)]
-
-def black_first_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Black or African American Alone',), precinct_percent_ethnicity, precinct_participation)
-
-def black_last_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Black or African American Alone',), precinct_percent_ethnicity, precinct_ranked_finalists)
-
-def white_first_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('White Alone',), precinct_percent_ethnicity, precinct_participation)
-
-def white_last_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('White Alone',), precinct_percent_ethnicity, precinct_ranked_finalists)
-
-def latin_first_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Hispanic or Latino',), precinct_percent_ethnicity, precinct_participation)
-
-def latin_last_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Hispanic or Latino',), precinct_percent_ethnicity, precinct_ranked_finalists)
-
-def asian_first_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Asian Alone',), precinct_percent_ethnicity, precinct_participation)
-
-def asian_last_round_participation(ctx):
-    return ethnicity_estimate(ctx, ('Asian Alone',), precinct_percent_ethnicity, precinct_ranked_finalists)
-
-def latin_first_round_participation_sov(ctx):
-    return ethnicity_estimate(ctx, ('latin',), precinct_percent_ethnicity_sov, precinct_participation)
-
-def latin_last_round_participation_sov(ctx):
-    return ethnicity_estimate(ctx, ('latin',), precinct_percent_ethnicity_sov, precinct_ranked_finalists)
-
-def asian_first_round_participation_sov(ctx):
-    return ethnicity_estimate(ctx, ('asian',), precinct_percent_ethnicity_sov, precinct_participation)
-
-def asian_last_round_participation_sov(ctx):
-    return ethnicity_estimate(ctx, ('asian',), precinct_percent_ethnicity_sov, precinct_ranked_finalists)
+STAT_ESTIMATORS = [ethnicity_estimate, least_squares_ethnicity_estimate]
+PRECINCT_STATS = [precinct_participation, precinct_ranked_finalists, precinct_overvotes]
+PRECINT2ETHNICITY = [precinct_percent_ethnicity, precinct_percent_ethnicity_sov]
+ETHS = ['black','white','latin','asian']
+ETHNICITY_STATS = [partial(*prod) 
+                    for prod in product(STAT_ESTIMATORS, ETHS, PRECINT2ETHNICITY, PRECINCT_STATS)
+                    if prod[1] in {'latin', 'asian'} or prod[2].__name__[-3:] != 'sov']
+for f in ETHNICITY_STATS:
+    f.__name__ = f.func.__name__ + '(' + ','.join(a.__name__ if callable(a) else str(a) for a in f.args) + ')'
 
 def asian_ethnic_cvap_totals(ctx):
-    return election_ethnic_cvap_totals(ctx, 'Asian Alone')
+    return election_ethnic_cvap_totals(ctx, 'asian')
 
 def black_ethnic_cvap_totals(ctx):
-    return election_ethnic_cvap_totals(ctx, 'Black or African American Alone')
+    return election_ethnic_cvap_totals(ctx, 'black')
 
 def latin_ethnic_cvap_totals(ctx):
-    return election_ethnic_cvap_totals(ctx, 'Hispanic or Latino')
+    return election_ethnic_cvap_totals(ctx, 'latin')
 
 def white_ethnic_cvap_totals(ctx):
-    return election_ethnic_cvap_totals(ctx, 'White Alone')
+    return election_ethnic_cvap_totals(ctx, 'white')
 
 def cvap_totals(ctx):
     return election_ethnic_cvap_totals(ctx, 'Total')
@@ -817,36 +800,6 @@ OTHER_ETHS = ('American Indian or Alaska Native Alone',
     'American Indian or Alaska Native and Black or African American',
     'Remainder of Two or More Race Responses'
     )
-
-@save
-def overvote_ratio(ctx, eth):
-    '''
-    assumes overvote and turnout rates are the same for all ethnicities in the 
-    same precinct.
-    '''
-    if state(ctx) is None or int(date(ctx))<2012: 
-        return None
-    num_over = 0
-    num_votes = 0
-    denom_over = 0
-    denom_votes = 0
-    for precinct in precinct_participation(ctx):
-        pct_eth = precinct_percent_ethnicity(ctx, precinct, eth)
-        over = precinct_overvotes(ctx).get(precinct,0)
-        total = precinct_totals(ctx)[precinct]
-        num_over += pct_eth*over
-        num_votes += pct_eth*total
-        denom_over += (1-pct_eth)*over
-        denom_votes += (1-pct_eth)*total
-    if denom_votes and num_votes:
-        return (num_over/num_votes)/(denom_over/denom_votes)
-    return 0
-
-def black_overvote_ratio(ctx):
-    return overvote_ratio(ctx,'Black or African American Alone')
-
-def white_overvote_ratio(ctx):
-    return overvote_ratio(ctx,'White Alone')
 
 def state(ctx):
     return {
@@ -937,17 +890,10 @@ FUNCTIONS = [office, date, place,
     exhausted_by_repeated_choices, naive_tally, candidates, count_duplicates, 
     any_repeat, validly_ranked_winner, margin_when_2_left, 
     margin_when_winner_has_majority, 
-    black_overvote_ratio, white_overvote_ratio, 
-    black_first_round_participation, black_last_round_participation, 
-    white_first_round_participation, white_last_round_participation,
-    latin_first_round_participation, latin_last_round_participation,
-    asian_first_round_participation, asian_last_round_participation,
-    latin_first_round_participation_sov, latin_last_round_participation_sov,
-    asian_first_round_participation_sov, asian_last_round_participation_sov,
     cvap_totals,
     asian_ethnic_cvap_totals, black_ethnic_cvap_totals,
     latin_ethnic_cvap_totals, white_ethnic_cvap_totals
-]
+] + ETHNICITY_STATS
 
 def calc(ctx, functions):
     print(dop(ctx))
@@ -958,35 +904,20 @@ def calc(ctx, functions):
 
 def main():
     p = ArgumentParser()
-    p.add_argument(
-        '-e', 
-        '--elections', 
-        nargs='*', 
-        default=manifest.competitions.keys())
-    p.add_argument(
-        '-s', 
-        '--stats', 
-        nargs='*', 
-        default=[i.__name__ for i in FUNCTIONS])
     p.add_argument('-j', '--json', action='store_true')
     a = p.parse_args()
-    stats = [globals()[i] for i in a.stats]
-    matched_elections = [] 
-    for k,g in product(manifest.competitions.keys(), a.elections):
-        if fnmatch(k,g):
-            matched_elections.append(k)
     if a.json:
-        for k in matched_elections:
-            pprint(calc(k, stats))
+        for k in manifest.competitions.values():
+            pprint(calc(k, FUNCTIONS))
         return
 
     with open('results.csv', 'w') as f:
         w = csv.writer(f)
-        w.writerow(a.stats)
+        w.writerow([fun.__name__ for fun in FUNCTIONS])
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
             if True: #county(k) in {'001','075'} and int(date(k)) > 2012:
-                result = calc(k, stats)
-                w.writerow([result[s] for s in a.stats])
+                result = calc(k, FUNCTIONS)
+                w.writerow([result[fun.__name__] for fun in FUNCTIONS])
 
 if __name__== '__main__':
     main()
