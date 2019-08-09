@@ -14,6 +14,7 @@ import pickle #faster than json, shelve
 from gmpy2 import mpq as Fraction
 from dbfread import DBF
 import scipy.linalg
+import scipy.optimize
 
 import manifest
 from math import floor, sqrt
@@ -754,8 +755,8 @@ def least_squares_ethnicity_estimate(eths, ethnicity_rate, precinct_metric, ctx)
     numerator = 0 
     if str(eths) == eths:
         eths = [eths]
-    for precinct,total in precinct_metric(ctx).items():
-        b.append(total)
+    for precinct,total in precinct_totals(ctx).items():
+        b.append(precinct_metric(ctx).get(precinct,0))
         pct = 0
         for eth in eths:
             rate = ethnicity_rate(ctx, precinct, eth) 
@@ -765,11 +766,11 @@ def least_squares_ethnicity_estimate(eths, ethnicity_rate, precinct_metric, ctx)
         specific = total * pct
         general = total * (1-pct)
         A.append([specific, general])
-    rate = scipy.linalg.lstsq(A,b)[0][0]
+    rate = scipy.optimize.lsq_linear(A,b,(0,1))['x'][0]
     return sum(rate * i[0] for i in A)
 
 STAT_ESTIMATORS = [ethnicity_estimate, least_squares_ethnicity_estimate]
-PRECINCT_STATS = [precinct_participation, precinct_ranked_finalists, precinct_overvotes]
+PRECINCT_STATS = [precinct_participation , precinct_ranked_finalists, precinct_overvotes]
 PRECINT2ETHNICITY = [precinct_percent_ethnicity, precinct_percent_ethnicity_sov]
 ETHS = ['black','white','latin','asian']
 ETHNICITY_STATS = [partial(*prod) 
@@ -879,6 +880,8 @@ def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
 FUNCTIONS = [office, date, place,
+] + ETHNICITY_STATS
+[
     total, undervote, total_overvote, first_round_overvote, 
     total_exhausted_by_overvote, total_fully_ranked, ranked2, 
     ranked_winner, 
