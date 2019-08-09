@@ -880,8 +880,6 @@ def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
 FUNCTIONS = [office, date, place,
-] + ETHNICITY_STATS
-[
     total, undervote, total_overvote, first_round_overvote, 
     total_exhausted_by_overvote, total_fully_ranked, ranked2, 
     ranked_winner, 
