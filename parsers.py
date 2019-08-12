@@ -1,6 +1,6 @@
 from pathlib import Path
 from glob import glob
-from collections import UserList
+from collections import UserList, defaultdict
 import os
 import csv
 
@@ -26,6 +26,27 @@ def sf_precinct_map(ctx):
                 if ctx['place'] == 'San Francisco':
                     precinct_map[kv[:7]] = i.split()[2]
     return precinct_map
+
+def parse_master_lookup(ctx):
+    path = ctx['path']
+    master_lookup_path = ctx.get('master_lookup')
+    if master_lookup_path is None:
+        master_lookup_path = path.replace('ballot_image', 'master_lookup') \
+                                 .replace('BallotImage', 'MasterLookup') \
+                                 .replace('ballotimage', 'masterlookup') \
+                                 .replace('Ballot Image', 'Master Lookup')
+                    
+    master_lookup = defaultdict(dict)
+    with open(master_lookup_path) as f:
+        for i in f:
+            mapping = i[:10].strip()
+            key = i[10:17].strip()
+            value = i[17:67].strip()
+            master_lookup[mapping][key] = value
+    return dict(master_lookup)
+
+def sf_name_map(ctx):
+    return parse_master_lookup(ctx)['Candidate']
 
 def burlington(ctx):
     path = ctx['path']
@@ -68,6 +89,7 @@ def prm(ctx):
 def sf(contest_id, ctx):
     path = ctx['path']
     precinct_map = sf_precinct_map(ctx)
+    name_map = sf_name_map(ctx)
     ballots = []
     with open(path, "r") as f:
         b = UserList([])
@@ -80,7 +102,7 @@ def sf(contest_id, ctx):
                 voter_id = line[7:16]
                 b = UserList([])
             precinct_id = line[26:33]
-            candidate_id = int(line[36:43])
+            candidate_id = int(line[36:43]) and name_map[line[36:43]]
             undervote = UNDERVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             b.append(candidate_id or undervote or overvote)
@@ -94,6 +116,7 @@ def sf(contest_id, ctx):
 def sfnoid(ctx):
     path = ctx['path']
     precinct_map = sf_precinct_map(ctx)
+    name_map = sf_name_map(ctx)
     ballots = []
     with open(path, "r") as f:
         b = UserList([])
@@ -104,7 +127,7 @@ def sfnoid(ctx):
                 voter_id = line[7:16]
                 b = UserList([])
             precinct_id = line[26:33]
-            candidate_id = int(line[36:43])
+            candidate_id = int(line[36:43]) and name_map[line[36:43]]
             undervote = UNDERVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             

@@ -824,7 +824,9 @@ def election_type(ctx):
 
 @save
 def ballots(ctx):
+    print("",end="")
     raw = ctx['parser'](ctx)
+    return raw
     can_set = set()
     for b in raw:
         can_set.update(b)
@@ -888,7 +890,7 @@ FUNCTIONS = [office, date, place,
     total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
     effective_ballot_length, minneapolis_undervote, minneapolis_total,
     total_voluntarily_exhausted, condorcet, come_from_behind, rounds, 
-    last5rcv, finalists, winner, exhausted_by_undervote, 
+    finalists, winner, exhausted_by_undervote, 
     exhausted_by_repeated_choices, naive_tally, candidates, count_duplicates, 
     any_repeat, validly_ranked_winner, margin_when_2_left, 
     margin_when_winner_has_majority, 
