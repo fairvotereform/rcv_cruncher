@@ -1,8 +1,6 @@
 Invocation:
 To calculate selected stats on selected elections do:
-python3 crunch.py -s [stats] -e [elections]
-You may leave out the -s to choose all stats and/or leave out -e to choose all
-elections
+python3 crunch.py
 
 file descriptions:
 crunch.py:
@@ -22,25 +20,18 @@ ballots from many different juristictions, Santa Fe, Cambridge, San Francisco,
 etc., etc.
 
 manifest.py:
-This file contains 'starter' contexts for crunch.py. They contain the path of 
+This file contains election data for crunch.py. They contain the path of 
 the raw ballot data, rules about the election (whether to truncate the ballot
 at the first overvote, or consecutive undervote). Defaults to the rules, and
 other starter stats are defined as functions in crunch.py
 
 TODO:
-Expand ability of parsers to retrive more metadata from ballot (e.g. voter id,
-precinct).
 
-Generalize to calculate stats about groups of elections
-
-Generalize to incorporate other sources besides ballot images
-
-Allow user to search for stats/elections to use
-
-Improve cache-to-disk method to be simpler and more robust
-- lean on git status or os modified time
-- don't just blindly overwrite old file
-
-Meaningful file paths?
-
+- Further generalize to incorporate other sources besides ballot images
+- Allow user to search for stats/elections to use
+- More flexibility in save decorator
+    - add ability to handle partials
+    - add ability to invalidate cache based on custom function
+        (turn save into a function that returns a decorator)
+- Make it easier to create excerpts that do one particular thing
 
