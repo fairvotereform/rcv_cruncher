@@ -28,6 +28,7 @@ UNDERVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
 
+### Persistence ###
 def unwrap(function):
     while '__wrapped__' in dir(function):
         function = function.__wrapped__
@@ -55,7 +56,7 @@ def srchash(function):
 def shelve_key(arg):
     if isinstance(arg, dict):
         return dop(arg)
-    elif callable(arg):
+    if callable(arg):
         return arg.__name__
     return arg
 
@@ -101,13 +102,248 @@ def tmpsave(f):
         return ctx.setdefault(f.__name__, f(ctx))
     return fun
 
-def ci(p, n):
-    """adapted from stackoverflow.com/q/10029588/"""
-    z = 1.96 
-    z2 = z*z 
-    v = z * sqrt((p*(1-p)+z2/(4*n))/n)
-    return tuple([p, *[max(0, (p + z2/(2*n) + i) / (1+z2/n)) for i in [-v,v]]])
+### Headline Statistics ###
 
+@tmpsave
+def place(ctx):
+    return '????'
+
+def state(ctx):
+    if place(ctx) in {'Berkeley', 'Oakland', 'San Francisco', 'San Leandro'}:
+        return 'CA'
+    if place(ctx) in {'Burlington'}:
+        return 'VT'
+    if place(ctx) in {'Cambridge'}:
+        return 'MA'
+    if place(ctx) in {'Maine'}:
+        return 'ME'
+    if place(ctx) in {'Minneapolis'}:
+        return 'MN'
+    if place(ctx) in {'Pierce County'}:
+        return 'WA'
+    if place(ctx) in {'Santa Fe'}:
+        return 'NM'
+
+@tmpsave
+def date(ctx):
+    return '????'
+
+@tmpsave
+def office(ctx):
+    return '????'
+
+@save
+def title_case_winner(ctx):
+    '''
+    The winner of the election, or, in multiple winner contests, the 
+    hypothetical winner if the contest was single winner.
+    '''
+    # Horrible Hack!
+    # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
+    if place(ctx) == 'Burlington' and date(ctx) == '2006':
+        return 'Bob Kiss'
+    return str(winner(ctx)).title()
+
+#fixme
+def number_of_candidates(ctx):
+    '''
+    The number of non-candidates on the ballot, not including write-ins.
+    '''
+    return len(candidates(ctx))
+
+def number_of_rounds(ctx):
+    '''
+    The number of rounds it takes for one candidate (the winner) to receive 
+    the  majority of the non-exhausted votes. This number includes the 
+    round in which the winner receives the majority of the non-exhausted votes.
+    '''
+    return len(rcv(ctx))
+
+def final_round_vote(ctx):
+    '''
+    The number of votes for the winner in the final round. The final round is 
+    the first round where the winner receives a majority of the non-exhausted
+    votes.
+    '''
+    return rcv(ctx)[-1][1][0]
+
+def final_round_percent(ctx):
+    '''
+    The percent of votes for the winner in the final round. The final round is 
+    the first round where the winner receives a majority of the non-exhausted
+    votes.
+    '''
+    return rcv(ctx)[-1][1][0] / sum(rcv(ctx)[-1][1])
+
+def first_round_vote(ctx):
+    '''
+    The number of votes for the winner in the first round.
+    '''
+    wind = rcv(ctx)[0][0].index(winner(ctx))
+    return rcv(ctx)[0][1][wind]
+
+def first_round_percent(ctx):
+    '''
+    The percent of votes for the winner in the first round.
+    '''
+    wind = rcv(ctx)[0][0].index(winner(ctx))
+    return rcv(ctx)[0][1][wind] / sum(rcv(ctx)[0][1])
+
+def first_round_place(ctx):
+    '''
+    In terms of first round votes, what place the eventual winner came in.
+    '''
+    return rcv(ctx)[0][0].index(winner(ctx)) + 1
+
+def number_of_first_round_valid_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the first round.
+    '''
+    return sum(rcv(ctx)[0][1])
+
+def number_of_final_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the final round.
+    '''
+    return sum(rcv(ctx)[-1][1])
+
+@save
+def total(ctx):
+    '''
+    This includes ballots with no marks.
+    '''
+    return len(ballots(ctx))
+
+def final_round_inactive(ctx):
+    '''
+    The difference of first round valid votes and final round valid votes.
+    '''
+    return number_of_first_round_valid_votes(ctx) - number_of_final_round_active_votes(ctx)
+
+def final_round_winner_votes_over_first_round_valid(ctx):
+    '''
+    The number of votes the winner receives in the final round divided by the 
+    number of valid votes in the first round.
+    '''
+    return final_round_vote(ctx) / number_of_first_round_valid_votes(ctx)
+
+@save 
+def winners_consensus_value(ctx):
+    '''
+    The percentage of valid first round votes that rank the winner in the top 3.
+    '''
+    return winner_in_top_3(ctx) / number_of_first_round_valid_votes(ctx) 
+
+@save
+def condorcet(ctx):
+    '''
+    Is the winner the condorcet winner?
+    The condorcet winner is the candidate that would win a 1-on-1 election versus
+    any other candidate in the election. Note that this calculation depends on 
+    jurisdiction dependant rule variations.
+    '''
+    if len(rcv(ctx)) == 1:
+        return True
+    net = Counter()
+    for b in cleaned(ctx):
+        for loser in losers(ctx):
+            net.update({loser: before(winner(ctx), loser, b)})
+    if not net: #Uncontested Race -> net == {}
+        return True
+    return min(net.values()) > 0
+
+@save
+def total_fully_ranked(ctx):
+    '''
+    The number of voters that have validly used all available rankings on the
+    ballot, or that have validly ranked all non-write-in candidates.
+    '''
+    return sum(fully_ranked(ctx))
+
+@save 
+def ranked_multiple(ctx): 
+    '''
+    The number of voters that validly use more than one ranking.
+    '''
+    return sum(len(b) > 1 for b in cleaned(ctx))
+
+@save
+def first_round_undervote(ctx):
+    '''
+    The number of ballots with absolutely no markings at all.
+    '''
+    return sum(set(b) == {UNDERVOTE} for b in ballots(ctx))
+
+@save
+def first_round_overvote(ctx):
+    '''
+    The number of ballots with an overvote before any valid ranking. 
+    '''
+    return sum(c == OVERVOTE for c in first_round(ctx))
+
+@save
+def later_round_inactive_by_overvote(ctx):
+    '''
+    The number of ballots that were discarded after the first round due to an
+    overvote.
+
+    Note that Minneapolis doesn't discard overvote ballots, it simply skips over
+    the overvote.
+    '''
+    return sum(a and b for a,b in zip(later_round_exhausted(ctx), exhausted_by_overvote(ctx)))
+
+@save
+def later_round_inactive_by_abstention(ctx):
+    '''
+    The number of ballots that were discarded after the first round because not
+    all rankings were used and it was not discarded because of an overvote.
+
+    This factor will exclude all ballots with overvotes aside from those in Maine
+    where more than one sequential undervote preceeds an overvote.
+    '''
+    return sum(later_round_exhausted(ctx)) \
+            - later_round_inactive_by_overvote(ctx) \
+            - later_round_inactive_by_ranking_limit(ctx)
+
+@save
+def later_round_inactive_by_ranking_limit(ctx):
+    '''
+    The number of ballots that validly used every ranking, but didn't rank any
+    candidate that appeared in the final round.
+    '''
+    return sum(a and b for a,b in zip(later_round_exhausted(ctx), fully_ranked(ctx)))
+
+def includes_duplicates(ctx):
+    '''
+    The number of ballots that rank the same candidate more than once, or
+    include more than one write in candidate.
+    '''
+    return any_repeat(ctx)
+
+@save
+def includes_skipped(ctx):
+    '''
+    The number of ballots that have an undervote followed by an overvote or a 
+    valid ranking
+    '''
+    return sum(skipped(ctx))
+
+def blank(ctx):
+    return None
+
+HEADLINE_STATS = [place, state, date, office, title_case_winner, blank, 
+    number_of_candidates, number_of_rounds, final_round_vote, 
+    final_round_percent, first_round_vote,
+    first_round_percent, first_round_place, number_of_first_round_valid_votes,
+    number_of_final_round_active_votes, blank, total, blank,
+    final_round_inactive, final_round_winner_votes_over_first_round_valid,
+    winners_consensus_value, condorcet, total_fully_ranked,
+    ranked_multiple, first_round_undervote, first_round_overvote, 
+    later_round_inactive_by_overvote, later_round_inactive_by_abstention,
+    later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped
+]
+
+### Tabulation ###
 def remove(x,l): 
     return [i for i in l if i != x]
 
@@ -272,13 +508,23 @@ def winners_final_round_share(ctx):
 @save  
 def rcv(ctx):
     rounds = []
-    ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
+    #log = [[list(i)] for i in ballots(ctx)]
+    #logf = open('log.txt','w')
+    #ballots = remove([], (remove(UNDERVOTE, b) for b in cleaned(ctx)))
+    bs = [list(i) for i in cleaned(ctx)]
     while True:
-        rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+    #    for i,b in enumerate(bs):
+    #        if b:
+    #            log[i].append(b[0])
+    #        else:
+    #            log[i].append(None)
+        rounds.append(list(zip(*Counter(b[0] for b in bs if b).most_common())))
         finalists, tallies = rounds[-1] 
         if tallies[0]*2 > sum(tallies):
+            #for i in log:
+            #    print(i, file=logf)
             return rounds
-        ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+        bs = [keep(finalists[:-1], b) for b in bs]
 
 @save  
 def margin_when_2_left(ctx):
@@ -308,9 +554,6 @@ def rcvreg(ballots):
             return rounds
         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
 
-def rounds(ctx):
-    return len(rcv(ctx))
-
 def last5rcv(ctx):
     return rcv(ctx)[-5:]
 
@@ -338,10 +581,6 @@ def ranked2(ctx):
     return sum(len(b) == 2 for b in cleaned(ctx))
 
 @save 
-def ranked_multiple(ctx): 
-    return sum(len(b) > 1 for b in cleaned(ctx))
-
-@save 
 def effective_ballot_length(ctx):
     return Counter(len(b) for b in cleaned(ctx))
 
@@ -350,6 +589,10 @@ def effective_ballot_length(ctx):
 @save 
 def exhausted(ctx):
     return [not set(finalists(ctx)) & set(b) for b in cleaned(ctx)]
+
+@save
+def later_round_exhausted(ctx):
+    return [not (set(finalists(ctx)) & set(b)) and bool(b) for b in cleaned(ctx)]
 
 @save 
 def total_exhausted(ctx):
@@ -387,22 +630,22 @@ def margin_greater_than_all_exhausted(ctx):
     return margin_when_2_left(ctx) > total_exhausted(ctx)
 
 @save 
-def exhausted_by_repeated_choices(ctx):
-    return total_exhausted(ctx) - sum([exhausted_by_undervote(ctx), 
-                                        total_exhausted_by_overvote(ctx),
-                                        total_involuntarily_exhausted(ctx)])
-@save 
 def exhausted_by_undervote(ctx):
     if break_on_repeated_undervotes(ctx):
-        return sum(all([ex, not ex_over, has_under]) for ex,ex_over,has_under in 
-                  zip(exhausted(ctx),exhausted_by_overvote(ctx), has_undervote(ctx)))
-    return 0
+        return sum(ex and not ex_over and  has_under for ex,ex_over,has_under in 
+                  zip(exhausted(ctx), exhausted_by_overvote(ctx), has_undervote(ctx)))
+    return [False for b in ballots(ctx)]
+
+@save
+def total_exhausted_by_undervote(ctx):
+    return sum(exhausted_by_undervote(ctx))
 
 @save 
 def exhausted_by_overvote(ctx):
     if break_on_repeated_undervotes(ctx):
         return [ex and over<under for ex,over,under in 
                 zip(exhausted(ctx),overvote_ind(ctx),repeated_undervote_ind(ctx))]
+
     return [ex and over for ex,over in zip(exhausted(ctx),overvote(ctx))]
 
 @save 
@@ -427,7 +670,6 @@ def ranked_finalist(ctx):
     return [not ex for ex in exhausted(ctx)]
 
 def before(x, y, l):
-    # return next(filter(None,map({x:1,y:-1}.get,l)),0)
     for i in l:
         if i == x:
             return 1
@@ -438,18 +680,6 @@ def before(x, y, l):
 @save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
-
-@save
-def condorcet(ctx):
-    if len(rcv(ctx)) == 1:
-        return True
-    net = Counter()
-    for b in ballots(ctx):
-        for loser in losers(ctx):
-            net.update({loser: before(winner(ctx), loser, b)})
-    if not net: #Uncontested Race -> net == {}
-        return True
-    return min(net.values()) > 0
 
 def come_from_behind(ctx):
     return winner(ctx) != rcv(ctx)[0][0][0]
@@ -478,8 +708,14 @@ def repeated_undervote_ind(ctx):
     rs = []
     for b in ballots(ctx):
         rs.append(float('inf'))
-        with suppress(ValueError):
-            rs[-1] = list(zip(b, b[1:])).index((UNDERVOTE,)*2)
+        z = list(zip(b,b[1:]))
+        uu = (UNDERVOTE,UNDERVOTE)
+        if uu in z:
+            occurance = z.index(uu)
+            for c in b[occurance+1:]:
+                if c != UNDERVOTE:
+                    rs[-1] = occurance
+                    break
     return rs
 
 @save
@@ -540,24 +776,16 @@ def irregular(ctx):
     return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx)))) 
 
 @save
-def first_round_overvote(ctx):
-    return sum(c == OVERVOTE for c in first_round(ctx))
-
-@save
 def fully_ranked(ctx):
-    return [len(a) <= len(b)+write_ins(ctx)
+    return [len(b) == len(a) or set(b) >= candidates(ctx)
             for a,b in zip(ballots(ctx), cleaned(ctx))]
-
-@save
-def total_fully_ranked(ctx):
-    return sum(fully_ranked(ctx))
 
 @save
 def candidates(ctx):
     cans = set()
     for b in ballots(ctx):
         cans.update(b) 
-    return cans - {OVERVOTE, UNDERVOTE}
+    return cans - {OVERVOTE, UNDERVOTE, WRITEIN}
 
 @save
 def effective_subsets(ctx):
@@ -585,12 +813,6 @@ def preference_pairs_count(ctx):
 @save
 def all_pairs(ctx):
     return list(preference_pairs_count(ctx).keys())
-
-def total(ctx):
-    '''
-    This includes ballots with no marks.
-    '''
-    return len(ballots(ctx))
 
 @save
 def precincts(ctx):
@@ -710,7 +932,7 @@ def precinct_ethnicity_totals(ctx, precinct, ethnicity):
 
 @save
 def election_ethnic_cvap_totals(ctx, ethnicity):
-    if state(ctx) is None or int(date(ctx))<2012:
+    if state_code(ctx) is None or int(date(ctx))<2012:
         return None or None
     return sum(precinct_ethnicity_totals(ctx, p, ethnicity)
                for p in unique_precincts(ctx))
@@ -754,7 +976,7 @@ def precinct_estimate(eth, ethnicity_rate, precinct_metric, ctx):
     '''
     assumes precinct explains behavior
     '''
-    if state(ctx) is None or int(date(ctx))<2012:
+    if state_code(ctx) is None or int(date(ctx))<2012:
         return None
     numerator = 0
     for precinct, good_ballots in precinct_metric(ctx).items():
@@ -765,7 +987,7 @@ def ethnicity_estimate(eth, ethnicity_rate, precinct_metric, ctx):
     '''
     assumes group status explains behavior
     '''
-    if state(ctx) is None or int(date(ctx))<2012: 
+    if state_code(ctx) is None or int(date(ctx))<2012: 
         return None
     b = []
     A = []
@@ -803,7 +1025,7 @@ def white_ethnic_cvap_totals(ctx):
 def cvap_totals(ctx):
     return election_ethnic_cvap_totals(ctx, 'total')
 
-def state(ctx):
+def state_code(ctx):
     return {
         'Oakland': '06',
         'San Francisco': '06',
@@ -824,16 +1046,7 @@ def election_type(ctx):
 
 @save
 def ballots(ctx):
-    print("",end="")
-    raw = ctx['parser'](ctx)
-    return raw
-    can_set = set()
-    for b in raw:
-        can_set.update(b)
-    special = {UNDERVOTE, OVERVOTE, WRITEIN}
-    can_map = sorted(can_set - special)
-    return [[c if c in special else hex(can_map.index(c))[1:] for c in b] 
-            for b in raw]
+    return ctx['parser'](ctx)
 
 @tmpsave
 def break_on_repeated_undervotes(ctx):
@@ -859,39 +1072,24 @@ def number(ctx):
 def ballot_length(ctx):
     return len(ballots(ctx)[0])
 
-def number_of_candidates(ctx):
-    return len(candidates(ctx))
-
 @save 
 def one_pct_cans(ctx):
     return sum(1 for i in rcv(ctx)[0][1] if i/sum(rcv(ctx)[0][1]) >= 0.01)
 
 @tmpsave
-def date(ctx):
-    return '????'
-
-@tmpsave
-def place(ctx):
-    return '????'
-
-@tmpsave
-def office(ctx):
-    return '????'
-
-@tmpsave
 def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
-FUNCTIONS = [office, date, place,
+ALLSTATS = [place, state, date, office,
     total, undervote, total_overvote, first_round_overvote, 
     total_exhausted_by_overvote, total_fully_ranked, ranked2, 
     ranked_winner, 
     two_repeated, three_repeated, total_skipped, irregular, total_exhausted, 
     total_exhausted_not_by_overvote, total_involuntarily_exhausted, 
     effective_ballot_length, minneapolis_undervote, minneapolis_total,
-    total_voluntarily_exhausted, condorcet, come_from_behind, rounds, 
+    total_voluntarily_exhausted, condorcet, come_from_behind, number_of_rounds, 
     finalists, winner, exhausted_by_undervote, 
-    exhausted_by_repeated_choices, naive_tally, candidates, count_duplicates, 
+    naive_tally, candidates, count_duplicates, 
     any_repeat, validly_ranked_winner, margin_when_2_left, 
     margin_when_winner_has_majority, 
     cvap_totals,
@@ -917,11 +1115,23 @@ def main():
 
     with open('results.csv', 'w') as f:
         w = csv.writer(f)
-        w.writerow([fun.__name__ for fun in FUNCTIONS])
+        w.writerow([fun.__name__ for fun in ALLSTATS])
+        w.writerow([' '.join((fun.__doc__ or '').split())
+                     for fun in ALLSTATS])
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-            if True: #county(k) in {'075'} and int(date(k)) == 2012:
-                result = calc(k, FUNCTIONS)
-                w.writerow([result[fun.__name__] for fun in FUNCTIONS])
+            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
+                result = calc(k, ALLSTATS)
+                w.writerow([result[fun.__name__] for fun in ALLSTATS])
+
+    with open('headline.csv', 'w') as f:
+        w = csv.writer(f)
+        w.writerow([fun.__name__ for fun in HEADLINE_STATS])
+        w.writerow([' '.join((fun.__doc__ or '').split())
+                     for fun in HEADLINE_STATS])
+        for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
+            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
+                result = calc(k, HEADLINE_STATS)
+                w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
 
 if __name__== '__main__':
     main()

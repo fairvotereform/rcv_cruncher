@@ -48,6 +48,15 @@ def parse_master_lookup(ctx):
 def sf_name_map(ctx):
     return parse_master_lookup(ctx)['Candidate']
 
+def chp_names(ctx):
+    mapping = {}
+    with open(glob(ctx['chp'])[0]) as f:
+        for i in f:
+            split = i.split()
+            if len(split) >= 3 and split[0] == '.CANDIDATE':
+                mapping[split[1].strip(',')] = i.split('"')[1].split('"')[0]
+    return mapping
+
 def burlington(ctx):
     path = ctx['path']
     ballots = []
@@ -66,6 +75,7 @@ def burlington(ctx):
 #       this vote
 def prm(ctx):
     glob_path = ctx['path']
+    name_map = chp_names(ctx)
     ballots = []
     for path in glob(glob_path):
         with open(path, 'r') as f:
@@ -77,7 +87,7 @@ def prm(ctx):
                     for choice in filter(None,choices):
                         can, rank = choice.split(']')[0].split('[')
                         b.extend([UNDERVOTE]*(int(rank)-len(b)-1))
-                        b.append(OVERVOTE if '=' in choice else can)
+                        b.append(OVERVOTE if '=' in choice else name_map[can])
                     ballots.append(b)
                  
     maxlen = max(map(len,ballots))
@@ -150,24 +160,45 @@ def sfnoid(ctx):
 
 def old(ctx):
     path = ctx['path']
+    candidate_map = {} 
+    with open(ctx['candidate_map']) as f:
+        for i in f:
+            line = [j.strip() for j in i.split(':')]
+            if line and line[0] == 'Candidate':
+                candidate_map[line[1]] = line[2]
+    candidate_map['--'] = UNDERVOTE
+    candidate_map['++'] = OVERVOTE
     ballots = []
     with open(path, "r") as f:
         line = f.readline()
         while line:
-            ballots.append([{'--': UNDERVOTE, '++': OVERVOTE}.get(i,i) 
-                                    for i in line.split()[-1].split('>')])
+            ballots.append([candidate_map[i] for i in line.split()[-1].split('>')])
             line = f.readline()
     return ballots
     
 def minneapolis(ctx):
+    choice_map = {}
+    default = None
+    if ctx['date'] == '2009':
+        with open('/'.join(ctx['path'].split('/')[:-1]+['convert.csv'])) as f:
+            for i in f:
+                split = i.strip().split('\t')
+                if len(split) >= 3:
+                    choice_map[split[2]] = split[1]
+        choice_map['XXX'] = UNDERVOTE
+        default = WRITEIN
+    else:
+        choice_map = {
+            'UWI': WRITEIN,
+            'undervote': UNDERVOTE,
+            'overvote': OVERVOTE
+        }
     path = ctx['path']
     ballots = []
     with open(path, "r") as f:
         f.readline()
         for line in csv.reader(f):
-            choices = [{'undervote': UNDERVOTE,
-                         'XXX': UNDERVOTE,
-                         'overvote': OVERVOTE}.get(i,i)
+            choices = [choice_map.get(i, i if default is None else default)
                           for i in line[1:-1]]
             if choices != ['','','']:
                 ballots.extend([choices] * int(float(line[-1])))
@@ -175,12 +206,10 @@ def minneapolis(ctx):
 
 def maine(n, ctx):
     path = ctx['path']
-    lines = 0
     ballots = []
     with open(path, "r") as f:
         f.readline()
         for line in csv.reader(f):
-            lines += 1
             choices = [{'undervote': UNDERVOTE,
                         'overvote': OVERVOTE,
                         'Write-in': WRITEIN}.get(i,i)
@@ -191,6 +220,12 @@ def maine(n, ctx):
 
 def santafe(column_id, contest_id, ctx):
     path = ctx['path']
+    candidate_map = {}
+    with open(ctx['path'].replace('CvrExport','CandidateManifest')) as f:
+        for i in f:
+            row = i.split(',')
+            if row:
+                candidate_map[row[1]] = row[0]
     ballots = []
     ballot_length = 0
     with open(path, "r") as f:
@@ -217,7 +252,8 @@ def santafe(column_id, contest_id, ctx):
                     if c == 0:
                         choices.append(UNDERVOTE)
                     elif c == 1:
-                        choices.append(line[next(candidates)])
+                        next_candidate = line[next(candidates)]
+                        choices.append(candidate_map[next_candidate])
                     else:
                         choices.append(OVERVOTE)
                 ballots.append(choices)

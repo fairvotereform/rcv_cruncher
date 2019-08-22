@@ -1,4 +1,4 @@
-from parsers import santafe, santafe_id, maine, minneapolis, sf, sf2005, sfnoid, old, prm, burlington
+from parsers import santafe, santafe_id, maine, minneapolis, sf, sfnoid, old, prm, burlington
 from functools import partial
 competitions = {
     'Santa Fe Mayor 2018' : {'office': 'Mayor',  'date': '2018', 'place' : 'Santa Fe',
@@ -513,54 +513,55 @@ competitions = {
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
-   'San Francisco Mayor 2007': {'office': 'Mayor',  'date': '2007', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2007 Mayor/BallotImage_San Fran_Mayor_Nov 2007.txt',
-        'parser': partial(sf2005, ['0100','0101','0102'],'19','20',None),
-        'break_on_overvote': True,
-        'break_on_repeated undervotes': False
-    },
    'San Francisco District 1 2004': {'office': 'District 1',  'date': '2004', 'place': 'San Francisco',
         #https://sfelections.sfgov.org/rcv-district-1-nov-2004
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1015','1016','1017'],'09','10',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D01-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D01-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 2 2004': {'office': 'District 2',  'date': '2004', 'place': 'San Francisco',
         #values infered from ballot data, not documented here https://sfelections.sfgov.org/results-summary-nov-2004
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1020','1021','1022'],'07','08',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D02-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D02-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 3 2004': {'office': 'District 3',  'date': '2004', 'place': 'San Francisco',
         #values infered from ballot data, not documented here https://sfelections.sfgov.org/results-summary-nov-2004
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1025','1026','1027'],'06','07',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D03-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D03-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 5 2004': {'office': 'District 5',  'date': '2004', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1030','1031','1032'],'24','25',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D05-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D05-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 7 2004': {'office': 'District 7',  'date': '2004', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1035','1036','1037'],'15','16',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D07-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D07-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 9 2004': {'office': 'District 9',  'date': '2004', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1040','1041','1042'],'08','09',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D09-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D09-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco District 11 2004': {'office': 'District 11',  'date': '2004', 'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran Nov 2004 All Supervisors/Nov2004_BallotImage.txt',
-        'parser': partial(sf2005, ['1045','1046','1047'],'10','11',','),
+        'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D11-Ballots.txt',
+        'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D11-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
@@ -580,41 +581,48 @@ competitions = {
    'San Francisco Mayor 2007': {'office': 'Mayor',  'date': '2007', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2007/MYR-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2007/MYR-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 2 2006': {'office': 'Board of Supervisors District 2',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D02-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D02-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 4 2006': {'office': 'Board of Supervisors District 4',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D04-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D04-Cntl.txt', 
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 6 2006': {'office': 'Board of Supervisors District 6',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D06-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D06-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 8 2006': {'office': 'Board of Supervisors District 8',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D08-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D08-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Board of Supervisors District 10 2006': {'office': 'Board of Supervisors District 10',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D10-Ballots.txt',
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D10-Cntl.txt',
         'parser': old,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
    'San Francisco Treasurer 2005': {'office': 'Treasurer',  'date': '2005', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/TR-Ballots.txt',
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/TR-Cntl.txt',
         'parser': old,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
@@ -622,6 +630,7 @@ competitions = {
    'San Francisco Assessor-Recorder 2005': {'office': 'Assessor-Recorder',  'date': '2005', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/AR-Ballots.txt',
         'parser': old,
+        'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/AR-Cntl.txt',
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
     },
@@ -1099,6 +1108,7 @@ competitions = {
     },
     'Cambridge School Committee 2013': {'office': 'School Committee',  'date': '2013', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2013/School/*/*.PRM',
+        'chp': 'Ballot_Images/Cambridge/2013/School/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
         'break_on_repeated undervotes': False
@@ -1168,18 +1178,21 @@ competitions = {
     },
     'Cambridge City Council 2003': {'office': 'City Council',  'date': '2003', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2003/Council/*/*.[pPW][rRE][mMD]',
+        'chp': 'Ballot_Images/Cambridge/2003/Council/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
         'break_on_repeated undervotes': False
     },
     'Cambridge School Committee 2003': {'office': 'School Committee',  'date': '2003', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2003/School/*/*.[pPW][rRE][mMD]',
+        'chp': 'Ballot_Images/Cambridge/2003/School/school.chp', 
         'parser': prm,
         'break_on_overvote': False,
         'break_on_repeated undervotes': False
     },
     'Cambridge City Council 2001': {'office': 'City Council',  'date': '2001', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2001/Council - Wednesday/*.PRM',
+        'chp': 'Ballot_Images/Cambridge/2001/Council - Wednesday/*.chp',
         'parser': prm,
         'break_on_overvote': False,
         'break_on_repeated undervotes': False
@@ -1194,7 +1207,8 @@ competitions = {
         'break_on_repeated undervotes': False
     },
     'Burlington Mayor 2009': {'office': 'Mayor', 'date': '2009', 'place': 'Burlington',
-        'path': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.PRM' ,
+        'path': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.PRM',
+        'chp': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.chp',
         'parser': prm,
         'break_on_overvote': True,
         'break_on_repeated undervotes': False
