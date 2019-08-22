@@ -634,11 +634,7 @@ def exhausted_by_undervote(ctx):
     if break_on_repeated_undervotes(ctx):
         return sum(ex and not ex_over and  has_under for ex,ex_over,has_under in 
                   zip(exhausted(ctx), exhausted_by_overvote(ctx), has_undervote(ctx)))
-    return [False for b in ballots(ctx)]
-
-@save
-def total_exhausted_by_undervote(ctx):
-    return sum(exhausted_by_undervote(ctx))
+    return 0
 
 @save 
 def exhausted_by_overvote(ctx):
