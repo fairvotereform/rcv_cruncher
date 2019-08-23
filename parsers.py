@@ -46,7 +46,8 @@ def parse_master_lookup(ctx):
     return dict(master_lookup)
 
 def sf_name_map(ctx):
-    return parse_master_lookup(ctx)['Candidate']
+    return dict((k,{'WRITEIN': WRITEIN}.get(v.upper().replace('-',''),v)) 
+                for k,v in parse_master_lookup(ctx)['Candidate'].items())
 
 def chp_names(ctx):
     mapping = {}
@@ -198,7 +199,7 @@ def minneapolis(ctx):
     with open(path, "r") as f:
         f.readline()
         for line in csv.reader(f):
-            choices = [choice_map.get(i, i if default is None else default)
+            choices = [choice_map.get(i.strip(), i if default is None else default)
                           for i in line[1:-1]]
             if choices != ['','','']:
                 ballots.extend([choices] * int(float(line[-1])))

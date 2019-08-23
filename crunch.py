@@ -156,6 +156,8 @@ def number_of_rounds(ctx):
     The number of rounds it takes for one candidate (the winner) to receive 
     the  majority of the non-exhausted votes. This number includes the 
     round in which the winner receives the majority of the non-exhausted votes.
+    This is based on a tabulator that doesn't eliminate more than one declared
+    candidate per round.
     '''
     return len(rcv(ctx))
 
@@ -270,7 +272,12 @@ def ranked_multiple(ctx):
 @save
 def first_round_undervote(ctx):
     '''
-    The number of ballots with absolutely no markings at all.
+    The number of ballots with absolutely no markings at all. 
+
+    Note that this is not the same as "exhausted by undervote". This is because 
+    some juristidictions (Maine) discard any ballot begining with two 
+    undervotes regardless of the rest of the content of the ballot, and call 
+    this ballot as exhausted by undervote.
     '''
     return sum(set(b) == {UNDERVOTE} for b in ballots(ctx))
 
@@ -278,6 +285,13 @@ def first_round_undervote(ctx):
 def first_round_overvote(ctx):
     '''
     The number of ballots with an overvote before any valid ranking. 
+
+    Note that this is not the same as "exhausted by overvote". This is because
+    some juristidictions (Maine) discard any ballot begining with two 
+    undervotes, and call this ballot as exhausted by undervote, even if the 
+    undervotes are followed by an overvote.
+
+    Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
     '''
     return sum(c == OVERVOTE for c in first_round(ctx))
 
@@ -1046,11 +1060,11 @@ def ballots(ctx):
 
 @tmpsave
 def break_on_repeated_undervotes(ctx):
-    return False
+    return place(ctx) == 'Maine'
 
 @tmpsave
 def break_on_overvote(ctx):
-    return True
+    return place(ctx) != 'Minneapolis'
 
 @tmpsave
 def write_ins(ctx):
