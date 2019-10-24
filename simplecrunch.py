@@ -331,6 +331,22 @@ def includes_skipped(ctx):
     return sum(any({UNDERVOTE} & {x} - {y} for x,y in zip(b, b[1:]))
                 for b in ballots(ctx))
 
+@save  
+def winners_margin(ctx):
+    """
+    winner's votes less runner-up's votes 
+    (after running an rcv to two candidates and possibly past the round in
+    which the winner receives 50% of the remaining vote)
+    """
+    bs = [list(i) for i in cleaned(ctx)]
+    while True:
+        finalists, tally = zip(*Counter(b[0] for b in bs if b).most_common())
+        if len(tally) == 1:
+            return None
+        elif len(tally) == 2:
+            return tally[0] - tally[1]
+        bs = [keep(finalists[:-1], b) for b in bs]
+
 def blank(ctx):
     return None
 
@@ -343,7 +359,8 @@ HEADLINE_STATS = [place, state, date, office, title_case_winner, blank,
     winners_consensus_value, condorcet, total_fully_ranked,
     ranked_multiple, first_round_undervote, first_round_overvote, 
     later_round_inactive_by_overvote, later_round_inactive_by_abstention,
-    later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped
+    later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped,
+    winners_margin
 ]
 
 ### Tabulation ###
@@ -387,6 +404,7 @@ def rcv(ctx):
             return rounds
         bs = [keep(finalists[:-1], b) for b in bs]
 
+    
 @save
 def winner(ctx):
     return rcv(ctx)[-1][0][0]
