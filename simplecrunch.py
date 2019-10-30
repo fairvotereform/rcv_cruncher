@@ -358,20 +358,40 @@ def top2_winners_margin(ctx):
 
 @save
 def top2_winners_vote_increased(ctx):
+    """
+    If you run an RCV contest until there are two or fewer candidates left,
+    does the number of votes the winner receive increase from the first to the
+    last round?
+    """
     first = until2rcv(ctx)[0]
     start = first[1][first[0].index(winner(ctx))]
     return until2rcv(ctx)[-1][1][0] > start
 
 @save
 def top2_winners_fraction(ctx):
+    """
+    If you run an RCV contest until there are two or fewer candidates left,
+    what fraction of the votes that cast validly ranked at least one candidate
+    does the winner eventually receive? 
+    """
     return until2rcv(ctx)[-1][1][0]/float(sum(until2rcv(ctx)[0][1]))
 
 @save
 def top2_majority(ctx):
+    """
+    If you run an RCV contest until there are two or fewer candidates left,
+    Does the winner receive over half the votes that cast validly ranked at
+    least one candidate?
+    """
     return top2_winners_fraction(ctx) > 0.5
 
 @save
 def top2_winner_over_40(ctx):
+    """
+    If you run an RCV contest until there are two or fewer candidates left,
+    Does the winner receive over 40% of the votes that cast validly ranked at
+    least one candidate?
+    """
     return top2_winners_fraction(ctx) > 0.4
 
 def blank(ctx):
@@ -387,7 +407,7 @@ HEADLINE_STATS = [place, state, date, office, title_case_winner, blank,
     ranked_multiple, first_round_undervote, first_round_overvote, 
     later_round_inactive_by_overvote, later_round_inactive_by_abstention,
     later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped,
-    top2_winners_margin, top2_winners_fraction, top2_majority,
+    top2_winners_vote_increased, top2_winners_fraction, top2_majority,
     top2_winner_over_40
 ]
 
