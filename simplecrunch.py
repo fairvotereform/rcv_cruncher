@@ -331,21 +331,48 @@ def includes_skipped(ctx):
     return sum(any({UNDERVOTE} & {x} - {y} for x,y in zip(b, b[1:]))
                 for b in ballots(ctx))
 
+@save
+def until2rcv(ctx):
+    """
+    run an rcv election until there are two candidates remaining
+    """
+    rounds = []
+    bs = [list(i) for i in cleaned(ctx)]
+    while True:
+        rounds.append(list(zip(*Counter(b[0] for b in bs if b).most_common())))
+        finalists, tallies = rounds[-1] 
+        if len(finalists) < 3: 
+            return rounds
+        bs = [keep(finalists[:-1], b) for b in bs]
+
 @save  
-def winners_margin(ctx):
+def top2_winners_margin(ctx):
     """
     winner's votes less runner-up's votes 
     (after running an rcv to two candidates and possibly past the round in
     which the winner receives 50% of the remaining vote)
     """
-    bs = [list(i) for i in cleaned(ctx)]
-    while True:
-        finalists, tally = zip(*Counter(b[0] for b in bs if b).most_common())
-        if len(tally) == 1:
-            return None
-        elif len(tally) == 2:
-            return tally[0] - tally[1]
-        bs = [keep(finalists[:-1], b) for b in bs]
+    last_round = until2rcv(ctx)[-1][1]
+    if len(last_round) == 2:
+        return last_round[0] - last_round[1]
+
+@save
+def top2_winners_vote_increased(ctx):
+    first = until2rcv(ctx)[0]
+    start = first[1][first[0].index(winner(ctx))]
+    return until2rcv(ctx)[-1][1][0] > start
+
+@save
+def top2_winners_fraction(ctx):
+    return until2rcv(ctx)[-1][1][0]/float(sum(until2rcv(ctx)[0][1]))
+
+@save
+def top2_majority(ctx):
+    return top2_winners_fraction(ctx) > 0.5
+
+@save
+def top2_winner_over_40(ctx):
+    return top2_winners_fraction(ctx) > 0.4
 
 def blank(ctx):
     return None
@@ -360,7 +387,8 @@ HEADLINE_STATS = [place, state, date, office, title_case_winner, blank,
     ranked_multiple, first_round_undervote, first_round_overvote, 
     later_round_inactive_by_overvote, later_round_inactive_by_abstention,
     later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped,
-    winners_margin
+    top2_winners_margin, top2_winners_fraction, top2_majority,
+    top2_winner_over_40
 ]
 
 ### Tabulation ###
