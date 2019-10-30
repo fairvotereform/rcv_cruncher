@@ -394,6 +394,14 @@ def top2_winner_over_40(ctx):
     """
     return top2_winners_fraction(ctx) > 0.4
 
+def number(ctx):
+    return {
+        ('Cambridge', 'School Committee'): 6,
+        ('Cambridge', 'City Council'): 9,
+        ('Minneapolis', 'BOE'): 2,
+        ('Minneapolis', 'Park At Large'): 3,
+    }.get((ctx['place'],ctx['office']), 1)
+
 def blank(ctx):
     return None
 
@@ -576,7 +584,7 @@ def main():
         w.writerow([' '.join((fun.__doc__ or '').split())
                      for fun in HEADLINE_STATS])
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
+            if number(k) == 1:
                 result = calc(k, HEADLINE_STATS)
                 w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
 
