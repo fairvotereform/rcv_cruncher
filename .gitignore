@@ -1,3 +1,4 @@
 *.pyc
 .idea/*
 CVAP/*
+Ballot_Images/*
