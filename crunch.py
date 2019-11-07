@@ -899,7 +899,7 @@ def cvap_by_block(file_name):
 
 @save
 def block_ethnicities(ctx, ethnicity):
-    year = {'2018': '2017', '2012':'2013'}.get(date(ctx), date(ctx))
+    year = {'2019': '2017', '2018': '2017', '2012':'2013'}.get(date(ctx), date(ctx))
     file_name = 'CVAPBLOCK/{}/{}_cvap_by_block.dbf'.format(year,ethnicity.replace(' ', '_'))
     return cvap_by_block(file_name)
 

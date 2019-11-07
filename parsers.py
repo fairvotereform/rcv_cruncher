@@ -3,6 +3,7 @@ from glob import glob
 from collections import UserList, defaultdict
 import os
 import csv
+import json
 
 UNDERVOTE = -1
 OVERVOTE = -2
@@ -313,5 +314,52 @@ def sf2005(contest_ids, over, under, sep, ctx):
                 ballots.append([{over: OVERVOTE, under: UNDERVOTE}.get(i,i)
                                 for i in raw])
     return ballots
+
+def sf2019(ctx):
+    with open(ctx['path'] + '/ContestManifest.json') as f:
+        for i in json.load(f)['List']:
+            if i['Description'] == ctx['office'].upper():
+                contest_id = i['Id']
+                ranks = i['NumOfRanks']
+    candidates = {}
+    with open(ctx['path'] + '/CandidateManifest.json') as f:
+        for i in json.load(f)['List']:
+            if i['ContestId'] == contest_id:
+                candidates[i['Id']] = i['Description']
+    precincts = {}
+    with open(ctx['path'] + '/PrecinctPortionManifest.json') as f:
+        for i in json.load(f)['List']:
+            precincts[i['Id']] = i['Description'].split()[1]
+    ballots = []
+    with open(ctx['path'] + '/CvrExport.json') as f:
+        for contests in json.load(f)['Sessions']:
+            if contests['Original']['IsCurrent']:
+                current_contests = contests['Original']
+            else:
+                current_contests = contests['Modified'] 
+            precinct = precincts[current_contests['PrecinctPortionId']]
+            for contest in current_contests['Contests']:
+                if contest['Id'] == contest_id:
+                    ballot = UserList([UNDERVOTE] * ranks)
+                    for mark in contest['Marks']:
+                        candidate = candidates[mark['CandidateId']]
+                        if candidate == 'Write-in':
+                            candidate = WRITEIN
+                        rank = mark['Rank']-1
+                        if mark['IsAmbiguous']:
+                            pass 
+                        elif ballot[rank] == OVERVOTE:
+                            pass
+                        elif ballot[rank] == UNDERVOTE:
+                            ballot[rank] = candidate
+                        elif ballot[rank] != candidate:
+                            ballot[rank] = OVERVOTE
+                    ballot.precinct = precinct
+                    ballots.append(ballot)
+                        
+    return ballots
+            
+    
+        
 
 
