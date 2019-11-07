@@ -402,6 +402,14 @@ def number(ctx):
         ('Minneapolis', 'Park At Large'): 3,
     }.get((ctx['place'],ctx['office']), 1)
 
+@save
+def effective_ballot_lengths(ctx):
+    """
+    A list validly ranked choices, and how many ballots had that number of
+    valid choices. 
+    """
+    return '; '.join('{}: {}'.format(a,b) for a,b in sorted(Counter(map(len, cleaned(ctx))).items()))
+
 def blank(ctx):
     return None
 
@@ -416,7 +424,7 @@ HEADLINE_STATS = [place, state, date, office, title_case_winner, blank,
     later_round_inactive_by_overvote, later_round_inactive_by_abstention,
     later_round_inactive_by_ranking_limit, includes_duplicates, includes_skipped,
     top2_winners_vote_increased, top2_winners_fraction, top2_majority,
-    top2_winner_over_40
+    top2_winner_over_40, effective_ballot_lengths
 ]
 
 ### Tabulation ###
@@ -584,6 +592,7 @@ def main():
         w.writerow([' '.join((fun.__doc__ or '').split())
                      for fun in HEADLINE_STATS])
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
+#            if date(k) == '2019':
             if number(k) == 1:
                 result = calc(k, HEADLINE_STATS)
                 w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
