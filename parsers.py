@@ -359,6 +359,15 @@ def sf2019(ctx):
                         
     return ballots
             
+def utah(ctx):
+    ballots = []
+    with open(ctx['path']) as f:
+        for b in f:
+            ballots.append(
+                [{'overvote':OVERVOTE, 'undervote':UNDERVOTE, '': UNDERVOTE}.get(i,i) 
+                for i in b.split(',')[2:]]
+            )
+    return ballots
     
         
 

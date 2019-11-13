@@ -1415,5 +1415,19 @@ competitions = {
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
         'parser': sf2019,
     },
+    'Payson City Council 2019': {
+        'office': 'City Council',
+        'date': '2019',
+        'place': 'Payson',
+        'path': 'Ballot_Images/Payson/2019/Payson.csv',
+        'parser': utah,
+    },
+    'Vineyard City Council 2019': {
+        'office': 'City Council',
+        'date': '2019',
+        'place': 'Vineyard',
+        'path': 'Ballot_Images/Vineyard/2019/Vineyard.csv',
+        'parser': utah,
+    }
 }
  
