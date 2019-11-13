@@ -1,1 +1,1 @@
-Ballot_Images filter=lfs diff=lfs merge=lfs -text
+Ballot_Images/** filter=lfs diff=lfs merge=lfs -text
