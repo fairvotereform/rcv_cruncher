@@ -1,5 +1,6 @@
 from functools import wraps
 from collections import Counter
+from itertools import combinations, product
 from argparse import ArgumentParser
 from pprint import pprint
 import csv
@@ -409,6 +410,17 @@ def effective_ballot_lengths(ctx):
     valid choices. 
     """
     return '; '.join('{}: {}'.format(a,b) for a,b in sorted(Counter(map(len, cleaned(ctx))).items()))
+
+@save
+def head_to_head(ctx):
+    tallies = Counter()
+    for ballot in cleaned(ctx):
+        nowritein = [i for i in ballot if i != WRITEIN]
+        tallies.update(combinations(nowritein,2))
+        tallies.update(product(set(nowritein), candidates(ctx)-set(nowritein)))
+    for key in sorted(tallies):
+        k0, k1 = key
+        print(date(ctx),office(ctx),place(ctx),k0,k1,tallies[key],tallies[(k1,k0)],sep='\t')
 
 def blank(ctx):
     return None
