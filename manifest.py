@@ -1,4 +1,4 @@
-from parsers import santafe, santafe_id, maine, minneapolis, sf, sfnoid, old, prm, burlington, sf2019
+from parsers import santafe, santafe_id, maine, minneapolis, sf, sfnoid, old, prm, burlington, sf2019, utah, ep
 from functools import partial
 competitions = {
     'Santa Fe Mayor 2018' : {'office': 'Mayor',  'date': '2018', 'place' : 'Santa Fe',
@@ -1370,49 +1370,49 @@ competitions = {
         'office': 'Mayor',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco Board of Supervisors, District 5 2019': {
         'office': 'Member, Board of Supervisors, District 5',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco City Attorney 2019': {
         'office': 'City Attorney',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco District Attorney 2019': {
         'office': 'District Attorney',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco Public Defender 2019': {
         'office': 'Public Defender',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco Sheriff 2019': {
         'office': 'Sheriff',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'San Francisco Treasurer 2019': {
         'office': 'Treasurer',
         'date': '2019',
         'place': 'San Francisco',
-        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191112162213',
+        'path': 'Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446',
         'parser': sf2019,
     },
     'Payson City Council 2019': {
@@ -1421,6 +1421,8 @@ competitions = {
         'place': 'Payson',
         'path': 'Ballot_Images/Payson/2019/Payson.csv',
         'parser': utah,
+        'number':3,
+        'break_on_repeated_undervotes': True,
     },
     'Vineyard City Council 2019': {
         'office': 'City Council',
@@ -1428,6 +1430,16 @@ competitions = {
         'place': 'Vineyard',
         'path': 'Ballot_Images/Vineyard/2019/Vineyard.csv',
         'parser': utah,
+        'number':2,
+        'break_on_repeated_undervotes': True,
+    },
+    'Eastpointe City Council 2019': {
+        'office': 'City Council',
+        'date': '2019',
+        'place': 'Eastpointe',
+        'path': 'Ballot_Images/Eastpointe/Eastpointe CVR Cleaned.csv',
+        'parser': ep,
+        'break_on_repeated_undervotes': True
     }
 }
  

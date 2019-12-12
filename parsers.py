@@ -362,11 +362,24 @@ def sf2019(ctx):
 def utah(ctx):
     ballots = []
     with open(ctx['path']) as f:
+        next(f)
         for b in f:
             ballots.append(
                 [{'overvote':OVERVOTE, 'undervote':UNDERVOTE, '': UNDERVOTE}.get(i,i) 
-                for i in b.split(',')[2:]]
+                for i in b.strip().split(',')[2:]]
             )
+    return ballots
+
+def ep(ctx):
+    ballots = []
+    with open(ctx['path']) as f:
+        next(f)
+        for b in csv.reader(f):
+            ballots.append(
+                [{'overvote':OVERVOTE, 'undervote':UNDERVOTE, 'UWI': WRITEIN}.get(i,i) 
+                for i in b[3:]]
+            )
+    print(ballots[:5])
     return ballots
     
         

@@ -1,4 +1,5 @@
 from functools import wraps
+from copy import deepcopy
 from collections import Counter
 from itertools import combinations, product
 from argparse import ArgumentParser
@@ -136,7 +137,7 @@ def title_case_winner(ctx):
 
 def number_of_candidates(ctx):
     '''
-    The number of non-candidates on the ballot, not including write-ins.
+    The number of candidates on the ballot, not including undeclared write-ins.
     '''
     return len(candidates(ctx))
 
@@ -396,6 +397,8 @@ def top2_winner_over_40(ctx):
     return top2_winners_fraction(ctx) > 0.4
 
 def number(ctx):
+    if 'number' in ctx:
+        return ctx['number']
     return {
         ('Cambridge', 'School Committee'): 6,
         ('Cambridge', 'City Council'): 9,
@@ -406,7 +409,7 @@ def number(ctx):
 @save
 def effective_ballot_lengths(ctx):
     """
-    A list validly ranked choices, and how many ballots had that number of
+    A list of validly ranked choices, and how many ballots had that number of
     valid choices. 
     """
     return '; '.join('{}: {}'.format(a,b) for a,b in sorted(Counter(map(len, cleaned(ctx))).items()))
@@ -517,6 +520,33 @@ def before(x, y, l):
             return -1
     return 0
 
+def rcv_ballots(clean_ballots):
+    rounds = [] 
+    ballots = remove([],deepcopy(clean_ballots))
+    while True:
+        rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+        finalists, tallies = rounds[-1] 
+        if tallies[0]*2 > sum(tallies):
+            return rounds
+        ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+@save
+def seq_stv(ctx):
+    ballots = deepcopy(cleaned(ctx))
+    tallies = []
+    winners = [] 
+    winners_votes = []
+    last_round_votes = []
+    for _ in range(number(ctx)):
+        deciding_round = rcv_ballots(ballots)[-1]
+        winners.append(deciding_round[0][0])
+        winners_votes.append(deciding_round[1][0])
+        last_round_votes.append(sum(deciding_round[1]))
+        ballots = remove([], (remove(winners[-1], b) for b in ballots))
+    for i,(w,v,t) in enumerate(zip(winners,winners_votes,last_round_votes)):
+        print('winner {}'.format(i+1),w,str(v/float(t)*100)[:5]+'%', v,'/',t,sep='\t')
+    return ''
+
 @save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
@@ -604,8 +634,7 @@ def main():
         w.writerow([' '.join((fun.__doc__ or '').split())
                      for fun in HEADLINE_STATS])
         for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-#            if date(k) == '2019':
-            if number(k) == 1:
+            if True:
                 result = calc(k, HEADLINE_STATS)
                 w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
 
