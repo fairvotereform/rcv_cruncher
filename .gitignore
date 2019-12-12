@@ -1,4 +1,5 @@
 *.pyc
 .idea/*
 CVAP/*
-Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446/CvrExport.json
+Ballot_Images/*
+
