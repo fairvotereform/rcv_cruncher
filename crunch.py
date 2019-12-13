@@ -873,7 +873,7 @@ def precinct_percent_sov(ctx, precinct, ethnicity):
     total = 0
     ethnic = 0 
     int_year = int(date(ctx))
-    year = str(int_year + int_year%2)
+    year = str(min(int_year + int_year%2, 2018))
     precincts = split_precincts(precinct)
     file_name = 'SOV/c{}_g{}_voters_by_g{}_srprec.csv'.format(county(ctx), year[-2:], year[-2:])
     for p in precincts:
@@ -1133,15 +1133,15 @@ def main():
                 result = calc(k, ALLSTATS)
                 w.writerow([result[fun.__name__] for fun in ALLSTATS])
 
-    with open('headline.csv', 'w') as f:
-        w = csv.writer(f)
-        w.writerow([fun.__name__ for fun in HEADLINE_STATS])
-        w.writerow([' '.join((fun.__doc__ or '').split())
-                     for fun in HEADLINE_STATS])
-        for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
-                result = calc(k, HEADLINE_STATS)
-                w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
+#    with open('headline.csv', 'w') as f:
+#        w = csv.writer(f)
+#        w.writerow([fun.__name__ for fun in HEADLINE_STATS])
+#        w.writerow([' '.join((fun.__doc__ or '').split())
+#                     for fun in HEADLINE_STATS])
+#        for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
+#            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
+#                result = calc(k, HEADLINE_STATS)
+#                w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
 
 if __name__== '__main__':
     main()
