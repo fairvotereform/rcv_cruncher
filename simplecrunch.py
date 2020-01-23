@@ -21,6 +21,11 @@ WRITEIN = -3
 
 ### Persistence ###
 def unwrap(function):
+    """
+        checks if the function has been decorated + wrapped 
+        (using a @decorator using @wraps)
+        and returns the wrapped function (the function decorated with @decorator)
+    """
     while '__wrapped__' in dir(function):
         function = function.__wrapped__
     return function
@@ -45,6 +50,12 @@ def srchash(function):
     return h.hexdigest()
 
 def shelve_key(arg):
+    """
+        only used in save() decorator def
+    
+        returns a string. either 'date, office, place' (if arg == dict)
+            or callable.__name__ (if arg == callable)
+    """
     if isinstance(arg, dict):
         return dop(arg)
     if callable(arg):

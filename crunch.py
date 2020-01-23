@@ -10,7 +10,7 @@ import os
 import pickle #faster than json, shelve
 
 #from fractions import Fraction
-from gmpy2 import mpq as Fraction
+#from gmpy2 import mpq as Fraction
 from dbfread import DBF
 import scipy.linalg
 import scipy.optimize
@@ -33,7 +33,7 @@ def unwrap(function):
     while '__wrapped__' in dir(function):
         function = function.__wrapped__
     return function
-
+ 
 def srchash(function):
     visited = set()
     frontier = {function}
