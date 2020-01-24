@@ -31,19 +31,42 @@ def unwrap(function):
     return function
 
 def srchash(function):
+    """
+        input is the name of a function (str)
+        
+        returns a hash string representing all the set of all function source code
+        implicated by the input function
+        
+    """
     visited = set()
-    frontier = {function}
+    frontier = {function} # start with input function
     while frontier:
+        
         fun = frontier.pop()
         visited.add(fun)
-        code = unwrap(globals()[fun]).__code__
-        helpers = list(code.co_names)
-        for const in code.co_consts:
-            if 'co_names' in dir(const):
-                helpers.extend(const.co_names)
-        for helper in set(helpers) - visited:
-            if '__code__' in dir(globals().get(helper)):
-                frontier.add(helper)
+        
+        fun_obj = unwrap(globals()[fun]) # retrieve function object, unwrapped
+        code = fun_obj.__code__ # get function's underlying code object
+        helpers = list(code.co_names) # get list of names used by function bytecode
+        
+        for const in code.co_consts: # loop through constants used by bytecode
+            if 'co_names' in dir(const): # if they are code objects
+                helpers.extend(const.co_names) # add their names to helpers
+                
+        for helper in set(helpers) - visited: # for any new helpers
+            if '__code__' in dir(globals().get(helper)): # if they have code objects
+                frontier.add(helper) # add them to be looped through
+                
+    # at the end of this loop, all functions called by the input function
+    # should have been recursively checked for all their function calls and 
+    # added to the visited set
+    
+    # visited should contain the set of all functions implicated by calling the
+    # input function
+                
+    # the next lines effectively concatenate all the functions' source code
+    # in visited and produce a hash unique to that code set
+    
     h = md5()
     for f in sorted(visited):
         h.update(bytes(getsource(globals()[f]),'utf-8'))
@@ -63,6 +86,11 @@ def shelve_key(arg):
     return arg
 
 def save(f):
+    """
+        decorator def
+        
+        
+    """
     f.not_called = True
     f.cache = {}
 
