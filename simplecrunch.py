@@ -1,4 +1,4 @@
-from functools import wraps
+ from functools import wraps
 from copy import deepcopy
 from collections import Counter
 from itertools import combinations, product
@@ -96,25 +96,37 @@ def save(f):
 
     @wraps(f)
     def fun(*args):
+        
+        # if this is the first time the function is being called during this run,
+        # check that there isn't already a saved computation from previous runs
         if f.not_called:
             check = srchash(f.__name__)
             dirname = 'results/' + f.__name__
             checkname = dirname + '.check'
+            # check if the saved srchash is the different from the current one
+            # if so, delete the results previosuly saved from this function
             if os.path.exists(checkname) and check != open(checkname).read().strip():
                 shutil.rmtree(dirname)
                 os.remove(checkname)
+            # if the check is absent at this point, write a new one out
+            # and make a fresh results dir for this function
             if not os.path.exists(checkname):
                 open(checkname,'w').write(check)
                 os.mkdir(dirname)
+            # indicate that now the function has been called
             f.not_called = False
         
         key = tuple(str(shelve_key(a)) for a in args)
+
+        # check if the current call is for the same election, if not, clear the cache
         if next(iter(f.cache),key)[0] != key[0]:
             f.cache = {} #evict cache if first part of key (election id usually) is different
             f.visited_cache = False
         if key in f.cache:
             return f.cache[key]
+        
         file_name = 'results/{}/{}'.format(f.__name__, '.'.join(key).replace('/','.'))
+        
         with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
             f.cache[key] = pickle.load(file_object)
             return f.cache[key]
@@ -677,6 +689,6 @@ def main():
                 result = calc(k, HEADLINE_STATS)
                 w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
 
-if __name__== '__main__':
+if __name__ == '__main__':
     main()
- 
+

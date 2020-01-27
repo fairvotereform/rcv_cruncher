@@ -1030,7 +1030,7 @@ competitions = {
          'break_on_overvote': True,
          'break_on_repeated undervotes': False
      },
-    '2010 City Auditor - Berkeley Nov 2010': {'office': 'City Auditor',  'date': '2010', 'place': 'Berkeley',
+    '2010 City Auditor - Berkeley Nov 2010cam': {'office': 'City Auditor',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_City Auditor - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
