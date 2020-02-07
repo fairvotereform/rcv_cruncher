@@ -1175,7 +1175,7 @@ def main():
             pprint(calc(k, FUNCTIONS))
         return
 
-    with open('results.csv', 'w') as f:
+    with open('results.csv', 'w', newline='\n') as f:
         w = csv.writer(f)
         w.writerow([fun.__name__ for fun in ALLSTATS])
         w.writerow([' '.join((fun.__doc__ or '').split())

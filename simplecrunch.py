@@ -1,4 +1,4 @@
- from functools import wraps
+from functools import wraps
 from copy import deepcopy
 from collections import Counter
 from itertools import combinations, product

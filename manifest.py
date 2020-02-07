@@ -17,19 +17,19 @@ competitions = {
         'idparser': partial(santafe_id,1,3)
     },
     'Maine Democratic Primary for CD2 2018': {'office': 'Democratic Primary for CD2',  'date': '2018', 'place': 'Maine',
-        'path': 'Ballot_Images/Maine/csvMaine/Maine_Democratic_Primary_for_CD2_CVR.xlsx.csv',
+        'path': 'Ballot_Images/Maine/2018/csvMaine/Maine_Democratic_Primary_for_CD2_CVR.xlsx.csv',
         'parser': partial(maine,5),
         'break_on_repeated_undervotes': True,
         'write_ins': 1
     },
     'Maine Democratic Primary for Governor 2018': {'office': 'Democratic Primary for Governor',  'date': '2018', 'place': 'Maine',
-        'path': 'Ballot_Images/Maine/csvMaine/Maine Democratic Primary for Governor CVR.xlsx.csv',
+        'path': 'Ballot_Images/Maine/2018/csvMaine/Maine Democratic Primary for Governor CVR.xlsx.csv',
         'parser': partial(maine,8),
         'break_on_repeated_undervotes': True,
         'write_ins': 1
     },
     'Maine General CD2 CVR Updated 2018': {'office': 'General CD2 CVR',  'date': '2018', 'place': 'Maine',
-        'path': 'Ballot_Images/Maine/csvMaine/Maine General CD2 CVR Updated.xlsx.csv',
+        'path': 'Ballot_Images/Maine/2018/csvMaine/Maine General CD2 CVR Updated.xlsx.csv',
         'parser': partial(maine,5),
         'break_on_repeated_undervotes': True,
         'write_ins': 1
@@ -301,27 +301,27 @@ competitions = {
         'path': 'Ballot_Images/San Francisco/2015 All offices/20151119_ballotimage.txt',
         'parser': partial(sf,'0000001'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     }, 
     'San Francisco Sheriff 2015': {'office': 'Sheriff',  'date': '2015', 'place': 'San Francisco',
     # see note under 'San Francisco Mayor 2015'
         'path': 'Ballot_Images/San Francisco/2015 All offices/20151119_ballotimage.txt',
         'parser': partial(sf,'0000002'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     }, 
     'San Francisco Board of Supervisors District 3 2015': {'office': 'Board of Supervisors District 3',  'date': '2015', 'place': 'San Francisco',
     # see note under 'San Francisco Mayor 2015'
         'path': 'Ballot_Images/San Francisco/2015 All offices/20151119_ballotimage.txt',
         'parser': partial(sf,'0000003'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Francisco Assessor-Recorder 2018': {'office': 'Assessor-Recorder',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_assessor_ballotimage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False,
+        'break_on_repeated_undervotes': False,
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt'
     },
     'San Francisco Public Defender 2018': {
@@ -331,7 +331,7 @@ competitions = {
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_defender_ballotimage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False,
+        'break_on_repeated_undervotes': False,
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt'
     },
     'San Francisco Board of Supervisors District 2 2018': {'office': 'Board of Supervisors District 2',  'date': '2018', 'place': 'San Francisco',
@@ -339,179 +339,179 @@ competitions = {
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Francisco Board of Supervisors District 4 2018': {'office': 'Board of Supervisors District 4',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d4_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Francisco Board of Supervisors District 6 2018': {'office': 'Board of Supervisors District 6',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d6_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Francisco Board of Supervisors District 8 2018': {'office': 'Board of Supervisors District 8',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d8_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Francisco Board of Supervisors District 10 2018': {'office': 'Board of Supervisors District 10',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_d10_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2018/20181127_masterlookup.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 1 2016': {'office': 'Board of Supervisors District 1',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000009'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 3 2016': {'office': 'Board of Supervisors District 3',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000010'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 5 2016': {'office': 'Board of Supervisors District 5',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000011'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 7 2016': {'office': 'Board of Supervisors District 7',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000012'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 9 2016': {'office': 'Board of Supervisors District 9',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000013'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 11 2016': {'office': 'Board of Supervisors District 11',  'date': '2016', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_ballotimage.txt',
         'master_lookup': 'Ballot_Images/San Francisco/San Fran_Nov 2016/20161206_masterlookup.txt',
         'parser': partial(sf,'0000014'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 10 2014': {'office': 'Board of Supervisors District 10',  'date': '2014', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2014_District 10 Supervisors/D10_BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 7 2012': {'office': 'Board of Supervisors District 7',  'date': '2012', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2012_District 7 Supervisors/D7-BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 5 2012': {'office': 'Board of Supervisors District 5',  'date': '2012', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2012_District 5 Supervisors/D5-BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 10 2010': {'office': 'Board of Supervisors District 10',  'date': '2010', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2010_District 10 Supervisors/BallotImage-D10.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 8 2010': {'office': 'Board of Supervisors District 8',  'date': '2010', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2010_District 8 Supervisors/BallotImage-D8.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 6 2010': {'office': 'Board of Supervisors District 6',  'date': '2010', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2010_District 6 Supervisors/BallotImage-D6.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 2 2010': {'office': 'Board of Supervisors District 2',  'date': '2010', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2010_District 2 Supervisors/BallotImage-D2.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 1 2008': {'office': 'Board of Supervisors District 1',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000003'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 3 2008': {'office': 'Board of Supervisors District 3',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000005'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 4 2008': {'office': 'Board of Supervisors District 4',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000006'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 5 2008': {'office': 'Board of Supervisors District 5',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000007'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 7 2008': {'office': 'Board of Supervisors District 7',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000008'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 9 2008': {'office': 'Board of Supervisors District 9',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000009'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 11 2008': {'office': 'Board of Supervisors District 11',  'date': '2008', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran_Nov 2008_All District races/CityWide_BallotImage.txt',
         'parser': partial(sf,'0000004'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Sheriff 2011': {'office': 'Sheriff',  'date': '2011', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran Nov 2011 Sheriff/Sheriff-BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Mayor 2011': {'office': 'Mayor',  'date': '2011', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran Nov 2011 Mayor/Mayor-BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District Attorney 2011': {'office': 'District Attorney',  'date': '2011', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran Nov 2011 District Attorney/DA-BallotImage.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 1 2004': {'office': 'District 1',  'date': '2004', 'place': 'San Francisco',
         #https://sfelections.sfgov.org/rcv-district-1-nov-2004
@@ -519,7 +519,7 @@ competitions = {
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D01-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 2 2004': {'office': 'District 2',  'date': '2004', 'place': 'San Francisco',
         #values infered from ballot data, not documented here https://sfelections.sfgov.org/results-summary-nov-2004
@@ -527,7 +527,7 @@ competitions = {
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D02-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 3 2004': {'office': 'District 3',  'date': '2004', 'place': 'San Francisco',
         #values infered from ballot data, not documented here https://sfelections.sfgov.org/results-summary-nov-2004
@@ -535,667 +535,667 @@ competitions = {
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D03-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 5 2004': {'office': 'District 5',  'date': '2004', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D05-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D05-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 7 2004': {'office': 'District 7',  'date': '2004', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D07-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D07-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 9 2004': {'office': 'District 9',  'date': '2004', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D09-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D09-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco District 11 2004': {'office': 'District 11',  'date': '2004', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D11-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2004/D11-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Mayor June 2018': {'office': 'Mayor',  'date': '2018', 'place': 'San Francisco',
         #https://sfelections.org/results/20180605/data/20180627/mayor/20180627_mayor.html
         'path': 'Ballot_Images/San Francisco/San Fran June 2018/20180621_ballotimage.txt',
         'parser': partial(sf,'0000020'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 8 June 2018': {'office': 'Board of Supervisors District 8',  'date': '2018', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/San Fran June 2018/20180621_ballotimage.txt',
         'parser': partial(sf,'0000021'),
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Mayor 2007': {'office': 'Mayor',  'date': '2007', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2007/MYR-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2007/MYR-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 2 2006': {'office': 'Board of Supervisors District 2',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D02-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D02-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 4 2006': {'office': 'Board of Supervisors District 4',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D04-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D04-Cntl.txt', 
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 6 2006': {'office': 'Board of Supervisors District 6',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D06-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D06-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 8 2006': {'office': 'Board of Supervisors District 8',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D08-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D08-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Board of Supervisors District 10 2006': {'office': 'Board of Supervisors District 10',  'date': '2006', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D10-Ballots.txt',
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2006/D10-Cntl.txt',
         'parser': old,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Treasurer 2005': {'office': 'Treasurer',  'date': '2005', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/TR-Ballots.txt',
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/TR-Cntl.txt',
         'parser': old,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'San Francisco Assessor-Recorder 2005': {'office': 'Assessor-Recorder',  'date': '2005', 'place': 'San Francisco',
         'path': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/AR-Ballots.txt',
         'parser': old,
         'candidate_map': 'Ballot_Images/San Francisco/RCVCalc Ballot Images/2005/AR-Cntl.txt',
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'Pierce County Executive 2008': {'office': 'Executive',  'date': '2008', 'place': 'Pierce County',
         'path': 'Ballot_Images/Pierce County/Pierce County Executive 2008 Ballot Image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'Pierce County Council, District 2 2008': {'office': 'Council District 2',  'date': '2008', 'place': 'Pierce County',
         'path': 'Ballot_Images/Pierce County/Pierce County Council, District No. 2 2008 Ballot Image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'Pierce County Auditor 2009': {'office': 'Auditor',  'date': '2009', 'place': 'Pierce County',
         'path': 'Ballot_Images/Pierce County/Pierce County Auditor 2009 Ballot Image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
    'Pierce County Assessor - Treasurer 2008': {'office': 'Assessor - Treasurer',  'date': '2008', 'place': 'Pierce County',
         'path': 'Ballot_Images/Pierce County/Pierce County Assessor - Treasurer 2008 Ballot Image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     '2012 City Attorney - Oakland Nov 2012': {'office': 'City Attorney',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_City Attorney - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 3 - Berkeley Nov 2012': {'office': 'Member City Council District 3',  'date': '2012', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 3 - Berkeley_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 7- Oakland Nov 2012': {'office': 'Member City Council District 7',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 7- Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 5- Oakland Nov 2012': {'office': 'Member City Council District 5',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 5- Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 6 - San Leandro Nov 2012': {'office': 'Member City Council District 6',  'date': '2012', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 6 - San Leandro_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, At-Large - Oakland Nov 2012': {'office': 'Member City Council At-Large',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, At-Large - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 1- Oakland Nov 2012': {'office': 'Member City Council District 1',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 1- Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council,District 3 - Oakland Nov 2012': {'office': 'Member City Council District 3',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council,District 3 - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 School Director, District 3 - Oakland Nov 2012': {'office': 'School Director District 3',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_School Director, District 3 - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 6 - Berkeley Nov 2012': {'office': 'Member City Council District 6',  'date': '2012', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 6 - Berkeley_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 2 - Berkeley Nov 2012': {'office': 'Member City Council District 2',  'date': '2012', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 2 - Berkeley_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 2 - San Leandro Nov 2012': {'office': 'Member City Council District 2',  'date': '2012', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 2 - San Leandro_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 School Director, District 7 - Oakland Nov 2012': {'office': 'School Director District 7',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_School Director, District 7 - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Mayor - Berkeley Nov 2012': {'office': 'Mayor',  'date': '2012', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Mayor - Berkeley_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 School Director, District 1 - Oakland Nov 2012': {'office': 'School Director District 1',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_School Director, District 1 - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 School Director, District 5 - Oakland Nov 2012': {'office': 'School Director District 5',  'date': '2012', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_School Director, District 5 - Oakland_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 4 - San Leandro Nov 2012': {'office': 'Member City Council District 4',  'date': '2012', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 4 - San Leandro_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2012 Member, City Council, District 5 - Berkeley Nov 2012': {'office': 'Member City Council District 5',  'date': '2012', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2012/ballot_image_Member, City Council, District 5 - Berkeley_Nov 2012.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 6 - Oakland Nov 2014': {'office': 'Member City Council District 6',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 6 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 7 - Berkeley Nov 2014': {'office': 'Member City Council District 7',  'date': '2014', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 7 - Berkeley_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 8 - Berkeley Nov 2014': {'office': 'Member City Council District 8',  'date': '2014', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 8 - Berkeley_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 1 - San Leandro Nov 2014': {'office': 'Member City Council District 1',  'date': '2014', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 1 - San Leandro_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 2 - Oakland Nov 2014': {'office': 'Member City Council District 2',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 2 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 City Auditor - Oakland Nov 2014': {'office': 'City Auditor',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_City Auditor - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 4 - Oakland Nov 2014': {'office': 'Member City Council District 4',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 4 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Mayor of San Leandro Nov 2014': {'office': 'Mayor',  'date': '2014', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Mayor of San Leandro_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Mayor - Oakland Nov 2014': {'office': 'Mayor',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Mayor - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 City Auditor - Berkeley Nov 2014': {'office': 'City Auditor',  'date': '2014', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_City Auditor - Berkeley_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 5 - San Leandro Nov 2014': {'office': 'Member City Council District 5',  'date': '2014', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 5 - San Leandro_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 School Director, District 4 - Oakland Nov 2014': {'office': 'School Director District 4',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_School Director, District 4 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 1 - Berkeley Nov 2014': {'office': 'Member City Council District 1',  'date': '2014', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 1 - Berkeley_Nov_2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 School Director, District 2 - Oakland Nov 2014': {'office': 'School Director District 2',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_School Director, District 2 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 Member, City Council, District 3 - San Leandro Nov 2014': {'office': 'Member City Council District 3',  'date': '2014', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_Member, City Council, District 3 - San Leandro_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2014 School Director, District 6 - Oakland Nov 2014': {'office': 'School Director District 6',  'date': '2014', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2014/ballot_image_School Director, District 6 - Oakland_Nov 2014.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 BerkeleyCouncilD3': {'office': 'CouncilD3',  'date': '2016', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD3/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 BerkeleyCouncilD2': {'office': 'CouncilD2',  'date': '2016', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD2/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 BerkeleyCouncilD5': {'office': 'CouncilD5',  'date': '2016', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD5/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandSchoolD1': {'office': 'SchoolD1',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD1/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandCouncilD7': {'office': 'CouncilD7',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD7/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 BerkeleyMayor': {'office': 'Mayor',  'date': '2016', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyMayor/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandCouncilD1': {'office': 'CouncilD1',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD1/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandSchoolD7': {'office': 'SchoolD7',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD7/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 SanLeandroCouncilD2': {'office': 'CouncilD2',  'date': '2016', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD2/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 SanLeandroCouncilD4': {'office': 'CouncilD4',  'date': '2016', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD4/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 BerkeleyCouncilD6': {'office': 'CouncilD6',  'date': '2016', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/BerkeleyCouncilD6/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandSchoolD5': {'office': 'SchoolD5',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD5/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandCouncilD3': {'office': 'CouncilD3',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD3/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandCouncilD5': {'office': 'CouncilD5',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilD5/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandSchoolD3': {'office': 'SchoolD3',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandSchoolD3/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandCouncilAtLrg': {'office': 'CouncilAtLrg',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandCouncilAtLrg/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 OaklandAttorney': {'office': 'Attorney',  'date': '2016', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/OaklandAttorney/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2016 SanLeandroCouncilD6': {'office': 'CouncilD6',  'date': '2016', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2016/SanLeandroCouncilD6/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 4 - Oakland Nov 2010': {'office': 'Member City Council District 4',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 4 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 2 - Oakland Nov 2010': {'office': 'Member City Council District 2',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 2 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 1 - San Leandro Nov 2010': {'office': 'Member City Council District 1',  'date': '2010', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 1 - San Leandro_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 8 - Berkeley Nov 2010': {'office': 'Member City Council District 8',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 8 - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 7 - Berkeley Nov 2010': {'office': 'Member City Council District 7',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 7 - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 6 - Oakland Nov 2010': {'office': 'Member City Council District 6',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 6 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 4 - Berkeley Nov 2010': {'office': 'Member City Council District 4',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 4 - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 City Auditor - Oakland Nov 2010': {'office': 'City Auditor',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_City Auditor - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 5 - San Leandro Nov 2010': {'office': 'Member City Council District 5',  'date': '2010', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 5 - San Leandro_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Mayor of San Leandro Nov 2010': {'office': 'Mayor',  'date': '2010', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Mayor of San Leandro_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 City Auditor - Berkeley Nov 2010cam': {'office': 'City Auditor',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_City Auditor - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 School Director, District 6 - Oakland Nov 2010': {'office': 'School Director District 6',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 6 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Mayor of Oakland Nov 2010': {'office': 'Mayor',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Mayor of Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 1 - Berkeley Nov 2010': {'office': 'Member City Council District 1',  'date': '2010', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 1 - Berkeley_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 School Director, District 4 - Oakland Nov 2010': {'office': 'School Director District 4',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 4 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 School Director, District 2 - Oakland Nov 2010': {'office': 'School Director District 2',  'date': '2010', 'place': 'Oakland',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_School Director, District 2 - Oakland_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2010 Member, City Council, District 3 - San Leandro Nov 2010': {'office': 'Member City Council District 3',  'date': '2010', 'place': 'San Leandro',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2010/ballot_image_Member, City Council, District 3 - San Leandro_Nov 2010.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     '2017 BerkCouncilD4': {'office': 'CouncilD4',  'date': '2017', 'place': 'Berkeley',
          'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda (Oakland, San Leandro, Berkeley) 2017/BerkCouncilD4/ballot_image.txt',
          'parser': sfnoid,
          'break_on_overvote': True,
-         'break_on_repeated undervotes': False
+         'break_on_repeated_undervotes': False
      },
     'Cambridge School Committee 2017': {'office': 'School Committee',  'date': '2017', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2017/2017/School Committee/*.prm',
         'parser': prm,
         'chp': 'Ballot_Images/Cambridge/2017/2017/School Committee/school 2017 FINAL Order Test.chp',
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2017': {'office': 'City Council',  'date': '2017', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2017/2017/City Council/*.prm',
         'parser': prm,
         'chp': 'Ballot_Images/Cambridge/2017/2017/City Council/council 2017 FINAL Order Test.chp',
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2015': {'office': 'School Committee',  'date': '2015', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2015/school2015/*.prm',
         'parser': prm,
         'chp': 'Ballot_Images/Cambridge/2015/school2015/*.chp',
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2015': {'office': 'City Council',  'date': '2015', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2015/council2015/*.prm',
         'chp': 'Ballot_Images/Cambridge/2015/council2015/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2013': {'office': 'School Committee',  'date': '2013', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2013/School/*/*.PRM',
         'chp': 'Ballot_Images/Cambridge/2013/School/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2013': {'office': 'City Council',  'date': '2013', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2013/Council/*/*.PRM',
         'chp': 'Ballot_Images/Cambridge/2013/Council/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2011': {'office': 'School Committee',  'date': '2011', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2011/School/*/*.PRM',
         'parser': prm,
         'chp': 'Ballot_Images/Cambridge/2011/School/Final/School Final Piles Report.txt',
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2011': {'office': 'City Council',  'date': '2011', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2011/Council/*/*.PRM',
         'parser': prm,
         'chp': 'Ballot_Images/Cambridge/2011/Council/Final/Council Final Piles Report.txt',
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     ### Doesn't match with results here https://www.cambridgema.gov/~/media/Files/electioncommission/SchoolCommittee_results.pdf?la=en
     #'Cambridge School Committee 2009': {'office': '#School Committee',  'date': '2009', 'place': 'Cambridge',
     #    'path': 'Ballot_Images/Cambridge/2009/School/*/*.PRM',
     #    'parser': prm,
     #    'break_on_overvote': False,
-    #    'break_on_repeated undervotes': False
+    #    'break_on_repeated_undervotes': False
     #},
     'Cambridge City Council 2009': {'office': 'City Council',  'date': '2009', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2009/Council/*/*.PRM',
         'chp': 'Ballot_Images/Cambridge/2009/Council/Final/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2007': {'office': 'City Council',  'date': '2007', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2007/Council/*/*.[pP][rR][mM]',
         'chp': 'Ballot_Images/Cambridge/2007/Council/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2007': {'office': 'School Committee',  'date': '2007', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2007/School/*/*.[pP][rR][mM]',
         'chp': 'Ballot_Images/Cambridge/2007/School/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2005': {'office': 'School Committee',  'date': '2005', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2005/School/*/*.[pP][rR][mM]',
         'chp': 'Ballot_Images/Cambridge/2005/School/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2005': {'office': 'City Council',  'date': '2005', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2005/Council/*/*.[pP][rR][mM]',
         'chp': 'Ballot_Images/Cambridge/2005/Council/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2003': {'office': 'City Council',  'date': '2003', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2003/Council/*/*.[pPW][rRE][mMD]',
         'chp': 'Ballot_Images/Cambridge/2003/Council/*/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge School Committee 2003': {'office': 'School Committee',  'date': '2003', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2003/School/*/*.[pPW][rRE][mMD]',
         'chp': 'Ballot_Images/Cambridge/2003/School/school.chp', 
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Cambridge City Council 2001': {'office': 'City Council',  'date': '2001', 'place': 'Cambridge',
         'path': 'Ballot_Images/Cambridge/2001/Council - Wednesday/*.PRM',
         'chp': 'Ballot_Images/Cambridge/2001/Council - Wednesday/*.chp',
         'parser': prm,
         'break_on_overvote': False,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Burlington Mayor 2006': {
         'office': 'Mayor',
@@ -1204,14 +1204,14 @@ competitions = {
         'path': 'Ballot_Images/Burlington/Burlington Mayor 2006.txt',
         'parser': burlington,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'Burlington Mayor 2009': {'office': 'Mayor', 'date': '2009', 'place': 'Burlington',
         'path': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.PRM',
         'chp': 'Ballot_Images/Burlington/2009 Burlington Mayor/*.chp',
         'parser': prm,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
     },
     'San Leandro Mayor 2018': {
         'office': 'Mayor',  
@@ -1220,7 +1220,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroMayor2018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'San Leandro Council D5 2018': {
         'office': 'Council D5',  
@@ -1229,7 +1229,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD52018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'San Leandro Council D3 2018': {
         'office': 'Council D3',  
@@ -1238,7 +1238,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD32018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'San Leandro Council D1 2018': {
         'office': 'Council D1',  
@@ -1247,7 +1247,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/SanLeandroCouncilD12018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland School D6 2018': {
         'office': 'School D6',  
@@ -1256,7 +1256,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD62018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland School D4 2018': {
         'office': 'School D4',  
@@ -1265,7 +1265,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD42018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland School D2 2018': {
         'office': 'School D2',  
@@ -1274,7 +1274,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandSchoolD22018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland Council D6 2018': {
         'office': 'Council D6',  
@@ -1283,7 +1283,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD62018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland Council D4 2018': {
         'office': 'Council D4',  
@@ -1292,7 +1292,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD42018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland Council D2 2018': {
         'office': 'Council D2',  
@@ -1301,7 +1301,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCouncilD22018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland Mayor 2018': {
         'office': 'Mayor',  
@@ -1310,7 +1310,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandMayor2018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Oakland City Auditor 2018': {
         'office': 'City Auditor',  
@@ -1319,7 +1319,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/OaklandCityAuditor2018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Berkeley Council D8 2018': {
         'office': 'Council D8',  
@@ -1328,7 +1328,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD82018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Berkeley Council D7 2018': {
         'office': 'Council D7',  
@@ -1337,7 +1337,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD72018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Berkeley Council D4 2018':  {
         'office': 'Council D4',  
@@ -1346,7 +1346,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD42018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Berkeley Council D1 2018': {
         'office': 'Council D1',  
@@ -1355,7 +1355,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCouncilD12018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'Berkeley City Auditor 2018': {
         'office': 'City Auditor',  
@@ -1364,7 +1364,7 @@ competitions = {
         'path': 'Ballot_Images/Alameda (Oakland, San Leandro, Berkeley)/Alameda2018/BerkeleyCityAuditor2018ballot_image.txt',
         'parser': sfnoid,
         'break_on_overvote': True,
-        'break_on_repeated undervotes': False
+        'break_on_repeated_undervotes': False
      },
     'San Francisco Mayor 2019': {
         'office': 'Mayor',
@@ -1442,4 +1442,4 @@ competitions = {
         'break_on_repeated_undervotes': True
     }
 }
- 
+

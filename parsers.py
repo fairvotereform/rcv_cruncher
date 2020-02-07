@@ -19,7 +19,7 @@ def sf_precinct_map(ctx):
                                  .replace('Ballot Image', 'Master Lookup')
                     
     precinct_map = {}
-    with open(master_lookup_path) as f:
+    with open(master_lookup_path, encoding='utf8') as f:
         for i in f:
             if i.startswith('Precinct'):
                 kv = i.split()[1]
@@ -38,7 +38,7 @@ def parse_master_lookup(ctx):
                                  .replace('Ballot Image', 'Master Lookup')
                     
     master_lookup = defaultdict(dict)
-    with open(master_lookup_path) as f:
+    with open(master_lookup_path, encoding='utf8') as f:
         for i in f:
             mapping = i[:10].strip()
             key = i[10:17].strip()
