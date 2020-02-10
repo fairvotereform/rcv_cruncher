@@ -1381,15 +1381,6 @@ def ballots(ctx):
 def write_ins(ctx):
     return 0
 
-@tmpsave
-def number(ctx):
-    return {
-        ('Cambridge', 'School Committee'): 6,
-        ('Cambridge', 'City Council'): 9,
-        ('Minneapolis', 'BOE'): 2,
-        ('Minneapolis', 'Park At Large'): 3,
-    }.get((ctx['place'],ctx['office']), 1)
-
 def ballot_length(ctx):
     return len(ballots(ctx)[0])
 
