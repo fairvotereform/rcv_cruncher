@@ -525,16 +525,32 @@ def rcv_stack(ballots):
 
 @save
 def cleaned(ctx):
+    """
+        retrieve ballots (list of lists, each containing candidate names in
+        rank order, also write-ins marked with WRITEIN constant, and OVERVOTES and
+        UNDERVOTES marked with their respective constants)
+
+        For each ballot, return a cleaned version that has pre-skipped
+        undervoted and overvoted rankings and only includes one ranking
+        per candidate (the highest ranking for that candidate).
+
+        Additionally, each ballot may be cut short depending on the
+        -break_on_repeated_undervotes- and -break_on_overvote- settings for
+        a contest.
+
+        returns: list of cleaned ballot-lists
+    """
     new = []
     for b in ballots(ctx):
         result = []
-        for a,b in zip(b,b[1:]+[None]):
-            if break_on_repeated_undervotes(ctx) and {a,b} == {UNDERVOTE}:
+        # look at successive pairs of rankings - zip list with itself offset by 1
+        for elem_a, elem_b in zip(b, b[1:]+[None]):
+            if break_on_repeated_undervotes(ctx) and {elem_a, elem_b} == {UNDERVOTE}:
                 break
-            if break_on_overvote(ctx) and a == OVERVOTE:
+            if break_on_overvote(ctx) and elem_a == OVERVOTE:
                 break
-            if a not in [*result,OVERVOTE,UNDERVOTE]:
-                result.append(a)
+            if elem_a not in [*result, OVERVOTE, UNDERVOTE]:
+                result.append(elem_a)
         new.append(result)
     return new
 
