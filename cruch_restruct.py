@@ -2,70 +2,65 @@
 from argparse import ArgumentParser
 from pprint import pprint
 import csv
-
-import manifest
-from math import sqrt
+import os
 
 # cruncher imports
+from scripts.contests import *
+from scripts.tabulation import *
+from scripts.precincts import *
 
+import scripts.global_dict as global_dict
+# initialize global func dict across all cruncher imports
+# necessary for cache_helpers
+global_dict.set_global_dict(globals())
 
-
-
-
-ALLSTATS = [place, state, date, office,
-    total, undervote, total_overvote, first_round_overvote,
-    total_exhausted_by_overvote, total_fully_ranked, ranked2,
-    ranked_winner,
-    two_repeated, three_repeated, total_skipped, irregular, total_exhausted,
-    total_exhausted_not_by_overvote, total_involuntarily_exhausted,
-    effective_ballot_length, minneapolis_undervote, minneapolis_total,
-    total_voluntarily_exhausted, condorcet, come_from_behind, number_of_rounds,
-    finalists, winner, exhausted_by_undervote,
-    naive_tally, candidates, count_duplicates,
-    any_repeat, validly_ranked_winner, margin_when_2_left,
-    margin_when_winner_has_majority,
-    cvap_totals,
-    asian_ethnic_cvap_totals, black_ethnic_cvap_totals,
-    latin_ethnic_cvap_totals, white_ethnic_cvap_totals
-] + ETHNICITY_STATS
 
 def calc(ctx, functions):
-    print(dop(ctx))
+    """
+    Run each function in 'functions' on ctx
+    """
+    print(ctx['dop'])
+
     results = {}
     for f in functions:
         results[f.__name__] = f(ctx)
+
     return results
 
 
 def main():
-    p = ArgumentParser()
-    p.add_argument('-j', '--json', action='store_true')
-    a = p.parse_args()
-    if a.json:
-        for k in manifest.competitions.values():
-            pprint(calc(k, FUNCTIONS))
-        return
 
-    with open('results.csv', 'w', newline='\n') as f:
+    # if using and IDE with a debugger, fill this list with contests to break on
+    # and set breakpoint below
+    debug_list = ['2012 Mayor - Berkeley Nov 2012']
+
+    # get the path of this file
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+
+    STATS = contest_func_list() + stats_func_list() + ethnicity_stats_func_list()
+
+    with open('results_restruct.csv', 'w', newline='\n') as f:
+
         w = csv.writer(f)
-        w.writerow([fun.__name__ for fun in ALLSTATS])
+
+        # write header row
+        w.writerow([fun.__name__ for fun in STATS])
+
+        # write notes row
         w.writerow([' '.join((fun.__doc__ or '').split())
-                    for fun in ALLSTATS])
-        for k in sorted(manifest.competitions.values(), key=lambda x: x['date']):
-            if True:  # k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
-                result = calc(k, ALLSTATS)
-                w.writerow([result[fun.__name__] for fun in ALLSTATS])
+                    for fun in STATS])
 
+        # crunch STATS on all contests in manifest
+        for k in sorted(load_manifest(dname), key=lambda x: x['date']):
 
-#    with open('headline.csv', 'w') as f:
-#        w = csv.writer(f)
-#        w.writerow([fun.__name__ for fun in HEADLINE_STATS])
-#        w.writerow([' '.join((fun.__doc__ or '').split())
-#                     for fun in HEADLINE_STATS])
-#        for k in sorted(manifest.competitions.values(),key=lambda x: x['date']):
-#            if True: #k['office'] == 'Democratic Primary for Governor': #county(k) in {'075'} and int(date(k)) == 2012:
-#                result = calc(k, HEADLINE_STATS)
-#                w.writerow([result[fun.__name__] for fun in HEADLINE_STATS])
+            # useful spot to put a breakpoint for debugging a specific contest
+            if k['contest'] in debug_list:
+                print('debugging')
+
+            result = calc(k, STATS)
+            w.writerow([result[fun.__name__] for fun in STATS])
+
 
 if __name__ == '__main__':
     main()
