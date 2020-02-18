@@ -1,6 +1,15 @@
 
 
 @save
+def margin_when_winner_has_majority(ctx):
+    last_tally = rcv(ctx)[-1][1]
+    if len(last_tally) < 2:
+        return last_tally[0]
+    else:
+        return last_tally[0] - last_tally[1]
+
+
+@save
 def exhausted_by_overvote(ctx):
     """
     Returns bool list with elements corresponding to cleaned ballots.

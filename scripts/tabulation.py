@@ -8,7 +8,7 @@ from collections import Counter
 
 # cruncher imports
 from .definitions import SKIPVOTE, OVERVOTE, WRITEIN
-from .cache_helpers import save, tmpsave
+from .cache_helpers import save
 
 
 ########################
@@ -42,8 +42,7 @@ def isInf(x):
 
 def stats_func_list():
 
-    STATS = [title_case_winner,
-             winner,
+    STATS = [contest_winner,
              number_of_candidates,
              final_round_winner_vote,
              final_round_winner_percent,
@@ -56,23 +55,23 @@ def stats_func_list():
              winners_consensus_value,
              condorcet,
              come_from_behind,
-             margin_when_winner_has_majority,
              effective_ballot_length,
              first_round_overvote,
              ranked_single,
              ranked_multiple,
+             total_fully_ranked,
              ranked_winner,
              includes_duplicate_ranking,
              includes_skipped_ranking,
-             total_ballots,
-             total_fully_ranked,
-             total_undervote,
-             total_ballots_with_overvote,
-             total_exhausted_by_overvote,
              total_irregular,
+             total_ballots,
+             total_ballots_with_overvote,
+             total_undervote,
              total_exhausted,
-             total_exhausted_not_by_overvote,
-             total_exhausted_by_skipvote]
+             total_exhausted_by_overvote,
+             total_exhausted_by_skipped_rankings,
+             total_exhausted_by_abstention,
+             total_exhausted_by_rank_limit]
 
     return STATS
 
@@ -207,7 +206,7 @@ def exhausted_by_abstention(ctx):
     """
     Returns bool list with elements corresponding to ballots.
     True if ballot was exhausted without being fully ranked and the
-    cause of exhaustion was not overvotes or skipvotes.
+    cause of exhaustion was not overvotes or skipped rankings.
     """
     return [True if i == 'abstention' else False for i in exhaustion_check(ctx)]
 
@@ -236,7 +235,7 @@ def exhausted_by_rank_limit(ctx):
     """
     Returns bool list with elements corresponding to ballots.
     True if ballot was exhausted AND fully ranked and the
-    cause of exhaustion was not overvotes or skipvotes.
+    cause of exhaustion was not overvotes or skipped rankings.
     """
     return [True if i == 'rank_limit' else False for i in exhaustion_check(ctx)]
 
@@ -345,8 +344,8 @@ def first_round_overvote(ctx):
 
     Note that this is not the same as "exhausted by overvote". This is because
     some juristidictions (Maine) discard any ballot beginning with two
-    skipvotes, and call this ballot as exhausted by skipvote, even if the
-    skipvotes are followed by an overvote.
+    skipped rankings, and call this ballot as exhausted by skipped rankings, even if the
+    skipped rankings are followed by an overvote.
 
     Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
     '''
@@ -449,7 +448,7 @@ def fully_ranked(ctx):
         full set of candidates OR the raw and cleaned ballot are of the same length
         (this second condition is to account for limited rank voting systems)
 
-        Note: cleaned ballots already should have skipvotes, overvotes, and
+        Note: cleaned ballots already should have skipped rankings, overvotes, and
         repeated rankings given to a single candidate all removed
     """
     return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
@@ -477,7 +476,7 @@ def includes_duplicate_ranking(ctx):
 @save
 def includes_skipped_ranking(ctx):
     '''
-    The number of ballots that have an skipvote followed by any other mark
+    The number of ballots that have an skipped ranking followed by any other mark
     valid ranking
     '''
     return sum(skipped(ctx))
@@ -486,15 +485,6 @@ def includes_skipped_ranking(ctx):
 @save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
-
-
-@save
-def margin_when_winner_has_majority(ctx):
-    last_tally = rcv(ctx)[-1][1]
-    if len(last_tally) < 2:
-        return last_tally[0]
-    else:
-        return last_tally[0] - last_tally[1]
 
 
 @save
@@ -649,7 +639,7 @@ def skipped(ctx):
 
 
 @save
-def title_case_winner(ctx):
+def contest_winner(ctx):
     '''
     The winner of the election, or, in multiple winner contests, the
     hypothetical winner if the contest was single winner.
@@ -701,21 +691,9 @@ def total_exhausted_by_rank_limit(ctx):
     return sum(exhausted_by_rank_limit(ctx))
 
 
-@save
-def total_exhausted_not_by_overvote(ctx):
+def total_exhausted_by_skipped_rankings(ctx):
     """
-    Number of ballots exhausted NOT because of overvote (repeated skipvotes,
-    rank limit, or abstention). Does not include undervotes.
-    """
-    ziplist = zip(exhausted(ctx),
-                  exhausted_by_overvote(ctx))
-
-    return sum(ex and not ex_over for ex, ex_over in ziplist)
-
-
-def total_exhausted_by_skipvote(ctx):
-    """
-    Number of ballots exhausted due to repeated skipvotes. Only applicable to certain contests.
+    Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests.
     """
     return sum(exhausted_by_skipvote(ctx))
 
@@ -750,7 +728,7 @@ def total_irregular(ctx):
 @save
 def total_undervote(ctx):
     '''
-    Ballots completely made up of skipvotes (no marks).
+    Ballots completely made up of skipped rankings (no marks).
     '''
     return sum(undervote(ctx))
 

@@ -14,6 +14,9 @@ from .parsers import santafe, santafe_id, maine, minneapolis, \
 # getter function that exist only for the function list in the cruncher
 # much simpler to access ctx dictionary directly
 
+def contest_name(ctx):
+    return ctx['contest']
+
 def place(ctx):
     return ctx['place']
 
@@ -31,21 +34,26 @@ def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
 @tmpsave
-def contest_id(ctx):
+def unique_id(ctx):
 
     pieces = [ctx['place'],  ctx['date'], ctx['office'], ctx['contest']]
-    cleaned_pieces = [re.sub('[^0-9a-zA-Z]+', '', x) for x in pieces]
+    cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
 
-    return "_".join(cleaned_pieces)
+    return "__".join(cleaned_pieces)
 
 def contest_func_list():
-    return [place, state, date, office, contest_id]
+    return [contest_name, place, state, date, office, unique_id]
 
 #########################
 
 # typecast functions
 
 def cast_str(s):
+    """
+    If string-in-string '"0006"', evaluate to '0006'
+    If 'None', return None (since this string cannot be evaluated)
+    else, return str() result
+    """
     if (s[0] == '"' and s[-1] == '"') or (s[0] == "'" and s[-1] == "'"):
         return eval(s)
     elif s == 'None':
@@ -104,11 +112,9 @@ def load_manifest(cruncher_path):
     # convert df to listOdicts, one dict per row
     competitions = manifest_df.to_dict('records')
 
-    # add dop, state code , county fields
+    # add dop, unique_id
     for d in competitions:
         d['dop'] = dop(d)
-        d['contest_id'] = contest_id(d)
-        # d['state_code'] = get_state_code(d)
-        # d['county'] = get_county(d)
+        d['unique_id'] = unique_id(d)
 
     return competitions
