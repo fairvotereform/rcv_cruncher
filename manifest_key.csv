@@ -6,7 +6,7 @@ state,str,""""""
 date,str,""""""
 office,str,""""""
 break_on_overvote,bool,TRUE
-break_on_repeated_undervotes,bool,FALSE
+break_on_repeated_skipvotes,bool,FALSE
 write_ins,int,0
 master_lookup,str,None
 chp,str,None

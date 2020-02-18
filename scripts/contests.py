@@ -2,10 +2,11 @@
 from functools import partial
 import pandas as pd
 import os
+import re
 
 # cruncher imports
-from cache_helpers import tmpsave
-from parsers import santafe, santafe_id, maine, minneapolis, \
+from .cache_helpers import tmpsave
+from .parsers import santafe, santafe_id, maine, minneapolis, \
     sf, sfnoid, old, prm, burlington, sf2019, utah, ep
 
 
@@ -29,8 +30,16 @@ def office(ctx):
 def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
 
+@tmpsave
+def contest_id(ctx):
+
+    pieces = [ctx['place'],  ctx['date'], ctx['office'], ctx['contest']]
+    cleaned_pieces = [re.sub('[^0-9a-zA-Z]+', '', x) for x in pieces]
+
+    return "_".join(cleaned_pieces)
+
 def contest_func_list():
-    return [place, state, date, office]
+    return [place, state, date, office, contest_id]
 
 #########################
 
@@ -98,6 +107,7 @@ def load_manifest(cruncher_path):
     # add dop, state code , county fields
     for d in competitions:
         d['dop'] = dop(d)
+        d['contest_id'] = contest_id(d)
         # d['state_code'] = get_state_code(d)
         # d['county'] = get_county(d)
 

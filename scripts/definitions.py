@@ -2,7 +2,7 @@
 ###############################################################
 # constants
 
-UNDERVOTE = -1
+SKIPVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
 

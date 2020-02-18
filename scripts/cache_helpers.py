@@ -6,7 +6,7 @@ import pickle  # faster than json, shelve
 from contextlib import suppress
 from functools import wraps
 
-import global_dict
+from .global_dict import get_global_dict
 
 def unwrap(function):
     """
@@ -28,7 +28,7 @@ def srchash(function):
 
     """
 
-    gd = global_dict.get_global_dict()
+    gd = get_global_dict()
 
     visited = set()
     frontier = {function}  # start with input function

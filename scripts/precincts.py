@@ -7,8 +7,8 @@ from itertools import product
 import csv
 
 # cruncher imports
-from cache_helpers import save
-from tabulation import exhausted, cleaned, overvote
+from .cache_helpers import save
+from .tabulation import exhausted_or_undervote, cleaned, overvote
 
 
 @save
@@ -34,7 +34,7 @@ def precinct_participation(ctx):
 
 @save
 def precinct_ranked_finalists(ctx):
-    return Counter(p for p, o in zip(precincts(ctx), exhausted(ctx)) if not o)
+    return Counter(p for p, o in zip(precincts(ctx), exhausted_or_undervote(ctx)) if not o)
 
 
 @save

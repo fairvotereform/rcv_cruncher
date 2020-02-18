@@ -5,10 +5,7 @@ import os
 import csv
 import json
 
-UNDERVOTE = -1
-OVERVOTE = -2
-WRITEIN = -3
-
+from .definitions import SKIPVOTE, OVERVOTE, WRITEIN
 
 def sf_precinct_map(ctx):
     path = ctx['path']
@@ -68,7 +65,7 @@ def burlington(ctx):
             ballots.append([OVERVOTE if '=' in i else i for i in line.split()[3:]])
     maxlen = max(map(len,ballots))
     for b in ballots:
-        b.extend([UNDERVOTE]*(maxlen-len(b)))
+        b.extend([SKIPVOTE] * (maxlen - len(b)))
     return ballots
 
 #TODO: add functionality to allow resolvalbe overvotes
@@ -89,13 +86,13 @@ def prm(ctx):
                     choices = [] if len(s) == 1 else s[1].split(',')
                     for choice in filter(None,choices):
                         can, rank = choice.split(']')[0].split('[')
-                        b.extend([UNDERVOTE]*(int(rank)-len(b)-1))
+                        b.extend([SKIPVOTE] * (int(rank) - len(b) - 1))
                         b.append(OVERVOTE if '=' in choice else name_map[can])
                     ballots.append(b)
                  
     maxlen = max(map(len,ballots))
     for b in ballots:
-        b.extend([UNDERVOTE]*(maxlen-len(b)))
+        b.extend([SKIPVOTE] * (maxlen - len(b)))
     return ballots
         
 
@@ -116,7 +113,7 @@ def sf(contest_id, ctx):
                 b = UserList([])
             precinct_id = line[26:33]
             candidate_id = int(line[36:43]) and name_map[line[36:43]]
-            undervote = UNDERVOTE if int(line[44]) else 0
+            undervote = SKIPVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             b.append(candidate_id or undervote or overvote)
             if b[-1] == 0 or len(b) != int(line[33:36]):
@@ -141,7 +138,7 @@ def sfnoid(ctx):
                 b = UserList([])
             precinct_id = line[26:33]
             candidate_id = int(line[36:43]) and name_map[line[36:43]]
-            undervote = UNDERVOTE if int(line[44]) else 0
+            undervote = SKIPVOTE if int(line[44]) else 0
             overvote = OVERVOTE if int(line[43]) else 0
             
             #Alameda County incorrectly reported 0 for write in candidates for 
@@ -169,7 +166,7 @@ def old(ctx):
             line = [j.strip() for j in i.split(':')]
             if line and line[0] == 'Candidate':
                 candidate_map[line[1]] = line[2]
-    candidate_map['--'] = UNDERVOTE
+    candidate_map['--'] = SKIPVOTE
     candidate_map['++'] = OVERVOTE
     ballots = []
     with open(path, "r") as f:
@@ -188,12 +185,12 @@ def minneapolis(ctx):
                 split = i.strip().split('\t')
                 if len(split) >= 3:
                     choice_map[split[2]] = split[1]
-        choice_map['XXX'] = UNDERVOTE
+        choice_map['XXX'] = SKIPVOTE
         default = WRITEIN
     else:
         choice_map = {
             'UWI': WRITEIN,
-            'undervote': UNDERVOTE,
+            'undervote': SKIPVOTE,
             'overvote': OVERVOTE
         }
     path = ctx['path']
@@ -213,7 +210,7 @@ def maine(n, ctx):
     with open(path, "r") as f:
         f.readline()
         for line in csv.reader(f):
-            choices = [{'undervote': UNDERVOTE,
+            choices = [{'undervote': SKIPVOTE,
                         'overvote': OVERVOTE,
                         'Write-in': WRITEIN}.get(i,i)
                          for i in line[3:3+n]]
@@ -253,7 +250,7 @@ def santafe(column_id, contest_id, ctx):
                 for i in range(len(rinds)):
                     c = ranks.count(i+1)
                     if c == 0:
-                        choices.append(UNDERVOTE)
+                        choices.append(SKIPVOTE)
                     elif c == 1:
                         next_candidate = line[next(candidates)]
                         choices.append(candidate_map[next_candidate])
@@ -289,7 +286,7 @@ def santafe_id(column_id, contest_id, ctx):
                 for i in range(len(rinds)):
                     c = ranks.count(i+1)
                     if c == 0:
-                        choices.append(UNDERVOTE)
+                        choices.append(SKIPVOTE)
                     elif c == 1:
                         choices.append(line[next(candidates)])
                     else:
@@ -312,7 +309,7 @@ def sf2005(contest_ids, over, under, sep, ctx):
                 continue
             raw = [c for r, c in s if r in contest_ids]
             if raw:
-                ballots.append([{over: OVERVOTE, under: UNDERVOTE}.get(i,i)
+                ballots.append([{over: OVERVOTE, under: SKIPVOTE}.get(i, i)
                                 for i in raw])
     return ballots
 
@@ -341,7 +338,7 @@ def sf2019(ctx):
             precinct = precincts[current_contests['PrecinctPortionId']]
             for contest in current_contests['Contests']:
                 if contest['Id'] == contest_id:
-                    ballot = UserList([UNDERVOTE] * ranks)
+                    ballot = UserList([SKIPVOTE] * ranks)
                     for mark in contest['Marks']:
                         candidate = candidates[mark['CandidateId']]
                         if candidate == 'Write-in':
@@ -351,7 +348,7 @@ def sf2019(ctx):
                             pass 
                         elif ballot[rank] == OVERVOTE:
                             pass
-                        elif ballot[rank] == UNDERVOTE:
+                        elif ballot[rank] == SKIPVOTE:
                             ballot[rank] = candidate
                         elif ballot[rank] != candidate:
                             ballot[rank] = OVERVOTE
@@ -366,7 +363,7 @@ def utah(ctx):
         next(f)
         for b in f:
             ballots.append(
-                [{'overvote':OVERVOTE, 'undervote':UNDERVOTE, '': UNDERVOTE}.get(i,i) 
+                [{'overvote':OVERVOTE, 'undervote':SKIPVOTE, '': SKIPVOTE}.get(i, i)
                 for i in b.strip().split(',')[2:]]
             )
     return ballots
@@ -377,7 +374,7 @@ def ep(ctx):
         next(f)
         for b in csv.reader(f):
             ballots.append(
-                [{'overvote':OVERVOTE, 'undervote':UNDERVOTE, 'UWI': WRITEIN}.get(i,i) 
+                [{'overvote':OVERVOTE, 'undervote':SKIPVOTE, 'UWI': WRITEIN}.get(i, i)
                 for i in b[3:]]
             )
     print(ballots[:5])

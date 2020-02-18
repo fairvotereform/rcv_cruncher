@@ -7,8 +7,8 @@ from collections import Counter
 
 
 # cruncher imports
-from definitions import UNDERVOTE, OVERVOTE, WRITEIN
-from cache_helpers import save, tmpsave
+from .definitions import SKIPVOTE, OVERVOTE, WRITEIN
+from .cache_helpers import save, tmpsave
 
 
 ########################
@@ -30,45 +30,49 @@ def before(victor, loser, ballot):
             return -1
     return 0
 
-def remove(x,l):
+def remove(x, l):
     return [i for i in l if i != x]
 
-def keep(x,l):
+def keep(x, l):
     return [i for i in l if i in x]
 
+def isInf(x):
+    return x == float('inf')
 
 
 def stats_func_list():
 
-    STATS = [title_case_winner,                     number_of_candidates,
-             number_of_rounds,                      final_round_vote,
-             final_round_percent,                   first_round_vote,
-             first_round_percent,                   first_round_place,
-             number_of_first_round_valid_votes,     number_of_final_round_active_votes,
-             total,                                 final_round_winner_votes_over_first_round_valid,
-             final_round_inactive,                  winners_consensus_value,
-             condorcet,                             total_fully_ranked,
-             ranked_multiple,                       first_round_undervote,
-             first_round_overvote,                  later_round_inactive_by_overvote,
-             later_round_inactive_by_abstention,    later_round_inactive_by_ranking_limit,
-             includes_duplicates,                   includes_skipped,
-             top2_winners_vote_increased,           top2_winners_fraction,
-             top2_majority,                         top2_winner_over_40,
-             effective_ballot_length_str,           undervote,
-             total_overvote,                        total_exhausted_by_overvote,
-             ranked2,                               ranked_winner,
-             two_repeated,                          three_repeated,
-             total_skipped,                         irregular,
-             total_exhausted,                       total_exhausted_not_by_overvote,
-             total_involuntarily_exhausted,
-             minneapolis_undervote,                 minneapolis_total,
-             total_voluntarily_exhausted,           come_from_behind,
-             number_of_rounds,                      finalists,
-             winner,                                exhausted_by_undervote,
-             naive_tally,                           candidates,
-             count_duplicates,                      any_repeat,
-             validly_ranked_winner,                 margin_when_2_left,
-             margin_when_winner_has_majority]
+    STATS = [title_case_winner,
+             winner,
+             number_of_candidates,
+             final_round_winner_vote,
+             final_round_winner_percent,
+             final_round_active_votes,
+             first_round_winner_vote,
+             first_round_winner_percent,
+             first_round_active_votes,
+             first_round_winner_place,
+             final_round_winner_votes_over_first_round_valid,
+             winners_consensus_value,
+             condorcet,
+             come_from_behind,
+             margin_when_winner_has_majority,
+             effective_ballot_length,
+             first_round_overvote,
+             ranked_single,
+             ranked_multiple,
+             ranked_winner,
+             includes_duplicate_ranking,
+             includes_skipped_ranking,
+             total_ballots,
+             total_fully_ranked,
+             total_undervote,
+             total_ballots_with_overvote,
+             total_exhausted_by_overvote,
+             total_irregular,
+             total_exhausted,
+             total_exhausted_not_by_overvote,
+             total_exhausted_by_skipvote]
 
     return STATS
 
@@ -92,7 +96,7 @@ def candidates(ctx):
     cans = set()
     for b in ballots(ctx):
         cans.update(b)
-    return cans - {OVERVOTE, UNDERVOTE, WRITEIN}
+    return cans - {OVERVOTE, SKIPVOTE, WRITEIN}
 
 
 @save
@@ -100,14 +104,14 @@ def cleaned(ctx):
     """
         retrieve ballots (list of lists, each containing candidate names in
         rank order, also write-ins marked with WRITEIN constant, and OVERVOTES and
-        UNDERVOTES marked with their respective constants)
+        SKIPVOTES marked with their respective constants)
 
         For each ballot, return a cleaned version that has pre-skipped
-        undervoted and overvoted rankings and only includes one ranking
+        skipped and overvoted rankings and only includes one ranking
         per candidate (the highest ranking for that candidate).
 
         Additionally, each ballot may be cut short depending on the
-        -break_on_repeated_undervotes- and -break_on_overvote- settings for
+        -break_on_repeated_skipvotes- and -break_on_overvote- settings for
         a contest.
 
         returns: list of cleaned ballot-lists
@@ -117,11 +121,11 @@ def cleaned(ctx):
         result = []
         # look at successive pairs of rankings - zip list with itself offset by 1
         for elem_a, elem_b in zip(b, b[1:]+[None]):
-            if ctx['break_on_repeated_undervotes'] and {elem_a, elem_b} == {UNDERVOTE}:
+            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPVOTE}:
                 break
             if ctx['break_on_overvote'] and elem_a == OVERVOTE:
                 break
-            if elem_a not in [*result, OVERVOTE, UNDERVOTE]:
+            if elem_a not in [*result, OVERVOTE, SKIPVOTE]:
                 result.append(elem_a)
         new.append(result)
     return new
@@ -164,21 +168,23 @@ def condorcet(ctx):
 
 @save
 def count_duplicates(ctx):
+    """
+    Returns dictionary counting the number of max repeat ranking from each ballot
+    """
     return Counter(max_repeats(ctx))
 
 
 @save
 def duplicates(ctx):
+    """
+    Returns boolean list with elements set to True if ballot has at least one
+    duplicate ranking
+    """
     return [v > 1 for v in max_repeats(ctx)]
 
 
 @save
 def effective_ballot_length(ctx):
-    return Counter(len(b) for b in cleaned(ctx))
-
-
-@save
-def effective_ballot_length_str(ctx):
     """
     A list of validly ranked choices, and how many ballots had that number of
     valid choices.
@@ -186,53 +192,149 @@ def effective_ballot_length_str(ctx):
     return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned(ctx))).items()))
 
 
-### TODO: exhausted should not include straight undervotes nor
-### per Drew
 @save
 def exhausted(ctx):
     """
-        Returns bool list corresponding to each cleaned ballot.
-        True when ballot contains none of the finalists
-        False otherwise
+    Returns a boolean list indicating which ballots were exhausted.
+    Does not include undervotes as exhausted.
     """
-    return [not set(finalists(ctx)) & set(b) for b in cleaned(ctx)]
+    return [True if x != 'not_exhausted' and x is not None
+            else False for x in exhaustion_check(ctx)]
+
+
+@save
+def exhausted_by_abstention(ctx):
+    """
+    Returns bool list with elements corresponding to ballots.
+    True if ballot was exhausted without being fully ranked and the
+    cause of exhaustion was not overvotes or skipvotes.
+    """
+    return [True if i == 'abstention' else False for i in exhaustion_check(ctx)]
+
+
+@save
+def exhausted_or_undervote(ctx):
+    """
+    Returns bool list corresponding to each ballot.
+    True when ballot when ballot was exhausted OR left blank (undervote)
+    False otherwise
+    """
+    return [True if x != 'not_exhausted' else False for x in exhaustion_check(ctx)]
 
 
 @save
 def exhausted_by_overvote(ctx):
     """
-        Returns bool list with elements corresponding to cleaned ballots.
-        True if ballot contains an overvote AND became exhausted
-
-        IF the contest uses rules that exhaust a ballot after a repeated undervote,
-        then the list element is only True if the ballot became exhausted AND
-        and overvote is present and it occurred before the repeated undervotes
+    Returns bool list with elements corresponding to ballots.
+    True if ballot was exhausted due to overvote
     """
-    if ctx['break_on_repeated_undervotes']:
-        return [ex and over < under for ex, over, under in
-                zip(exhausted(ctx), overvote_ind(ctx), repeated_undervote_ind(ctx))]
-
-    return [ex and over for ex, over in zip(exhausted(ctx), overvote(ctx))]
+    return [True if i == 'overvote' else False for i in exhaustion_check(ctx)]
 
 
 @save
-def exhausted_by_undervote(ctx):
+def exhausted_by_rank_limit(ctx):
+    """
+    Returns bool list with elements corresponding to ballots.
+    True if ballot was exhausted AND fully ranked and the
+    cause of exhaustion was not overvotes or skipvotes.
+    """
+    return [True if i == 'rank_limit' else False for i in exhaustion_check(ctx)]
+
+
+@save
+def exhausted_by_skipvote(ctx):
+    """
+    Returns bool list with elements corresponding to ballots.
+    True if ballot was exhausted due to repeated_skipvotes
+    """
+    return [True if i == 'repeated_skipvotes' else False for i in exhaustion_check(ctx)]
+
+
+@save
+def exhaustion_check(ctx):
+    """
+    Returns a list with string elements indicating why each ballot
+    was exhausted in a single-winner rcv contest.
+
+    Possible list values are:
+    - overvote: if an overvote was the cause of exhaustion (depends on break_on_overvote manifest value)
+    - repeated_skipvotes: if repeated skipvotes were the cause of exhaustion
+    (depends on break_on_repeated_skipvotes manifest value)
+    - not_exhausted: if finalist was present on the ballot and was ranked higher than an exhaust condition
+    (overvote or repeated_skipvotes)
+    - rank_limit: if no finalist was present on the ballot and the ballot was fully ranked
+    - abstention: if no finalist was present on the ballot and the ballot was NOT fully ranked
+    - None (Nonetype): if the ballot was undervote, and therefore neither active nor exhaustable
     """
 
-    """
-    if ctx['break_on_repeated_undervotes']:
-        return sum(ex and not ex_over and has_under for ex, ex_over, has_under in
-                zip(exhausted(ctx), exhausted_by_overvote(ctx), has_undervote(ctx)))
-    return 0
+    # gather ballot info
+    ziplist = zip(fully_ranked(ctx),  # True if fully ranked
+                  overvote_ind(ctx),  # Inf if no overvote
+                  repeated_skipvote_ind(ctx),  # Inf if no repeated skipvotes
+                  finalist_ind(ctx),  # Inf if not finalist ranked
+                  undervote(ctx))  # True if ballot is undervote
+
+    why_exhaust = []
+
+    # loop through each ballot
+    for is_fully_ranked, over_idx, repskip_idx, final_idx, is_under in ziplist:
+
+        exhaust_cause = None
+
+        # if the ballot is an undervote,
+        # nothing else to check
+        if is_under:
+            why_exhaust.append(exhaust_cause)
+            continue
+
+        # determine exhaustion cause
+
+        missing_finalist = isInf(final_idx)
+
+        # assemble dictionary of possible exhaustion causes and then remove any
+        # that don't apply based on the contest rules
+        idx_dictlist = [{'exhaust_cause': 'overvote', 'idx': over_idx},
+                        {'exhaust_cause': 'repeated_skipvotes', 'idx': repskip_idx},
+                        {'exhaust_cause': 'not_exhausted', 'idx': final_idx}]
+
+        # check if overvote can cause exhaust
+        if ctx['break_on_overvote'] is False:
+            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'overvote']
+
+        # check if skipvotes can cause exhaustion
+        if ctx['break_on_repeated_skipvotes'] is False:
+            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'repeated_skipvotes']
+
+        # what comes first on ballot: overvote, skipvotes, or finalist?
+        min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
+
+        if isInf(min_dict['idx']):
+
+            # means this ballot contained none of the three, it will be exhausted
+            # either for rank limit or abstention
+            if is_fully_ranked:
+                exhaust_cause = 'rank_limit'
+            elif missing_finalist:
+                exhaust_cause = 'abstention'
+            else:
+                print('if final_idx is inf, then missing_finalist should be true. This should never be reached')
+                exit(1)
+
+        else:
+            exhaust_cause = min_dict['exhaust_cause']
+
+        why_exhaust.append(exhaust_cause)
+
+    return why_exhaust
 
 
 @save
 def first_round(ctx):
     """
-        Returns a list of first non-undervote for each ballot OR
-        if the ballot is empty, can also return UNDERVOTE
+    Returns a list of first non-skipvote for each ballot OR
+    if the ballot is empty, can also return None
     """
-    return [next((c for c in b if c != UNDERVOTE), UNDERVOTE)
+    return [next((c for c in b if c != SKIPVOTE), None)
             for b in ballots(ctx)]
 
 
@@ -242,42 +344,31 @@ def first_round_overvote(ctx):
     The number of ballots with an overvote before any valid ranking.
 
     Note that this is not the same as "exhausted by overvote". This is because
-    some juristidictions (Maine) discard any ballot begining with two
-    undervotes, and call this ballot as exhausted by undervote, even if the
-    undervotes are followed by an overvote.
+    some juristidictions (Maine) discard any ballot beginning with two
+    skipvotes, and call this ballot as exhausted by skipvote, even if the
+    skipvotes are followed by an overvote.
 
     Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
     '''
     return sum(c == OVERVOTE for c in first_round(ctx))
 
 
-def first_round_place(ctx):
+def first_round_winner_place(ctx):
     '''
     In terms of first round votes, what place the eventual winner came in.
     '''
     return rcv(ctx)[0][0].index(winner(ctx)) + 1
 
-def first_round_percent(ctx):
+
+def first_round_winner_percent(ctx):
     '''
     The percent of votes for the winner in the first round.
     '''
     wind = rcv(ctx)[0][0].index(winner(ctx))
     return rcv(ctx)[0][1][wind] / sum(rcv(ctx)[0][1])
 
-@save
-def first_round_undervote(ctx):
-    '''
-    The number of ballots with absolutely no markings at all.
 
-    Note that this is not the same as "exhausted by undervote". This is because
-    some juristidictions (Maine) discard any ballot begining with two
-    undervotes regardless of the rest of the content of the ballot, and call
-    this ballot as exhausted by undervote.
-    '''
-    return sum(set(b) == {UNDERVOTE} for b in ballots(ctx))
-
-
-def first_round_vote(ctx):
+def first_round_winner_vote(ctx):
     '''
     The number of votes for the winner in the first round.
     '''
@@ -289,14 +380,40 @@ def finalists(ctx):
     return rcv(ctx)[-1][0]
 
 
-def final_round_inactive(ctx):
-    '''
-    The difference of first round valid votes and final round valid votes.
-    '''
-    return number_of_first_round_valid_votes(ctx) - number_of_final_round_active_votes(ctx)
+def finalist_ind(ctx):
+    """
+    Returns a list indicating the first rank on each ballot where a finalist is listed.
+    List element is Inf if no finalist is present
+    """
+    final_candidates = finalists(ctx)
+    inds = []
+
+    # loop through each ballot and check for each finalist
+    for b in ballots(ctx):
+        min_ind = float('inf')
+        for c in final_candidates:
+            if c in b:
+                min_ind = min(b.index(c), min_ind)
+        inds.append(min_ind)
+
+    return inds
 
 
-def final_round_percent(ctx):
+def final_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the final round.
+    '''
+    return sum(rcv(ctx)[-1][1])
+
+
+def first_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the first round.
+    '''
+    return sum(rcv(ctx)[0][1])
+
+
+def final_round_winner_percent(ctx):
     '''
     The percent of votes for the winner in the final round. The final round is
     the first round where the winner receives a majority of the non-exhausted
@@ -305,7 +422,7 @@ def final_round_percent(ctx):
     return rcv(ctx)[-1][1][0] / sum(rcv(ctx)[-1][1])
 
 
-def final_round_vote(ctx):
+def final_round_winner_vote(ctx):
     '''
     The number of votes for the winner in the final round. The final round is
     the first round where the winner receives a majority of the non-exhausted
@@ -319,7 +436,7 @@ def final_round_winner_votes_over_first_round_valid(ctx):
     The number of votes the winner receives in the final round divided by the
     number of valid votes in the first round.
     '''
-    return final_round_vote(ctx) / number_of_first_round_valid_votes(ctx)
+    return final_round_winner_vote(ctx) / first_round_active_votes(ctx)
 
 
 @save
@@ -330,21 +447,26 @@ def fully_ranked(ctx):
 
         Fully ranked here means either the cleaned ballot contains the
         full set of candidates OR the raw and cleaned ballot are of the same length
-        (this second condition is likely to account for limited rank voting systems)
+        (this second condition is to account for limited rank voting systems)
 
-        Note: cleaned ballots already should have undervotes, overvotes, and
+        Note: cleaned ballots already should have skipvotes, overvotes, and
         repeated rankings given to a single candidate all removed
     """
-    return [len(b) == len(a) or set(b) >= candidates(ctx)
+    return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
+                              # (the ballot is effectively fully ranked)
+            or (set(b) & candidates(ctx)) == candidates  # or voters ranked every possible candidate
             for a, b in zip(ballots(ctx), cleaned(ctx))]
 
 
 @save
-def has_undervote(ctx):
-    return [UNDERVOTE in b for b in ballots(ctx)]
+def has_skipvote(ctx):
+    """
+    Returns boolean list indicating if ballot contains any skipvotes
+    """
+    return [SKIPVOTE in b for b in ballots(ctx)]
 
 
-def includes_duplicates(ctx):
+def includes_duplicate_ranking(ctx):
     '''
     The number of ballots that rank the same candidate more than once, or
     include more than one write in candidate.
@@ -353,86 +475,17 @@ def includes_duplicates(ctx):
 
 
 @save
-def includes_skipped(ctx):
+def includes_skipped_ranking(ctx):
     '''
-    The number of ballots that have an undervote followed by an overvote or a
+    The number of ballots that have an skipvote followed by any other mark
     valid ranking
     '''
     return sum(skipped(ctx))
 
 
 @save
-def irregular(ctx):
-    """
-        Number of ballots that either had a multiple ranking, overvote,
-        or a skipped undervote
-    """
-    return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx))))
-
-
-@save #fixme
-def involuntarily_exhausted(ctx):
-    return [a and b for a, b in zip(fully_ranked(ctx), exhausted(ctx))]
-
-
-@save
-def later_round_exhausted(ctx):
-    """
-        Returns bool list corresponding to each cleaned ballot.
-        True when ballot contains none of the finalists AND the ballot is non-empty.
-        (ensures ballot was not exhausted due to complete undervote)
-        False otherwise
-    """
-    return [not (set(finalists(ctx)) & set(b)) and bool(b) for b in cleaned(ctx)]
-
-
-@save
-def later_round_inactive_by_abstention(ctx):
-    '''
-    The number of ballots that were discarded after the first round because not
-    all rankings were used and it was not discarded because of an overvote.
-
-    This factor will exclude all ballots with overvotes aside from those in Maine
-    where more than one sequential undervote preceeds an overvote.
-    '''
-    return sum(later_round_exhausted(ctx)) \
-           - later_round_inactive_by_overvote(ctx) \
-           - later_round_inactive_by_ranking_limit(ctx)
-
-
-@save
-def later_round_inactive_by_overvote(ctx):
-    '''
-    The number of ballots that were discarded after the first round due to an
-    overvote.
-
-    Note that Minneapolis doesn't discard overvote ballots, it simply skips over
-    the overvote.
-    '''
-    return sum(a and b for a, b in zip(later_round_exhausted(ctx), exhausted_by_overvote(ctx)))
-
-
-@save
-def later_round_inactive_by_ranking_limit(ctx):
-    '''
-    The number of ballots that validly used every ranking, but didn't rank any
-    candidate that appeared in the final round.
-    '''
-    return sum(a and b for a, b in zip(later_round_exhausted(ctx), fully_ranked(ctx)))
-
-
-@save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
-
-
-@save
-def margin_when_2_left(ctx):
-    last_tally = until2rcv(ctx)[-1][1]
-    if len(last_tally) < 2:
-        return last_tally[0]
-    else:
-        return last_tally[0] - last_tally[1]
 
 
 @save
@@ -456,28 +509,8 @@ def max_repeats(ctx):
         ballot was only ranked once, that ballot's corresponding list element
         would be 1
     """
-    return [max(0, 0, *map(b.count, set(b) - {UNDERVOTE, OVERVOTE}))
+    return [max(0, 0, *map(b.count, set(b) - {SKIPVOTE, OVERVOTE}))
             for b in ballots(ctx)]
-
-
-def minneapolis_total(ctx):
-    """
-    Number of non-blank ballots. Ballots with at least one mark (even overvote)
-    """
-    return total(ctx) - minneapolis_undervote(ctx)
-
-
-def minneapolis_undervote(ctx):
-    """
-    Number of ballots left blank, all ranks undervoted
-    """
-    return effective_ballot_length(ctx).get(0, 0)
-
-
-@save
-def naive_tally(ctx):
-    """ Sometimes reported if only one round, only nominal 1st place rankings count"""
-    return Counter(b[0] if b else None for b in ballots(ctx))
 
 
 # fixme
@@ -486,31 +519,6 @@ def number_of_candidates(ctx):
     The number of non-candidates on the ballot, not including write-ins.
     '''
     return len(candidates(ctx))
-
-
-def number_of_final_round_active_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the final round.
-    '''
-    return sum(rcv(ctx)[-1][1])
-
-
-def number_of_first_round_valid_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the first round.
-    '''
-    return sum(rcv(ctx)[0][1])
-
-
-def number_of_rounds(ctx):
-    '''
-    The number of rounds it takes for one candidate (the winner) to receive
-    the  majority of the non-exhausted votes. This number includes the
-    round in which the winner receives the majority of the non-exhausted votes.
-    This is based on a tabulator that doesn't eliminate more than one declared
-    candidate per round.
-    '''
-    return len(rcv(ctx))
 
 
 @save
@@ -529,8 +537,11 @@ def overvote_ind(ctx):
 
 
 @save
-def ranked2(ctx):
-    return sum(len(b) == 2 for b in cleaned(ctx))
+def ranked_single(ctx):
+    '''
+    The number of voters that validly used only a single ranking
+    '''
+    return sum(len(b) == 1 for b in cleaned(ctx))
 
 
 @save
@@ -544,8 +555,7 @@ def ranked_multiple(ctx):
 @save
 def ranked_winner(ctx):
     """
-        How many ballots included a non-overvote ranking for the winner
-        Contrast with validly_ranked_winner
+     Number of ballots with a non-overvote mark for the winner
     """
     return sum(winner(ctx) in b for b in ballots(ctx))
 
@@ -588,14 +598,14 @@ def rcv(ctx):
 
 
 @save
-def repeated_undervote_ind(ctx):
+def repeated_skipvote_ind(ctx):
     """
-        return list with index from each ballot where the undervotes start repeating,
-        if no repeated undervotes set list element to inf
+        return list with index from each ballot where the skipvotes start repeating,
+        if no repeated skipvotes, set list element to inf
 
         note:
-        repeated undervotes are only counted if non-undervotes occur after them. this
-        prevents incompletely ranked ballots from being counted as having repeated undervotes
+        repeated skipvotes are only counted if non-skipvotes occur after them. this
+        prevents incompletely ranked ballots from being counted as having repeated skipvotes
     """
 
     rs = []
@@ -606,18 +616,18 @@ def repeated_undervote_ind(ctx):
 
         # pair up successive rankings on ballot
         z = list(zip(b, b[1:]))
-        uu = (UNDERVOTE, UNDERVOTE)
+        uu = (SKIPVOTE, SKIPVOTE)
 
-        # if repeated undervote on the ballot
+        # if repeated skipvote on the ballot
         if uu in z:
             occurance = z.index(uu)
 
-            # start at second undervote in the pair
-            # and loop until a non-undervote is found
+            # start at second skipvote in the pair
+            # and loop until a non-skipvote is found
             # only then record this ballot as having a
-            # repeated undervote
+            # repeated skipvote
             for c in b[occurance+1:]:
-                if c != UNDERVOTE:
+                if c != SKIPVOTE:
                     rs[-1] = occurance
                     break
     return rs
@@ -626,21 +636,16 @@ def repeated_undervote_ind(ctx):
 @save
 def skipped(ctx):
     """
-        {UNDERVOTE} & {x} - {y}
-        this checks that x == UNDERVOTE and that y then != UNDERVOTE
-        (the y check is important to know whether or not the ballot is not
-        fully ranked)
+    Returns boolean list. True if skipped rank (followed by other marks) is present.
+    Otherwise False.
+
+    {SKIPVOTE} & {x} - {y}
+    this checks that x == SKIPVOTE and that y then != SKIPVOTE
+    (the y check is important to know whether or not the ballot contains marks
+    following the skipped rank)
     """
-    return [any({UNDERVOTE} & {x} - {y} for x, y in zip(b, b[1:]))
+    return [any({SKIPVOTE} & {x} - {y} for x, y in zip(b, b[1:]))
             for b in ballots(ctx)]
-
-
-def three_repeated(ctx):
-    """
-        Number of ballots in which the candidate that received the maximum
-        number of repeated rankings, received 3 repeated rankings
-    """
-    return count_duplicates(ctx).get(3,0)
 
 
 @save
@@ -657,49 +662,7 @@ def title_case_winner(ctx):
 
 
 @save
-def top2_majority(ctx):
-    """
-    If you run an RCV contest until there are two or fewer candidates left,
-    Does the winner receive over half the votes that cast validly ranked at
-    least one candidate?
-    """
-    return top2_winners_fraction(ctx) > 0.5
-
-
-@save
-def top2_winners_fraction(ctx):
-    """
-    If you run an RCV contest until there are two or fewer candidates left,
-    what fraction of the votes that cast validly ranked at least one candidate
-    does the winner eventually receive?
-    """
-    return until2rcv(ctx)[-1][1][0]/float(sum(until2rcv(ctx)[0][1]))
-
-
-@save
-def top2_winner_over_40(ctx):
-    """
-    If you run an RCV contest until there are two or fewer candidates left,
-    Does the winner receive over 40% of the votes that cast validly ranked at
-    least one candidate?
-    """
-    return top2_winners_fraction(ctx) > 0.4
-
-
-@save
-def top2_winners_vote_increased(ctx):
-    """
-    If you run an RCV contest until there are two or fewer candidates left,
-    does the number of votes the winner receive increase from the first to the
-    last round?
-    """
-    first = until2rcv(ctx)[0]
-    start = first[1][first[0].index(winner(ctx))]
-    return until2rcv(ctx)[-1][1][0] > start
-
-
-@save
-def total(ctx):
+def total_ballots(ctx):
     '''
     This includes ballots with no marks.
     '''
@@ -709,21 +672,60 @@ def total(ctx):
 @save
 def total_exhausted(ctx):
     '''
-    Number of ballots (including ballots made up of only undervotes or
-    overvotes) that do not rank a finalist.
+    Number of ballots (excluding undervotes) that do not rank a finalist.
     '''
     return sum(exhausted(ctx))
 
 
 @save
+def total_exhausted_by_abstention(ctx):
+    """
+    Number of ballots exhausted after all marked rankings used and ballot is not fully ranked.
+    """
+    return sum(exhausted_by_abstention(ctx))
+
+
+@save
 def total_exhausted_by_overvote(ctx):
+    """
+    Number of ballots exhausted due to overvote. Only applicable to certain contests.
+    """
     return sum(exhausted_by_overvote(ctx))
 
 
 @save
+def total_exhausted_by_rank_limit(ctx):
+    """
+    Number of ballots exhausted after all marked rankings used and ballot is fully ranked.
+    """
+    return sum(exhausted_by_rank_limit(ctx))
+
+
+@save
 def total_exhausted_not_by_overvote(ctx):
-    return sum(ex and not ov
-                for ex, ov in zip(exhausted(ctx), exhausted_by_overvote(ctx)))
+    """
+    Number of ballots exhausted NOT because of overvote (repeated skipvotes,
+    rank limit, or abstention). Does not include undervotes.
+    """
+    ziplist = zip(exhausted(ctx),
+                  exhausted_by_overvote(ctx))
+
+    return sum(ex and not ex_over for ex, ex_over in ziplist)
+
+
+def total_exhausted_by_skipvote(ctx):
+    """
+    Number of ballots exhausted due to repeated skipvotes. Only applicable to certain contests.
+    """
+    return sum(exhausted_by_skipvote(ctx))
+
+
+@save
+def total_ballots_with_overvote(ctx):
+    '''
+    Number of ballots with at least one overvote. Not necessarily cause of exhaustion.
+    '''
+    return sum(overvote(ctx))
 
 
 @save
@@ -736,49 +738,29 @@ def total_fully_ranked(ctx):
 
 
 @save
-def total_involuntarily_exhausted(ctx):
-    '''
-    Number of validly fully ranked ballots that do not rank a finalist.
-    '''
-    return sum(involuntarily_exhausted(ctx))
-
-
-@save
-def total_overvote(ctx):
-    '''
-    Number of ballots with at least one overvote.
-    '''
-    return sum(overvote(ctx))
-
-
-@save
-def total_skipped(ctx):
-    return sum(skipped(ctx))
-
-
-@save
-def total_voluntarily_exhausted(ctx):
-    '''
-    Number of ballots that do not rank a finalists and aren't fully ranked.
-    This number includes ballots consisting of only undervotes or overvotes.
-    '''
-    return sum(voluntarily_exhausted(ctx))
-
-
-def two_repeated(ctx):
+def total_irregular(ctx):
     """
-        Number of ballots in which the candidate that received the maximum
-        number of repeated rankings, received 2 repeated rankings
+    Number of ballots that either had a multiple ranking, overvote,
+    or a skipped ranking. This includes ballots even where the irregularity was not
+    the cause of exhaustion.
     """
-    return count_duplicates(ctx).get(2, 0)
+    return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx))))
+
+
+@save
+def total_undervote(ctx):
+    '''
+    Ballots completely made up of skipvotes (no marks).
+    '''
+    return sum(undervote(ctx))
 
 
 @save
 def undervote(ctx):
-    '''
-    Ballots completely made up of undervotes (no marks).
-    '''
-    return sum(c == UNDERVOTE for c in first_round(ctx))
+    """
+    Returns a boolean list with True indicating ballots that were undervotes (left blank)
+    """
+    return [True if len(x) == 0 else False for x in cleaned(ctx)]
 
 
 @save
@@ -813,21 +795,6 @@ def until2rcv(ctx):
 
 
 @save
-def validly_ranked_winner(ctx):
-    """
-        How many ballots marked the winner in a reachable rank
-        (not a rank occurring after an exhaust condition)
-    """
-    return sum(winner(ctx) in b for b in cleaned(ctx))
-
-
-@save
-def voluntarily_exhausted(ctx):
-    return [a and not b
-            for a, b in zip(exhausted(ctx), involuntarily_exhausted(ctx))]
-
-
-@save
 def winner(ctx):
     return rcv(ctx)[-1][0][0]
 
@@ -837,7 +804,7 @@ def winners_consensus_value(ctx):
     '''
     The percentage of valid first round votes that rank the winner in the top 3.
     '''
-    return winner_in_top_3(ctx) / number_of_first_round_valid_votes(ctx)
+    return winner_in_top_3(ctx) / first_round_active_votes(ctx)
 
 
 @save

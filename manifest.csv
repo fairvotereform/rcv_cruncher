@@ -1,4 +1,4 @@
-contest,place,state,date,office,break_on_overvote,break_on_repeated_undervotes,state_code,county,write_ins,master_lookup,chp,candidate_map,parser,idparser,number,path
+contest,place,state,date,office,break_on_overvote,break_on_repeated_skipvotes,state_code,county,write_ins,master_lookup,chp,candidate_map,parser,idparser,number,path
 Cambridge City Council 2001,Cambridge,MA,2001,City Council,FALSE,FALSE,,,,,Ballot_Images/Cambridge/2001/Council - Wednesday/*.chp,,prm,,9,Ballot_Images/Cambridge/2001/Council - Wednesday/*.PRM
 Cambridge City Council 2003,Cambridge,MA,2003,City Council,FALSE,FALSE,,,,,Ballot_Images/Cambridge/2003/Council/*/*.chp,,prm,,9,Ballot_Images/Cambridge/2003/Council/*/*.[pPW][rRE][mMD]
 Cambridge City Council 2005,Cambridge,MA,2005,City Council,FALSE,FALSE,,,,,Ballot_Images/Cambridge/2005/Council/*/*.chp,,prm,,9,Ballot_Images/Cambridge/2005/Council/*/*.[pP][rR][mM]
