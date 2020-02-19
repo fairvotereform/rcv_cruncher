@@ -42,24 +42,38 @@ def main():
     # get the path of this file
     abspath = os.path.abspath(__file__)
     dname = os.path.dirname(abspath)
+    os.chdir(dname)
 
-    with open('results.csv', 'w', newline='\n') as f:
+    stats_fname = 'results.csv'
+    condorcet_path = 'condorcet'
 
-        w = csv.writer(f)
+    contest_manifest = load_manifest(dname)
 
-        # write header row
-        w.writerow([fun.__name__ for fun in func_list])
+    # with open('results.csv', 'w', newline='\n') as f:
+    #
+    #     w = csv.writer(f)
+    #
+    #     # write header row
+    #     w.writerow([fun.__name__ for fun in func_list])
+    #
+    #     # write notes row
+    #     w.writerow([' '.join((fun.__doc__ or '').split())
+    #                 for fun in func_list])
+    #
+    #     # on all contests in manifest
+    #     for k in sorted(contest_manifest, key=lambda x: x['date']):
+    #
+    #         # crunch STATS
+    #         result = calc(k, func_list)
+    #         w.writerow([result[fun.__name__] for fun in func_list])
 
-        # write notes row
-        w.writerow([' '.join((fun.__doc__ or '').split())
-                    for fun in func_list])
+    for k in sorted(contest_manifest, key=lambda x: x['date']):
 
-        # crunch STATS on all contests in manifest
-        for k in sorted(load_manifest(dname), key=lambda x: x['date']):
+        # write condorcet table
+        print(k['dop'])
+        ct = condorcet_table(k)
 
-            result = calc(k, func_list)
-            w.writerow([result[fun.__name__] for fun in func_list])
-
+        ct.to_csv(condorcet_path + "/" + k["dop"] + ".csv", float_format="%.2f")
 
 if __name__ == '__main__':
     main()

@@ -1,9 +1,9 @@
-from collections import defaultdict
-from glob import glob
-from gmpy2 import mpq as Fraction
-from copy import deepcopy
-from itertools import product, combinations
+
 from collections import Counter
+import pandas as pd
+import numpy as np
+from itertools import combinations
+
 
 
 # cruncher imports
@@ -39,6 +39,11 @@ def keep(x, l):
 def isInf(x):
     return x == float('inf')
 
+def index_inf(lst, el):
+    if el in lst:
+        return lst.index(el)
+    else:
+        return float('inf')
 
 def stats_func_list():
 
@@ -163,6 +168,81 @@ def condorcet(ctx):
 
     # if all differences are positive, then the winner was the condorcet winner
     return min(net.values()) > 0
+
+@save
+def condorcet_table(ctx):
+    """
+    Returns a condorcet table as a pandas data frame with candidate names as row and column indices.
+
+    Each cell indicates the percentage of ballots that ranked the row-candidate over
+    the column-candidate (including ballots that only ranked the row-candidate). The denominator is each cell
+    is the number of ballots that ranked the row-candidate OR the column-candidate.
+
+    Symmetric cells about the diagonal should sum to 100.
+    """
+
+    candidate_set = sorted(candidates(ctx))
+    cleaned_ballots = cleaned(ctx)
+
+    # turn ballot-lists into ballot-dict with
+    # key id containing a unique integer id for the ballot
+    # key ranks containing the original ballot-list
+    ballot_dicts = [{'id': ind, 'ranks': ballot} for ind, ballot in enumerate(cleaned_ballots)]
+
+    # make dictionary with candidate as key, and value as list of ballots
+    # that contain their name in any rank
+    cand_ballot_dict = {cand: [ballot for ballot in ballot_dicts if cand in ballot['ranks']]
+                        for cand in candidate_set}
+
+
+    # create data frame that will be populated and output
+    condorcet_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
+
+
+    # all candidate pairs
+    cand_pairs = combinations(candidate_set, 2)
+
+    for pair in cand_pairs:
+
+        cand1 = pair[0]
+        cand2 = pair[1]
+
+        # get the union of their ballots
+        combined_ballot_list = cand_ballot_dict[cand1] + cand_ballot_dict[cand2]
+        uniq_pair_ballots = list({v['id']: v['ranks'] for v in combined_ballot_list}.values())
+
+        # how many ballots rank cand1 above cand2?
+        cand1_v_cand2 = sum([index_inf(b, cand1) < index_inf(b, cand2)
+                             for b in uniq_pair_ballots])
+
+        cand1_percent = (cand1_v_cand2 / len(uniq_pair_ballots)) * 100
+
+        # since uniq_pair_ballots contains only ballots with at least one of the candidates
+        # if cand1_ind is not < cand2_ind, then cand2_ind must be < than cand1_ind
+        cand2_percent = 100 - cand1_percent
+
+        condorcet_df.loc[cand1, cand2] = cand1_percent
+        condorcet_df.loc[cand2, cand1] = cand2_percent
+
+
+    # find condorcet winner and set index name to include winner
+    condorcet_winner = None
+
+    for cand in candidate_set:
+
+        not_cand = set(candidate_set) - {cand}
+        all_winner = all(condorcet_df.loc[cand, not_cand] > 50)
+
+        if all_winner:
+            if condorcet_winner is None:
+                condorcet_winner = cand
+            else:
+                print("cannottt be more than one condorcet winner!!!!")
+                exit(1)
+
+    condorcet_df.index.name = "condorcet winner: " + condorcet_winner
+
+    return condorcet_df
 
 
 @save
