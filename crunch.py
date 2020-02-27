@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 from pprint import pprint
 import csv
 import os
+import pandas as pd
 
 # cruncher imports
 from scripts.contests import *
@@ -23,6 +24,14 @@ def write_stats(contest):
     contest['results_fid'].writerow([results[fun.__name__] for fun in contest['func_list']])
 
 
+def write_converted_cvr(contest):
+    """
+    Convert cvr into common csv format and write out
+    """
+    cvr = convert_cvr(contest)
+    cvr.to_csv(contest['common_cvr_dir'] + "/" + contest["dop"] + ".csv", index=False)
+
+
 def write_condorcet_tables(contest):
     """
     Calculate and write condorcet tables (both count and percents) for contest
@@ -39,7 +48,8 @@ def write_first_second_tables(contest):
     counts, percents, percents_no_exhaust = first_second_tables(contest)
     counts.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
     percents.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
-    percents_no_exhaust.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_percent_no_exhaust.csv", float_format="%.2f")
+    percents_no_exhaust.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_percent_no_exhaust.csv",
+                               float_format="%.2f")
 
 
 def main():
@@ -161,7 +171,7 @@ def main():
         print(contest['dop'])
 
         contest['common_cvr_dir'] = common_cvr_dir
-        convert_cvr(contest)
+        write_converted_cvr(contest)
 
         contest['first_second_table_dir'] = first_second_table_dir
         write_first_second_tables(contest)

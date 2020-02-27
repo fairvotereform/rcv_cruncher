@@ -7,7 +7,8 @@ from random import choice
 from copy import deepcopy
 
 # cruncher imports
-from .definitions import SKIPVOTE, OVERVOTE, WRITEIN, remove, keep, index_inf, before
+from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN, \
+    remove, keep, index_inf, before, replace
 from .cache_helpers import save
 
 
@@ -17,7 +18,25 @@ def ballots(ctx):
     Return parser results for contest.
     Ballots are in form of list of lists.
     """
-    return ctx['parser'](ctx)
+    res = ctx['parser'](ctx)
+    if isinstance(res, dict):
+        return res['ranks']
+    else:
+        return res
+
+
+@save
+def ballots_dict(ctx):
+    """
+    Return parser results for contest.
+    Ballots are in form of list of lists.
+    """
+    res = ctx['parser'](ctx)
+    if isinstance(res, dict):
+        return res
+    elif isinstance(res, list):
+        new_res = {'ranks': res, 'extras': []}
+        return new_res
 
 
 @save
@@ -25,7 +44,7 @@ def candidates(ctx):
     cans = set()
     for b in ballots(ctx):
         cans.update(b)
-    return cans - {OVERVOTE, SKIPVOTE, WRITEIN}
+    return cans - {OVERVOTE, SKIPPEDRANK, WRITEIN}
 
 
 @save
@@ -50,19 +69,49 @@ def cleaned(ctx):
         result = []
         # look at successive pairs of rankings - zip list with itself offset by 1
         for elem_a, elem_b in zip(b, b[1:]+[None]):
-            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPVOTE}:
+            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPPEDRANK}:
                 break
             if ctx['break_on_overvote'] and elem_a == OVERVOTE:
                 break
-            if elem_a not in [*result, OVERVOTE, SKIPVOTE]:
+            if elem_a not in [*result, OVERVOTE, SKIPPEDRANK]:
                 result.append(elem_a)
         new.append(result)
     return new
 
 
 @save
-def convert_cvr(contest):
-    pass
+def convert_cvr(ctx):
+    """
+    convert ballots read in with parser into common csv format.
+    One ballot per row, columns: ID, extra_info, rank1, rank2 ...
+    """
+    ballot_dict = deepcopy(ballots_dict(ctx))
+    bs = ballot_dict['ranks']
+    extras = ballot_dict['extras']
+
+    # how many ranks?
+    num_ranks = max(len(i) for i in bs)
+
+    # replace constants with strings
+    bs = [replace(SKIPPEDRANK, 'skipped', b) for b in bs]
+    bs = [replace(WRITEIN, 'writein', b) for b in bs]
+    bs = [replace(OVERVOTE, 'overvote', b) for b in bs]
+
+    # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
+    bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
+
+    # ballotIDs in extras?
+    if 'ballotID' not in extras:
+        extras['ballotID'] = range(1, len(bs) + 1)
+
+    # assemble output_table, start with extras
+    output_df = pd.DataFrame.from_dict(extras)
+
+    # add in rank columns
+    for i in range(1, num_ranks + 1):
+        output_df['rank' + str(i)] = [b[i-1] for b in bs]
+
+    return output_df
 
 
 ########################################################################################
@@ -524,10 +573,11 @@ def until2rcv(ctx):
 
     losers = []
     rounds = []
+    candidate_set = candidates(ctx)
     bs = [list(i) for i in cleaned(ctx)]
 
     n_finalists = float('inf')
-    while n_finalists >= 3:
+    while n_finalists > 2:
 
         # tally ballots and reorder tallies
         # using active rankings for each ballot,
@@ -540,6 +590,17 @@ def until2rcv(ctx):
         finalists, tallies = round_tally
         n_finalists = len(finalists)
 
+        # find round loser
+        loser_count = min(tallies)
+        round_loser = choice([cand for cand, cand_tally in zip(finalists, tallies)
+                              if cand_tally == loser_count])
+        losers.append(round_loser)
+
+        # calculate transfer from loser
+        round_loser_ballots = [b for b in bs if b[0] == round_loser]
+        round_transfer = Counter([b[1] if len(b) > 1 else 'exhaust' for b in round_loser_ballots])
+        round_transfer[round_loser] = len(round_loser_ballots) * -1
+
         # remove round loser from ballots, all ranking spots.
         # removing the round loser from all ranking spots now is equivalent
         # to waiting and skipping over an already-eliminated candidate
@@ -547,11 +608,6 @@ def until2rcv(ctx):
 
         # remove candidate from ballots that received the lowest count
         # in case of tied losers, randomly choose one to eliminate
-        loser_count = min(tallies)
-        round_loser = choice([cand for cand, cand_tally in zip(finalists, tallies)
-                              if cand_tally == loser_count])
-        losers.append(round_loser)
-
         bs = [remove(round_loser, b) for b in bs]
 
     return rounds

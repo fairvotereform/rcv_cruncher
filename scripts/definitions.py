@@ -2,7 +2,7 @@
 ###############################################################
 # constants
 
-SKIPVOTE = -1
+SKIPPEDRANK = -1
 OVERVOTE = -2
 WRITEIN = -3
 
@@ -59,3 +59,10 @@ def index_inf(lst, el):
         return lst.index(el)
     else:
         return float('inf')
+
+def replace(target, replacement, l):
+    # return a list with all instances of 'target' set to 'replacement'
+    return [replacement if i == target else i for i in l]
+
+pad_end(b, num_ranks, 'skipped')
+

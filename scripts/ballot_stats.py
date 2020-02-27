@@ -13,7 +13,7 @@ are found in tabulation.py
 from collections import Counter
 
 # cruncher imports
-from .definitions import SKIPVOTE, OVERVOTE, isInf
+from .definitions import SKIPPEDRANK, OVERVOTE, isInf
 from .cache_helpers import save
 from .tabulation import ballots, cleaned, candidates, finalist_ind
 
@@ -195,7 +195,7 @@ def first_round(ctx):
     Returns a list of first non-skipvote for each ballot OR
     if the ballot is empty, can also return None
     """
-    return [next((c for c in b if c != SKIPVOTE), None)
+    return [next((c for c in b if c != SKIPPEDRANK), None)
             for b in ballots(ctx)]
 
 
@@ -238,7 +238,7 @@ def has_skipvote(ctx):
     """
     Returns boolean list indicating if ballot contains any skipvotes
     """
-    return [SKIPVOTE in b for b in ballots(ctx)]
+    return [SKIPPEDRANK in b for b in ballots(ctx)]
 
 
 def includes_duplicate_ranking(ctx):
@@ -270,7 +270,7 @@ def max_repeats(ctx):
         ballot was only ranked once, that ballot's corresponding list element
         would be 1
     """
-    return [max(0, 0, *map(b.count, set(b) - {SKIPVOTE, OVERVOTE}))
+    return [max(0, 0, *map(b.count, set(b) - {SKIPPEDRANK, OVERVOTE}))
             for b in ballots(ctx)]
 
 
@@ -324,7 +324,7 @@ def repeated_skipvote_ind(ctx):
 
         # pair up successive rankings on ballot
         z = list(zip(b, b[1:]))
-        uu = (SKIPVOTE, SKIPVOTE)
+        uu = (SKIPPEDRANK, SKIPPEDRANK)
 
         # if repeated skipvote on the ballot
         if uu in z:
@@ -335,7 +335,7 @@ def repeated_skipvote_ind(ctx):
             # only then record this ballot as having a
             # repeated skipvote
             for c in b[occurance+1:]:
-                if c != SKIPVOTE:
+                if c != SKIPPEDRANK:
                     rs[-1] = occurance
                     break
     return rs
@@ -352,7 +352,7 @@ def skipped(ctx):
     (the y check is important to know whether or not the ballot contains marks
     following the skipped rank)
     """
-    return [any({SKIPVOTE} & {x} - {y} for x, y in zip(b, b[1:]))
+    return [any({SKIPPEDRANK} & {x} - {y} for x, y in zip(b, b[1:]))
             for b in ballots(ctx)]
 
 
