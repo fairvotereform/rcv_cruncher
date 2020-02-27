@@ -6,6 +6,7 @@ SKIPVOTE = -1
 OVERVOTE = -2
 WRITEIN = -3
 
+
 """
 undervote = matching the non-rcv context, an undervote is when no marks are made 
 on the ballot for a contest (a blank ballot for that contest)
@@ -21,3 +22,40 @@ skipped ranks that result from voluntary limiting of the number of rankings made
 exhausted ballot = when all rankings on a ballot have been eliminated. Specifically not 
 and undervote.
 """
+
+########################
+# helper funcs
+
+def before(victor, loser, ballot):
+    """
+        Used to calculate condorcet stats. Each ballot passed through this
+        function gets mapped to either
+        1 (winner ranked before loser),
+        0 (neither appear on ballot),
+        or -1 (loser ranked before winner).
+    """
+    for rank in ballot:
+        if rank == victor:
+            return 1
+        if rank == loser:
+            return -1
+    return 0
+
+def remove(x, l):
+    # removes all x from list l
+    return [i for i in l if i != x]
+
+def keep(x, l):
+    # keeps only all x in list l
+    return [i for i in l if i in x]
+
+def isInf(x):
+    # checks if x is inf
+    return x == float('inf')
+
+def index_inf(lst, el):
+    # return element index if in list, inf otherwise
+    if el in lst:
+        return lst.index(el)
+    else:
+        return float('inf')

@@ -1,5 +1,4 @@
 global global_dict
-global_dict = {}
 
 def set_global_dict(d):
     global global_dict

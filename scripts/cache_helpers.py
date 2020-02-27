@@ -6,7 +6,21 @@ import pickle  # faster than json, shelve
 from contextlib import suppress
 from functools import wraps
 
-from .global_dict import get_global_dict
+#from .global_dict import get_global_dict
+
+global global_dict
+def set_global_dict(d):
+    global global_dict
+    global_dict = d
+
+global cache_dir
+def set_cache_dir(d):
+    global cache_dir
+    cache_dir = d
+
+    if os.path.isdir(cache_dir) is False:
+        os.mkdir(cache_dir)
+
 
 def unwrap(function):
     """
@@ -28,7 +42,8 @@ def srchash(function):
 
     """
 
-    gd = get_global_dict()
+    #gd = get_global_dict()
+    global global_dict
 
     visited = set()
     frontier = {function}  # start with input function
@@ -37,7 +52,7 @@ def srchash(function):
         fun = frontier.pop()
         visited.add(fun)
 
-        fun_obj = unwrap(gd[fun])  # retrieve function object, unwrapped
+        fun_obj = unwrap(global_dict[fun])  # retrieve function object, unwrapped
         code = fun_obj.__code__  # get function's underlying code object
         helpers = list(code.co_names)  # get list of names used by function bytecode
 
@@ -46,7 +61,7 @@ def srchash(function):
                 helpers.extend(const.co_names)  # add their names to helpers
 
         for helper in set(helpers) - visited:  # for any new helpers
-            if '__code__' in dir(gd.get(helper)):  # if they have code objects
+            if '__code__' in dir(global_dict.get(helper)):  # if they have code objects
                 frontier.add(helper)  # add them to be looped through
 
     # at the end of this loop, all functions called by the input function
@@ -61,7 +76,7 @@ def srchash(function):
 
     h = md5()
     for f in sorted(visited):
-        h.update(bytes(getsource(gd[f]), 'utf-8'))
+        h.update(bytes(getsource(global_dict[f]), 'utf-8'))
     return h.hexdigest()
 
 
@@ -86,6 +101,8 @@ def save(f):
 
 
     """
+    global cache_dir
+
     f.not_called = True
     f.cache = {}
 
@@ -96,7 +113,7 @@ def save(f):
         # check that there isn't already a saved computation from previous runs
         if f.not_called:
             check = srchash(f.__name__)
-            dirname = 'results/' + f.__name__
+            dirname = cache_dir + '/' + f.__name__
             checkname = dirname + '.check'
             # check if the saved srchash is the different from the current one
             # if so, delete the results previosuly saved from this function
@@ -120,7 +137,7 @@ def save(f):
         if key in f.cache:
             return f.cache[key]
 
-        file_name = 'results/{}/{}'.format(f.__name__, '.'.join(key).replace('/', '.'))
+        file_name = cache_dir + '/{}/{}'.format(f.__name__, '.'.join(key).replace('/', '.'))
 
         with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
             f.cache[key] = pickle.load(file_object)

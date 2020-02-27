@@ -1,4 +1,3 @@
-
 from functools import partial
 import pandas as pd
 import os
@@ -8,6 +7,7 @@ import re
 from .cache_helpers import tmpsave
 from .parsers import santafe, santafe_id, maine, minneapolis, \
     sf, sfnoid, old, prm, burlington, sf2019, utah, ep
+from .tabulation import rcv_single_winner, stv_fractional_ballot, stv_whole_ballot, sequential_rcv
 
 
 ##########################
@@ -29,6 +29,12 @@ def date(ctx):
 def office(ctx):
     return ctx['office']
 
+def rcv_type(ctx):
+    return ctx['rcv_type'].__name__
+
+def num_winners(ctx):
+    return ctx['num_winners']
+
 @tmpsave
 def dop(ctx):
     return ','.join(str(f(ctx)) for f in [date, office, place])
@@ -36,13 +42,10 @@ def dop(ctx):
 @tmpsave
 def unique_id(ctx):
 
-    pieces = [ctx['place'],  ctx['date'], ctx['office'], ctx['contest']]
+    pieces = [ctx['place'], ctx['date'], ctx['office'], ctx['contest']]
     cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
 
     return "__".join(cleaned_pieces)
-
-def contest_func_list():
-    return [contest_name, place, state, date, office, unique_id]
 
 #########################
 
@@ -70,47 +73,49 @@ def cast_bool(s):
 def cast_func(s):
     return eval(s)
 
-def load_manifest(cruncher_path):
+def load_contest_set(contest_set_path):
 
     ##########################
-    # verify path
-    if os.path.isdir(cruncher_path) is False:
-        print("not a valid file path: " + cruncher_path)
+    # verify paths
+    contest_set_defaults_fpath = contest_set_path + '/../contest_set_key.csv'
+    contest_set_fpath = contest_set_path + '/contest_set.csv'
+
+    if os.path.isfile(contest_set_defaults_fpath) is False:
+        print("not a valid file path: " + contest_set_defaults_fpath)
         exit(1)
 
+    if os.path.isfile(contest_set_fpath) is False:
+        print("not a valid file path: " + contest_set_fpath)
+        exit(1)
 
     # assemble typecast funcs
     cast_dict = {'str': cast_str, 'int': cast_int,
                  'bool': cast_bool, 'func': cast_func}
 
-
     ##########################
     # defaults
 
-    # read in manifest default values
-    manifest_defaults_fpath = cruncher_path + '/manifest_key.csv'
-    manifest_defaults_df = pd.read_csv(manifest_defaults_fpath, skiprows=1)
+    # read in contest set default values
+    contest_set_defaults_df = pd.read_csv(contest_set_defaults_fpath, skiprows=1)
 
     # create default dict
     defaults = {}
-    for index, row in manifest_defaults_df.iterrows():
+    for index, row in contest_set_defaults_df.iterrows():
         defaults[row['field']] = {'type': row['typecast'], 'default': row['default']}
 
-
     ##########################
-    # manifest
+    # contest set
 
-    # read in manifest
-    manifest_fpath = cruncher_path + '/manifest.csv'
-    manifest_df = pd.read_csv(manifest_fpath, dtype=object)
+    # read in contest set
+    contest_set_df = pd.read_csv(contest_set_fpath, dtype=object)
 
     # fill in na values with defaults and evaluate column, if indicated
-    for col in manifest_df:
-        manifest_df[col] = manifest_df[col].fillna(defaults[col]['default'])
-        manifest_df[col] = [cast_dict[defaults[col]['type']](i) for i in manifest_df[col].tolist()]
+    for col in contest_set_df:
+        contest_set_df[col] = contest_set_df[col].fillna(defaults[col]['default'])
+        contest_set_df[col] = [cast_dict[defaults[col]['type']](i) for i in contest_set_df[col].tolist()]
 
     # convert df to listOdicts, one dict per row
-    competitions = manifest_df.to_dict('records')
+    competitions = contest_set_df.to_dict('records')
 
     # add dop, unique_id
     for d in competitions:

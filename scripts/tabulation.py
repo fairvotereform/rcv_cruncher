@@ -1,97 +1,22 @@
-
-from collections import Counter
+from collections import Counter, defaultdict
 import pandas as pd
 import numpy as np
 from itertools import combinations
-
-
+from gmpy2 import mpq as Fraction
+from random import choice
+from copy import deepcopy
 
 # cruncher imports
-from .definitions import SKIPVOTE, OVERVOTE, WRITEIN
+from .definitions import SKIPVOTE, OVERVOTE, WRITEIN, remove, keep, index_inf, before
 from .cache_helpers import save
-
-
-########################
-# helper funcs
-
-
-def before(victor, loser, ballot):
-    """
-        Used to calculate condorcet stats. Each ballot passed through this
-        function gets mapped to either
-        1 (winner ranked before loser),
-        0 (neither appear on ballot),
-        or -1 (loser ranked before winner).
-    """
-    for rank in ballot:
-        if rank == victor:
-            return 1
-        if rank == loser:
-            return -1
-    return 0
-
-def remove(x, l):
-    return [i for i in l if i != x]
-
-def keep(x, l):
-    return [i for i in l if i in x]
-
-def isInf(x):
-    return x == float('inf')
-
-def index_inf(lst, el):
-    if el in lst:
-        return lst.index(el)
-    else:
-        return float('inf')
-
-def stats_func_list():
-
-    STATS = [contest_winner,
-             number_of_candidates,
-             final_round_winner_vote,
-             final_round_winner_percent,
-             final_round_active_votes,
-             first_round_winner_vote,
-             first_round_winner_percent,
-             first_round_active_votes,
-             first_round_winner_place,
-             final_round_winner_votes_over_first_round_valid,
-             winners_consensus_value,
-             condorcet,
-             come_from_behind,
-             effective_ballot_length,
-             first_round_overvote,
-             ranked_single,
-             ranked_multiple,
-             total_fully_ranked,
-             ranked_winner,
-             includes_duplicate_ranking,
-             includes_skipped_ranking,
-             total_irregular,
-             total_ballots,
-             total_ballots_with_overvote,
-             total_undervote,
-             total_exhausted,
-             total_exhausted_by_overvote,
-             total_exhausted_by_skipped_rankings,
-             total_exhausted_by_abstention,
-             total_exhausted_by_rank_limit]
-
-    return STATS
-
-
-@save
-def any_repeat(ctx):
-    """
-        Number of ballots that included one at least one candidate that
-        received more than once ranking
-    """
-    return sum(v for k, v in count_duplicates(ctx).items() if k > 1)
 
 
 @save
 def ballots(ctx):
+    """
+    Return parser results for contest.
+    Ballots are in form of list of lists.
+    """
     return ctx['parser'](ctx)
 
 
@@ -135,11 +60,523 @@ def cleaned(ctx):
     return new
 
 
-def come_from_behind(ctx):
+@save
+def convert_cvr(contest):
+    pass
+
+
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+# rcv tabulation functions
+
+# @save
+# def bottom_up_stv(ctx):
+#     ballots = deepcopy(cleaned(ctx))
+#     rounds = []
+#     while True:
+#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+#         finalists,_ = rounds[-1]
+#         if len(finalists) == ctx['number']:
+#             return finalists
+#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+
+def round_by_round(ctx):
     """
-    True if rcv winner is not first round leader
+    Run the rcv contest and return the round-by-round totals.
+    'rounds' is a list of lists.
+    Each list in 'rounds' contains two tuples (candidate names and round tallies)
+    Both tuples are sorted in descending order of round tallies
+
+    [[(round 1 candidates), (round 1 tally)],
+     [(round 2 candidates), (round 2 tally)],
+     ...,
+     [(final round candidates), (final round tally)]]
     """
-    return winner(ctx) != rcv(ctx)[0][0][0]
+    rounds, _ = ctx['rcv_type'](ctx)
+    return rounds
+
+
+def candidate_outcomes(ctx):
+    """
+    Run the rcv contest and return a list of dictionaries (one per candidate).
+
+    Each dict contains:
+    candidate_name
+    round_elected: None (if loser) or integer
+    round_eliminated: None (if winner) or integer
+    """
+    _, outcomes = ctx['rcv_type'](ctx)
+    return outcomes
+
+
+@save
+def condorcet_tables(ctx):
+    """
+    Returns a two condorcet tables as a pandas data frame with candidate names as row and column indices.
+    One contains counts and the other contains percents.
+
+    Each cell indicates the count/percentage of ballots that ranked the row-candidate over
+    the column-candidate (including ballots that only ranked the row-candidate). When calculating percents,
+    the denominator is each cell is the number of ballots that ranked the row-candidate OR the column-candidate.
+
+    Symmetric cells about the diagonal should sum to 100 (for the percent table).
+    """
+
+    candidate_set = sorted(candidates(ctx))
+    cleaned_ballots = cleaned(ctx)
+
+    # create data frame that will be populated and output
+    condorcet_percent_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
+    condorcet_count_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
+
+    # turn ballot-lists into ballot-dict with
+    # key 'id' containing a unique integer id for the ballot
+    # key 'ranks' containing the original ballot-list
+    ballot_dicts = [{'id': ind, 'ranks': ballot} for ind, ballot in enumerate(cleaned_ballots)]
+
+    # make dictionary with candidate as key, and value as list of ballot-dicts
+    # that contain their name in any rank
+    cand_ballot_dict = {cand: [ballot for ballot in ballot_dicts if cand in ballot['ranks']]
+                        for cand in candidate_set}
+
+    # all candidate pairs
+    cand_pairs = combinations(candidate_set, 2)
+
+    for pair in cand_pairs:
+
+        cand1 = pair[0]
+        cand2 = pair[1]
+
+        # get the union of their ballots
+        combined_ballot_list = cand_ballot_dict[cand1] + cand_ballot_dict[cand2]
+        uniq_pair_ballots = list({v['id']: v['ranks'] for v in combined_ballot_list}.values())
+        n_uniq_ballots = len(uniq_pair_ballots)
+
+        # how many ballots rank cand1 above cand2?
+        cand1_vs_cand2 = sum([index_inf(b, cand1) < index_inf(b, cand2)
+                              for b in uniq_pair_ballots])
+
+        # the remainder then must rank cand2 over cand1
+        cand2_vs_cand1 = n_uniq_ballots - cand1_vs_cand2
+
+        # add counts to df
+        condorcet_count_df.loc[cand1, cand2] = cand1_vs_cand2
+        condorcet_count_df.loc[cand2, cand1] = cand2_vs_cand1
+
+        # calculate percent
+        cand1_percent = (cand1_vs_cand2 / n_uniq_ballots) * 100
+        cand2_percent = (cand2_vs_cand1 / n_uniq_ballots) * 100
+
+        # add to df
+        condorcet_percent_df.loc[cand1, cand2] = cand1_percent
+        condorcet_percent_df.loc[cand2, cand1] = cand2_percent
+
+    # find condorcet winner and set index name to include winner
+    condorcet_winner = None
+
+    if len(candidate_set) == 1:
+
+        condorcet_winner = candidate_set[0]
+    else:
+
+        for cand in candidate_set:
+
+            not_cand = set(candidate_set) - {cand}
+            all_winner = all(condorcet_percent_df.loc[cand, not_cand] > 50)
+
+            if all_winner:
+                if condorcet_winner is None:
+                    condorcet_winner = cand
+                else:
+                    print("cannottt be more than one condorcet winner!!!!")
+                    exit(1)
+
+    condorcet_percent_df.index.name = "condorcet winner: " + condorcet_winner
+    condorcet_count_df.index.name = "condorcet winner: " + condorcet_winner
+
+    return condorcet_count_df, condorcet_percent_df
+
+
+# def rcv_ballots(clean_ballots):
+#     rounds = []
+#     ballots = remove([],deepcopy(clean_ballots))
+#     while True:
+#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+#         finalists, tallies = rounds[-1]
+#         if tallies[0]*2 > sum(tallies):
+#             return rounds
+#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+
+# def rcv_stack(ballots):
+#     stack = [ballots]
+#     results = []
+#     while stack:
+#         ballots = stack.pop()
+#         finalists, tallies = map(list, zip(*Counter(b[0] for b in ballots if b).most_common()))
+#         if tallies[0]*2 > sum(tallies):
+#             results.append((finalists, tallies))
+#         else:
+#             losers = finalists[tallies.index(min(tallies)):]
+#             for loser in losers:
+#                 stack.append([keep(set(finalists)-set([loser]), b) for b in ballots])
+#             if len(losers) > 1:
+#                 stack.append([keep(set(finalists)-set(losers), b) for b in ballots])
+#     return results
+
+
+# def rcvreg(ballots):
+#     rounds = []
+#     while True:
+#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
+#         finalists, tallies = rounds[-1]
+#         if tallies[0]*2 > sum(tallies):
+#             return rounds
+#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+
+@save
+def first_second_tables(ctx):
+
+    candidate_set = sorted(candidates(ctx))
+    cleaned_ballots = cleaned(ctx)
+
+    # create data frame that will be populated and output
+    percent_no_exhaust_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set], columns=candidate_set)
+    percent_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
+    count_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
+
+    # group ballots by first choice
+    first_choices = {cand: [] for cand in candidate_set}
+    for b in cleaned_ballots:
+        if len(b) >= 1:
+            first_choices[b[0]].append(b)
+    # [first_choices[b[0]].append(b) for b in cleaned_ballots if len(b) >= 1]
+
+    total_first_round_votes = float(sum([len(first_choices[i]) for i in first_choices]))
+
+    # add first choices to tables
+    # and calculate second choices
+    for cand in candidate_set:
+
+        first_choice_count = len(first_choices[cand])
+        first_choice_percent = (first_choice_count / total_first_round_votes) * 100
+
+        count_df.loc['first_choice', cand] = first_choice_count
+        percent_df.loc['first_choice', cand] = first_choice_percent
+        percent_no_exhaust_df.loc['first_choice', cand] = first_choice_percent
+
+        ############################################################
+        # calculate second choices, group second choices by candidate
+        possible_second_choices = list(set(candidate_set) - {cand})
+        second_choices = {backup_cand: [] for backup_cand in possible_second_choices + ['exhaust']}
+        second_choices['exhaust'] = []
+
+        for b in first_choices[cand]:
+            if len(b) >= 2:
+                second_choices[b[1]].append(b)
+            else:
+                second_choices['exhaust'].append(b)
+        # [second_choices[b[1]].append(b) if len(b) >= 2 else second_choices['exhaust'].append(b)
+        # for b in first_choices[cand]]
+
+        total_second_choices = float(sum([len(second_choices[i]) for i in second_choices]))
+        total_second_choices_no_exhaust = float(sum([len(second_choices[i]) for i in second_choices
+                                                     if i != 'exhaust']))
+
+        # count second choices and add to table
+        for backup_cand in possible_second_choices + ['exhaust']:
+
+            second_choice_count = len(second_choices[backup_cand])
+
+            # if there are not backup votes fill with zeros
+            if total_second_choices == 0:
+                second_choice_percent = 0
+            else:
+                second_choice_percent = (second_choice_count / total_second_choices) * 100
+
+            if total_second_choices_no_exhaust == 0:
+                second_choice_percent_no_exhaust = 0
+            else:
+                second_choice_percent_no_exhaust = (second_choice_count / total_second_choices_no_exhaust) * 100
+
+            count_df.loc[backup_cand, cand] = second_choice_count
+            percent_df.loc[backup_cand, cand] = second_choice_percent
+            if backup_cand != 'exhaust':
+                percent_no_exhaust_df.loc[backup_cand, cand] = second_choice_percent_no_exhaust
+
+    return count_df, percent_df, percent_no_exhaust_df
+
+
+@save
+def sequential_rcv(ctx):
+    pass
+
+
+
+@save
+def stv_fractional_ballot(ctx):
+    """
+    Static threshold multi-winner elections with fractional surplus transfer
+    """
+
+    ctx['use_multiwinner_rounds'] = True
+
+    rounds = []
+    outcomes = []
+
+    # select all non-empty ballots and pair each with Fraction(1)
+    bs = [(b, Fraction(1)) for b in cleaned(ctx) if b]
+
+    # set win threshold
+    threshold = int(len(bs)/(ctx['num_winners']+1)) + 1
+
+    # run rounds until enough winners are found
+    round_num = 0
+    num_winners = 0
+    while ctx['num_winners'] == num_winners:
+
+        round_num += 1
+
+        # is the number of candidates remaining equal
+        # to the number of winner left to elect?
+        # If so, they win
+        # this is necessary step when using a static threshold
+        num_winners = len({i for i in outcomes if i['round_elected']})
+        num_remaining = 0
+
+
+        # accumulate fractional values currently held by
+        # first-ranked candidate on each ballot
+        totals = defaultdict(int)
+        for cand_list, ballot_frac in bs:
+            totals[cand_list[0]] += ballot_frac
+
+        # sort totals dict into descending order
+        ordered = sorted(totals.items(), key=lambda x: -x[1])
+        rounds.append(ordered)
+
+
+        # split ordered totals into two lists
+        names, tallies = zip(*ordered)
+
+        # any candidates over the threshold?
+        if any([i > threshold for i in tallies]):
+
+            looking_for_winners = True
+            round_winners = []
+
+            while looking_for_winners:
+
+                round_winner = names[0]
+                round_others = names[1:]
+
+                # then add to contest winners list
+                outcomes.append({'name': round_winner, 'round_elected': round_num,
+                                'round_eliminated': None})
+
+                # fractional surplus to transfer from each winner ballot
+                surplus_percent = (tallies[0] - threshold) / tallies[0]
+
+                # if surplus to transfer is non-zero
+                if surplus_percent:
+
+                    # which ballots had the winner on top
+                    # and need to be fractionally split
+                    winner_in_active_rank = [cand_list[0] == round_winner for cand_list, ballot_frac in bs]
+
+                    # split out tuples
+                    split_cand_lists, split_ballot_fracs = zip(*bs)
+
+                    # adjust ballot fracs for winner ballots
+                    new_ballot_fracs = [ballot_frac * surplus_percent if winner_active else ballot_frac
+                                        for ballot_frac, winner_active in zip(split_ballot_fracs, winner_in_active_rank)]
+
+                    # stitch cand_lists back with new ballot fracs
+                    bs = list(zip(split_cand_lists, new_ballot_fracs))
+
+                # remove winner from ballots
+                bs = [(keep(round_others, cand_list), ballot_frac) for cand_list, ballot_frac in bs]
+
+                # remove newly-empty ballots
+                bs = [b for b in bs if b[0]]
+
+                # update winner list for round
+                round_winners.append(round_winner)
+
+                # identify next round-winner ordering
+                filtered_ordering = [(cand, cand_tally)
+                                    for cand, cand_tally in ordered if cand not in round_winners]
+
+                # any candidates left?
+                if filtered_ordering:
+
+                    names, tallies = zip(*filtered_ordering)
+
+                    # if there are no more candidates over the threshold, then move to the next round
+                    if any([i > threshold for i in tallies]) is False:
+                        looking_for_winners = False
+                else:
+
+                    # no candidates left, exit loop
+                    looking_for_winners = False
+
+                # if contest setting specifies only one winner per round, then move to next round
+                if ctx['use_multiwinner_rounds'] is False:
+                    looking_for_winners = False
+
+        else:  # no winner
+
+            # remove candidate from ballots that received the lowest count
+            loser_count = min(tallies)
+
+            # in case of tied losers, randomly choose one to eliminate
+            round_loser = choice([cand for cand, cand_tally in ordered if cand_tally == loser_count])
+            outcomes.append({'name': round_loser, 'round_elected': None,
+                             'round_eliminated': round_num})
+
+            # remove loser from
+            bs = ((remove(round_loser, cand_list), ballot_frac) for cand_list, ballot_frac in bs)
+
+            # remove newly-empty ballots
+            bs = [b for b in bs if b[0]]
+
+    return rounds, outcomes
+
+
+@save
+def stv_whole_ballot(ctx):
+    pass
+
+
+@save
+def rcv_multiWinner_thresh15(ctx):
+
+    rounds = deepcopy(until2rcv(ctx))
+    rounds_slice = []
+
+    # find round where all candidates are above 15 percent
+    done = False
+    while not done:
+
+        current_round = rounds.pop(0)
+        rounds_slice.append(current_round)
+
+        # check for finish condition
+        _, round_tally = current_round
+        round_total = sum(round_tally)
+
+        # might need to adjust rounding here
+        if all([i > (round_total * 0.15) for i in round_tally]):
+            done = True
+
+    return rounds_slice
+
+
+@save
+def rcv_single_winner(ctx):
+    """
+        Runs a single winner RCV contest.
+
+        Retrieves the cleaned ballots using ctx and
+        returns a list of round-by-round vote counts.
+        Runs until single winner threshold is reached.
+
+        [[(round 1 candidates), (round 1 tally)],
+         [(round 2 candidates), (round 2 tally)],
+         ...,
+         [(final round candidates), (final round tally)]]
+    """
+
+    rounds = deepcopy(until2rcv(ctx))
+    rounds_slice = []
+
+    # find round where a candidate has over 50% of active round votes
+    done = False
+    while not done:
+
+        current_round = rounds.pop(0)
+        rounds_slice.append(current_round)
+
+        # check for finish condition
+        _, round_tally = current_round
+
+        round_total = sum(round_tally)
+
+        # does round leader have the majority?
+        # might need to adjust rounding here
+        if round_tally[0]*2 > round_total:
+            done = True
+
+    return rounds_slice
+
+
+@save
+def until2rcv(ctx):
+    """
+    run an rcv election until there are two candidates remaining.
+    This is might lead to more rounds than necessary to determine a winner.
+    """
+
+    losers = []
+    rounds = []
+    bs = [list(i) for i in cleaned(ctx)]
+
+    n_finalists = float('inf')
+    while n_finalists >= 3:
+
+        # tally ballots and reorder tallies
+        # using active rankings for each ballot,
+        # skipping empty ballots
+        round_tally = list(zip(
+            *Counter(b[0] for b in bs if b).most_common()
+        ))
+        rounds.append(round_tally)
+
+        finalists, tallies = round_tally
+        n_finalists = len(finalists)
+
+        # remove round loser from ballots, all ranking spots.
+        # removing the round loser from all ranking spots now is equivalent
+        # to waiting and skipping over an already-eliminated candidate
+        # once they become the active ranking in a later round.
+
+        # remove candidate from ballots that received the lowest count
+        # in case of tied losers, randomly choose one to eliminate
+        loser_count = min(tallies)
+        round_loser = choice([cand for cand, cand_tally in zip(finalists, tallies)
+                              if cand_tally == loser_count])
+        losers.append(round_loser)
+
+        bs = [remove(round_loser, b) for b in bs]
+
+    return rounds
+
+
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+########################################################################################
+# outcome stat functions
+
+
+@save
+def contest_winner(ctx):
+    '''
+    The winner of the election, or, in multiple winner contests, the
+    hypothetical winner if the contest was single winner.
+    '''
+    # Horrible Hack!
+    # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
+    if ctx['place'] == 'Burlington' and ctx['date'] == '2006':
+        return 'Bob Kiss'
+    return str(winner(ctx)).title()
 
 
 @save
@@ -152,7 +589,7 @@ def condorcet(ctx):
     '''
 
     # first round winner is the condorcet winner
-    if len(rcv(ctx)) == 1:
+    if len(rcv_single_winner(ctx)) == 1:
         return True
 
     net = Counter()
@@ -169,294 +606,79 @@ def condorcet(ctx):
     # if all differences are positive, then the winner was the condorcet winner
     return min(net.values()) > 0
 
-@save
-def condorcet_table(ctx):
+
+def come_from_behind(ctx):
     """
-    Returns a condorcet table as a pandas data frame with candidate names as row and column indices.
-
-    Each cell indicates the percentage of ballots that ranked the row-candidate over
-    the column-candidate (including ballots that only ranked the row-candidate). The denominator is each cell
-    is the number of ballots that ranked the row-candidate OR the column-candidate.
-
-    Symmetric cells about the diagonal should sum to 100.
+    True if rcv winner is not first round leader
     """
-
-    candidate_set = sorted(candidates(ctx))
-    cleaned_ballots = cleaned(ctx)
-
-    # turn ballot-lists into ballot-dict with
-    # key id containing a unique integer id for the ballot
-    # key ranks containing the original ballot-list
-    ballot_dicts = [{'id': ind, 'ranks': ballot} for ind, ballot in enumerate(cleaned_ballots)]
-
-    # make dictionary with candidate as key, and value as list of ballots
-    # that contain their name in any rank
-    cand_ballot_dict = {cand: [ballot for ballot in ballot_dicts if cand in ballot['ranks']]
-                        for cand in candidate_set}
+    return winner(ctx) != rcv_single_winner(ctx)[0][0][0]
 
 
-    # create data frame that will be populated and output
-    condorcet_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
-
-
-    # all candidate pairs
-    cand_pairs = combinations(candidate_set, 2)
-
-    for pair in cand_pairs:
-
-        cand1 = pair[0]
-        cand2 = pair[1]
-
-        # get the union of their ballots
-        combined_ballot_list = cand_ballot_dict[cand1] + cand_ballot_dict[cand2]
-        uniq_pair_ballots = list({v['id']: v['ranks'] for v in combined_ballot_list}.values())
-
-        # how many ballots rank cand1 above cand2?
-        cand1_v_cand2 = sum([index_inf(b, cand1) < index_inf(b, cand2)
-                             for b in uniq_pair_ballots])
-
-        cand1_percent = (cand1_v_cand2 / len(uniq_pair_ballots)) * 100
-
-        # since uniq_pair_ballots contains only ballots with at least one of the candidates
-        # if cand1_ind is not < cand2_ind, then cand2_ind must be < than cand1_ind
-        cand2_percent = 100 - cand1_percent
-
-        condorcet_df.loc[cand1, cand2] = cand1_percent
-        condorcet_df.loc[cand2, cand1] = cand2_percent
-
-
-    # find condorcet winner and set index name to include winner
-    condorcet_winner = None
-
-    for cand in candidate_set:
-
-        not_cand = set(candidate_set) - {cand}
-        all_winner = all(condorcet_df.loc[cand, not_cand] > 50)
-
-        if all_winner:
-            if condorcet_winner is None:
-                condorcet_winner = cand
-            else:
-                print("cannottt be more than one condorcet winner!!!!")
-                exit(1)
-
-    condorcet_df.index.name = "condorcet winner: " + condorcet_winner
-
-    return condorcet_df
-
-
-@save
-def count_duplicates(ctx):
-    """
-    Returns dictionary counting the number of max repeat ranking from each ballot
-    """
-    return Counter(max_repeats(ctx))
-
-
-@save
-def duplicates(ctx):
-    """
-    Returns boolean list with elements set to True if ballot has at least one
-    duplicate ranking
-    """
-    return [v > 1 for v in max_repeats(ctx)]
-
-
-@save
-def effective_ballot_length(ctx):
-    """
-    A list of validly ranked choices, and how many ballots had that number of
-    valid choices.
-    """
-    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned(ctx))).items()))
-
-
-@save
-def exhausted(ctx):
-    """
-    Returns a boolean list indicating which ballots were exhausted.
-    Does not include undervotes as exhausted.
-    """
-    return [True if x != 'not_exhausted' and x is not None
-            else False for x in exhaustion_check(ctx)]
-
-
-@save
-def exhausted_by_abstention(ctx):
-    """
-    Returns bool list with elements corresponding to ballots.
-    True if ballot was exhausted without being fully ranked and the
-    cause of exhaustion was not overvotes or skipped rankings.
-    """
-    return [True if i == 'abstention' else False for i in exhaustion_check(ctx)]
-
-
-@save
-def exhausted_or_undervote(ctx):
-    """
-    Returns bool list corresponding to each ballot.
-    True when ballot when ballot was exhausted OR left blank (undervote)
-    False otherwise
-    """
-    return [True if x != 'not_exhausted' else False for x in exhaustion_check(ctx)]
-
-
-@save
-def exhausted_by_overvote(ctx):
-    """
-    Returns bool list with elements corresponding to ballots.
-    True if ballot was exhausted due to overvote
-    """
-    return [True if i == 'overvote' else False for i in exhaustion_check(ctx)]
-
-
-@save
-def exhausted_by_rank_limit(ctx):
-    """
-    Returns bool list with elements corresponding to ballots.
-    True if ballot was exhausted AND fully ranked and the
-    cause of exhaustion was not overvotes or skipped rankings.
-    """
-    return [True if i == 'rank_limit' else False for i in exhaustion_check(ctx)]
-
-
-@save
-def exhausted_by_skipvote(ctx):
-    """
-    Returns bool list with elements corresponding to ballots.
-    True if ballot was exhausted due to repeated_skipvotes
-    """
-    return [True if i == 'repeated_skipvotes' else False for i in exhaustion_check(ctx)]
-
-
-@save
-def exhaustion_check(ctx):
-    """
-    Returns a list with string elements indicating why each ballot
-    was exhausted in a single-winner rcv contest.
-
-    Possible list values are:
-    - overvote: if an overvote was the cause of exhaustion (depends on break_on_overvote manifest value)
-    - repeated_skipvotes: if repeated skipvotes were the cause of exhaustion
-    (depends on break_on_repeated_skipvotes manifest value)
-    - not_exhausted: if finalist was present on the ballot and was ranked higher than an exhaust condition
-    (overvote or repeated_skipvotes)
-    - rank_limit: if no finalist was present on the ballot and the ballot was fully ranked
-    - abstention: if no finalist was present on the ballot and the ballot was NOT fully ranked
-    - None (Nonetype): if the ballot was undervote, and therefore neither active nor exhaustable
-    """
-
-    # gather ballot info
-    ziplist = zip(fully_ranked(ctx),  # True if fully ranked
-                  overvote_ind(ctx),  # Inf if no overvote
-                  repeated_skipvote_ind(ctx),  # Inf if no repeated skipvotes
-                  finalist_ind(ctx),  # Inf if not finalist ranked
-                  undervote(ctx))  # True if ballot is undervote
-
-    why_exhaust = []
-
-    # loop through each ballot
-    for is_fully_ranked, over_idx, repskip_idx, final_idx, is_under in ziplist:
-
-        exhaust_cause = None
-
-        # if the ballot is an undervote,
-        # nothing else to check
-        if is_under:
-            why_exhaust.append(exhaust_cause)
-            continue
-
-        # determine exhaustion cause
-
-        missing_finalist = isInf(final_idx)
-
-        # assemble dictionary of possible exhaustion causes and then remove any
-        # that don't apply based on the contest rules
-        idx_dictlist = [{'exhaust_cause': 'overvote', 'idx': over_idx},
-                        {'exhaust_cause': 'repeated_skipvotes', 'idx': repskip_idx},
-                        {'exhaust_cause': 'not_exhausted', 'idx': final_idx}]
-
-        # check if overvote can cause exhaust
-        if ctx['break_on_overvote'] is False:
-            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'overvote']
-
-        # check if skipvotes can cause exhaustion
-        if ctx['break_on_repeated_skipvotes'] is False:
-            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'repeated_skipvotes']
-
-        # what comes first on ballot: overvote, skipvotes, or finalist?
-        min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
-
-        if isInf(min_dict['idx']):
-
-            # means this ballot contained none of the three, it will be exhausted
-            # either for rank limit or abstention
-            if is_fully_ranked:
-                exhaust_cause = 'rank_limit'
-            elif missing_finalist:
-                exhaust_cause = 'abstention'
-            else:
-                print('if final_idx is inf, then missing_finalist should be true. This should never be reached')
-                exit(1)
-
-        else:
-            exhaust_cause = min_dict['exhaust_cause']
-
-        why_exhaust.append(exhaust_cause)
-
-    return why_exhaust
-
-
-@save
-def first_round(ctx):
-    """
-    Returns a list of first non-skipvote for each ballot OR
-    if the ballot is empty, can also return None
-    """
-    return [next((c for c in b if c != SKIPVOTE), None)
-            for b in ballots(ctx)]
-
-
-@save
-def first_round_overvote(ctx):
+def final_round_active_votes(ctx):
     '''
-    The number of ballots with an overvote before any valid ranking.
-
-    Note that this is not the same as "exhausted by overvote". This is because
-    some juristidictions (Maine) discard any ballot beginning with two
-    skipped rankings, and call this ballot as exhausted by skipped rankings, even if the
-    skipped rankings are followed by an overvote.
-
-    Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
+    The number of votes that were awarded to any candidate in the final round.
     '''
-    return sum(c == OVERVOTE for c in first_round(ctx))
+    return sum(rcv_single_winner(ctx)[-1][1])
+
+
+def first_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the first round.
+    '''
+    return sum(rcv_single_winner(ctx)[0][1])
+
+
+def final_round_winner_percent(ctx):
+    '''
+    The percent of votes for the winner in the final round. The final round is
+    the first round where the winner receives a majority of the non-exhausted
+    votes.
+    '''
+    return rcv_single_winner(ctx)[-1][1][0] / sum(rcv_single_winner(ctx)[-1][1])
+
+
+def final_round_winner_vote(ctx):
+    '''
+    The number of votes for the winner in the final round. The final round is
+    the first round where the winner receives a majority of the non-exhausted
+    votes.
+    '''
+    return rcv_single_winner(ctx)[-1][1][0]
+
+
+def final_round_winner_votes_over_first_round_valid(ctx):
+    '''
+    The number of votes the winner receives in the final round divided by the
+    number of valid votes in the first round.
+    '''
+    return final_round_winner_vote(ctx) / first_round_active_votes(ctx)
 
 
 def first_round_winner_place(ctx):
     '''
     In terms of first round votes, what place the eventual winner came in.
     '''
-    return rcv(ctx)[0][0].index(winner(ctx)) + 1
+    return rcv_single_winner(ctx)[0][0].index(winner(ctx)) + 1
 
 
 def first_round_winner_percent(ctx):
     '''
     The percent of votes for the winner in the first round.
     '''
-    wind = rcv(ctx)[0][0].index(winner(ctx))
-    return rcv(ctx)[0][1][wind] / sum(rcv(ctx)[0][1])
+    wind = rcv_single_winner(ctx)[0][0].index(winner(ctx))
+    return rcv_single_winner(ctx)[0][1][wind] / sum(rcv_single_winner(ctx)[0][1])
 
 
 def first_round_winner_vote(ctx):
     '''
     The number of votes for the winner in the first round.
     '''
-    wind = rcv(ctx)[0][0].index(winner(ctx))
-    return rcv(ctx)[0][1][wind]
+    wind = rcv_single_winner(ctx)[0][0].index(winner(ctx))
+    return rcv_single_winner(ctx)[0][1][wind]
 
 
 def finalists(ctx):
-    return rcv(ctx)[-1][0]
+    return rcv_single_winner(ctx)[-1][0]
 
 
 def finalist_ind(ctx):
@@ -478,109 +700,9 @@ def finalist_ind(ctx):
     return inds
 
 
-def final_round_active_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the final round.
-    '''
-    return sum(rcv(ctx)[-1][1])
-
-
-def first_round_active_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the first round.
-    '''
-    return sum(rcv(ctx)[0][1])
-
-
-def final_round_winner_percent(ctx):
-    '''
-    The percent of votes for the winner in the final round. The final round is
-    the first round where the winner receives a majority of the non-exhausted
-    votes.
-    '''
-    return rcv(ctx)[-1][1][0] / sum(rcv(ctx)[-1][1])
-
-
-def final_round_winner_vote(ctx):
-    '''
-    The number of votes for the winner in the final round. The final round is
-    the first round where the winner receives a majority of the non-exhausted
-    votes.
-    '''
-    return rcv(ctx)[-1][1][0]
-
-
-def final_round_winner_votes_over_first_round_valid(ctx):
-    '''
-    The number of votes the winner receives in the final round divided by the
-    number of valid votes in the first round.
-    '''
-    return final_round_winner_vote(ctx) / first_round_active_votes(ctx)
-
-
-@save
-def fully_ranked(ctx):
-    """
-        Returns a list of bools with each item corresponding to a ballot.
-        True indicates a fully ranked ballot.
-
-        Fully ranked here means either the cleaned ballot contains the
-        full set of candidates OR the raw and cleaned ballot are of the same length
-        (this second condition is to account for limited rank voting systems)
-
-        Note: cleaned ballots already should have skipped rankings, overvotes, and
-        repeated rankings given to a single candidate all removed
-    """
-    return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
-                              # (the ballot is effectively fully ranked)
-            or (set(b) & candidates(ctx)) == candidates  # or voters ranked every possible candidate
-            for a, b in zip(ballots(ctx), cleaned(ctx))]
-
-
-@save
-def has_skipvote(ctx):
-    """
-    Returns boolean list indicating if ballot contains any skipvotes
-    """
-    return [SKIPVOTE in b for b in ballots(ctx)]
-
-
-def includes_duplicate_ranking(ctx):
-    '''
-    The number of ballots that rank the same candidate more than once, or
-    include more than one write in candidate.
-    '''
-    return any_repeat(ctx)
-
-
-@save
-def includes_skipped_ranking(ctx):
-    '''
-    The number of ballots that have an skipped ranking followed by any other mark
-    valid ranking
-    '''
-    return sum(skipped(ctx))
-
-
 @save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
-
-
-@save
-def max_repeats(ctx):
-    """
-        Return a list with each element indicating the max duplicate ranking count
-        for any candidate on the ballot
-
-        Note:
-        If on a ballot, a candidate received two different rankings, that ballot's
-        corresponding list element would be 2. If every candidate included on that
-        ballot was only ranked once, that ballot's corresponding list element
-        would be 1
-    """
-    return [max(0, 0, *map(b.count, set(b) - {SKIPVOTE, OVERVOTE}))
-            for b in ballots(ctx)]
 
 
 # fixme
@@ -592,37 +714,6 @@ def number_of_candidates(ctx):
 
 
 @save
-def overvote(ctx):
-    return [OVERVOTE in b for b in ballots(ctx)]
-
-
-@save
-def overvote_ind(ctx):
-    """
-        Returns list of index values for first overvote on each ballot
-        If no overvotes on ballots, list element is inf
-    """
-    return [b.index(OVERVOTE) if OVERVOTE in b else float('inf')
-            for b in ballots(ctx)]
-
-
-@save
-def ranked_single(ctx):
-    '''
-    The number of voters that validly used only a single ranking
-    '''
-    return sum(len(b) == 1 for b in cleaned(ctx))
-
-
-@save
-def ranked_multiple(ctx):
-    '''
-    The number of voters that validly use more than one ranking.
-    '''
-    return sum(len(b) > 1 for b in cleaned(ctx))
-
-
-@save
 def ranked_winner(ctx):
     """
      Number of ballots with a non-overvote mark for the winner
@@ -631,230 +722,8 @@ def ranked_winner(ctx):
 
 
 @save
-def rcv(ctx):
-    """
-        Retrieves the cleaned ballots using ctx and
-        returns a list of round-by-round vote counts.
-        Runs until single winner threshold is reached.
-
-        [[(round 1 candidates), (round 1 tally)],
-         [(round 2 candidates), (round 2 tally)],
-         ...,
-         [(final round candidates), (final round tally)]]
-    """
-    rounds = []
-    bs = [list(i) for i in cleaned(ctx)]
-
-    while True:
-        rounds.append(
-            list(zip(
-                # tally ballots and reorder tallies
-                # using active rankings for each ballot,
-                # skipping empty ballots
-                *Counter(b[0] for b in bs if b).most_common()
-                     ))
-        )
-        finalists, tallies = rounds[-1]
-
-        # check for a winner
-        if tallies[0]*2 > sum(tallies):
-            return rounds
-
-        # else remove round loser from ballots, all ranking spots.
-        # removing the round loser from all ranking spots now is equivalent
-        # to waiting and skipping over an already-eliminated candidate
-        # once they become the active ranking in a later round.
-        bs = [keep(finalists[:-1], b) for b in bs]
-
-
-@save
-def repeated_skipvote_ind(ctx):
-    """
-        return list with index from each ballot where the skipvotes start repeating,
-        if no repeated skipvotes, set list element to inf
-
-        note:
-        repeated skipvotes are only counted if non-skipvotes occur after them. this
-        prevents incompletely ranked ballots from being counted as having repeated skipvotes
-    """
-
-    rs = []
-
-    for b in ballots(ctx):
-
-        rs.append(float('inf'))
-
-        # pair up successive rankings on ballot
-        z = list(zip(b, b[1:]))
-        uu = (SKIPVOTE, SKIPVOTE)
-
-        # if repeated skipvote on the ballot
-        if uu in z:
-            occurance = z.index(uu)
-
-            # start at second skipvote in the pair
-            # and loop until a non-skipvote is found
-            # only then record this ballot as having a
-            # repeated skipvote
-            for c in b[occurance+1:]:
-                if c != SKIPVOTE:
-                    rs[-1] = occurance
-                    break
-    return rs
-
-
-@save
-def skipped(ctx):
-    """
-    Returns boolean list. True if skipped rank (followed by other marks) is present.
-    Otherwise False.
-
-    {SKIPVOTE} & {x} - {y}
-    this checks that x == SKIPVOTE and that y then != SKIPVOTE
-    (the y check is important to know whether or not the ballot contains marks
-    following the skipped rank)
-    """
-    return [any({SKIPVOTE} & {x} - {y} for x, y in zip(b, b[1:]))
-            for b in ballots(ctx)]
-
-
-@save
-def contest_winner(ctx):
-    '''
-    The winner of the election, or, in multiple winner contests, the
-    hypothetical winner if the contest was single winner.
-    '''
-    # Horrible Hack!
-    # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
-    if ctx['place'] == 'Burlington' and ctx['date'] == '2006':
-        return 'Bob Kiss'
-    return str(winner(ctx)).title()
-
-
-@save
-def total_ballots(ctx):
-    '''
-    This includes ballots with no marks.
-    '''
-    return len(ballots(ctx))
-
-
-@save
-def total_exhausted(ctx):
-    '''
-    Number of ballots (excluding undervotes) that do not rank a finalist.
-    '''
-    return sum(exhausted(ctx))
-
-
-@save
-def total_exhausted_by_abstention(ctx):
-    """
-    Number of ballots exhausted after all marked rankings used and ballot is not fully ranked.
-    """
-    return sum(exhausted_by_abstention(ctx))
-
-
-@save
-def total_exhausted_by_overvote(ctx):
-    """
-    Number of ballots exhausted due to overvote. Only applicable to certain contests.
-    """
-    return sum(exhausted_by_overvote(ctx))
-
-
-@save
-def total_exhausted_by_rank_limit(ctx):
-    """
-    Number of ballots exhausted after all marked rankings used and ballot is fully ranked.
-    """
-    return sum(exhausted_by_rank_limit(ctx))
-
-
-def total_exhausted_by_skipped_rankings(ctx):
-    """
-    Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests.
-    """
-    return sum(exhausted_by_skipvote(ctx))
-
-
-@save
-def total_ballots_with_overvote(ctx):
-    '''
-    Number of ballots with at least one overvote. Not necessarily cause of exhaustion.
-    '''
-    return sum(overvote(ctx))
-
-
-@save
-def total_fully_ranked(ctx):
-    '''
-    The number of voters that have validly used all available rankings on the
-    ballot, or that have validly ranked all non-write-in candidates.
-    '''
-    return sum(fully_ranked(ctx))
-
-
-@save
-def total_irregular(ctx):
-    """
-    Number of ballots that either had a multiple ranking, overvote,
-    or a skipped ranking. This includes ballots even where the irregularity was not
-    the cause of exhaustion.
-    """
-    return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx))))
-
-
-@save
-def total_undervote(ctx):
-    '''
-    Ballots completely made up of skipped rankings (no marks).
-    '''
-    return sum(undervote(ctx))
-
-
-@save
-def undervote(ctx):
-    """
-    Returns a boolean list with True indicating ballots that were undervotes (left blank)
-    """
-    return [True if len(x) == 0 else False for x in cleaned(ctx)]
-
-
-@save
-def until2rcv(ctx):
-    """
-    run an rcv election until there are two candidates remaining.
-    This is might lead to more rounds than necessary to determine a winner.
-    """
-
-    rounds = []
-    bs = [list(i) for i in cleaned(ctx)]
-
-    while True:
-        rounds.append(
-            list(zip(
-                # tally ballots and reorder tallies
-                # using active rankings for each ballot
-                *Counter(b[0] for b in bs if b).most_common()
-            ))
-        )
-        finalists, tallies = rounds[-1]
-
-        # finish condition
-        if len(finalists) < 3:
-            return rounds
-
-        # else remove round loser from ballots, all ranking spots.
-        # removing the round loser from all ranking spots now is equivalent
-        # to waiting and skipping over an already-eliminated candidate
-        # once they become the active ranking in a later round.
-        bs = [keep(finalists[:-1], b) for b in bs]
-
-
-@save
 def winner(ctx):
-    return rcv(ctx)[-1][0][0]
+    return rcv_single_winner(ctx)[-1][0][0]
 
 
 @save
@@ -863,6 +732,7 @@ def winners_consensus_value(ctx):
     The percentage of valid first round votes that rank the winner in the top 3.
     '''
     return winner_in_top_3(ctx) / first_round_active_votes(ctx)
+
 
 
 @save
@@ -883,5 +753,3 @@ def winner_in_top_3(ctx):
         Sum the counts from the ranking-count entries, where the ranking is < 4
     """
     return sum(v for k, v in winner_ranking(ctx).items() if k is not None and k < 4)
-
-
