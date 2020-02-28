@@ -64,5 +64,3 @@ def replace(target, replacement, l):
     # return a list with all instances of 'target' set to 'replacement'
     return [replacement if i == target else i for i in l]
 
-pad_end(b, num_ranks, 'skipped')
-

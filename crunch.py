@@ -36,9 +36,9 @@ def write_condorcet_tables(contest):
     """
     Calculate and write condorcet tables (both count and percents) for contest
     """
-    counts, percents = condorcet_tables(contest)
+    counts, percents, _ = condorcet_tables(contest)
     counts.to_csv(contest['condorcet_table_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(contest['condorcet_table_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
+    percents.to_csv(contest['condorcet_table_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
 
 
 def write_first_second_tables(contest):
@@ -46,9 +46,9 @@ def write_first_second_tables(contest):
     Calculate and write first choice - second choice tables (both count and percents) for contest
     """
     counts, percents, percents_no_exhaust = first_second_tables(contest)
-    counts.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
-    percents_no_exhaust.to_csv(contest['first_second_dir'] + "/" + contest["dop"] + "_percent_no_exhaust.csv",
+    counts.to_csv(contest['first_second_table_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
+    percents.to_csv(contest['first_second_table_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
+    percents_no_exhaust.to_csv(contest['first_second_table_dir'] + "/" + contest["dop"] + "_percent_no_exhaust.csv",
                                float_format="%.2f")
 
 
@@ -82,6 +82,11 @@ def main():
     if os.path.isdir(contest_set_path) is False:
         print(contest_set_name + ' is not an existing folder in contest_sets/')
         exit(1)
+
+    ########################
+    # cache outputs
+    cache_dir = contest_set_path + '/cache'
+    cache.set_cache_dir(cache_dir)
 
     ########################
     # results outputs
@@ -149,19 +154,21 @@ def main():
 
     # write stats files column names
     if single_winner_func_list:
-        single_winner_results_fid = csv.writer(single_winner_results_fpath)
+        single_winner_results_fid = open(single_winner_results_fpath, 'w', newline='')
+        single_winner_results_csv = csv.writer(single_winner_results_fid)
         # write column names
-        single_winner_results_fid.writerow([fun.__name__ for fun in single_winner_func_list])
+        single_winner_results_csv.writerow([fun.__name__ for fun in single_winner_func_list])
         # write column notes
-        single_winner_results_fid.writerow([' '.join((fun.__doc__ or '').split())
+        single_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
                                             for fun in single_winner_func_list])
 
     if multi_winner_func_list:
-        multi_winner_results_fid = csv.writer(multi_winner_results_fpath)
+        multi_winner_results_fid = open(multi_winner_results_fpath, 'w', newline='')
+        multi_winner_results_csv = csv.writer(multi_winner_results_fid)
         # write column names
-        multi_winner_results_fid.writerow([fun.__name__ for fun in multi_winner_func_list])
+        multi_winner_results_csv.writerow([fun.__name__ for fun in multi_winner_func_list])
         # write column notes
-        multi_winner_results_fid.writerow([' '.join((fun.__doc__ or '').split())
+        multi_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
                                            for fun in multi_winner_func_list])
 
     # loop through contests
@@ -182,12 +189,12 @@ def main():
         if contest['rcv_type'] in single_winner_rcv_set and single_winner_func_list:
 
             contest['func_list'] = single_winner_func_list
-            contest['results_fid'] = single_winner_results_fid
+            contest['results_fid'] = single_winner_results_csv
 
         elif contest['rcv_type'] in multi_winner_rcv_set and multi_winner_func_list:
 
             contest['func_list'] = multi_winner_func_list
-            contest['results_fid'] = multi_winner_results_fid
+            contest['results_fid'] = multi_winner_results_csv
 
         else:  # no available rcv_type specified in contest_set, move to next one
             no_stats_contests.append(contest)
@@ -196,10 +203,11 @@ def main():
         write_stats(contest)
         #write_candidate_details(contest)
 
-    print("the following contests in the contest_set did not have an active rcv_type", end='')
-    print(" and are therefore not included in the contest stats outputs: ")
-    for contest in no_stats_contests:
-        print(contest['contest'])
+    if no_stats_contests:
+        print("the following contests in the contest_set did not have an active rcv_type", end='')
+        print(" and are therefore not included in the contest stats outputs: ")
+        for contest in no_stats_contests:
+            print(contest['contest'])
 
 
 if __name__ == '__main__':

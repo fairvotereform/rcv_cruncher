@@ -15,7 +15,7 @@ from collections import Counter
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, isInf
 from .cache_helpers import save
-from .tabulation import ballots, cleaned, candidates, finalist_ind
+from .tabulation import ballots_ranks, cleaned_ranks, candidates, finalist_ind
 
 
 @save
@@ -50,7 +50,7 @@ def effective_ballot_length(ctx):
     A list of validly ranked choices, and how many ballots had that number of
     valid choices.
     """
-    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned(ctx))).items()))
+    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned_ranks(ctx))).items()))
 
 
 @save
@@ -196,7 +196,7 @@ def first_round(ctx):
     if the ballot is empty, can also return None
     """
     return [next((c for c in b if c != SKIPPEDRANK), None)
-            for b in ballots(ctx)]
+            for b in ballots_ranks(ctx)]
 
 
 @save
@@ -238,7 +238,7 @@ def has_skipvote(ctx):
     """
     Returns boolean list indicating if ballot contains any skipvotes
     """
-    return [SKIPPEDRANK in b for b in ballots(ctx)]
+    return [SKIPPEDRANK in b for b in ballots_ranks(ctx)]
 
 
 def includes_duplicate_ranking(ctx):
@@ -271,12 +271,12 @@ def max_repeats(ctx):
         would be 1
     """
     return [max(0, 0, *map(b.count, set(b) - {SKIPPEDRANK, OVERVOTE}))
-            for b in ballots(ctx)]
+            for b in ballots_ranks(ctx)]
 
 
 @save
 def overvote(ctx):
-    return [OVERVOTE in b for b in ballots(ctx)]
+    return [OVERVOTE in b for b in ballots_ranks(ctx)]
 
 
 @save
@@ -286,7 +286,7 @@ def overvote_ind(ctx):
         If no overvotes on ballots, list element is inf
     """
     return [b.index(OVERVOTE) if OVERVOTE in b else float('inf')
-            for b in ballots(ctx)]
+            for b in ballots_ranks(ctx)]
 
 
 @save
@@ -294,7 +294,7 @@ def ranked_single(ctx):
     '''
     The number of voters that validly used only a single ranking
     '''
-    return sum(len(b) == 1 for b in cleaned(ctx))
+    return sum(len(b) == 1 for b in cleaned_ranks(ctx))
 
 
 @save
@@ -302,7 +302,7 @@ def ranked_multiple(ctx):
     '''
     The number of voters that validly use more than one ranking.
     '''
-    return sum(len(b) > 1 for b in cleaned(ctx))
+    return sum(len(b) > 1 for b in cleaned_ranks(ctx))
 
 
 @save
@@ -318,7 +318,7 @@ def repeated_skipvote_ind(ctx):
 
     rs = []
 
-    for b in ballots(ctx):
+    for b in ballots_ranks(ctx):
 
         rs.append(float('inf'))
 
@@ -353,7 +353,7 @@ def skipped(ctx):
     following the skipped rank)
     """
     return [any({SKIPPEDRANK} & {x} - {y} for x, y in zip(b, b[1:]))
-            for b in ballots(ctx)]
+            for b in ballots_ranks(ctx)]
 
 
 @save
@@ -361,7 +361,7 @@ def total_ballots(ctx):
     '''
     This includes ballots with no marks.
     '''
-    return len(ballots(ctx))
+    return len(ballots_ranks(ctx))
 
 
 @save
@@ -443,4 +443,4 @@ def undervote(ctx):
     """
     Returns a boolean list with True indicating ballots that were undervotes (left blank)
     """
-    return [len(x) == 0 for x in cleaned(ctx)]
+    return [len(x) == 0 for x in cleaned_ranks(ctx)]
