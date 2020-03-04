@@ -36,7 +36,16 @@ def write_condorcet_tables(contest):
     """
     Calculate and write condorcet tables (both count and percents) for contest
     """
-    counts, percents, _ = condorcet_tables(contest)
+    counts, percents, condorcet_winner = condorcet_tables(contest)
+
+    if condorcet_winner:
+        condorcet_str = "condorcet winner: " + condorcet_winner
+    else:
+        condorcet_str = "condorcet winner: None"
+
+    counts.index.name = condorcet_str
+    percents.index.name = condorcet_str
+
     counts.to_csv(contest['condorcet_table_dir'] + "/" + contest["dop"] + "_count.csv", float_format="%.2f")
     percents.to_csv(contest['condorcet_table_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
 
@@ -50,6 +59,100 @@ def write_first_second_tables(contest):
     percents.to_csv(contest['first_second_table_dir'] + "/" + contest["dop"] + "_percent.csv", float_format="%.2f")
     percents_no_exhaust.to_csv(contest['first_second_table_dir'] + "/" + contest["dop"] + "_percent_no_exhaust.csv",
                                float_format="%.2f")
+
+
+def prepare_candidate_details(contest):
+    """
+    Return pandas data frame of candidate info with round-by-round vote counts
+    """
+    raceID = contest['unique_id']
+    _, rounds_full, _, cand_outcomes = contest['rcv_type'](contest)
+    n_rounds = len(rounds_full)
+
+    # reformat contest outputs into useful dicts
+    cand_outcomes_dict = {d['name']: d for d in cand_outcomes}
+    rounds_full_dict = [{cand: float(count) for cand, count in zip(*rnd_count)}
+                        for rnd_count in rounds_full]
+
+    colnames = ['raceID', 'candidate', 'round_elected', 'round_eliminated'] + \
+               ['round_' + str(i) + '_vote' for i in range(1, n_rounds + 1)]
+
+    cand_rows = []
+    for cand in candidates(contest):
+        cand_rows.append([raceID,
+                          cand,
+                          cand_outcomes_dict[cand]['round_elected'],
+                          cand_outcomes_dict[cand]['round_eliminated']] + \
+                         [d[cand] for d in rounds_full_dict])
+
+    df = pd.DataFrame(cand_rows, columns=colnames)
+    return df
+
+
+def write_candidate_details(contest_set, candidate_details_fpath):
+    """
+    Concatenate all candidate details and write out file
+    """
+    df = pd.concat([contest['candidate_details'] for contest in contest_set if 'candidate_details' in contest],
+                   axis=0, ignore_index=True, sort=False)
+    df.to_csv(candidate_details_fpath, index=False)
+
+
+def write_rcv(ctx):
+    """
+    Write out rcv contest round-by-round counts and transfers
+    """
+    # get rcv results
+    rounds_full = round_by_round_full(ctx)
+    transfers = round_by_round_transfers(ctx)
+
+    if len(rounds_full) != len(transfers):
+        print('something fishy, debug')
+        exit(1)
+    else:
+        num_rounds = len(rounds_full)
+
+    # setup data frame
+    row_names = list(candidates(ctx)) + ['exhaust']
+    rcv_df = pd.DataFrame(np.NaN, index=row_names + ['colsum'], columns=['candidate'])
+    rcv_df.loc[row_names + ['colsum'], 'candidate'] = row_names + ['colsum']
+
+    # loop through rounds
+    for rnd in range(1, num_rounds + 1):
+
+        rnd_info = {rnd_cand: rnd_tally for rnd_cand, rnd_tally in zip(*rounds_full[rnd-1])}
+        rnd_info['exhaust'] = 0
+
+        rnd_transfer = dict(transfers[rnd-1])
+
+        # add round data
+        for cand in row_names:
+
+            rnd_percent_col = 'r' + str(rnd) + '_percent'
+            rnd_count_col = 'r' + str(rnd) + '_count'
+            rnd_transfer_col = 'r' + str(rnd) + '_transfer'
+
+            rcv_df.loc[cand, rnd_percent_col] = round(float(100*(rnd_info[cand]/sum(rnd_info.values()))), 3)
+            rcv_df.loc[cand, rnd_count_col] = float(rnd_info[cand])
+            rcv_df.loc[cand, rnd_transfer_col] = rnd_transfer[cand]
+
+        # maintain cumulative exhaust total
+        if rnd != 1:
+            last_rnd_count_col = 'r' + str(rnd-1) + '_count'
+            last_rnd_transfer_col = 'r' + str(rnd-1) + '_transfer'
+            rcv_df.loc['exhaust', rnd_count_col] = rcv_df.loc['exhaust', last_rnd_count_col] + \
+                                                    rcv_df.loc['exhaust', last_rnd_transfer_col]
+
+        # sum round columns
+        rcv_df.loc['colsum', rnd_count_col] = sum(rcv_df.loc[row_names, rnd_count_col])
+        rcv_df.loc['colsum', rnd_transfer_col] = sum(rcv_df.loc[row_names, rnd_transfer_col])
+        rcv_df.loc['colsum', rnd_percent_col] = sum(rcv_df.loc[row_names, rnd_percent_col])
+
+    # remove count columns
+    # for rnd in range(1, num_rounds + 1):
+    #     rcv_df = rcv_df.drop('r' + str(rnd) + '_count', axis=1)
+
+    rcv_df.to_csv(ctx['round_by_round_dir'] + '/' + ctx['dop'] + '.csv', index=False)
 
 
 def main():
@@ -102,10 +205,11 @@ def main():
     if os.path.isdir(first_second_table_dir) is False:
         os.mkdir(first_second_table_dir)
 
-    candidate_details_dir = results_dir + '/candidate_details'
-    if os.path.isdir(candidate_details_dir) is False:
-        os.mkdir(candidate_details_dir)
+    round_by_round_dir = results_dir + '/round_by_round'
+    if os.path.isdir(round_by_round_dir) is False:
+        os.mkdir(round_by_round_dir)
 
+    candidate_details_fpath = results_dir + '/candidate_details.csv'
     single_winner_results_fpath = results_dir + '/single_winner.csv'
     multi_winner_results_fpath = results_dir + '/multi_winner.csv'
 
@@ -148,8 +252,8 @@ def main():
     ########################
     # produce results
 
-    single_winner_rcv_set = [rcv_single_winner]
-    multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot]
+    single_winner_rcv_set = [rcv_single_winner, until2rcv]
+    multi_winner_rcv_set = [rcv_multiWinner_thresh15]
     #multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot, stv_whole_ballot]
 
     # write stats files column names
@@ -200,8 +304,13 @@ def main():
             no_stats_contests.append(contest)
             continue
 
+        contest['round_by_round_dir'] = round_by_round_dir
+        write_rcv(contest)
+
         write_stats(contest)
-        #write_candidate_details(contest)
+        contest['candidate_details'] = prepare_candidate_details(contest)
+
+    write_candidate_details(contest_set, candidate_details_fpath)
 
     if no_stats_contests:
         print("the following contests in the contest_set did not have an active rcv_type", end='')

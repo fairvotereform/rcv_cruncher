@@ -9,7 +9,7 @@ unique_id
 win_threshold
 number_of_candidates
 number_of_rounds
-consensus
+winners_consensus_value
 total_ballots
 first_round_active_votes
 final_round_active_votes

@@ -15,7 +15,7 @@ from collections import Counter
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, isInf
 from .cache_helpers import save
-from .tabulation import ballots_ranks, cleaned_ranks, candidates, finalist_ind
+from .tabulation import ballots_ranks, cleaned_ranks, finalist_ind, candidates_noWriteIns
 
 
 @save
@@ -229,8 +229,9 @@ def fully_ranked(ctx):
     """
     return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
                               # (the ballot is effectively fully ranked)
-            or (set(b) & candidates(ctx)) == candidates  # or voters ranked every possible candidate
-            for a, b in zip(ballots(ctx), cleaned(ctx))]
+            or (set(b) & candidates_noWriteIns(ctx)) == candidates_noWriteIns(ctx)
+            # or voters ranked every possible candidate
+            for a, b in zip(ballots_ranks(ctx), cleaned_ranks(ctx))]
 
 
 @save

@@ -4,7 +4,7 @@
 
 SKIPPEDRANK = -1
 OVERVOTE = -2
-WRITEIN = -3
+WRITEIN = 'writeIns'
 
 
 """
@@ -64,3 +64,6 @@ def replace(target, replacement, l):
     # return a list with all instances of 'target' set to 'replacement'
     return [replacement if i == target else i for i in l]
 
+def merge_writeIns(b):
+    return [WRITEIN if isinstance(i, str) and 'writein' in i.lower().replace('-', '')
+            else i for i in b]

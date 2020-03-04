@@ -6,8 +6,6 @@ import pickle  # faster than json, shelve
 from contextlib import suppress
 from functools import wraps
 
-#from .global_dict import get_global_dict
-
 global global_dict
 def set_global_dict(d):
     global global_dict
@@ -42,7 +40,6 @@ def srchash(function):
 
     """
 
-    #gd = get_global_dict()
     global global_dict
 
     visited = set()

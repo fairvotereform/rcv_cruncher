@@ -8,8 +8,8 @@ import csv
 
 # cruncher imports
 from .cache_helpers import save
-from .ballot_stats import exhausted_or_undervote, cleaned, overvote
-
+from .ballot_stats import exhausted_or_undervote, overvote
+from .tabulation import cleaned
 
 @save
 def precincts(ctx):

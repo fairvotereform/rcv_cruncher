@@ -563,4 +563,6 @@ def seq_stv(ctx):
     return ''
 
 
-
+@save
+def losers(ctx):
+    return set(candidates(ctx)) - {winner(ctx)}

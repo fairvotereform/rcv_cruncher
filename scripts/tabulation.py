@@ -8,7 +8,7 @@ from copy import deepcopy, copy
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN, \
-    remove, keep, index_inf, before, replace
+    remove, keep, index_inf, before, replace, merge_writeIns
 from .cache_helpers import save
 
 
@@ -36,15 +36,23 @@ def ballots(ctx):
     }
     """
     res = ctx['parser'](ctx)
+
+    # temporary fix?
+    # since I havent attempted to rewrite parsers in any way, just merge together
+    # writeIns that may remain at this step
+
     if isinstance(res, list):
+        res = [merge_writeIns(b) for b in res]
         return {
                 'ballots': [{'ranks': b, 'weight': Fraction(1)} for b in res],
                 'extras': {}
                }
     else:
-        if 'ballot' not in res or 'extras' not in res:
+        if 'ballots' not in res or 'extras' not in res:
             print('ballot dict is not properly formatted. debug')
             exit(1)
+
+        res['ballots'] = [{'ranks': merge_writeIns(b['ranks']), 'weight': b['weight']} for b in res['ballots']]
         return res
 
 
@@ -58,7 +66,15 @@ def ballots_ranks(ctx):
 @save
 def candidates(ctx):
     cans = set()
-    for b in ballots(ctx):
+    for b in ballots_ranks(ctx):
+        cans.update(b)
+    return cans - {OVERVOTE, SKIPPEDRANK}
+
+
+@save
+def candidates_noWriteIns(ctx):
+    cans = set()
+    for b in ballots_ranks(ctx):
         cans.update(b)
     return cans - {OVERVOTE, SKIPPEDRANK, WRITEIN}
 
@@ -111,8 +127,9 @@ def convert_cvr(ctx):
     convert ballots read in with parser into common csv format.
     One ballot per row, columns: ID, extra_info, rank1, rank2 ...
     """
-    ballot_dict = deepcopy(ballots_dict(ctx))
-    bs = ballot_dict['ranks']
+    ballot_dict = deepcopy(ballots(ctx))
+    bs = [b['ranks'] for b in ballot_dict['ballots']]
+    weights = [b['weight'] for b in ballot_dict['ballots']]
     extras = ballot_dict['extras']
 
     # how many ranks?
@@ -132,6 +149,10 @@ def convert_cvr(ctx):
 
     # assemble output_table, start with extras
     output_df = pd.DataFrame.from_dict(extras)
+
+    # are weights all one, then dont add to output
+    if not all([i == 1 for i in weights]):
+        output_df['weight'] = weights
 
     # add in rank columns
     for i in range(1, num_ranks + 1):
@@ -284,16 +305,20 @@ def condorcet_tables(ctx):
                                        in zip(uniq_pair_ballots_weights, cand2_vs_cand1))
 
         # add counts to df
-        condorcet_count_df.loc[cand1, cand2] = cand1_vs_cand2_weightsum
-        condorcet_count_df.loc[cand2, cand1] = cand2_vs_cand1_weightsum
+        condorcet_count_df.loc[cand1, cand2] = float(cand1_vs_cand2_weightsum)
+        condorcet_count_df.loc[cand2, cand1] = float(cand2_vs_cand1_weightsum)
 
         # calculate percent
-        cand1_percent = (cand1_vs_cand2_weightsum / sum_weighted_ballots) * 100
-        cand2_percent = (cand2_vs_cand1_weightsum / sum_weighted_ballots) * 100
+        if sum_weighted_ballots:
+            cand1_percent = (cand1_vs_cand2_weightsum / sum_weighted_ballots) * 100
+            cand2_percent = (cand2_vs_cand1_weightsum / sum_weighted_ballots) * 100
+        else:
+            cand1_percent = 0
+            cand2_percent = 0
 
         # add to df
-        condorcet_percent_df.loc[cand1, cand2] = cand1_percent
-        condorcet_percent_df.loc[cand2, cand1] = cand2_percent
+        condorcet_percent_df.loc[cand1, cand2] = float(cand1_percent)
+        condorcet_percent_df.loc[cand2, cand1] = float(cand2_percent)
 
     # find condorcet winner and set index name to include winner
     condorcet_winner = None
@@ -314,9 +339,6 @@ def condorcet_tables(ctx):
                 else:
                     print("cannottt be more than one condorcet winner!!!!")
                     exit(1)
-
-    condorcet_percent_df.index.name = "condorcet winner: " + condorcet_winner
-    condorcet_count_df.index.name = "condorcet winner: " + condorcet_winner
 
     return condorcet_count_df, condorcet_percent_df, condorcet_winner
 
@@ -383,7 +405,7 @@ def first_second_tables(ctx):
             first_choices[b['ranks'][0]].append(b)
 
     # sum total first round votes
-    total_first_round_votes = float(0)
+    total_first_round_votes = 0
     for cand in first_choices:
         total_first_round_votes += sum([b['weight'] for b in first_choices[cand]])
 
@@ -396,9 +418,9 @@ def first_second_tables(ctx):
         first_choice_count = sum([b['weight'] for b in first_choices[cand]])
         first_choice_percent = (first_choice_count / total_first_round_votes) * 100
 
-        count_df.loc['first_choice', cand] = first_choice_count
-        percent_df.loc['first_choice', cand] = first_choice_percent
-        percent_no_exhaust_df.loc['first_choice', cand] = first_choice_percent
+        count_df.loc['first_choice', cand] = float(first_choice_count)
+        percent_df.loc['first_choice', cand] = float(first_choice_percent)
+        percent_no_exhaust_df.loc['first_choice', cand] = float(first_choice_percent)
 
         ############################################################
         # calculate second choices, group second choices by candidate
@@ -413,8 +435,8 @@ def first_second_tables(ctx):
                 second_choices['exhaust'].append(b)
 
         # sum total second round votes
-        total_second_choices = float(0)
-        total_second_choices_no_exhaust = float(0)
+        total_second_choices = 0
+        total_second_choices_no_exhaust = 0
         for backup_cand in second_choices:
             total_second_choices += sum([b['weight'] for b in second_choices[backup_cand]])
             if backup_cand != 'exhaust':
@@ -437,10 +459,10 @@ def first_second_tables(ctx):
             else:
                 second_choice_percent_no_exhaust = (second_choice_count / total_second_choices_no_exhaust) * 100
 
-            count_df.loc[backup_cand, cand] = second_choice_count
-            percent_df.loc[backup_cand, cand] = second_choice_percent
+            count_df.loc[backup_cand, cand] = float(second_choice_count)
+            percent_df.loc[backup_cand, cand] = float(second_choice_percent)
             if backup_cand != 'exhaust':
-                percent_no_exhaust_df.loc[backup_cand, cand] = second_choice_percent_no_exhaust
+                percent_no_exhaust_df.loc[backup_cand, cand] = float(second_choice_percent_no_exhaust)
 
     return count_df, percent_df, percent_no_exhaust_df
 
@@ -608,7 +630,7 @@ def rcv_multiWinner_thresh15(ctx):
     """
 
     # just filter results from until2rcv
-    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv())
+    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
 
     # and create fresh candidate outcomes
     candidate_set = candidates(ctx)
@@ -677,7 +699,7 @@ def rcv_single_winner(ctx):
     """
 
     # just filter results from until2rcv
-    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv())
+    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
 
     # and create fresh candidate outcomes
     candidate_set = candidates(ctx)
@@ -808,7 +830,7 @@ def until2rcv(ctx):
         # calculate transfer from loser - find loser ballots
         round_loser_ballots = [b for b in bs if b['ranks'] and b['ranks'][0] == round_loser]
         # count distribution from loser to other candidates and exhaustion
-        round_transfer = Counter({cand: 0 for cand in candidate_set})
+        round_transfer = Counter({cand: 0 for cand in candidate_set.union({'exhaust'})})
         for b in round_loser_ballots:
             if len(b['ranks']) > 1:
                 round_transfer[b['ranks'][1]] += b['weight']
@@ -851,14 +873,14 @@ def until2rcv(ctx):
 @save
 def contest_winner(ctx):
     '''
-    The winner of the election, or, in multiple winner contests, the
-    hypothetical winner if the contest was single winner.
+    The winner(s) of the election.
     '''
     # Horrible Hack!
     # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
     if ctx['place'] == 'Burlington' and ctx['date'] == '2006':
         return 'Bob Kiss'
-    return str(winner(ctx)).title()
+    return ", ".join([str(w).title() for w in winner(ctx)])
+    #return str(winner(ctx)).title()
 
 
 @save
@@ -868,10 +890,12 @@ def condorcet(ctx):
     The condorcet winner is the candidate that would win a 1-on-1 election versus
     any other candidate in the election. Note that this calculation depends on
     jurisdiction dependant rule variations.
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     '''
 
     _, _, condorcet_winner = condorcet_tables(ctx)
-    if winner(ctx) == condorcet_winner:
+    if winner(ctx)[0] == condorcet_winner:
         return True
     else:
         return False
@@ -898,22 +922,24 @@ def condorcet(ctx):
 def come_from_behind(ctx):
     """
     True if rcv winner is not first round leader
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     """
-    return winner(ctx) != round_by_round_trimmed(ctx)[0][0][0]
+    return winner(ctx)[0] != round_by_round_trimmed(ctx)[0][0][0]
 
 
 def final_round_active_votes(ctx):
     '''
     The number of votes that were awarded to any candidate in the final round.
     '''
-    return sum(round_by_round_trimmed(ctx)[-1][1])
+    return float(sum(round_by_round_trimmed(ctx)[-1][1]))
 
 
 def first_round_active_votes(ctx):
     '''
     The number of votes that were awarded to any candidate in the first round.
     '''
-    return sum(round_by_round_trimmed(ctx)[0][1])
+    return float(sum(round_by_round_trimmed(ctx)[0][1]))
 
 
 def final_round_winner_percent(ctx):
@@ -921,8 +947,10 @@ def final_round_winner_percent(ctx):
     The percent of votes for the winner in the final round. The final round is
     the first round where the winner receives a majority of the non-exhausted
     votes.
+
+    Single winner elections only.
     '''
-    return round_by_round_trimmed(ctx)[-1][1][0] / sum(round_by_round_trimmed(ctx)[-1][1])
+    return float(round_by_round_trimmed(ctx)[-1][1][0] / sum(round_by_round_trimmed(ctx)[-1][1]))
 
 
 def final_round_winner_vote(ctx):
@@ -930,43 +958,57 @@ def final_round_winner_vote(ctx):
     The number of votes for the winner in the final round. The final round is
     the first round where the winner receives a majority of the non-exhausted
     votes.
+
+    Single winner elections only.
     '''
-    return round_by_round_trimmed(ctx)[-1][1][0]
+    return float(round_by_round_trimmed(ctx)[-1][1][0])
 
 
 def final_round_winner_votes_over_first_round_valid(ctx):
     '''
     The number of votes the winner receives in the final round divided by the
     number of valid votes in the first round.
+
+    Single winner elections only.
     '''
-    return final_round_winner_vote(ctx) / first_round_active_votes(ctx)
+    return float(final_round_winner_vote(ctx) / first_round_active_votes(ctx))
 
 
 def first_round_winner_place(ctx):
     '''
     In terms of first round votes, what place the eventual winner came in.
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     '''
-    return round_by_round_trimmed(ctx)[0][0].index(winner(ctx)) + 1
+    return round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0]) + 1
 
 
 def first_round_winner_percent(ctx):
     '''
     The percent of votes for the winner in the first round.
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     '''
-    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx))
-    return round_by_round_trimmed(ctx)[0][1][wind] / sum(round_by_round_trimmed(ctx)[0][1])
+    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
+    return float(round_by_round_trimmed(ctx)[0][1][wind] / sum(round_by_round_trimmed(ctx)[0][1]))
 
 
 def first_round_winner_vote(ctx):
     '''
     The number of votes for the winner in the first round.
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     '''
-    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx))
-    return round_by_round_trimmed(ctx)[0][1][wind]
+    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
+    return float(round_by_round_trimmed(ctx)[0][1][wind])
 
 
 def finalists(ctx):
-    return round_by_round_trimmed(ctx)[-1][0]
+    """
+    All winners are considered finalists, as well as any candidate that reached
+    the final round.
+    """
+    return set(round_by_round_trimmed(ctx)[-1][0]).union(winner(ctx))
 
 
 def finalist_ind(ctx):
@@ -988,39 +1030,57 @@ def finalist_ind(ctx):
     return inds
 
 
-@save
-def losers(ctx):
-    return set(candidates(ctx)) - {winner(ctx)}
+def number_of_winners(ctx):
+    """
+    Count how many winners a contest had.
+    """
+    return sum(c['round_elected'] is not None for c in candidate_outcomes(ctx))
 
 
-# fixme
+def number_of_rounds(ctx):
+    """
+    Count how many rounds a contest had.
+    """
+    return len(round_by_round_full(ctx))
+
+
 def number_of_candidates(ctx):
     '''
-    The number of non-candidates on the ballot, not including write-ins.
+    The number of candidates on the ballot, not including write-ins.
     '''
-    return len(candidates(ctx))
+    return len(candidates_noWriteIns(ctx))
 
 
 @save
 def ranked_winner(ctx):
     """
-     Number of ballots with a non-overvote mark for the winner
+    Number of ballots with a non-overvote mark for the winner
     """
-    return sum(winner(ctx) in b for b in ballots_ranks(ctx))
+    return sum(bool(set(winner(ctx)).intersection(b)) for b in ballots_ranks(ctx))
+
+
+def win_threshold(ctx):
+    if ctx['rcv_type'] == rcv_multiWinner_thresh15:
+        return 'dynamic'
+    return first_round_active_votes(ctx)/(ctx['num_winners'] + 1)
 
 
 @save
 def winner(ctx):
-    return round_by_round_trimmed(ctx)[-1][0][0]
+    """
+    Return contest winner names in order of election.
+    """
+    elected_candidates = [d for d in candidate_outcomes(ctx) if d['round_elected'] is not None]
+    return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
+    #return round_by_round_trimmed(ctx)[-1][0][0]
 
 
 @save
 def winners_consensus_value(ctx):
     '''
-    The percentage of valid first round votes that rank the winner in the top 3.
+    The percentage of valid first round votes that rank any winner in the top 3.
     '''
     return winner_in_top_3(ctx) / first_round_active_votes(ctx)
-
 
 
 @save
@@ -1040,4 +1100,7 @@ def winner_in_top_3(ctx):
     """
         Sum the counts from the ranking-count entries, where the ranking is < 4
     """
-    return sum(v for k, v in winner_ranking(ctx).items() if k is not None and k < 4)
+    top3 = [b[:min(3, len(b))] for b in ballots_ranks(ctx)]
+    top3_check = [set(winner(ctx)).intersection(b) for b in top3]
+    return sum(bool(check) for check in top3_check)
+    #return sum(v for k, v in winner_ranking(ctx).items() if k is not None and k < 4)

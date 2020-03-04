@@ -4,8 +4,128 @@ from collections import UserList, defaultdict
 import os
 import csv
 import json
+import re
 
 from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN
+
+def dominion5_10(ctx):
+
+    path = ctx['path']
+
+    # load manifests, with ids as keys
+    with open(path + '/ContestManifest.json') as f:
+        for i in json.load(f)['List']:
+            if i['Description'] == ctx['office']:
+                current_contest_id = i['Id']
+                current_contest_rank_limit = i['NumOfRanks']
+
+    candidate_manifest = {}
+    with open(path + '/CandidateManifest.json') as f:
+        for i in json.load(f)['List']:
+            candidate_manifest[i['Id']] = i['Description']
+
+    precinct_manifest = {}
+    with open(path + '/PrecinctPortionManifest.json') as f:
+        for i in json.load(f)['List']:
+            precinct_manifest[i['Id']] = i['Description']
+
+    ballotType_manifest = {}
+    with open(path + '/BallotTypeManifest.json') as f:
+        for i in json.load(f)['List']:
+            ballotType_manifest[i['Id']] = i['Description']
+
+    countingGroup_manifest = {}
+    with open(path + '/CountingGroupManifest.json') as f:
+        for i in json.load(f)['List']:
+            countingGroup_manifest[i['Id']] = i['Description']
+
+    ballotTypeContest_manifest = {}
+    with open(path + '/BallotTypeContestManifest.json') as f:
+        for i in json.load(f)['List']:
+
+            if i['ContestId'] not in ballotTypeContest_manifest.keys():
+                ballotTypeContest_manifest[i['ContestId']] = []
+
+            ballotTypeContest_manifest[i['ContestId']].append(i['BallotTypeId'])
+
+    # read in ballots
+    ballot_ranks = []
+    ballot_IDs = []
+    ballot_precincts = []
+    ballot_types = []
+    with open(path + '/CvrExport.json') as f:
+        for contests in json.load(f)['Sessions']:
+
+            # ballotID
+            ballotID_search = re.search('Images\\\\(.*)\*\.\*', contests['ImageMask'])
+            if ballotID_search:
+                ballotID = ballotID_search.group(1)
+            else:
+                print('regex is not working correctly. debug')
+                exit(1)
+
+            # for each session use original, or if isCurrent is False,
+            # use modified
+            if contests['Original']['IsCurrent']:
+                current_contests = contests['Original']
+            else:
+                current_contests = contests['Modified']
+
+            # precinctId for this ballot
+            precinct = precinct_manifest[current_contests['PrecinctPortionId']]
+
+            # ballotType for this ballot
+            ballotType = ballotType_manifest[current_contests['BallotTypeId']]
+
+            if len(current_contests['Cards']) > 1 or len(current_contests['Cards'][0]['Contests']) > 1:
+                print('"Cards" has length greater than 1, not prepared for this. debug')
+                exit(1)
+            else:
+                current_contests = current_contests['Cards'][0]['Contests'][0]
+
+            # skip other contests
+            if current_contests['Id'] != current_contest_id:
+                continue
+
+            ballot_contest_marks = current_contests['Marks']
+
+            # check for marks on each rank expected for this contest
+            currentRank = 1
+            current_ballot_ranks = []
+            while currentRank <= current_contest_rank_limit:
+
+                # find any marks that have the currentRank and aren't Ambiguous
+                currentRank_marks = [i for i in ballot_contest_marks
+                                     if i['Rank'] == currentRank and i['IsAmbiguous'] is False]
+
+                currentCandidate = '**error_CZ**'
+
+                if len(currentRank_marks) == 0:
+                    currentCandidate = SKIPPEDRANK
+                elif len(currentRank_marks) > 1:
+                    currentCandidate = OVERVOTE
+                else:
+                    currentCandidate = candidate_manifest[currentRank_marks[0]['CandidateId']]
+
+                if currentCandidate == '**error_CZ**':
+                    print('error in filtering marks. debug')
+                    exit(1)
+
+                current_ballot_ranks.append(currentCandidate)
+                currentRank += 1
+
+            ballot_ranks.append(current_ballot_ranks)
+            ballot_precincts.append(precinct)
+            ballot_IDs.append(ballotID)
+            ballot_types.append(ballotType)
+
+    ballot_dict = {'ballots': [{'ranks': b, 'weight': 1} for b in ballot_ranks],
+                   'extras': {'ballotID': ballot_IDs,
+                              'precinct': ballot_precincts,
+                              'ballot_type': ballot_types}
+                   }
+    return ballot_dict
+
 
 def sf_precinct_map(ctx):
     path = ctx['path']
@@ -45,12 +165,12 @@ def parse_master_lookup(ctx):
     return dict(master_lookup)
 
 def sf_name_map(ctx):
-    return dict((k,{'WRITEIN': WRITEIN}.get(v.upper().replace('-',''),v)) 
-                for k,v in parse_master_lookup(ctx)['Candidate'].items())
+    return dict((k, {'WRITEIN': WRITEIN}.get(v.upper().replace('-', ''), v))
+                for k, v in parse_master_lookup(ctx)['Candidate'].items())
 
 def chp_names(ctx):
     mapping = {}
-    with open(glob(ctx['chp'])[0]) as f:
+    with open(glob(ctx['chp'])[0], encoding='utf8') as f:
         for i in f:
             split = i.split()
             if len(split) >= 3 and split[0] == '.CANDIDATE':
@@ -60,7 +180,7 @@ def chp_names(ctx):
 def burlington(ctx):
     path = ctx['path']
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         for line in f:
             ballots.append([OVERVOTE if '=' in i else i for i in line.split()[3:]])
     maxlen = max(map(len,ballots))
@@ -78,7 +198,7 @@ def prm(ctx):
     name_map = chp_names(ctx)
     ballots = []
     for path in glob(glob_path):
-        with open(path, 'r') as f:
+        with open(path, 'r', encoding='utf8') as f:
             for i in f:
                 if any(map(str.isalnum,i)) and i.strip()[0] != '#':
                     b = []
@@ -101,7 +221,7 @@ def sf(contest_id, ctx):
     precinct_map = sf_precinct_map(ctx)
     name_map = sf_name_map(ctx)
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         b = UserList([])
         voter_id = None
         for line in f:
@@ -128,7 +248,7 @@ def sfnoid(ctx):
     precinct_map = sf_precinct_map(ctx)
     name_map = sf_name_map(ctx)
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         b = UserList([])
         voter_id = None
         for line in f:
@@ -161,7 +281,7 @@ def sfnoid(ctx):
 def old(ctx):
     path = ctx['path']
     candidate_map = {} 
-    with open(ctx['candidate_map']) as f:
+    with open(ctx['candidate_map'], encoding='utf8') as f:
         for i in f:
             line = [j.strip() for j in i.split(':')]
             if line and line[0] == 'Candidate':
@@ -169,7 +289,7 @@ def old(ctx):
     candidate_map['--'] = SKIPPEDRANK
     candidate_map['++'] = OVERVOTE
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         line = f.readline()
         while line:
             ballots.append([candidate_map[i] for i in line.split()[-1].split('>')])
@@ -180,7 +300,7 @@ def minneapolis(ctx):
     choice_map = {}
     default = None
     if ctx['date'] == '2009':
-        with open('/'.join(ctx['path'].split('/')[:-1]+['convert.csv'])) as f:
+        with open('/'.join(ctx['path'].split('/')[:-1]+['convert.csv']), encoding='utf8') as f:
             for i in f:
                 split = i.strip().split('\t')
                 if len(split) >= 3:
@@ -195,7 +315,7 @@ def minneapolis(ctx):
         }
     path = ctx['path']
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         f.readline()
         for line in csv.reader(f):
             choices = [choice_map.get(i.strip(), i if default is None else default)
@@ -207,7 +327,7 @@ def minneapolis(ctx):
 def maine(n, ctx):
     path = ctx['path']
     ballots = []
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         f.readline()
         for line in csv.reader(f):
             choices = [{'undervote': SKIPPEDRANK,
@@ -221,14 +341,14 @@ def maine(n, ctx):
 def santafe(column_id, contest_id, ctx):
     path = ctx['path']
     candidate_map = {}
-    with open(ctx['path'].replace('CvrExport','CandidateManifest')) as f:
+    with open(ctx['path'].replace('CvrExport','CandidateManifest'), encoding='utf8') as f:
         for i in f:
             row = i.split(',')
             if row:
                 candidate_map[row[1]] = row[0]
     ballots = []
     ballot_length = 0
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         reader = csv.reader(f)
         header = next(reader)
         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
@@ -263,7 +383,7 @@ def santafe_id(column_id, contest_id, ctx):
     path = ctx['path']
     ballots = []
     ballot_length = 0
-    with open(path, "r") as f:
+    with open(path, "r", encoding='utf8') as f:
         reader = csv.reader(f)
         header = next(reader)
         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
@@ -299,7 +419,7 @@ def santafe_id(column_id, contest_id, ctx):
 def sf2005(contest_ids, over, under, sep, ctx):
     path = ctx['path']
     ballots = []
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding='utf8') as f:
         for i in f:
             if sep is None:
                 s = [rc.split('-') for rc in i.split()[1:] if '-' in i.strip()]
@@ -314,22 +434,22 @@ def sf2005(contest_ids, over, under, sep, ctx):
     return ballots
 
 def sf2019(ctx):
-    with open(ctx['path'] + '/ContestManifest.json') as f:
+    with open(ctx['path'] + '/ContestManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             if i['Description'] == ctx['office'].upper():
                 contest_id = i['Id']
                 ranks = i['NumOfRanks']
     candidates = {}
-    with open(ctx['path'] + '/CandidateManifest.json') as f:
+    with open(ctx['path'] + '/CandidateManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             if i['ContestId'] == contest_id:
                 candidates[i['Id']] = i['Description']
     precincts = {}
-    with open(ctx['path'] + '/PrecinctPortionManifest.json') as f:
+    with open(ctx['path'] + '/PrecinctPortionManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             precincts[i['Id']] = i['Description'].split()[1]
     ballots = []
-    with open(ctx['path'] + '/CvrExport.json') as f:
+    with open(ctx['path'] + '/CvrExport.json', encoding='utf8') as f:
         for contests in json.load(f)['Sessions']:
             if contests['Original']['IsCurrent']:
                 current_contests = contests['Original']
@@ -338,6 +458,7 @@ def sf2019(ctx):
             precinct = precincts[current_contests['PrecinctPortionId']]
             for contest in current_contests['Contests']:
                 if contest['Id'] == contest_id:
+                    ballot = UserList([SKIPPEDRANK] * ranks)
                     ballot = UserList([SKIPPEDRANK] * ranks)
                     for mark in contest['Marks']:
                         candidate = candidates[mark['CandidateId']]
@@ -359,7 +480,7 @@ def sf2019(ctx):
             
 def utah(ctx):
     ballots = []
-    with open(ctx['path']) as f:
+    with open(ctx['path'], encoding='utf8') as f:
         next(f)
         for b in f:
             ballots.append(
@@ -370,7 +491,7 @@ def utah(ctx):
 
 def ep(ctx):
     ballots = []
-    with open(ctx['path']) as f:
+    with open(ctx['path'], encoding='utf8') as f:
         next(f)
         for b in csv.reader(f):
             ballots.append(

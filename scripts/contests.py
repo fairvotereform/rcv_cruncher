@@ -6,8 +6,9 @@ import re
 # cruncher imports
 from .cache_helpers import tmpsave
 from .parsers import santafe, santafe_id, maine, minneapolis, \
-    sf, sfnoid, old, prm, burlington, sf2019, utah, ep
-from .tabulation import rcv_single_winner, stv_fractional_ballot, stv_whole_ballot, sequential_rcv
+    sf, sfnoid, old, prm, burlington, sf2019, utah, ep, dominion5_10
+from .tabulation import rcv_single_winner, stv_fractional_ballot, \
+    stv_whole_ballot, sequential_rcv, rcv_multiWinner_thresh15, until2rcv
 
 
 ##########################
