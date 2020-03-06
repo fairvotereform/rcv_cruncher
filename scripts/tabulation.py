@@ -896,9 +896,9 @@ def condorcet(ctx):
 
     _, _, condorcet_winner = condorcet_tables(ctx)
     if winner(ctx)[0] == condorcet_winner:
-        return True
+        return "Yes"
     else:
-        return False
+        return "No"
 
     # # first round winner is the condorcet winner
     # if len(round_by_round_trimmed(ctx)) == 1:
@@ -921,11 +921,14 @@ def condorcet(ctx):
 
 def come_from_behind(ctx):
     """
-    True if rcv winner is not first round leader
+    "yes" if rcv winner is not first round leader, else "no"
 
     In the case of multi-winner elections, this result will only pertain to the first candidate elected.
     """
-    return winner(ctx)[0] != round_by_round_trimmed(ctx)[0][0][0]
+    if winner(ctx)[0] != round_by_round_trimmed(ctx)[0][0][0]:
+        return "Yes"
+    else:
+        return "No"
 
 
 def final_round_active_votes(ctx):

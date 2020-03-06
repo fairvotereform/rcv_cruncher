@@ -24,6 +24,60 @@ def write_stats(contest):
     contest['results_fid'].writerow([results[fun.__name__] for fun in contest['func_list']])
 
 
+def stats_double_check(contest):
+
+    ############################
+    # calculated outputs
+    all_candidates = candidates(contest)
+    first_round_active = first_round_active_votes(contest)
+    final_round_active = final_round_active_votes(contest)
+    n_exhaust = total_exhausted(contest)
+    n_undervote = total_undervote(contest)
+    n_ballots = len(ballots_ranks(contest))
+    n_ranked_single = ranked_single(contest)
+    n_ranked_multiple = ranked_multiple(contest)
+
+    n_first_round_exhaust_by_overvote = 0
+    if contest['break_on_overvote']:
+        n_first_round_exhaust_by_overvote = first_round_overvote(contest)
+
+    n_first_round_exhaust_by_skipped_rankings = 0
+    if contest['break_on_repeated_skipvotes']:
+        n_first_round_exhaust_by_skipped_rankings = sum(i == 0 for i in repeated_skipvote_ind(contest))
+
+    ############################
+    # secondary crosschecks
+    # add up numbers a second way to make sure they match
+
+    # The number of exhausted ballots should equal
+    # the difference between the first round active ballots and the final round active ballots
+    # PLUS any ballot exhausted in the first round due to overvote or repeated skipped ranks
+    n_exhaust_crosscheck = first_round_active - final_round_active + \
+                           n_first_round_exhaust_by_overvote + n_first_round_exhaust_by_skipped_rankings
+
+    # The number of undervote ballots should equal
+    # the difference between the total number of ballots and
+    # the first round active ballots,
+    n_undervote_crosscheck = n_ballots - first_round_active - \
+                             n_first_round_exhaust_by_overvote - n_first_round_exhaust_by_skipped_rankings
+
+    n_ranked_single_crosscheck = sum(len(set(i) & all_candidates) == 1 for i in ballots_ranks(contest))
+    n_ranked_multiple_crosscheck = sum(len(set(i) & all_candidates) > 1 for i in ballots_ranks(contest))
+
+    problem = False
+    if n_exhaust_crosscheck != n_exhaust:
+        problem = True
+    if n_undervote_crosscheck != n_undervote:
+        problem = True
+    if n_ranked_single_crosscheck != n_ranked_single:
+        problem = True
+    if n_ranked_multiple_crosscheck != n_ranked_multiple:
+        problem = True
+
+    if problem:
+        print(' ********* stat_double_check: failed', end='')
+
+
 def write_converted_cvr(contest):
     """
     Convert cvr into common csv format and write out
@@ -279,7 +333,8 @@ def main():
     no_stats_contests = []
     for contest in sorted(contest_set, key=lambda x: x['date']):
 
-        print(contest['dop'])
+        print()
+        print(contest['dop'], end='')
 
         contest['common_cvr_dir'] = common_cvr_dir
         write_converted_cvr(contest)
@@ -308,6 +363,8 @@ def main():
         write_rcv(contest)
 
         write_stats(contest)
+        stats_double_check(contest)
+
         contest['candidate_details'] = prepare_candidate_details(contest)
 
     write_candidate_details(contest_set, candidate_details_fpath)

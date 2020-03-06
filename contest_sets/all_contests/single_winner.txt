@@ -8,6 +8,7 @@ num_winners
 unique_id
 contest_winner
 number_of_candidates
+number_of_rounds
 final_round_winner_vote
 final_round_winner_percent
 final_round_active_votes

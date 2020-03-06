@@ -6,7 +6,6 @@ SKIPPEDRANK = -1
 OVERVOTE = -2
 WRITEIN = 'writeIns'
 
-
 """
 undervote = matching the non-rcv context, an undervote is when no marks are made 
 on the ballot for a contest (a blank ballot for that contest)

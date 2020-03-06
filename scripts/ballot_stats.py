@@ -13,7 +13,7 @@ are found in tabulation.py
 from collections import Counter
 
 # cruncher imports
-from .definitions import SKIPPEDRANK, OVERVOTE, isInf
+from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN
 from .cache_helpers import save
 from .tabulation import ballots_ranks, cleaned_ranks, finalist_ind, candidates_noWriteIns
 
@@ -295,7 +295,7 @@ def ranked_single(ctx):
     '''
     The number of voters that validly used only a single ranking
     '''
-    return sum(len(b) == 1 for b in cleaned_ranks(ctx))
+    return sum(len(set(b) - {OVERVOTE, SKIPPEDRANK}) == 1 for b in ballots_ranks(ctx))
 
 
 @save
@@ -303,7 +303,7 @@ def ranked_multiple(ctx):
     '''
     The number of voters that validly use more than one ranking.
     '''
-    return sum(len(b) > 1 for b in cleaned_ranks(ctx))
+    return sum(len(set(b) - {OVERVOTE, SKIPPEDRANK}) == 1 for b in ballots_ranks(ctx))
 
 
 @save
@@ -444,4 +444,4 @@ def undervote(ctx):
     """
     Returns a boolean list with True indicating ballots that were undervotes (left blank)
     """
-    return [len(x) == 0 for x in cleaned_ranks(ctx)]
+    return [set(x) == {SKIPPEDRANK} for x in ballots_ranks(ctx)]
