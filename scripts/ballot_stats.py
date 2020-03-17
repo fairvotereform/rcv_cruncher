@@ -13,16 +13,17 @@ are found in tabulation.py
 from collections import Counter
 
 # cruncher imports
-from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN
+from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, EXHAUSTED_BY_OVERVOTE, \
+    EXHAUSTED_BY_REPEATED_SKIPVOTE, EXHAUSTED_BY_RANK_LIMIT, EXHAUSTED_BY_ABSTENTION, UNDERVOTE
 from .cache_helpers import save
-from .tabulation import ballots_ranks, cleaned_ranks, finalist_ind, candidates_noWriteIns
+from .tabulation import ballots, cleaned, finalist_ind, candidates_no_writeIns
 
 
 @save
 def any_repeat(ctx):
     """
-        Number of ballots that included one at least one candidate that
-        received more than once ranking
+    Number of ballots that included one at least one candidate that
+    received more than once ranking
     """
     return sum(v for k, v in count_duplicates(ctx).items() if k > 1)
 
@@ -50,7 +51,7 @@ def effective_ballot_length(ctx):
     A list of validly ranked choices, and how many ballots had that number of
     valid choices.
     """
-    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned_ranks(ctx))).items()))
+    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned(ctx))).items()))
 
 
 @save
@@ -59,7 +60,7 @@ def exhausted(ctx):
     Returns a boolean list indicating which ballots were exhausted.
     Does not include undervotes as exhausted.
     """
-    return [True if x != 'not_exhausted' and x is not None
+    return [True if x != NOT_EXHAUSTED and x != UNDERVOTE
             else False for x in exhaustion_check(ctx)]
 
 
@@ -70,7 +71,7 @@ def exhausted_by_abstention(ctx):
     True if ballot was exhausted without being fully ranked and the
     cause of exhaustion was not overvotes or skipped rankings.
     """
-    return [True if i == 'abstention' else False for i in exhaustion_check(ctx)]
+    return [True if i == EXHAUSTED_BY_ABSTENTION else False for i in exhaustion_check(ctx)]
 
 
 @save
@@ -80,7 +81,7 @@ def exhausted_or_undervote(ctx):
     True when ballot when ballot was exhausted OR left blank (undervote)
     False otherwise
     """
-    return [True if x != 'not_exhausted' else False for x in exhaustion_check(ctx)]
+    return [True if x != NOT_EXHAUSTED or x == UNDERVOTE else False for x in exhaustion_check(ctx)]
 
 
 @save
@@ -89,17 +90,16 @@ def exhausted_by_overvote(ctx):
     Returns bool list with elements corresponding to ballots.
     True if ballot was exhausted due to overvote
     """
-    return [True if i == 'overvote' else False for i in exhaustion_check(ctx)]
+    return [True if i == EXHAUSTED_BY_OVERVOTE else False for i in exhaustion_check(ctx)]
 
 
 @save
 def exhausted_by_rank_limit(ctx):
     """
     Returns bool list with elements corresponding to ballots.
-    True if ballot was exhausted AND fully ranked and the
-    cause of exhaustion was not overvotes or skipped rankings.
+    True if ballot was exhausted AND final rank was used and reached.
     """
-    return [True if i == 'rank_limit' else False for i in exhaustion_check(ctx)]
+    return [True if i == EXHAUSTED_BY_RANK_LIMIT else False for i in exhaustion_check(ctx)]
 
 
 @save
@@ -108,7 +108,7 @@ def exhausted_by_skipvote(ctx):
     Returns bool list with elements corresponding to ballots.
     True if ballot was exhausted due to repeated_skipvotes
     """
-    return [True if i == 'repeated_skipvotes' else False for i in exhaustion_check(ctx)]
+    return [True if i == EXHAUSTED_BY_REPEATED_SKIPVOTE else False for i in exhaustion_check(ctx)]
 
 
 @save
@@ -118,14 +118,14 @@ def exhaustion_check(ctx):
     was exhausted in a single-winner rcv contest.
 
     Possible list values are:
-    - overvote: if an overvote was the cause of exhaustion (depends on break_on_overvote manifest value)
-    - repeated_skipvotes: if repeated skipvotes were the cause of exhaustion
+    - EXHAUST_BY_OVERVOTE: if an overvote was the cause of exhaustion (depends on break_on_overvote manifest value)
+    - EXHAUSTED_BY_REPEATED_SKIPVOTE: if repeated skipvotes were the cause of exhaustion
     (depends on break_on_repeated_skipvotes manifest value)
-    - not_exhausted: if finalist was present on the ballot and was ranked higher than an exhaust condition
+    - NOT_EXHAUSTED: if finalist was present on the ballot and was ranked higher than an exhaust condition
     (overvote or repeated_skipvotes)
-    - rank_limit: if no finalist was present on the ballot and the ballot was fully ranked
-    - abstention: if no finalist was present on the ballot and the ballot was NOT fully ranked
-    - None (Nonetype): if the ballot was undervote, and therefore neither active nor exhaustable
+    - EXHAUSTED_BY_RANK_LIMIT: if no finalist was present on the ballot and all ballot ranks were considered
+    - EXHAUSTED_BY_ABSTENTION: if no finalist was present on the ballot and the ballot was NOT fully ranked
+    - UNDERVOTE : if the ballot was undervote, and therefore neither active nor exhaustable
     """
 
     # gather ballot info
@@ -140,7 +140,7 @@ def exhaustion_check(ctx):
     # loop through each ballot
     for is_fully_ranked, over_idx, repskip_idx, final_idx, is_under in ziplist:
 
-        exhaust_cause = None
+        exhaust_cause = UNDERVOTE
 
         # if the ballot is an undervote,
         # nothing else to check
@@ -154,17 +154,17 @@ def exhaustion_check(ctx):
 
         # assemble dictionary of possible exhaustion causes and then remove any
         # that don't apply based on the contest rules
-        idx_dictlist = [{'exhaust_cause': 'overvote', 'idx': over_idx},
-                        {'exhaust_cause': 'repeated_skipvotes', 'idx': repskip_idx},
-                        {'exhaust_cause': 'not_exhausted', 'idx': final_idx}]
+        idx_dictlist = [{'exhaust_cause': EXHAUSTED_BY_OVERVOTE, 'idx': over_idx},
+                        {'exhaust_cause': EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx},
+                        {'exhaust_cause': NOT_EXHAUSTED, 'idx': final_idx}]
 
         # check if overvote can cause exhaust
         if ctx['break_on_overvote'] is False:
-            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'overvote']
+            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_OVERVOTE]
 
         # check if skipvotes can cause exhaustion
         if ctx['break_on_repeated_skipvotes'] is False:
-            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != 'repeated_skipvotes']
+            idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_REPEATED_SKIPVOTE]
 
         # what comes first on ballot: overvote, skipvotes, or finalist?
         min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
@@ -174,9 +174,9 @@ def exhaustion_check(ctx):
             # means this ballot contained none of the three, it will be exhausted
             # either for rank limit or abstention
             if is_fully_ranked:
-                exhaust_cause = 'rank_limit'
+                exhaust_cause = EXHAUSTED_BY_RANK_LIMIT
             elif missing_finalist:
-                exhaust_cause = 'abstention'
+                exhaust_cause = EXHAUSTED_BY_ABSTENTION
             else:
                 print('if final_idx is inf, then missing_finalist should be true. This should never be reached')
                 exit(1)
@@ -196,7 +196,7 @@ def first_round(ctx):
     if the ballot is empty, can also return None
     """
     return [next((c for c in b if c != SKIPPEDRANK), None)
-            for b in ballots_ranks(ctx)]
+            for b in ballots(ctx)['ranks']]
 
 
 @save
@@ -227,9 +227,11 @@ def fully_ranked(ctx):
         Note: cleaned ballots already should have skipped rankings, overvotes, and
         repeated rankings given to a single candidate all removed
     """
+
+    fix this
     return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
-                              # (the ballot is effectively fully ranked)
-            or (set(b) & candidates_noWriteIns(ctx)) == candidates_noWriteIns(ctx)
+            # (the ballot is effectively fully ranked)
+            or (set(b) & candidates_no_writeIns(ctx)) == candidates_no_writeIns(ctx)
             # or voters ranked every possible candidate
             for a, b in zip(ballots_ranks(ctx), cleaned_ranks(ctx))]
 
@@ -239,7 +241,7 @@ def has_skipvote(ctx):
     """
     Returns boolean list indicating if ballot contains any skipvotes
     """
-    return [SKIPPEDRANK in b for b in ballots_ranks(ctx)]
+    return [SKIPPEDRANK in b for b in ballots(ctx)['ranks']]
 
 
 def includes_duplicate_ranking(ctx):

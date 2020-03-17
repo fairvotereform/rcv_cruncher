@@ -1,9 +1,9 @@
 candidate,r1_percent,r1_count,r1_transfer
-Larry Ranallo,23.709,941.0,1
-Mark Fox,3.855,153.0,0
-Kevin Reich,50.315,1997.0,1
 writeIns,0.076,3.0,-3
-Geneva Hanvik,13.479,535.0,0
 Thomas Alessi,8.566,340.0,0
+Kevin Reich,50.315,1997.0,1
+Mark Fox,3.855,153.0,0
+Larry Ranallo,23.709,941.0,1
+Geneva Hanvik,13.479,535.0,0
 exhaust,0.0,0.0,1
-colsum,99.99999999999999,3969.0,0
+colsum,100.0,3969.0,0

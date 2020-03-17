@@ -22,6 +22,28 @@ exhausted ballot = when all rankings on a ballot have been eliminated. Specifica
 and undervote.
 """
 
+UNDERVOTE = -98
+NOT_EXHAUSTED = -99
+EXHAUSTED_BY_RANK_LIMIT = -100
+EXHAUSTED_BY_ABSTENTION = -101
+EXHAUSTED_BY_OVERVOTE = -102
+EXHAUSTED_BY_REPEATED_SKIPVOTE = -103
+
+"""
+exhaust by overvote - if rules apply, exhaust ballot when overvote is reached
+
+exhaust by repeated skipped rank - if rules apply, exhaust ballot when two or skipped rankings occur. Only counts
+if there are valid marks after the skipped ranks. If not, then the ballot would be considered as exhausted by abstention.
+
+exhaust by abstention - when the final series of marks on the ballot are all skipped.
+
+exhaust by rank limit - an inclusive category. Any exhausted ballot in which the final rank was marked and reached.
+Most directly refers to ballots that validly used all ranks before exhausting. Though also refers to ballots
+that did have irregular marks (skipped rank, duplicate rank, overvote) that were skipped over due 
+to rules prior to reaching the final rank. Any ballot exhausted not by overvote, repeated skipped ranks, or abstention.
+"""
+
+
 ########################
 # helper funcs
 

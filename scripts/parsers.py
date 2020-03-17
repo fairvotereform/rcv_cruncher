@@ -1,6 +1,7 @@
 from pathlib import Path
 from glob import glob
 from collections import UserList, defaultdict
+from gmpy2 import mpq as Fraction
 import os
 import csv
 import json
@@ -119,11 +120,12 @@ def dominion5_10(ctx):
             ballot_IDs.append(ballotID)
             ballot_types.append(ballotType)
 
-    ballot_dict = {'ballots': [{'ranks': b, 'weight': 1} for b in ballot_ranks],
-                   'extras': {'ballotID': ballot_IDs,
-                              'precinct': ballot_precincts,
-                              'ballot_type': ballot_types}
-                   }
+    ballot_dict = {'ranks': ballot_ranks,
+                   'weight': [Fraction(1) for b in ballot_ranks],
+                   'ballotID': ballot_IDs,
+                   'precinct': ballot_precincts,
+                   'ballot_type': ballot_types}
+
     return ballot_dict
 
 

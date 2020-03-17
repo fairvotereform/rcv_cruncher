@@ -1,7 +1,7 @@
 candidate,r1_percent,r1_count,r1_transfer
-John Quincy,63.616,2551.0,7
-Gregg A Iverson,18.304,734.0,1
-David A. Alvarado,17.556,704.0,0
+David A. Alvarado,17.556,704.0,0.0
 writeIns,0.524,21.0,-21
+Gregg A Iverson,18.304,734.0,1
+John Quincy,63.616,2551.0,7
 exhaust,0.0,0.0,13
-colsum,100.0,4010.0,0
+colsum,100.0,4010.0,0.0

@@ -566,3 +566,403 @@ def seq_stv(ctx):
 @save
 def losers(ctx):
     return set(candidates(ctx)) - {winner(ctx)}
+
+
+
+@save
+def sequential_rcv(ctx):
+    pass
+
+
+@save
+def stv_fractional_ballot(ctx):
+    """
+    Static threshold multi-winner elections with fractional surplus transfer
+    """
+
+    ctx['use_multiwinner_rounds'] = True
+
+    rounds = []
+    outcomes = []
+
+    # select all non-empty ballots and pair each with Fraction(1)
+    bs = [(b, Fraction(1)) for b in cleaned(ctx) if b]
+
+    # set win threshold
+    threshold = int(len(bs)/(ctx['num_winners']+1)) + 1
+
+    # run rounds until enough winners are found
+    round_num = 0
+    num_winners = 0
+    while ctx['num_winners'] == num_winners:
+
+        round_num += 1
+
+        # is the number of candidates remaining equal
+        # to the number of winner left to elect?
+        # If so, they win
+        # this is necessary step when using a static threshold
+        num_winners = len({i for i in outcomes if i['round_elected']})
+        num_remaining = 0
+
+
+        # accumulate fractional values currently held by
+        # first-ranked candidate on each ballot
+        totals = defaultdict(int)
+        for cand_list, ballot_frac in bs:
+            totals[cand_list[0]] += ballot_frac
+
+        # sort totals dict into descending order
+        ordered = sorted(totals.items(), key=lambda x: -x[1])
+        rounds.append(ordered)
+
+
+        # split ordered totals into two lists
+        names, tallies = zip(*ordered)
+
+        # any candidates over the threshold?
+        if any([i > threshold for i in tallies]):
+
+            looking_for_winners = True
+            round_winners = []
+
+            while looking_for_winners:
+
+                round_winner = names[0]
+                round_others = names[1:]
+
+                # then add to contest winners list
+                outcomes.append({'name': round_winner, 'round_elected': round_num,
+                                'round_eliminated': None})
+
+                # fractional surplus to transfer from each winner ballot
+                surplus_percent = (tallies[0] - threshold) / tallies[0]
+
+                # if surplus to transfer is non-zero
+                if surplus_percent:
+
+                    # which ballots had the winner on top
+                    # and need to be fractionally split
+                    winner_in_active_rank = [cand_list[0] == round_winner for cand_list, ballot_frac in bs]
+
+                    # split out tuples
+                    split_cand_lists, split_ballot_fracs = zip(*bs)
+
+                    # adjust ballot fracs for winner ballots
+                    new_ballot_fracs = [ballot_frac * surplus_percent if winner_active else ballot_frac
+                                        for ballot_frac, winner_active in zip(split_ballot_fracs, winner_in_active_rank)]
+
+                    # stitch cand_lists back with new ballot fracs
+                    bs = list(zip(split_cand_lists, new_ballot_fracs))
+
+                # remove winner from ballots
+                bs = [(keep(round_others, cand_list), ballot_frac) for cand_list, ballot_frac in bs]
+
+                # remove newly-empty ballots
+                bs = [b for b in bs if b[0]]
+
+                # update winner list for round
+                round_winners.append(round_winner)
+
+                # identify next round-winner ordering
+                filtered_ordering = [(cand, cand_tally)
+                                    for cand, cand_tally in ordered if cand not in round_winners]
+
+                # any candidates left?
+                if filtered_ordering:
+
+                    names, tallies = zip(*filtered_ordering)
+
+                    # if there are no more candidates over the threshold, then move to the next round
+                    if any([i > threshold for i in tallies]) is False:
+                        looking_for_winners = False
+                else:
+
+                    # no candidates left, exit loop
+                    looking_for_winners = False
+
+                # if contest setting specifies only one winner per round, then move to next round
+                if ctx['use_multiwinner_rounds'] is False:
+                    looking_for_winners = False
+
+        else:  # no winner
+
+            # remove candidate from ballots that received the lowest count
+            loser_count = min(tallies)
+
+            # in case of tied losers, randomly choose one to eliminate
+            round_loser = choice([cand for cand, cand_tally in ordered if cand_tally == loser_count])
+            outcomes.append({'name': round_loser, 'round_elected': None,
+                             'round_eliminated': round_num})
+
+            # remove loser from
+            bs = ((remove(round_loser, cand_list), ballot_frac) for cand_list, ballot_frac in bs)
+
+            # remove newly-empty ballots
+            bs = [b for b in bs if b[0]]
+
+    return rounds, outcomes
+
+
+@save
+def stv_whole_ballot(ctx):
+    pass
+
+
+@save
+def rcv_multiWinner_thresh15(ctx):
+    """
+    Runs a multi winner RCV contest with whole ballot transfer. Cease runoffs when all active candidates
+    are above 15% of the rounds tally.
+
+    Return:
+        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round only contains candidates that achieved votes in that round.
+
+        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round contains all candidates.
+
+        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
+        Dicts are in round order.
+
+        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
+    """
+
+    # just filter results from until2rcv
+    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
+
+    # and create fresh candidate outcomes
+    candidate_set = candidates(ctx)
+    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
+
+    # find round where a candidate has over 50% of active round votes
+    rounds_slice_idx = 0
+    done = False
+    while not done:
+
+        # get round info
+        current_round_trimmed = rounds_trimmed[rounds_slice_idx]
+        current_round_transfer = transfers[rounds_slice_idx]
+        rounds_slice_idx += 1
+
+        # check for finish condition
+        round_finalists, round_tally = current_round_trimmed
+        round_total = sum(round_tally)
+
+        # does everyone in the round have at least 15% of round total
+        # might need to adjust rounding here
+        if all([(i/round_total) >= 0.15 for i in round_tally]):
+
+            # update winner in cand_outcomes
+            for cand in round_finalists:
+                cand_outcomes[cand]['round_elected'] = rounds_slice_idx
+
+            # update flag
+            done = True
+
+        else:
+            # who lost this round (should be the only one with negative round transfer)?
+            # update in candidate outcomes
+            round_loser = [key for key, value in current_round_transfer.items() if value < 0]
+            if len(round_loser) > 1:
+                print('should only be one round loser with eliminated votes per round in single winner rcv. debug')
+                exit(1)
+            cand_outcomes[round_loser[0]]['round_eliminated'] = rounds_slice_idx
+
+    # unnest candidate outcomes values
+    cand_outcomes = [values for key, values in cand_outcomes.items()]
+
+    return rounds_trimmed[0:rounds_slice_idx], rounds_full[0:rounds_slice_idx], \
+           transfers[0:rounds_slice_idx], cand_outcomes
+
+
+
+@save
+def rcv_single_winner(ctx):
+    """
+    Runs a single winner RCV contest.
+
+    Return:
+        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round only contains candidates that achieved votes in that round.
+
+        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round contains all candidates.
+
+        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
+        Dicts are in round order.
+
+        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
+    """
+
+    # just filter results from until2rcv
+    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
+
+    # and create fresh candidate outcomes
+    candidate_set = candidates(ctx)
+    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
+
+    # find round where a candidate has over 50% of active round votes
+    rounds_slice_idx = 0
+    done = False
+    while not done:
+
+        # get round info
+        current_round_trimmed = rounds_trimmed[rounds_slice_idx]
+        current_round_transfer = transfers[rounds_slice_idx]
+        rounds_slice_idx += 1
+
+        # check for finish condition
+        round_finalists, round_tally = current_round_trimmed
+        round_leader = round_finalists[0]
+        round_total = sum(round_tally)
+
+        # does round leader have the majority?
+        # might need to adjust rounding here
+        if round_tally[0] * 2 > round_total:
+            # update winner in cand_outcomes
+            cand_outcomes[round_leader]['round_elected'] = rounds_slice_idx
+
+            # update remaining round candidates as losing in this round
+            for cand in cand_outcomes:
+                if cand != round_leader and cand_outcomes[cand]['round_eliminated'] is None:
+                    cand_outcomes[cand]['round_eliminated'] = rounds_slice_idx
+
+            # update flag
+            done = True
+
+        else:
+            # who lost this round (should be the only one with negative round transfer)?
+            # update in candidate outcomes
+            round_loser = [key for key, value in current_round_transfer.items() if value < 0]
+            if len(round_loser) > 1:
+                print('should only be one round loser with eliminated votes per round in single winner rcv. debug')
+                exit(1)
+            cand_outcomes[round_loser[0]]['round_eliminated'] = rounds_slice_idx
+
+    # unnest candidate outcomes values
+    cand_outcomes = [values for key, values in cand_outcomes.items()]
+
+    return rounds_trimmed[0:rounds_slice_idx], rounds_full[0:rounds_slice_idx], \
+           transfers[0:rounds_slice_idx], cand_outcomes
+
+
+@save
+def until2rcv(ctx):
+    """
+    Run an rcv election until there are two candidates remaining.
+    This is might lead to more rounds than necessary to determine a winner.
+
+    Return:
+        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round only contains candidates that achieved votes in that round.
+
+        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
+        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
+        Each round contains all candidates.
+
+        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
+        Dicts are in round order.
+
+        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
+    """
+
+    # inputs
+    candidate_set = candidates(ctx)
+    cleaned_dict = deepcopy(cleaned(ctx))
+    bs = [{'ranks': ranks, 'weight': weight}
+          for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
+
+    # outputs
+    rounds_trimmed = []
+    rounds_full = []
+    transfers = []
+    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
+
+    # other loop variables
+    all_losers = []
+    round_num = 0
+    n_finalists = float('inf')
+
+    while n_finalists > 2:
+
+        round_num += 1
+
+        # round results
+        # tally ballots and reorder tallies
+        # using active rankings for each ballot,
+        # skipping empty ballots
+        active_round_candidates = set([b['ranks'][0] for b in bs if b['ranks']])
+        choices = Counter({cand: 0 for cand in active_round_candidates})
+        for b in bs:
+            if b['ranks']:
+                choices[b['ranks'][0]] += b['weight']
+
+        # sort round tallies
+        round_results = list(zip(*choices.most_common()))
+        # split round results into two tuples (index-matched)
+        round_finalists, round_tallies = round_results
+        n_finalists = len(round_finalists)
+
+        # one the first round, eliminate any candidates with zero votes right away
+        if round_num == 1:
+            all_losers += [cand for cand in candidate_set if cand not in round_finalists]
+            for cand in all_losers:
+                # remove losers from ballots
+                bs = [{'ranks': remove(cand, b['ranks']), 'weight': b['weight']} for b in bs]
+                # update candidate outcomes
+                cand_outcomes[cand]['round_eliminated'] = round_num
+
+        # add in loser/no-vote candidates for full round record
+        finalists_full = list(round_finalists) + all_losers
+        tallies_full = list(round_tallies) + ([0] * len(all_losers))
+
+        # find round loser
+        loser_count = min(round_tallies)
+        # in case of tied losers, randomly choose one to eliminate
+        round_loser = choice([cand for cand, cand_tally in zip(round_finalists, round_tallies)
+                              if cand_tally == loser_count])
+        # update candidate outcome
+        cand_outcomes[round_loser]['round_eliminated'] = round_num
+
+        # calculate transfer from loser - find loser ballots
+        round_loser_ballots = [b for b in bs if b['ranks'] and b['ranks'][0] == round_loser]
+        # count distribution from loser to other candidates and exhaustion
+        round_transfer = Counter({cand: 0 for cand in candidate_set.union({'exhaust'})})
+        for b in round_loser_ballots:
+            if len(b['ranks']) > 1:
+                round_transfer[b['ranks'][1]] += b['weight']
+            else:
+                round_transfer['exhaust'] += b['weight']
+
+        # record ballot loss from loser
+        round_transfer[round_loser] = sum([b['weight'] for b in round_loser_ballots]) * -1
+
+        # remove round loser from ballots, all ranking spots.
+        # removing the round loser from all ranking spots now is equivalent
+        # to waiting and skipping over an already-eliminated candidate
+        # once they become the active ranking in a later round.
+        bs = [{'ranks': remove(round_loser, b['ranks']), 'weight': b['weight']} for b in bs]
+
+        # append round info to list
+        transfers.append(round_transfer)
+        all_losers.append(round_loser)
+        rounds_trimmed.append(round_results)
+        rounds_full.append([tuple(finalists_full), tuple(tallies_full)])
+
+    # update winner
+    cand_outcomes[round_finalists[0]]['round_elected'] = round_num
+
+    # unnest candidate outcomes values
+    cand_outcomes = [values for key, values in cand_outcomes.items()]
+
+    # final_weights
+    final_weights = [b['weight'] for b in bs]
+
+    return rounds_trimmed, rounds_full, transfers, cand_outcomes, final_weights
+

@@ -1,14 +1,13 @@
-from collections import Counter, defaultdict
+from collections import Counter
 import pandas as pd
 import numpy as np
 from itertools import combinations
 from gmpy2 import mpq as Fraction
-from random import choice
-from copy import deepcopy, copy
+from copy import deepcopy
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN, \
-    remove, keep, index_inf, before, replace, merge_writeIns
+    index_inf, replace, merge_writeIns
 from .cache_helpers import save
 
 
@@ -21,18 +20,10 @@ def ballots(ctx):
     ballot_ranks - can contain candidate name, or OVERVOTE, WRITEIN, or SKIPPEDRANK constants
 
     {
-    'ballots': [
-                {'ranks': [ballot_ranks], 'weight': real number} # ballot 1
-                {'ranks': [ballot_ranks], 'weight': real number} # ballot 2
-                {'ranks': [ballot_ranks], 'weight': real number} # ballot 3
-                ...
-                ]
-    'extras': {
-                'precinct': [per-ballot precinct id],
-                'party': [per-ballot party id],
-                ...
-                'any_other_per_ballot_info': [any other per ballot info]
-             }
+    'ranks' - list of marks,
+    'weight' - (default 1) weight given to ballot,
+    ...
+    ... any other fields
     }
     """
     res = ctx['parser'](ctx)
@@ -42,41 +33,24 @@ def ballots(ctx):
     # writeIns that may remain at this step
 
     if isinstance(res, list):
-        res = [merge_writeIns(b) for b in res]
-        return {
-                'ballots': [{'ranks': b, 'weight': Fraction(1)} for b in res],
-                'extras': {}
-               }
+        return {'ballots': res,
+                'weight': [Fraction(1) for b in res]}
     else:
-        if 'ballots' not in res or 'extras' not in res:
+        if 'ranks' not in res or 'weight' not in res:
             print('ballot dict is not properly formatted. debug')
             exit(1)
 
-        res['ballots'] = [{'ranks': merge_writeIns(b['ranks']), 'weight': b['weight']} for b in res['ballots']]
-        return res
-
-
-def ballots_ranks(ctx):
-    """
-    Return just list of ballot rank lists
-    """
-    return [d['ranks'] for d in ballots(ctx)['ballots']]
+    return res
 
 
 @save
-def candidates(ctx):
-    cans = set()
-    for b in ballots_ranks(ctx):
-        cans.update(b)
-    return cans - {OVERVOTE, SKIPPEDRANK}
-
-
-@save
-def candidates_noWriteIns(ctx):
-    cans = set()
-    for b in ballots_ranks(ctx):
-        cans.update(b)
-    return cans - {OVERVOTE, SKIPPEDRANK, WRITEIN}
+def ballots_writeIns_merged(ctx):
+    """
+    Return ballots dict with all writeIn candidates merged together.
+    """
+    ballot_dict = deepcopy(ballots(ctx))
+    ballot_dict['ranks'] = [merge_writeIns(b) for b in ballot_dict['ranks']]
+    return ballot_dict
 
 
 @save
@@ -92,12 +66,10 @@ def cleaned(ctx):
     """
 
     # get ballots
-    ballot_dict = ballots(ctx)
-    bs = [d['ranks'] for d in ballot_dict['ballots']]
-    weights = [d['weight'] for d in ballot_dict['ballots']]
+    ballot_dict = deepcopy(ballots(ctx))
 
     new = []
-    for b in bs:
+    for b in ballot_dict['ranks']:
         result = []
         # look at successive pairs of rankings - zip list with itself offset by 1
         for elem_a, elem_b in zip(b, b[1:]+[None]):
@@ -109,16 +81,51 @@ def cleaned(ctx):
                 result.append(elem_a)
         new.append(result)
 
-    new_ballot_dict = {'ballots': [{'ranks': ranks, 'weight': weight} for ranks, weight in zip(new, weights)],
-                       'extras': ballot_dict['extras']}
-    return new_ballot_dict
+    ballot_dict['ranks'] = new
+    return ballot_dict
 
 
-def cleaned_ranks(ctx):
+@save
+def cleaned_writeIns_merged(ctx):
     """
-    Return just list of ballot rank lists
+    Return ballots dict with all writeIn candidates merged together.
     """
-    return [d['ranks'] for d in cleaned(ctx)['ballots']]
+    # get ballots
+    ballot_dict = deepcopy(ballots_writeIns_merged(ctx))
+
+    new = []
+    for b in ballot_dict['ranks']:
+        result = []
+        # look at successive pairs of rankings - zip list with itself offset by 1
+        for elem_a, elem_b in zip(b, b[1:]+[None]):
+            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPPEDRANK}:
+                break
+            if ctx['break_on_overvote'] and elem_a == OVERVOTE:
+                break
+            if elem_a not in [*result, OVERVOTE, SKIPPEDRANK]:
+                result.append(elem_a)
+        new.append(result)
+
+    ballot_dict['ranks'] = new
+    return ballot_dict
+
+
+@save
+def candidates(ctx):
+    cans = set()
+    for b in ballots(ctx)['ranks']:
+        cans.update(b)
+    return cans - {OVERVOTE, SKIPPEDRANK}
+
+
+@save
+def candidates_merged_writeIns(ctx):
+    return set(merge_writeIns(candidates(ctx)))
+
+
+@save
+def candidates_no_writeIns(ctx):
+    return candidates_merged_writeIns - {WRITEIN}
 
 
 @save
@@ -128,9 +135,10 @@ def convert_cvr(ctx):
     One ballot per row, columns: ID, extra_info, rank1, rank2 ...
     """
     ballot_dict = deepcopy(ballots(ctx))
-    bs = [b['ranks'] for b in ballot_dict['ballots']]
-    weights = [b['weight'] for b in ballot_dict['ballots']]
-    extras = ballot_dict['extras']
+    bs = ballot_dict['ranks']
+    weight = ballot_dict['weight']
+    del ballot_dict['ranks']
+    del ballot_dict['weight']
 
     # how many ranks?
     num_ranks = max(len(i) for i in bs)
@@ -143,16 +151,18 @@ def convert_cvr(ctx):
     # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
     bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
 
+    ballot_dict['ranks'] = bs
+
     # ballotIDs in extras?
-    if 'ballotID' not in extras:
-        extras['ballotID'] = [i for i in range(1, len(bs) + 1)]
+    if 'ballotID' not in ballot_dict:
+        ballot_dict['ballotID'] = [i for i in range(1, len(bs) + 1)]
 
     # assemble output_table, start with extras
-    output_df = pd.DataFrame.from_dict(extras)
+    output_df = pd.DataFrame.from_dict(ballot_dict)
 
     # are weights all one, then dont add to output
-    if not all([i == 1 for i in weights]):
-        output_df['weight'] = weights
+    if not all([i == 1 for i in weight]):
+        output_df['weight'] = weight
 
     # add in rank columns
     for i in range(1, num_ranks + 1):
@@ -169,16 +179,12 @@ def convert_cvr(ctx):
 ########################################################################################
 # rcv tabulation functions
 
-# @save
-# def bottom_up_stv(ctx):
-#     ballots = deepcopy(cleaned(ctx))
-#     rounds = []
-#     while True:
-#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
-#         finalists,_ = rounds[-1]
-#         if len(finalists) == ctx['number']:
-#             return finalists
-#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
+###################
+# INTERFACE
+
+@save
+def rcv_obj(ctx):
+    return ctx['rcv_type'](ctx)
 
 
 def round_by_round_trimmed(ctx):
@@ -196,8 +202,7 @@ def round_by_round_trimmed(ctx):
      ...,
      [(final round candidates), (final round tally)]]
     """
-    rounds_trimmed, _, _, _ = ctx['rcv_type'](ctx)
-    return rounds_trimmed
+    return rcv_obj(ctx).results()['rounds_trimmed']
 
 
 def round_by_round_full(ctx):
@@ -215,8 +220,7 @@ def round_by_round_full(ctx):
      ...,
      [(final round candidates), (final round tally)]]
     """
-    _, rounds_full, _, _ = ctx['rcv_type'](ctx)
-    return rounds_full
+    return rcv_obj(ctx).results()['rounds_full']
 
 
 def round_by_round_transfers(ctx):
@@ -234,8 +238,7 @@ def round_by_round_transfers(ctx):
     {cand1: transfer_count. cand2: transfer_count, ... exhaust: transfer_count}, # final round
     ]
     """
-    _, _, transfers, _ = ctx['rcv_type'](ctx)
-    return transfers
+    return rcv_obj(ctx).results()['transfers']
 
 
 def candidate_outcomes(ctx):
@@ -247,9 +250,234 @@ def candidate_outcomes(ctx):
     round_elected: None (if loser) or integer
     round_eliminated: None (if winner) or integer
     """
-    _, _, _, outcomes = ctx['rcv_type'](ctx)
-    return outcomes
+    return rcv_obj(ctx).results()['candidate_outcomes']
 
+
+def final_weights(ctx):
+    """
+    Run the rcv contest and return a list of final ballot weights. Weights may have started out
+    not equal to 1 (weighted poll) or have been reduced to below as a result of fractional vote transfers.
+    """
+    return rcv_obj(ctx).results()['final_weights']
+
+
+####################
+# OUTCOME STATS
+
+@save
+def contest_winner(ctx):
+    '''
+    The winner(s) of the election.
+    '''
+    # Horrible Hack!
+    # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
+    if ctx['place'] == 'Burlington' and ctx['date'] == '2006':
+        return 'Bob Kiss'
+    return ", ".join([str(w).title() for w in winner(ctx)])
+
+
+@save
+def condorcet(ctx):
+    '''
+    Is the winner the condorcet winner?
+    The condorcet winner is the candidate that would win a 1-on-1 election versus
+    any other candidate in the election. Note that this calculation depends on
+    jurisdiction dependant rule variations.
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
+    '''
+
+    _, _, condorcet_winner = condorcet_tables(ctx)
+    if winner(ctx)[0] == condorcet_winner:
+        return "Yes"
+    else:
+        return "No"
+
+
+def come_from_behind(ctx):
+    """
+    "yes" if rcv winner is not first round leader, else "no"
+
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
+    """
+    if winner(ctx)[0] != round_by_round_trimmed(ctx)[0][0][0]:
+        return "Yes"
+    else:
+        return "No"
+
+
+def final_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the final round. (weighted)
+    '''
+    return float(sum(round_by_round_trimmed(ctx)[-1][1]))
+
+
+def first_round_active_votes(ctx):
+    '''
+    The number of votes that were awarded to any candidate in the first round. (weighted)
+    '''
+    return float(sum(round_by_round_trimmed(ctx)[0][1]))
+
+
+def final_round_winner_percent(ctx):
+    '''
+    The percent of votes for the winner in the final round.
+    If more than one winner, return the final round count for the first winner elected. (weighted)
+    '''
+    obj = rcv_obj(ctx)
+    round_dict = obj.get_round_dict(obj.n_rounds())
+    return float(round_dict[winner(ctx)[0]]/sum(round_dict.values()))
+
+
+def final_round_winner_vote(ctx):
+    '''
+    The number of votes for the winner in the final round.
+    If more than one winner, return the final round count for the first winner elected. (weighted)
+    '''
+    obj = rcv_obj(ctx)
+    round_dict = obj.get_round_dict(obj.n_rounds())
+    return round_dict[winner(ctx)[0]]
+
+
+def final_round_winner_votes_over_first_round_valid(ctx):
+    '''
+    The number of votes the winner receives in the final round divided by the
+    number of valid votes in the first round.
+
+    If more than one winner, return the final round count for the first winner elected. (weighted)
+    '''
+    return float(final_round_winner_vote(ctx) / first_round_active_votes(ctx))
+
+
+def first_round_winner_place(ctx):
+    '''
+    In terms of first round votes, what place the eventual winner came in.
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
+    '''
+    return round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0]) + 1
+
+
+def first_round_winner_percent(ctx):
+    '''
+    The percent of votes for the winner in the first round.
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
+    '''
+    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
+    return float(round_by_round_trimmed(ctx)[0][1][wind] / sum(round_by_round_trimmed(ctx)[0][1]))
+
+
+def first_round_winner_vote(ctx):
+    '''
+    The number of votes for the winner in the first round.
+    In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
+    '''
+    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
+    return float(round_by_round_trimmed(ctx)[0][1][wind])
+
+
+def finalists(ctx):
+    """
+    Any candidate that was active into the final round.
+    """
+    return round_by_round_trimmed(ctx)[-1][0]
+
+
+def finalist_ind(ctx):
+    """
+    Returns a list indicating the first rank on each ballot where a finalist is listed.
+    List element is Inf if no finalist is present
+    """
+    final_candidates = finalists(ctx)
+    inds = []
+
+    # loop through each ballot and check for each finalist
+    for b in ballots(ctx)['ranks']:
+        min_ind = float('inf')
+        for c in final_candidates:
+            if c in b:
+                min_ind = min(b.index(c), min_ind)
+        inds.append(min_ind)
+
+    return inds
+
+
+def number_of_winners(ctx):
+    """
+    Count how many winners a contest had.
+    """
+    return sum(c['round_elected'] is not None for c in candidate_outcomes(ctx))
+
+
+def number_of_rounds(ctx):
+    """
+    Count how many rounds a contest had.
+    """
+    return len(round_by_round_full(ctx))
+
+
+def number_of_candidates(ctx):
+    '''
+    The number of candidates on the ballot, not including write-ins.
+    '''
+    return len(candidates_no_writeIns(ctx))
+
+
+@save
+def ranked_winner(ctx):
+    """
+    Number of ballots with a non-overvote mark for the winner
+    """
+    return sum(bool(set(winner(ctx)).intersection(b)) for b in ballots(ctx)['ranks'])
+
+
+def win_threshold(ctx):
+    return rcv_obj(ctx).win_threshold()
+
+
+@save
+def winner(ctx):
+    """
+    Return contest winner names in order of election.
+    """
+    elected_candidates = [d for d in candidate_outcomes(ctx) if d['round_elected'] is not None]
+    return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
+
+
+@save
+def winners_consensus_value(ctx):
+    '''
+    The percentage of valid first round votes that rank any winner in the top 3.
+    '''
+    return winner_in_top_3(ctx) / first_round_active_votes(ctx)
+
+
+@save
+def winner_ranking(ctx):
+    """
+    Returns a dictionary with ranking-count key-values, with count
+    indicating the number of ballots in which the winner received each
+    ranking.
+    If more than one winner is elected in the contest, the value returned for this function refers to the
+    first winner elected.
+    """
+    return Counter(
+        b.index(winner(ctx)) + 1 if winner(ctx) in b else None for b in cleaned(ctx)['ranks']
+    )
+
+
+@save
+def winner_in_top_3(ctx):
+    """
+    Number of ballots that ranked any winner in the top 3 ranks. (weighted)
+    """
+    top3 = [b[:min(3, len(b))] for b in ballots(ctx)['ranks']]
+    top3_check = [set(winner(ctx)).intersection(b) for b in top3]
+    return sum([weight * bool(top3) for weight, top3 in zip(ballots(ctx)['weight'], top3_check)])
+
+
+##########################
+# MISC TABULATION
 
 @save
 def condorcet_tables(ctx):
@@ -263,8 +491,11 @@ def condorcet_tables(ctx):
 
     Symmetric cells about the diagonal should sum to 100 (for the percent table).
     """
-    candidate_set = sorted(candidates(ctx))
-    cleaned_ballots = deepcopy(cleaned(ctx)['ballots'])
+    candidate_set = sorted(candidates_merged_writeIns(ctx))
+    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
+    cleaned_ballots = [{'ranks': ranks, 'weight': weight}
+                       for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
+
 
     # create data frame that will be populated and output
     condorcet_percent_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
@@ -343,43 +574,6 @@ def condorcet_tables(ctx):
     return condorcet_count_df, condorcet_percent_df, condorcet_winner
 
 
-# def rcv_ballots(clean_ballots):
-#     rounds = []
-#     ballots = remove([],deepcopy(clean_ballots))
-#     while True:
-#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
-#         finalists, tallies = rounds[-1]
-#         if tallies[0]*2 > sum(tallies):
-#             return rounds
-#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
-
-
-# def rcv_stack(ballots):
-#     stack = [ballots]
-#     results = []
-#     while stack:
-#         ballots = stack.pop()
-#         finalists, tallies = map(list, zip(*Counter(b[0] for b in ballots if b).most_common()))
-#         if tallies[0]*2 > sum(tallies):
-#             results.append((finalists, tallies))
-#         else:
-#             losers = finalists[tallies.index(min(tallies)):]
-#             for loser in losers:
-#                 stack.append([keep(set(finalists)-set([loser]), b) for b in ballots])
-#             if len(losers) > 1:
-#                 stack.append([keep(set(finalists)-set(losers), b) for b in ballots])
-#     return results
-
-
-# def rcvreg(ballots):
-#     rounds = []
-#     while True:
-#         rounds.append(list(zip(*Counter(b[0] for b in ballots).most_common())))
-#         finalists, tallies = rounds[-1]
-#         if tallies[0]*2 > sum(tallies):
-#             return rounds
-#         ballots = remove([], (keep(finalists[:-1], b) for b in ballots))
-
 @save
 def first_second_tables(ctx):
     """
@@ -390,8 +584,11 @@ def first_second_tables(ctx):
     second table is percentages
     """
 
-    candidate_set = sorted(candidates(ctx))
-    cleaned_ballots = deepcopy(cleaned(ctx)['ballots'])
+    candidate_set = sorted(candidates_merged_writeIns(ctx))
+    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
+    cleaned_ballots = [{'ranks': ranks, 'weight': weight}
+                       for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
+
 
     # create data frame that will be populated and output
     percent_no_exhaust_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set], columns=candidate_set)
@@ -402,12 +599,12 @@ def first_second_tables(ctx):
     first_choices = {cand: [] for cand in candidate_set}
     for b in cleaned_ballots:
         if len(b['ranks']) >= 1:
-            first_choices[b['ranks'][0]].append(b)
+            first_choices[b['ranks'][0]].append(b['weight'])
 
     # sum total first round votes
     total_first_round_votes = 0
     for cand in first_choices:
-        total_first_round_votes += sum([b['weight'] for b in first_choices[cand]])
+        total_first_round_votes += sum(first_choices[cand])
 
     # add first choices to tables
     # and calculate second choices
@@ -415,7 +612,7 @@ def first_second_tables(ctx):
 
         ############################################################
         # update first round table values
-        first_choice_count = sum([b['weight'] for b in first_choices[cand]])
+        first_choice_count = sum(first_choices[cand])
         first_choice_percent = (first_choice_count / total_first_round_votes) * 100
 
         count_df.loc['first_choice', cand] = float(first_choice_count)
@@ -430,23 +627,23 @@ def first_second_tables(ctx):
         # group ballots by second choices
         for b in first_choices[cand]:
             if len(b['ranks']) >= 2:
-                second_choices[b['ranks'][1]].append(b)
+                second_choices[b['ranks'][1]].append(b['weight'])
             else:
-                second_choices['exhaust'].append(b)
+                second_choices['exhaust'].append(b['weight'])
 
         # sum total second round votes
         total_second_choices = 0
         total_second_choices_no_exhaust = 0
         for backup_cand in second_choices:
-            total_second_choices += sum([b['weight'] for b in second_choices[backup_cand]])
+            total_second_choices += sum(second_choices[backup_cand])
             if backup_cand != 'exhaust':
-                total_second_choices_no_exhaust += sum([b['weight'] for b in second_choices[backup_cand]])
+                total_second_choices_no_exhaust += sum(second_choices[backup_cand])
 
         # count second choices and add to table
         for backup_cand in second_choices:
 
             # fill in second choice values in table
-            second_choice_count = sum([b['weight'] for b in second_choices[backup_cand]])
+            second_choice_count = sum(second_choices[backup_cand])
 
             # if there are not backup votes fill with zeros
             if total_second_choices == 0:
@@ -466,644 +663,3 @@ def first_second_tables(ctx):
 
     return count_df, percent_df, percent_no_exhaust_df
 
-
-@save
-def sequential_rcv(ctx):
-    pass
-
-
-
-@save
-def stv_fractional_ballot(ctx):
-    """
-    Static threshold multi-winner elections with fractional surplus transfer
-    """
-
-    ctx['use_multiwinner_rounds'] = True
-
-    rounds = []
-    outcomes = []
-
-    # select all non-empty ballots and pair each with Fraction(1)
-    bs = [(b, Fraction(1)) for b in cleaned(ctx) if b]
-
-    # set win threshold
-    threshold = int(len(bs)/(ctx['num_winners']+1)) + 1
-
-    # run rounds until enough winners are found
-    round_num = 0
-    num_winners = 0
-    while ctx['num_winners'] == num_winners:
-
-        round_num += 1
-
-        # is the number of candidates remaining equal
-        # to the number of winner left to elect?
-        # If so, they win
-        # this is necessary step when using a static threshold
-        num_winners = len({i for i in outcomes if i['round_elected']})
-        num_remaining = 0
-
-
-        # accumulate fractional values currently held by
-        # first-ranked candidate on each ballot
-        totals = defaultdict(int)
-        for cand_list, ballot_frac in bs:
-            totals[cand_list[0]] += ballot_frac
-
-        # sort totals dict into descending order
-        ordered = sorted(totals.items(), key=lambda x: -x[1])
-        rounds.append(ordered)
-
-
-        # split ordered totals into two lists
-        names, tallies = zip(*ordered)
-
-        # any candidates over the threshold?
-        if any([i > threshold for i in tallies]):
-
-            looking_for_winners = True
-            round_winners = []
-
-            while looking_for_winners:
-
-                round_winner = names[0]
-                round_others = names[1:]
-
-                # then add to contest winners list
-                outcomes.append({'name': round_winner, 'round_elected': round_num,
-                                'round_eliminated': None})
-
-                # fractional surplus to transfer from each winner ballot
-                surplus_percent = (tallies[0] - threshold) / tallies[0]
-
-                # if surplus to transfer is non-zero
-                if surplus_percent:
-
-                    # which ballots had the winner on top
-                    # and need to be fractionally split
-                    winner_in_active_rank = [cand_list[0] == round_winner for cand_list, ballot_frac in bs]
-
-                    # split out tuples
-                    split_cand_lists, split_ballot_fracs = zip(*bs)
-
-                    # adjust ballot fracs for winner ballots
-                    new_ballot_fracs = [ballot_frac * surplus_percent if winner_active else ballot_frac
-                                        for ballot_frac, winner_active in zip(split_ballot_fracs, winner_in_active_rank)]
-
-                    # stitch cand_lists back with new ballot fracs
-                    bs = list(zip(split_cand_lists, new_ballot_fracs))
-
-                # remove winner from ballots
-                bs = [(keep(round_others, cand_list), ballot_frac) for cand_list, ballot_frac in bs]
-
-                # remove newly-empty ballots
-                bs = [b for b in bs if b[0]]
-
-                # update winner list for round
-                round_winners.append(round_winner)
-
-                # identify next round-winner ordering
-                filtered_ordering = [(cand, cand_tally)
-                                    for cand, cand_tally in ordered if cand not in round_winners]
-
-                # any candidates left?
-                if filtered_ordering:
-
-                    names, tallies = zip(*filtered_ordering)
-
-                    # if there are no more candidates over the threshold, then move to the next round
-                    if any([i > threshold for i in tallies]) is False:
-                        looking_for_winners = False
-                else:
-
-                    # no candidates left, exit loop
-                    looking_for_winners = False
-
-                # if contest setting specifies only one winner per round, then move to next round
-                if ctx['use_multiwinner_rounds'] is False:
-                    looking_for_winners = False
-
-        else:  # no winner
-
-            # remove candidate from ballots that received the lowest count
-            loser_count = min(tallies)
-
-            # in case of tied losers, randomly choose one to eliminate
-            round_loser = choice([cand for cand, cand_tally in ordered if cand_tally == loser_count])
-            outcomes.append({'name': round_loser, 'round_elected': None,
-                             'round_eliminated': round_num})
-
-            # remove loser from
-            bs = ((remove(round_loser, cand_list), ballot_frac) for cand_list, ballot_frac in bs)
-
-            # remove newly-empty ballots
-            bs = [b for b in bs if b[0]]
-
-    return rounds, outcomes
-
-
-@save
-def stv_whole_ballot(ctx):
-    pass
-
-
-@save
-def rcv_multiWinner_thresh15(ctx):
-    """
-    Runs a multi winner RCV contest with whole ballot transfer. Cease runoffs when all active candidates
-    are above 15% of the rounds tally.
-
-    Return:
-        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round only contains candidates that achieved votes in that round.
-
-        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round contains all candidates.
-
-        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
-        Dicts are in round order.
-
-        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
-    """
-
-    # just filter results from until2rcv
-    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
-
-    # and create fresh candidate outcomes
-    candidate_set = candidates(ctx)
-    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
-
-    # find round where a candidate has over 50% of active round votes
-    rounds_slice_idx = 0
-    done = False
-    while not done:
-
-        # get round info
-        current_round_trimmed = rounds_trimmed[rounds_slice_idx]
-        current_round_transfer = transfers[rounds_slice_idx]
-        rounds_slice_idx += 1
-
-        # check for finish condition
-        round_finalists, round_tally = current_round_trimmed
-        round_total = sum(round_tally)
-
-        # does everyone in the round have at least 15% of round total
-        # might need to adjust rounding here
-        if all([(i/round_total) >= 0.15 for i in round_tally]):
-
-            # update winner in cand_outcomes
-            for cand in round_finalists:
-                cand_outcomes[cand]['round_elected'] = rounds_slice_idx
-
-            # update flag
-            done = True
-
-        else:
-            # who lost this round (should be the only one with negative round transfer)?
-            # update in candidate outcomes
-            round_loser = [key for key, value in current_round_transfer.items() if value < 0]
-            if len(round_loser) > 1:
-                print('should only be one round loser with eliminated votes per round in single winner rcv. debug')
-                exit(1)
-            cand_outcomes[round_loser[0]]['round_eliminated'] = rounds_slice_idx
-
-    # unnest candidate outcomes values
-    cand_outcomes = [values for key, values in cand_outcomes.items()]
-
-    return rounds_trimmed[0:rounds_slice_idx], rounds_full[0:rounds_slice_idx], \
-           transfers[0:rounds_slice_idx], cand_outcomes
-
-
-
-@save
-def rcv_single_winner(ctx):
-    """
-    Runs a single winner RCV contest.
-
-    Return:
-        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round only contains candidates that achieved votes in that round.
-
-        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round contains all candidates.
-
-        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
-        Dicts are in round order.
-
-        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
-    """
-
-    # just filter results from until2rcv
-    rounds_trimmed, rounds_full, transfers, _ = deepcopy(until2rcv(ctx))
-
-    # and create fresh candidate outcomes
-    candidate_set = candidates(ctx)
-    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
-
-    # find round where a candidate has over 50% of active round votes
-    rounds_slice_idx = 0
-    done = False
-    while not done:
-
-        # get round info
-        current_round_trimmed = rounds_trimmed[rounds_slice_idx]
-        current_round_transfer = transfers[rounds_slice_idx]
-        rounds_slice_idx += 1
-
-        # check for finish condition
-        round_finalists, round_tally = current_round_trimmed
-        round_leader = round_finalists[0]
-        round_total = sum(round_tally)
-
-        # does round leader have the majority?
-        # might need to adjust rounding here
-        if round_tally[0] * 2 > round_total:
-            # update winner in cand_outcomes
-            cand_outcomes[round_leader]['round_elected'] = rounds_slice_idx
-
-            # update remaining round candidates as losing in this round
-            for cand in cand_outcomes:
-                if cand != round_leader and cand_outcomes[cand]['round_eliminated'] is None:
-                    cand_outcomes[cand]['round_eliminated'] = rounds_slice_idx
-
-            # update flag
-            done = True
-
-        else:
-            # who lost this round (should be the only one with negative round transfer)?
-            # update in candidate outcomes
-            round_loser = [key for key, value in current_round_transfer.items() if value < 0]
-            if len(round_loser) > 1:
-                print('should only be one round loser with eliminated votes per round in single winner rcv. debug')
-                exit(1)
-            cand_outcomes[round_loser[0]]['round_eliminated'] = rounds_slice_idx
-
-    # unnest candidate outcomes values
-    cand_outcomes = [values for key, values in cand_outcomes.items()]
-
-    return rounds_trimmed[0:rounds_slice_idx], rounds_full[0:rounds_slice_idx], \
-           transfers[0:rounds_slice_idx], cand_outcomes
-
-
-@save
-def until2rcv(ctx):
-    """
-    Run an rcv election until there are two candidates remaining.
-    This is might lead to more rounds than necessary to determine a winner.
-
-    Return:
-        rounds_trimmed (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round only contains candidates that achieved votes in that round.
-
-        rounds_full (list of lists) - each list represents a counting round and contains two tuples.
-        first tuple is candidates names and second is vote counts. Both are sorted to reflect descending vote order.
-        Each round contains all candidates.
-
-        transfers (list of dicts) - each dict has candidates as keys and round vote transfer counts as values.
-        Dicts are in round order.
-
-        cand_outcomes (list of dicts) - each dict is {name: cand, round_eliminated: 1, round_elected: None}
-    """
-
-    # inputs
-    candidate_set = candidates(ctx)
-    bs = deepcopy(cleaned(ctx)['ballots'])
-
-    # outputs
-    rounds_trimmed = []
-    rounds_full = []
-    transfers = []
-    cand_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None} for cand in candidate_set}
-
-    # other loop variables
-    all_losers = []
-    round_num = 0
-    n_finalists = float('inf')
-
-    while n_finalists > 2:
-
-        round_num += 1
-
-        # round results
-        # tally ballots and reorder tallies
-        # using active rankings for each ballot,
-        # skipping empty ballots
-        active_round_candidates = set([b['ranks'][0] for b in bs if b['ranks']])
-        choices = Counter({cand: 0 for cand in active_round_candidates})
-        for b in bs:
-            if b['ranks']:
-                choices[b['ranks'][0]] += b['weight']
-
-        # sort round tallies
-        round_results = list(zip(*choices.most_common()))
-        # split round results into two tuples (index-matched)
-        round_finalists, round_tallies = round_results
-        n_finalists = len(round_finalists)
-
-        # one the first round, eliminate any candidates with zero votes right away
-        if round_num == 1:
-            all_losers += [cand for cand in candidate_set if cand not in round_finalists]
-            for cand in all_losers:
-                # remove losers from ballots
-                bs = [{'ranks': remove(cand, b['ranks']), 'weight': b['weight']} for b in bs]
-                # update candidate outcomes
-                cand_outcomes[cand]['round_eliminated'] = round_num
-
-        # add in loser/no-vote candidates for full round record
-        finalists_full = list(round_finalists) + all_losers
-        tallies_full = list(round_tallies) + ([0] * len(all_losers))
-
-        # find round loser
-        loser_count = min(round_tallies)
-        # in case of tied losers, randomly choose one to eliminate
-        round_loser = choice([cand for cand, cand_tally in zip(round_finalists, round_tallies)
-                              if cand_tally == loser_count])
-        # update candidate outcome
-        cand_outcomes[round_loser]['round_eliminated'] = round_num
-
-        # calculate transfer from loser - find loser ballots
-        round_loser_ballots = [b for b in bs if b['ranks'] and b['ranks'][0] == round_loser]
-        # count distribution from loser to other candidates and exhaustion
-        round_transfer = Counter({cand: 0 for cand in candidate_set.union({'exhaust'})})
-        for b in round_loser_ballots:
-            if len(b['ranks']) > 1:
-                round_transfer[b['ranks'][1]] += b['weight']
-            else:
-                round_transfer['exhaust'] += b['weight']
-
-        # record ballot loss from loser
-        round_transfer[round_loser] = sum([b['weight'] for b in round_loser_ballots]) * -1
-
-        # remove round loser from ballots, all ranking spots.
-        # removing the round loser from all ranking spots now is equivalent
-        # to waiting and skipping over an already-eliminated candidate
-        # once they become the active ranking in a later round.
-        bs = [{'ranks': remove(round_loser, b['ranks']), 'weight': b['weight']} for b in bs]
-
-        # append round info to list
-        transfers.append(round_transfer)
-        all_losers.append(round_loser)
-        rounds_trimmed.append(round_results)
-        rounds_full.append([tuple(finalists_full), tuple(tallies_full)])
-
-    # update winner
-    cand_outcomes[round_finalists[0]]['round_elected'] = round_num
-
-    # unnest candidate outcomes values
-    cand_outcomes = [values for key, values in cand_outcomes.items()]
-
-    return rounds_trimmed, rounds_full, transfers, cand_outcomes
-
-
-########################################################################################
-########################################################################################
-########################################################################################
-########################################################################################
-########################################################################################
-########################################################################################
-# outcome stat functions
-
-
-@save
-def contest_winner(ctx):
-    '''
-    The winner(s) of the election.
-    '''
-    # Horrible Hack!
-    # no mapping file for the 2006 Burlington Mayoral Race, so hard coded here:
-    if ctx['place'] == 'Burlington' and ctx['date'] == '2006':
-        return 'Bob Kiss'
-    return ", ".join([str(w).title() for w in winner(ctx)])
-    #return str(winner(ctx)).title()
-
-
-@save
-def condorcet(ctx):
-    '''
-    Is the winner the condorcet winner?
-    The condorcet winner is the candidate that would win a 1-on-1 election versus
-    any other candidate in the election. Note that this calculation depends on
-    jurisdiction dependant rule variations.
-
-    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
-    '''
-
-    _, _, condorcet_winner = condorcet_tables(ctx)
-    if winner(ctx)[0] == condorcet_winner:
-        return "Yes"
-    else:
-        return "No"
-
-    # # first round winner is the condorcet winner
-    # if len(round_by_round_trimmed(ctx)) == 1:
-    #     return True
-    #
-    # net = Counter()
-    # for b in cleaned_ranks(ctx):
-    #     for loser in losers(ctx):
-    #
-    #         # accumulate difference between the number of ballots ranking
-    #         # the winner before the loser
-    #         net.update({loser: before(winner(ctx), loser, b)})
-    #
-    # if not net:  # Uncontested Race -> net == {}
-    #     return True
-    #
-    # # if all differences are positive, then the winner was the condorcet winner
-    # return min(net.values()) > 0
-
-
-def come_from_behind(ctx):
-    """
-    "yes" if rcv winner is not first round leader, else "no"
-
-    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
-    """
-    if winner(ctx)[0] != round_by_round_trimmed(ctx)[0][0][0]:
-        return "Yes"
-    else:
-        return "No"
-
-
-def final_round_active_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the final round.
-    '''
-    return float(sum(round_by_round_trimmed(ctx)[-1][1]))
-
-
-def first_round_active_votes(ctx):
-    '''
-    The number of votes that were awarded to any candidate in the first round.
-    '''
-    return float(sum(round_by_round_trimmed(ctx)[0][1]))
-
-
-def final_round_winner_percent(ctx):
-    '''
-    The percent of votes for the winner in the final round. The final round is
-    the first round where the winner receives a majority of the non-exhausted
-    votes.
-
-    Single winner elections only.
-    '''
-    return float(round_by_round_trimmed(ctx)[-1][1][0] / sum(round_by_round_trimmed(ctx)[-1][1]))
-
-
-def final_round_winner_vote(ctx):
-    '''
-    The number of votes for the winner in the final round. The final round is
-    the first round where the winner receives a majority of the non-exhausted
-    votes.
-
-    Single winner elections only.
-    '''
-    return float(round_by_round_trimmed(ctx)[-1][1][0])
-
-
-def final_round_winner_votes_over_first_round_valid(ctx):
-    '''
-    The number of votes the winner receives in the final round divided by the
-    number of valid votes in the first round.
-
-    Single winner elections only.
-    '''
-    return float(final_round_winner_vote(ctx) / first_round_active_votes(ctx))
-
-
-def first_round_winner_place(ctx):
-    '''
-    In terms of first round votes, what place the eventual winner came in.
-
-    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
-    '''
-    return round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0]) + 1
-
-
-def first_round_winner_percent(ctx):
-    '''
-    The percent of votes for the winner in the first round.
-
-    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
-    '''
-    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
-    return float(round_by_round_trimmed(ctx)[0][1][wind] / sum(round_by_round_trimmed(ctx)[0][1]))
-
-
-def first_round_winner_vote(ctx):
-    '''
-    The number of votes for the winner in the first round.
-
-    In the case of multi-winner elections, this result will only pertain to the first candidate elected.
-    '''
-    wind = round_by_round_trimmed(ctx)[0][0].index(winner(ctx)[0])
-    return float(round_by_round_trimmed(ctx)[0][1][wind])
-
-
-def finalists(ctx):
-    """
-    All winners are considered finalists, as well as any candidate that reached
-    the final round.
-    """
-    return set(round_by_round_trimmed(ctx)[-1][0]).union(winner(ctx))
-
-
-def finalist_ind(ctx):
-    """
-    Returns a list indicating the first rank on each ballot where a finalist is listed.
-    List element is Inf if no finalist is present
-    """
-    final_candidates = finalists(ctx)
-    inds = []
-
-    # loop through each ballot and check for each finalist
-    for b in ballots_ranks(ctx):
-        min_ind = float('inf')
-        for c in final_candidates:
-            if c in b:
-                min_ind = min(b.index(c), min_ind)
-        inds.append(min_ind)
-
-    return inds
-
-
-def number_of_winners(ctx):
-    """
-    Count how many winners a contest had.
-    """
-    return sum(c['round_elected'] is not None for c in candidate_outcomes(ctx))
-
-
-def number_of_rounds(ctx):
-    """
-    Count how many rounds a contest had.
-    """
-    return len(round_by_round_full(ctx))
-
-
-def number_of_candidates(ctx):
-    '''
-    The number of candidates on the ballot, not including write-ins.
-    '''
-    return len(candidates_noWriteIns(ctx))
-
-
-@save
-def ranked_winner(ctx):
-    """
-    Number of ballots with a non-overvote mark for the winner
-    """
-    return sum(bool(set(winner(ctx)).intersection(b)) for b in ballots_ranks(ctx))
-
-
-def win_threshold(ctx):
-    if ctx['rcv_type'] == rcv_multiWinner_thresh15:
-        return 'dynamic'
-    return first_round_active_votes(ctx)/(ctx['num_winners'] + 1)
-
-
-@save
-def winner(ctx):
-    """
-    Return contest winner names in order of election.
-    """
-    elected_candidates = [d for d in candidate_outcomes(ctx) if d['round_elected'] is not None]
-    return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
-    #return round_by_round_trimmed(ctx)[-1][0][0]
-
-
-@save
-def winners_consensus_value(ctx):
-    '''
-    The percentage of valid first round votes that rank any winner in the top 3.
-    '''
-    return winner_in_top_3(ctx) / first_round_active_votes(ctx)
-
-
-@save
-def winner_ranking(ctx):
-    """
-        Returns a dictionary with ranking-count key-values, with count
-        indicating the number of ballots in which the winner received each
-        ranking.
-    """
-    return Counter(
-        b.index(winner(ctx)) + 1 if winner(ctx) in b else None for b in cleaned_ranks(ctx)
-    )
-
-
-@save
-def winner_in_top_3(ctx):
-    """
-        Sum the counts from the ranking-count entries, where the ranking is < 4
-    """
-    top3 = [b[:min(3, len(b))] for b in ballots_ranks(ctx)]
-    top3_check = [set(winner(ctx)).intersection(b) for b in top3]
-    return sum(bool(check) for check in top3_check)
-    #return sum(v for k, v in winner_ranking(ctx).items() if k is not None and k < 4)
