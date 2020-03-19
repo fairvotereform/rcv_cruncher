@@ -2,4 +2,6 @@
 .idea/*
 CVAP/*
 Ballot_Images/*
-
+contest_sets/*/cache
+contest_sets/*/results
+contest_sets/*/common_cvr
