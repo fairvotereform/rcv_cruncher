@@ -7,8 +7,9 @@ import pandas as pd
 # cruncher imports
 from scripts.contests import *
 from scripts.ballot_stats import *
-from scripts.precincts import *
+#from scripts.precincts import *
 from scripts.tabulation import *
+from scripts.rcv_variants import *
 
 import scripts.cache_helpers as cache
 
@@ -33,7 +34,7 @@ def stats_double_check(contest):
     final_round_active = final_round_active_votes(contest)
     n_exhaust = total_exhausted(contest)
     n_undervote = total_undervote(contest)
-    n_ballots = len(ballots_ranks(contest))
+    n_ballots = len(ballots(contest)['ranks'])
     n_ranked_single = ranked_single(contest)
     n_ranked_multiple = ranked_multiple(contest)
 
@@ -61,8 +62,8 @@ def stats_double_check(contest):
     n_undervote_crosscheck = n_ballots - first_round_active - \
                              n_first_round_exhaust_by_overvote - n_first_round_exhaust_by_skipped_rankings
 
-    n_ranked_single_crosscheck = sum(len(set(i) & all_candidates) == 1 for i in ballots_ranks(contest))
-    n_ranked_multiple_crosscheck = sum(len(set(i) & all_candidates) > 1 for i in ballots_ranks(contest))
+    n_ranked_single_crosscheck = sum(len(set(i) & all_candidates) == 1 for i in ballots(contest)['ranks'])
+    n_ranked_multiple_crosscheck = sum(len(set(i) & all_candidates) > 1 for i in ballots(contest)['ranks'])
 
     problem = False
     if n_exhaust_crosscheck != n_exhaust:
@@ -120,7 +121,8 @@ def prepare_candidate_details(contest):
     Return pandas data frame of candidate info with round-by-round vote counts
     """
     raceID = contest['unique_id']
-    _, rounds_full, _, cand_outcomes = contest['rcv_type'](contest)
+    rounds_full = round_by_round_full(contest)
+    cand_outcomes = candidate_outcomes(contest)
     n_rounds = len(rounds_full)
 
     # reformat contest outputs into useful dicts
@@ -306,8 +308,8 @@ def main():
     ########################
     # produce results
 
-    single_winner_rcv_set = [rcv_single_winner, until2rcv]
-    multi_winner_rcv_set = [rcv_multiWinner_thresh15]
+    single_winner_rcv_set = [rcv_single_winner]
+    multi_winner_rcv_set = []
     #multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot, stv_whole_ballot]
 
     # write stats files column names

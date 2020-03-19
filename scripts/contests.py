@@ -7,7 +7,7 @@ import re
 from .cache_helpers import tmpsave
 from .parsers import santafe, santafe_id, maine, minneapolis, \
     sf, sfnoid, old, prm, burlington, sf2019, utah, ep, dominion5_10
-from .rcv_variants import rcv_single_winner
+from .rcv_variants import rcv_single_winner, stv_whole_ballot, stv_fractional_ballot, sequential_rcv
 
 
 ##########################

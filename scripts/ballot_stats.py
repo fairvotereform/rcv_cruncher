@@ -10,20 +10,20 @@ are found in tabulation.py
 """
 
 # package imports
-from collections import Counter
+from collections import Counter, defaultdict
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, EXHAUSTED_BY_OVERVOTE, \
     EXHAUSTED_BY_REPEATED_SKIPVOTE, EXHAUSTED_BY_RANK_LIMIT, EXHAUSTED_BY_ABSTENTION, UNDERVOTE
 from .cache_helpers import save
-from .tabulation import ballots, cleaned, finalist_ind, candidates_no_writeIns
+from .tabulation import ballots, cleaned, finalist_ind, candidates_no_writeIns, final_weights
 
 
 @save
 def any_repeat(ctx):
     """
     Number of ballots that included one at least one candidate that
-    received more than once ranking
+    received more than once ranking.
     """
     return sum(v for k, v in count_duplicates(ctx).items() if k > 1)
 
@@ -31,7 +31,7 @@ def any_repeat(ctx):
 @save
 def count_duplicates(ctx):
     """
-    Returns dictionary counting the number of max repeat ranking from each ballot
+    Returns dictionary counting the number of max repeat ranking from each ballot.
     """
     return Counter(max_repeats(ctx))
 
@@ -40,7 +40,7 @@ def count_duplicates(ctx):
 def duplicates(ctx):
     """
     Returns boolean list with elements set to True if ballot has at least one
-    duplicate ranking
+    duplicate ranking.
     """
     return [v > 1 for v in max_repeats(ctx)]
 
@@ -49,9 +49,12 @@ def duplicates(ctx):
 def effective_ballot_length(ctx):
     """
     A list of validly ranked choices, and how many ballots had that number of
-    valid choices.
+    valid choices. (weighted)
     """
-    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(Counter(map(len, cleaned(ctx))).items()))
+    counts = defaultdict(int)
+    for ranks, weight in zip(cleaned(ctx)['ranks'], cleaned(ctx)['weight']):
+        counts[len(ranks)] += weight
+    return '; '.join('{}: {}'.format(a, b) for a, b in sorted(counts.items()))
 
 
 @save
@@ -202,7 +205,7 @@ def first_round(ctx):
 @save
 def first_round_overvote(ctx):
     '''
-    The number of ballots with an overvote before any valid ranking.
+    The number of ballots with an overvote before any valid ranking. (weighted)
 
     Note that this is not the same as "exhausted by overvote". This is because
     some jurisdictions (Maine) discard any ballot beginning with two
@@ -211,7 +214,8 @@ def first_round_overvote(ctx):
 
     Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
     '''
-    return sum(c == OVERVOTE for c in first_round(ctx))
+    bools = [c == OVERVOTE for c in first_round(ctx)]
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], bools)]))
 
 
 @save
@@ -220,20 +224,13 @@ def fully_ranked(ctx):
         Returns a list of bools with each item corresponding to a ballot.
         True indicates a fully ranked ballot.
 
-        Fully ranked here means either the cleaned ballot contains the
-        full set of candidates OR the raw and cleaned ballot are of the same length
-        (this second condition is to account for limited rank voting systems)
-
-        Note: cleaned ballots already should have skipped rankings, overvotes, and
-        repeated rankings given to a single candidate all removed
+        Fully ranked here means the last rank was used OR all candidates were ranked
     """
-
-    fix this
-    return [len(b) == len(a)  # either there is a ranking limit and no exhaust conditions shortened the ballot
-            # (the ballot is effectively fully ranked)
-            or (set(b) & candidates_no_writeIns(ctx)) == candidates_no_writeIns(ctx)
-            # or voters ranked every possible candidate
-            for a, b in zip(ballots_ranks(ctx), cleaned_ranks(ctx))]
+    return [(set(b) & candidates_no_writeIns(ctx)) == candidates_no_writeIns(ctx) or
+            # voters ranked every possible candidate
+            a[-1] != SKIPPEDRANK
+            # or did not, but at least ranked up until the last rank
+            for a, b in zip(ballots(ctx)['ranks'], cleaned(ctx)['ranks'])]
 
 
 @save
@@ -247,18 +244,23 @@ def has_skipvote(ctx):
 def includes_duplicate_ranking(ctx):
     '''
     The number of ballots that rank the same candidate more than once, or
-    include more than one write in candidate.
+    include more than one write in candidate. (weighted)
     '''
-    return any_repeat(ctx)
+    # count all ranks for canidates
+    counters = [Counter(set(b) - {SKIPPEDRANK, OVERVOTE}) for b in ballots(ctx)['ranks']]
+    # check if any candidates were ranked more than once
+    bools = [max(counter.values()) > 1 if counter else False for counter in counters]
+    # return weighted sum
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], bools)]))
 
 
 @save
 def includes_skipped_ranking(ctx):
     '''
     The number of ballots that have an skipped ranking followed by any other mark
-    valid ranking
+    valid ranking. (weighted)
     '''
-    return sum(skipped(ctx))
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], skipped(ctx))]))
 
 
 @save
@@ -274,12 +276,12 @@ def max_repeats(ctx):
         would be 1
     """
     return [max(0, 0, *map(b.count, set(b) - {SKIPPEDRANK, OVERVOTE}))
-            for b in ballots_ranks(ctx)]
+            for b in ballots(ctx)['ranks']]
 
 
 @save
 def overvote(ctx):
-    return [OVERVOTE in b for b in ballots_ranks(ctx)]
+    return [OVERVOTE in b for b in ballots(ctx)['ranks']]
 
 
 @save
@@ -289,23 +291,25 @@ def overvote_ind(ctx):
         If no overvotes on ballots, list element is inf
     """
     return [b.index(OVERVOTE) if OVERVOTE in b else float('inf')
-            for b in ballots_ranks(ctx)]
+            for b in ballots(ctx)['ranks']]
 
 
 @save
 def ranked_single(ctx):
     '''
-    The number of voters that validly used only a single ranking
+    The number of voters that validly used only a single ranking. (weighted)
     '''
-    return sum(len(set(b) - {OVERVOTE, SKIPPEDRANK}) == 1 for b in ballots_ranks(ctx))
+    bools = [len(set(b) - {OVERVOTE, SKIPPEDRANK}) == 1 for b in ballots(ctx)['ranks']]
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], bools)]))
 
 
 @save
 def ranked_multiple(ctx):
     '''
-    The number of voters that validly use more than one ranking.
+    The number of voters that validly use more than one ranking. (weighted)
     '''
-    return sum(len(set(b) - {OVERVOTE, SKIPPEDRANK}) == 1 for b in ballots_ranks(ctx))
+    bools = [len(set(b) - {OVERVOTE, SKIPPEDRANK}) > 1 for b in ballots(ctx)['ranks']]
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], bools)]))
 
 
 @save
@@ -321,7 +325,7 @@ def repeated_skipvote_ind(ctx):
 
     rs = []
 
-    for b in ballots_ranks(ctx):
+    for b in ballots(ctx)['ranks']:
 
         rs.append(float('inf'))
 
@@ -356,71 +360,71 @@ def skipped(ctx):
     following the skipped rank)
     """
     return [any({SKIPPEDRANK} & {x} - {y} for x, y in zip(b, b[1:]))
-            for b in ballots_ranks(ctx)]
+            for b in ballots(ctx)['ranks']]
 
 
 @save
 def total_ballots(ctx):
     '''
-    This includes ballots with no marks.
+    This includes ballots with no marks. (weighted)
     '''
-    return len(ballots_ranks(ctx))
+    return float(sum(ballots(ctx)['weight']))
 
 
 @save
 def total_exhausted(ctx):
     '''
-    Number of ballots (excluding undervotes) that do not rank a finalist.
+    Number of ballots (excluding undervotes) that do not rank a finalist. (weighted)
     '''
-    return sum(exhausted(ctx))
+    return float(sum([weight * flag for weight, flag in zip(final_weights(ctx), exhausted(ctx))]))
 
 
 @save
 def total_exhausted_by_abstention(ctx):
     """
-    Number of ballots exhausted after all marked rankings used and ballot is not fully ranked.
+    Number of ballots exhausted after all marked rankings used and ballot is not fully ranked. (weighted)
     """
-    return sum(exhausted_by_abstention(ctx))
+    return float(sum([weight * flag for weight, flag in zip(final_weights(ctx), exhausted_by_abstention(ctx))]))
 
 
 @save
 def total_exhausted_by_overvote(ctx):
     """
-    Number of ballots exhausted due to overvote. Only applicable to certain contests.
+    Number of ballots exhausted due to overvote. Only applicable to certain contests. (weighted)
     """
-    return sum(exhausted_by_overvote(ctx))
+    return float(sum([weight * flag for weight, flag in zip(final_weights(ctx), exhausted_by_overvote(ctx))]))
 
 
 @save
 def total_exhausted_by_rank_limit(ctx):
     """
-    Number of ballots exhausted after all marked rankings used and ballot is fully ranked.
+    Number of ballots exhausted after all marked rankings used and ballot is fully ranked. (weighted)
     """
-    return sum(exhausted_by_rank_limit(ctx))
+    return float(sum([weight * flag for weight, flag in zip(final_weights(ctx), exhausted_by_rank_limit(ctx))]))
 
 
 def total_exhausted_by_skipped_rankings(ctx):
     """
-    Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests.
+    Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests. (weighted)
     """
-    return sum(exhausted_by_skipvote(ctx))
+    return float(sum([weight * flag for weight, flag in zip(final_weights(ctx), exhausted_by_skipvote(ctx))]))
 
 
 @save
 def total_ballots_with_overvote(ctx):
     '''
-    Number of ballots with at least one overvote. Not necessarily cause of exhaustion.
+    Number of ballots with at least one overvote. Not necessarily cause of exhaustion. (weighted)
     '''
-    return sum(overvote(ctx))
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], overvote(ctx))]))
 
 
 @save
 def total_fully_ranked(ctx):
     '''
     The number of voters that have validly used all available rankings on the
-    ballot, or that have validly ranked all non-write-in candidates.
+    ballot, or that have validly ranked all non-write-in candidates. (weighted)
     '''
-    return sum(fully_ranked(ctx))
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], fully_ranked(ctx))]))
 
 
 @save
@@ -428,17 +432,18 @@ def total_irregular(ctx):
     """
     Number of ballots that either had a multiple ranking, overvote,
     or a skipped ranking. This includes ballots even where the irregularity was not
-    the cause of exhaustion.
+    the cause of exhaustion. (weighted)
     """
-    return sum(map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx))))
+    irregular = map(any, zip(duplicates(ctx), overvote(ctx), skipped(ctx)))
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], irregular)]))
 
 
 @save
 def total_undervote(ctx):
     '''
-    Ballots completely made up of skipped rankings (no marks).
+    Ballots completely made up of skipped rankings (no marks). (weighted)
     '''
-    return sum(undervote(ctx))
+    return float(sum([weight * flag for weight, flag in zip(ballots(ctx)['weight'], undervote(ctx))]))
 
 
 @save
@@ -446,4 +451,4 @@ def undervote(ctx):
     """
     Returns a boolean list with True indicating ballots that were undervotes (left blank)
     """
-    return [set(x) == {SKIPPEDRANK} for x in ballots_ranks(ctx)]
+    return [set(x) == {SKIPPEDRANK} for x in ballots(ctx)['ranks']]

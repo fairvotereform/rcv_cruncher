@@ -33,7 +33,7 @@ def ballots(ctx):
     # writeIns that may remain at this step
 
     if isinstance(res, list):
-        return {'ballots': res,
+        return {'ranks': res,
                 'weight': [Fraction(1) for b in res]}
     else:
         if 'ranks' not in res or 'weight' not in res:
@@ -125,7 +125,7 @@ def candidates_merged_writeIns(ctx):
 
 @save
 def candidates_no_writeIns(ctx):
-    return candidates_merged_writeIns - {WRITEIN}
+    return candidates_merged_writeIns(ctx) - {WRITEIN}
 
 
 @save
@@ -337,7 +337,7 @@ def final_round_winner_vote(ctx):
     '''
     obj = rcv_obj(ctx)
     round_dict = obj.get_round_dict(obj.n_rounds())
-    return round_dict[winner(ctx)[0]]
+    return float(round_dict[winner(ctx)[0]])
 
 
 def final_round_winner_votes_over_first_round_valid(ctx):
@@ -432,7 +432,7 @@ def ranked_winner(ctx):
 
 
 def win_threshold(ctx):
-    return rcv_obj(ctx).win_threshold()
+    return float(rcv_obj(ctx).win_threshold())
 
 
 @save
@@ -449,7 +449,7 @@ def winners_consensus_value(ctx):
     '''
     The percentage of valid first round votes that rank any winner in the top 3.
     '''
-    return winner_in_top_3(ctx) / first_round_active_votes(ctx)
+    return float(winner_in_top_3(ctx) / first_round_active_votes(ctx))
 
 
 @save
@@ -599,12 +599,12 @@ def first_second_tables(ctx):
     first_choices = {cand: [] for cand in candidate_set}
     for b in cleaned_ballots:
         if len(b['ranks']) >= 1:
-            first_choices[b['ranks'][0]].append(b['weight'])
+            first_choices[b['ranks'][0]].append(b)
 
     # sum total first round votes
     total_first_round_votes = 0
     for cand in first_choices:
-        total_first_round_votes += sum(first_choices[cand])
+        total_first_round_votes += sum([b['weight'] for b in first_choices[cand]])
 
     # add first choices to tables
     # and calculate second choices
@@ -612,7 +612,7 @@ def first_second_tables(ctx):
 
         ############################################################
         # update first round table values
-        first_choice_count = sum(first_choices[cand])
+        first_choice_count = sum([b['weight'] for b in first_choices[cand]])
         first_choice_percent = (first_choice_count / total_first_round_votes) * 100
 
         count_df.loc['first_choice', cand] = float(first_choice_count)

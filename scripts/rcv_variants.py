@@ -44,6 +44,11 @@ class RCV(ABC):
         """
         pass
 
+    # override me, if ballots should be split/re-weighted prior to next round
+    # such as in fractional transfer contests
+    def update_weights(self):
+        pass
+
     # override me, if you need to do multiple iterations of rcv, e.x. utah sequential rcv
     def tabulate(self):
         self.run_contest()
@@ -52,7 +57,8 @@ class RCV(ABC):
     def __init__(self, ctx):
 
         # inputs
-        self.ctx = ctx
+        self.num_winners = ctx['num_winners']
+        self.multi_winner_rounds = ctx['multi_winner_rounds']
         self.candidate_set = candidates(ctx)
         self.cleaned_dict = cleaned(ctx)
         self.bs = [{'ranks': ranks, 'weight': weight}
@@ -82,7 +88,7 @@ class RCV(ABC):
         d = {'rounds_trimmed': self.rounds_trimmed,
              'rounds_full': self.rounds_full,
              'transfers': self.transfers,
-             'candidates_outcomes': self.candidate_outcomes,
+             'candidate_outcomes': self.candidate_outcomes.values(),
              'final_weights': self.final_weights}
         return d
 
@@ -117,7 +123,7 @@ class RCV(ABC):
                 novote_losers = [cand for cand in self.candidate_set if cand not in round_candidates]
 
                 for loser in novote_losers:
-                    self.candidate_outcomes[loser]['round_eliminated'] = self.round_num
+                    self.candidate_outcomes[loser]['round_eliminated'] = 0
 
                 self.inactive_candidates += novote_losers
 
@@ -134,8 +140,13 @@ class RCV(ABC):
             self.update_candidates()
 
             #############################################
+            # UPDATE WEIGHTS
+            self.update_weights()
+
+            #############################################
             # CALC ROUND TRANSFER
             self.calc_round_transfer()
+
 
         # set final weight for each ballot
         self.final_weights = [b['weight'] for b in self.bs]
@@ -181,7 +192,7 @@ class RCV(ABC):
         """
         for inactive_cand in self.inactive_candidates:
             if inactive_cand not in self.removed_candidates:
-                bs = [{'ranks': remove(inactive_cand, b['ranks']), 'weight': b['weight']} for b in bs]
+                self.bs = [{'ranks': remove(inactive_cand, b['ranks']), 'weight': b['weight']} for b in self.bs]
                 self.removed_candidates.append(inactive_cand)
 
     #
@@ -195,9 +206,11 @@ class RCV(ABC):
 
         # find round loser
         loser_count = min(round_tallies)
-        # in case of tied losers, randomly choose one to eliminate
-        self.round_loser = choice([cand for cand, cand_tally in zip(round_candidates, round_tallies)
-                                   if cand_tally == loser_count])
+        # in case of tied losers, 'randomly' choose one to eliminate (the last one in alpha order)
+        round_losers = sorted([cand for cand, cand_tally
+                               in zip(round_candidates, round_tallies)
+                               if cand_tally == loser_count])
+        self.round_loser = round_losers[-1]
 
     #
     def update_candidates(self):
@@ -306,7 +319,231 @@ class rcv_single_winner(RCV):
         """
         This function should return the win threshold used in the contest
         OR return 'dynamic' if threshold changes for each possible winner.
+
+        rules:
+        - winner has more than half the active votes in a round
         """
         last_round_active_votes = sum(self.get_round_dict(self.n_rounds()).values())
         return last_round_active_votes/2
 
+
+class stv_whole_ballot:
+    pass
+
+
+class stv_fractional_ballot(RCV):
+
+    #
+    def set_round_winners(self):
+        """
+        This function should set self.round_winners to the list of candidates that won the round
+
+        rules:
+        - candidate is winner when they receive more than threshold.
+        - last #winners candidates are automatically elected.
+        """
+
+        # process of elimination?
+        # If 2 candidates have been elected and two more are still needed BUT only 2 remain,
+        # then they are automatically elected.
+        round_candidates, _ = self.round_results
+        n_remaining_candidates = len(round_candidates)
+        n_elected_candidates = len([d for d in self.candidate_outcomes.values()
+                                    if d['round_elected'] is not None])
+        if n_remaining_candidates + n_elected_candidates == self.num_winners:
+            self.round_winners = round_candidates
+            return
+
+        # any threshold winners?
+        threshold = self.win_threshold()
+        all_winners = [cand for cand, tally in zip(*self.round_results) if tally > threshold]
+        if self.multi_winner_rounds:
+            self.round_winners = all_winners
+        else:
+            self.round_winners = [all_winners[0]]
+
+
+    def update_weights(self):
+        """
+        If surplus needs to be transferred, change weights on winner ballots to reflect remaining
+        active ballot proportion.
+
+        rules:
+        - reduce weights of ballots ranking the winner by the amount
+        """
+
+        round_dict = self.get_round_dict(self.round_num)
+        threshold = self.win_threshold()
+
+        for winner in self.round_winners:
+
+            # fractional surplus to transfer from each winner ballot
+            surplus_percent = (round_dict[winner] - threshold) / round_dict[winner]
+
+            # if surplus to transfer is non-zero
+            if surplus_percent:
+
+                # which ballots had the winner on top
+                # and need to be fractionally split
+                for b in self.bs:
+                    if b and b['ranks'][0] == winner:
+                        b['weight'] *= surplus_percent
+
+
+    def calc_round_transfer(self):
+        """
+        This function should append a dictionary to self.transfers containing:
+        candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
+        values as round transfer flows.
+
+        rules:
+        - transfer votes from round loser
+        """
+        # if contest is over, return unfilled dict
+        if not self.contest_not_complete():
+            self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
+
+        else:
+            # calculate transfer
+            transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
+            for b in self.bs:
+                if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
+                    if len(b['ranks']) > 1:
+                        transfer_dict[b['ranks'][1]] += b['weight']
+                    else:
+                        transfer_dict['exhaust'] += b['weight']
+
+            transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
+            self.transfers.append(transfer_dict)
+
+    #
+    def contest_not_complete(self):
+        """
+        This function should return True if another round should be evaluated and False
+        is the contest should complete.
+
+        rules:
+        - Stop once num_winners are elected.
+        """
+        all_rounds_elected = [d['round_elected'] is not None for d in self.candidate_outcomes.values()]
+        if sum(all_rounds_elected) == self.num_winners:
+            return False
+        else:
+            return True
+
+    #
+    def win_threshold(self):
+        """
+        This function should return the win threshold used in the contest
+        OR return 'dynamic' if threshold changes for each possible winner.
+
+        rules:
+        - # of votes in first round /(# to elect + 1)
+        """
+        if not self.rounds_full:
+            print("Threshold depends on first round count. " +
+                  "Don't call win_threshold() before first call to tally_active_ballots()")
+            raise RuntimeError
+
+        first_round_active_votes = sum(self.get_round_dict(1).values())
+        return first_round_active_votes / (self.num_winners + 1)
+
+
+class sequential_rcv:
+    pass
+
+class rcv_multiWinner_thresh15(RCV):
+
+    #
+    def set_round_winners(self):
+        """
+        This function should set self.round_winners to the list of candidates that won the round
+
+        single winner rules:
+        - winner is candidate with > 50% of round vote
+        """
+        round_candidates, round_tallies = self.round_results
+        threshold = sum(round_tallies) * 0.15
+        if all(i > threshold for i in round_tallies):
+            self.round_winners = list(round_candidates)
+
+
+    def calc_round_transfer(self):
+        """
+        This function should append a dictionary to self.transfers containing:
+        candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
+        values as round transfer flows.
+
+        rules:
+        - transfer votes from round loser
+        """
+        # if contest is over, return unfilled dict
+        if not self.contest_not_complete():
+            self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
+
+        else:
+            # calculate transfer
+            transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
+            for b in self.bs:
+                if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
+                    if len(b['ranks']) > 1:
+                        transfer_dict[b['ranks'][1]] += b['weight']
+                    else:
+                        transfer_dict['exhaust'] += b['weight']
+
+            transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
+            self.transfers.append(transfer_dict)
+
+    #
+    def contest_not_complete(self):
+        """
+        This function should return True if another round should be evaluated and False
+        is the contest should complete.
+
+        single winner rules:
+        - Contest is over when all winner are found, they are all 'elected' at once.
+        """
+        all_rounds_elected = [d['round_elected'] is not None for d in self.candidate_outcomes.values()]
+        if any(all_rounds_elected):
+            return False
+        else:
+            return True
+
+    #
+    def win_threshold(self):
+        """
+        This function should return the win threshold used in the contest
+        OR return 'dynamic' if threshold changes for each possible winner.
+
+        rules:
+        - 15% of round votes
+        """
+        last_round_active_votes = sum(self.get_round_dict(self.n_rounds()).values())
+        return last_round_active_votes * 0.15
+
+
+class rcv_multiWinner_thresh15_keepUndeclared(rcv_multiWinner_thresh15):
+
+    def set_round_loser(self):
+        """
+        Find candidate from round with least votes.
+        If more than one, choose randomly
+
+        rules:
+        - '(undeclared)' candidate cannot lose
+        """
+        # split round results into two tuples (index-matched)
+        round_candidates, round_tallies = self.round_results
+
+        # '(undeclared)' cannot be a loser
+        undeclared_idx = round_candidates.index('(undeclared)')
+        del round_candidates[undeclared_idx]
+        del round_tallies[undeclared_idx]
+
+        # find round loser
+        loser_count = min(round_tallies)
+        # in case of tied losers, 'randomly' choose one to eliminate (the last one in alpha order)
+        round_losers = sorted([cand for cand, cand_tally
+                               in zip(round_candidates, round_tallies)
+                               if cand_tally == loser_count])
+        self.round_loser = round_losers[-1]
