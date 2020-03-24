@@ -1,6 +1,5 @@
 from abc import abstractmethod, ABC
 from collections import Counter
-from random import choice
 import numpy as np
 
 from .definitions import remove
@@ -69,10 +68,11 @@ class RCV(ABC):
         self.rounds_full = []
         self.transfers = []
         self.candidate_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None}
-                                    for cand in self. candidate_set}
+                                    for cand in self.candidate_set}
         self.final_weights = []
 
         # round variables
+        self.extra_votes = {}
         self.round_num = 0
         self.round_results = []
         self.round_winners = []
@@ -99,7 +99,6 @@ class RCV(ABC):
         """
 
         while self.contest_not_complete():
-
             self.round_num += 1
 
             #############################################
@@ -141,12 +140,16 @@ class RCV(ABC):
 
             #############################################
             # UPDATE WEIGHTS
-            self.update_weights()
+            # don't update if contest over
+            if self.contest_not_complete():
+                self.update_weights()
 
             #############################################
             # CALC ROUND TRANSFER
-            self.calc_round_transfer()
-
+            if self.contest_not_complete():
+                self.calc_round_transfer()
+            else:
+                self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
 
         # set final weight for each ballot
         self.final_weights = [b['weight'] for b in self.bs]
@@ -178,10 +181,17 @@ class RCV(ABC):
 
         # update rounds_full
         round_candidates, round_tallies = self.round_results
+        round_candidates = list(round_candidates)
+        round_tallies = list(round_tallies)
+
+        # add in any extra votes (such as from threshold candidates)
+        for cand in self.extra_votes:
+            round_candidates.append(cand)
+            round_tallies.append(self.extra_votes[cand])
 
         round_inactive_candidates = [cand for cand in self.candidate_set if cand not in round_candidates]
-        round_candidates_full = list(round_candidates) + round_inactive_candidates
-        round_tallies_full = list(round_tallies) + [0] * len(round_inactive_candidates)
+        round_candidates_full = round_candidates + round_inactive_candidates
+        round_tallies_full = round_tallies + [0] * len(round_inactive_candidates)
 
         self.rounds_full.append([tuple(round_candidates_full), tuple(round_tallies_full)])
 
@@ -282,22 +292,17 @@ class rcv_single_winner(RCV):
         rules:
         - transfer votes from round loser
         """
-        # if contest is over, return unfilled dict
-        if not self.contest_not_complete():
-            self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
+        # calculate transfer
+        transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
+        for b in self.bs:
+            if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
+                if len(b['ranks']) > 1:
+                    transfer_dict[b['ranks'][1]] += b['weight']
+                else:
+                    transfer_dict['exhaust'] += b['weight']
 
-        else:
-            # calculate transfer
-            transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
-            for b in self.bs:
-                if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
-                    if len(b['ranks']) > 1:
-                        transfer_dict[b['ranks'][1]] += b['weight']
-                    else:
-                        transfer_dict['exhaust'] += b['weight']
-
-            transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
-            self.transfers.append(transfer_dict)
+        transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
+        self.transfers.append(transfer_dict)
 
     #
     def contest_not_complete(self):
@@ -385,11 +390,19 @@ class stv_fractional_ballot(RCV):
 
                 # which ballots had the winner on top
                 # and need to be fractionally split
+                new = []
                 for b in self.bs:
-                    if b and b['ranks'][0] == winner:
-                        b['weight'] *= surplus_percent
+                    if b['ranks'] and b['ranks'][0] == winner:
+                        new.append({'ranks': b['ranks'], 'weight': b['weight'] * surplus_percent})
+                    else:
+                        new.append(b)
+                self.bs = new
 
+            # record threshold level vote count in extra votes for winner
+            # to ensure they get added back into later round counts
+            self.extra_votes.update({winner: threshold})
 
+    #
     def calc_round_transfer(self):
         """
         This function should append a dictionary to self.transfers containing:
@@ -397,24 +410,27 @@ class stv_fractional_ballot(RCV):
         values as round transfer flows.
 
         rules:
-        - transfer votes from round loser
+        - transfer votes from round loser or winner
         """
-        # if contest is over, return unfilled dict
-        if not self.contest_not_complete():
-            self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
-
+        if self.round_winners:
+            transfer_candidates = self.round_winners
         else:
-            # calculate transfer
-            transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
-            for b in self.bs:
-                if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
-                    if len(b['ranks']) > 1:
-                        transfer_dict[b['ranks'][1]] += b['weight']
-                    else:
-                        transfer_dict['exhaust'] += b['weight']
+            transfer_candidates = [self.round_loser]
 
-            transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
-            self.transfers.append(transfer_dict)
+        # calculate transfer
+        transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
+        for b in self.bs:
+            if len(b['ranks']) > 0 and b['ranks'][0] in transfer_candidates:
+
+                if len(b['ranks']) > 1:
+                    transfer_dict[b['ranks'][1]] += b['weight']
+                else:
+                    transfer_dict['exhaust'] += b['weight']
+
+                # mark transfer outflow
+                transfer_dict[b['ranks'][0]] += b['weight'] * -1
+
+        self.transfers.append(transfer_dict)
 
     #
     def contest_not_complete(self):
@@ -477,22 +493,18 @@ class rcv_multiWinner_thresh15(RCV):
         rules:
         - transfer votes from round loser
         """
-        # if contest is over, return unfilled dict
-        if not self.contest_not_complete():
-            self.transfers.append({cand: np.NaN for cand in self.candidate_set.union({'exhaust'})})
 
-        else:
-            # calculate transfer
-            transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
-            for b in self.bs:
-                if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
-                    if len(b['ranks']) > 1:
-                        transfer_dict[b['ranks'][1]] += b['weight']
-                    else:
-                        transfer_dict['exhaust'] += b['weight']
+        # calculate transfer
+        transfer_dict = {cand: 0 for cand in self.candidate_set.union({'exhaust'})}
+        for b in self.bs:
+            if len(b['ranks']) > 0 and b['ranks'][0] == self.round_loser:
+                if len(b['ranks']) > 1:
+                    transfer_dict[b['ranks'][1]] += b['weight']
+                else:
+                    transfer_dict['exhaust'] += b['weight']
 
-            transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
-            self.transfers.append(transfer_dict)
+        transfer_dict[self.round_loser] = sum(transfer_dict.values()) * -1
+        self.transfers.append(transfer_dict)
 
     #
     def contest_not_complete(self):

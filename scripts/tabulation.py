@@ -28,10 +28,6 @@ def ballots(ctx):
     """
     res = ctx['parser'](ctx)
 
-    # temporary fix?
-    # since I havent attempted to rewrite parsers in any way, just merge together
-    # writeIns that may remain at this step
-
     if isinstance(res, list):
         return {'ranks': res,
                 'weight': [Fraction(1) for b in res]}
@@ -151,8 +147,6 @@ def convert_cvr(ctx):
     # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
     bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
 
-    ballot_dict['ranks'] = bs
-
     # ballotIDs in extras?
     if 'ballotID' not in ballot_dict:
         ballot_dict['ballotID'] = [i for i in range(1, len(bs) + 1)]
@@ -250,7 +244,7 @@ def candidate_outcomes(ctx):
     round_elected: None (if loser) or integer
     round_eliminated: None (if winner) or integer
     """
-    return rcv_obj(ctx).results()['candidate_outcomes']
+    return list(rcv_obj(ctx).results()['candidate_outcomes'])
 
 
 def final_weights(ctx):
@@ -310,14 +304,14 @@ def final_round_active_votes(ctx):
     '''
     The number of votes that were awarded to any candidate in the final round. (weighted)
     '''
-    return float(sum(round_by_round_trimmed(ctx)[-1][1]))
+    return float(sum(round_by_round_full(ctx)[-1][1]))
 
 
 def first_round_active_votes(ctx):
     '''
     The number of votes that were awarded to any candidate in the first round. (weighted)
     '''
-    return float(sum(round_by_round_trimmed(ctx)[0][1]))
+    return float(sum(round_by_round_full(ctx)[0][1]))
 
 
 def final_round_winner_percent(ctx):

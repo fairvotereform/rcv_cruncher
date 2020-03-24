@@ -7,7 +7,6 @@ import pandas as pd
 # cruncher imports
 from scripts.contests import *
 from scripts.ballot_stats import *
-#from scripts.precincts import *
 from scripts.tabulation import *
 from scripts.rcv_variants import *
 
@@ -26,6 +25,9 @@ def write_stats(contest):
 
 
 def stats_double_check(contest):
+    """
+    Calculate several totals a second way to make sure some identity equations hold up.
+    """
 
     ############################
     # calculated outputs
@@ -34,17 +36,18 @@ def stats_double_check(contest):
     final_round_active = final_round_active_votes(contest)
     n_exhaust = total_exhausted(contest)
     n_undervote = total_undervote(contest)
-    n_ballots = len(ballots(contest)['ranks'])
+    n_ballots = sum(ballots(contest)['weight'])
     n_ranked_single = ranked_single(contest)
     n_ranked_multiple = ranked_multiple(contest)
 
-    n_first_round_exhaust_by_overvote = 0
-    if contest['break_on_overvote']:
-        n_first_round_exhaust_by_overvote = first_round_overvote(contest)
+    ############################
+    # intermediary recalculations
+    # ballots which are only overvotes and skips
 
-    n_first_round_exhaust_by_skipped_rankings = 0
-    if contest['break_on_repeated_skipvotes']:
-        n_first_round_exhaust_by_skipped_rankings = sum(i == 0 for i in repeated_skipvote_ind(contest))
+    first_round_exhausted = [True for under, b in zip(undervote(contest), cleaned(contest)['ranks'])
+                             if not under and b == []]
+    n_first_round_exhausted = sum(weight * flag for weight, flag
+                                  in zip(ballots(contest)['weight'], first_round_exhausted))
 
     ############################
     # secondary crosschecks
@@ -53,30 +56,33 @@ def stats_double_check(contest):
     # The number of exhausted ballots should equal
     # the difference between the first round active ballots and the final round active ballots
     # PLUS any ballot exhausted in the first round due to overvote or repeated skipped ranks
-    n_exhaust_crosscheck = first_round_active - final_round_active + \
-                           n_first_round_exhaust_by_overvote + n_first_round_exhaust_by_skipped_rankings
+    n_exhaust_crosscheck = first_round_active - final_round_active + n_first_round_exhausted
 
     # The number of undervote ballots should equal
     # the difference between the total number of ballots and
     # the first round active ballots,
-    n_undervote_crosscheck = n_ballots - first_round_active - \
-                             n_first_round_exhaust_by_overvote - n_first_round_exhaust_by_skipped_rankings
+    n_undervote_crosscheck = n_ballots - first_round_active - n_first_round_exhausted
 
-    n_ranked_single_crosscheck = sum(len(set(i) & all_candidates) == 1 for i in ballots(contest)['ranks'])
-    n_ranked_multiple_crosscheck = sum(len(set(i) & all_candidates) > 1 for i in ballots(contest)['ranks'])
+    n_ranked_single_crosscheck = sum([weight for i, weight
+                                      in zip(ballots(contest)['ranks'], ballots(contest)['weight'])
+                                      if len(set(i) & all_candidates) == 1])
+
+    n_ranked_multiple_crosscheck = sum([weight for i, weight
+                                        in zip(ballots(contest)['ranks'], ballots(contest)['weight'])
+                                        if len(set(i) & all_candidates) > 1])
 
     problem = False
-    if n_exhaust_crosscheck != n_exhaust:
+    if round(n_exhaust_crosscheck, 3) != round(n_exhaust, 3):
         problem = True
-    if n_undervote_crosscheck != n_undervote:
+    if round(n_undervote_crosscheck, 3) != round(n_undervote, 3):
         problem = True
-    if n_ranked_single_crosscheck != n_ranked_single:
+    if round(n_ranked_single_crosscheck, 3) != round(n_ranked_single, 3):
         problem = True
-    if n_ranked_multiple_crosscheck != n_ranked_multiple:
+    if round(n_ranked_multiple_crosscheck, 3) != round(n_ranked_multiple, 3):
         problem = True
 
     if problem:
-        print(' ********* stat_double_check: failed', end='')
+        print(' ********* stat_double_check: failed. debug', end='')
 
 
 def write_converted_cvr(contest):
@@ -190,7 +196,7 @@ def write_rcv(ctx):
 
             rcv_df.loc[cand, rnd_percent_col] = round(float(100*(rnd_info[cand]/sum(rnd_info.values()))), 3)
             rcv_df.loc[cand, rnd_count_col] = float(rnd_info[cand])
-            rcv_df.loc[cand, rnd_transfer_col] = rnd_transfer[cand]
+            rcv_df.loc[cand, rnd_transfer_col] = float(rnd_transfer[cand])
 
         # maintain cumulative exhaust total
         if rnd != 1:
@@ -287,8 +293,8 @@ def main():
         single_winner_func_file.close()
 
         # currently only applying precinct data to single_winner_output
-        if add_precinct_funcs:
-            single_winner_func_list += ethnicity_stats_func_list()
+        # if add_precinct_funcs:
+        #     single_winner_func_list += ethnicity_stats_func_list()
     else:
         print('no single_winner.txt function list found, no results will be written for single winner contests')
         single_winner_func_list = []
@@ -309,7 +315,7 @@ def main():
     # produce results
 
     single_winner_rcv_set = [rcv_single_winner]
-    multi_winner_rcv_set = []
+    multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot]
     #multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot, stv_whole_ballot]
 
     # write stats files column names
@@ -331,12 +337,19 @@ def main():
         multi_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
                                            for fun in multi_winner_func_list])
 
+    # pause_list = ['Minneapolis__2009__Mayor__MinneapolisMayor2009', 'Minneapolis__2009__Ward1__MinneapolisWard12009',
+    #               'Minneapolis__2009__Ward10__MinneapolisWard102009', 'Minneapolis__2009__Ward3__MinneapolisWard32009',
+    #               '2009,BOE,Minneapolis']
+
     # loop through contests
     no_stats_contests = []
     for contest in sorted(contest_set, key=lambda x: x['date']):
 
         print()
         print(contest['dop'], end='')
+        # if contest['dop'] in pause_list or contest['unique_id'] in pause_list:
+        #     print('debug!')
+        #     x = 0
 
         contest['common_cvr_dir'] = common_cvr_dir
         write_converted_cvr(contest)
@@ -372,6 +385,7 @@ def main():
     write_candidate_details(contest_set, candidate_details_fpath)
 
     if no_stats_contests:
+        print()
         print("the following contests in the contest_set did not have an active rcv_type", end='')
         print(" and are therefore not included in the contest stats outputs: ")
         for contest in no_stats_contests:

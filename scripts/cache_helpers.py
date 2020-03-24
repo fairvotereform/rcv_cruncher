@@ -106,26 +106,30 @@ def save(f):
     @wraps(f)
     def fun(*args):
 
+        key = tuple(str(shelve_key(a)) for a in args)
+        dirname = cache_dir + '/{}'.format('.'.join(key).replace('/', '.'))
+        file_name = cache_dir + '/{}/{}'.format('.'.join(key).replace('/', '.'), f.__name__)
+
         # if this is the first time the function is being called during this run,
         # check that there isn't already a saved computation from previous runs
         if f.not_called:
             check = srchash(f.__name__)
-            dirname = cache_dir + '/' + f.__name__
-            checkname = dirname + '.check'
+            checkname = cache_dir + '/' + f.__name__ + '.check'
             # check if the saved srchash is the different from the current one
             # if so, delete the results previosuly saved from this function
             if os.path.exists(checkname) and check != open(checkname).read().strip():
-                shutil.rmtree(dirname)
+                os.remove(file_name)
                 os.remove(checkname)
             # if the check is absent at this point, write a new one out
             # and make a fresh results dir for this function
             if not os.path.exists(checkname):
                 open(checkname, 'w').write(check)
-                os.mkdir(dirname)
             # indicate that now the function has been called
             f.not_called = False
 
-        key = tuple(str(shelve_key(a)) for a in args)
+        # make the election's cache folder
+        if os.path.isdir(dirname) is False:
+            os.mkdir(dirname)
 
         # check if the current call is for the same election, if not, clear the cache
         if next(iter(f.cache), key)[0] != key[0]:
@@ -134,8 +138,8 @@ def save(f):
         if key in f.cache:
             return f.cache[key]
 
-        file_name = cache_dir + '/{}/{}'.format(f.__name__, '.'.join(key).replace('/', '.'))
-
+        # assume the pickle file exists and try to read from it,
+        # suppress any error that might come up and write out a new result.
         with suppress(IOError, EOFError), open(file_name, 'rb') as file_object:
             f.cache[key] = pickle.load(file_object)
             return f.cache[key]
