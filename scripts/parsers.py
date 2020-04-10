@@ -2,12 +2,21 @@ from pathlib import Path
 from glob import glob
 from collections import UserList, defaultdict
 from gmpy2 import mpq as Fraction
+from inspect import isfunction
 import os
 import csv
 import json
 import re
 
 from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN
+
+def get_parser_dict():
+    """
+    Return dictionary of parsers, parser_name: parser_func_obj
+    """
+    return {key: value for key, value in globals().items()
+            if isfunction(value) and key != "get_parser_dict" and value.__module__ == __name__}
+
 
 def dominion5_10(ctx):
 

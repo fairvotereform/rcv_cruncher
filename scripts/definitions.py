@@ -1,3 +1,4 @@
+import os
 
 ###############################################################
 # constants
@@ -88,3 +89,19 @@ def replace(target, replacement, l):
 def merge_writeIns(b):
     return [WRITEIN if isinstance(i, str) and 'writein' in i.lower().replace('-', '')
             else i for i in b]
+
+def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing folder'):
+    """
+    Check that a directory exists and if missing, either error or create it.
+
+    :param dir_path: directory path to verify
+    :param make_if_missing: if True, create directory if missing
+    :param error_msg_tail: if make_if_missing is False and directory missing,
+     print this error message after the dir_path.
+    """
+    if os.path.isdir(dir_path) is False:
+        if make_if_missing:
+            os.mkdir(dir_path)
+        else:
+            print(dir_path + ' ' + error_msg_tail)
+            raise RuntimeError

@@ -2,55 +2,21 @@ from functools import partial
 import pandas as pd
 import os
 import re
-
 # cruncher imports
-from .cache_helpers import tmpsave
-from .parsers import santafe, santafe_id, maine, minneapolis, \
-    sf, sfnoid, old, prm, burlington, sf2019, utah, ep, dominion5_10
-from .rcv_variants import rcv_single_winner, stv_whole_ballot, stv_fractional_ballot, sequential_rcv
+from .parsers import get_parser_dict
+from .rcv_variants import get_rcv_dict
 
+# read functions in parsers and rcv_variants
+rcv_dict = get_rcv_dict()
+parser_dict = get_parser_dict()
 
-##########################
-# getter function that exist only for the function list in the cruncher
-# much simpler to access ctx dictionary directly
-
-def contest_name(ctx):
-    return ctx['contest']
-
-def place(ctx):
-    return ctx['place']
-
-def state(ctx):
-    return ctx['state']
-
-def date(ctx):
-    return ctx['date']
-
-def office(ctx):
-    return ctx['office']
-
-def rcv_type(ctx):
-    return ctx['rcv_type'].__name__
-
-def num_winners(ctx):
-    return ctx['num_winners']
-
-@tmpsave
-def dop(ctx):
-    return ','.join(str(f(ctx)) for f in [date, office, place])
-
-@tmpsave
-def unique_id(ctx):
-
-    pieces = [ctx['place'], ctx['date'], ctx['office'], ctx['contest']]
-    cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
-
-    return "__".join(cleaned_pieces)
-
-#########################
+# ensure name uniqueness and merge
+if [key for key in rcv_dict.keys() if key in parser_dict.keys()]:
+    print("an rcv variant class and a parser function share the same name. Make them unique.")
+    raise RuntimeError
+eval_dict = rcv_dict.update(parser_dict)
 
 # typecast functions
-
 def cast_str(s):
     """
     If string-in-string '"0006"', evaluate to '0006'
@@ -71,8 +37,24 @@ def cast_bool(s):
     return eval(s.title())
 
 def cast_func(s):
-    return eval(s)
+    if s in eval_dict:
+        return eval_dict[s]
+    else:
+        print(s + " is neither an rcv class or parser function.")
+        raise RuntimeError
 
+# other helpers
+def dop(ctx):
+    return ','.join([ctx['date'], ctx['office'], ctx['place']])
+
+def unique_id(ctx):
+
+    pieces = [ctx['place'], ctx['date'], ctx['office'], ctx['contest']]
+    cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
+
+    return "__".join(cleaned_pieces)
+
+# primary function
 def load_contest_set(contest_set_path):
 
     ##########################
