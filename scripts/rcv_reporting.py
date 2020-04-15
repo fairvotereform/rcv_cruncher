@@ -1,12 +1,38 @@
 
 # package imports
 from collections import Counter, defaultdict
+from functools import wraps
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, EXHAUSTED_BY_OVERVOTE, \
     EXHAUSTED_BY_REPEATED_SKIPVOTE, EXHAUSTED_BY_RANK_LIMIT, EXHAUSTED_BY_ABSTENTION, UNDERVOTE
 from .cache_helpers import save
 from .misc_tabulation import ballots, cleaned, candidates_no_writeIns, condorcet_tables, candidates
+
+
+def allow_list_args(f):
+    """
+    Wrapper for reporting functions. Assumes args: self (positional) and (keyword) tabulation_num.
+    Allows the decorated function to take as tabulation_num single numbers and lists of numbers, and return
+    a single value or list accordingly
+    """
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+
+        # ensure there is a kwarg
+        if kwargs is None:
+            print("you must has tabulation_num as a keyword argument 'f(tabulation_num=1)'")
+            raise RuntimeError
+
+        # if list, return result of list comprehension over all elements as inputs
+        # otherwise simply call the function
+        tabulation_num = kwargs['tabulation_num']
+        if isinstance(tabulation_num, list):
+            return ", ".join([f(*args, tabulation_num=i) for i in tabulation_num])
+        else:
+            return f(*args, tabulation_num=tabulation_num)
+
+    return wrapper
 
 
 class RCV_Reporting:
@@ -131,6 +157,7 @@ class RCV_Reporting:
         #     return 'Bob Kiss'
         return ", ".join([str(w).title() for w in self.winner()])
 
+    @allow_list_args
     def condorcet(self, tabulation_num=1):
         '''
         Is the winner the condorcet winner?
@@ -170,58 +197,51 @@ class RCV_Reporting:
         else:
             return "No"
 
-    def come_from_behind(self, tabulation_range=range(1, 2)):
+    @allow_list_args
+    def come_from_behind(self, tabulation_num=1):
         """
         "yes" if rcv winner is not first round leader, else "no"
 
         In the case of multi-winner elections, this result will only pertain to the first candidate elected.
         """
-        res = []
-        for tabulation_num in tabulation_range:
-            if self.tabulation_winner(tabulation_num=tabulation_num)[0] != \
-                    self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)[0][0]:
-                res.append("Yes")
-            else:
-                res.append("No")
-        return ", ".join(res)
+        if self.tabulation_winner(tabulation_num=tabulation_num)[0] != \
+                self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)[0][0]:
+            return "yes"
+        else:
+            return "no"
 
-    def _final_round_active_votes(self, tabulation_num=1):
+    @allow_list_args
+    def final_round_active_votes(self, tabulation_num=1):
+        '''
+        The number of votes that were awarded to any candidate in the final round. (weighted)
+        '''
         n_rounds = self.n_rounds(tabulation_num=tabulation_num)
         tally_dict = self.get_round_full_tally_dict(n_rounds, tabulation_num=tabulation_num)
         return float(sum(tally_dict.values()))
 
-    def final_round_active_votes(self, tabulation_range=range(1, 2)):
-        '''
-        The number of votes that were awarded to any candidate in the final round. (weighted)
-        '''
-        return ", ".join([str(self._final_round_active_votes(tabulation_num=i)) for i in tabulation_range])
-
-    def _first_round_active_votes(self, tabulation_num=1):
-        tally_dict = self.get_round_full_tally_dict(1, tabulation_num=tabulation_num)
-        return float(sum(tally_dict.values()))
-
-    def first_round_active_votes(self, tabulation_range=range(1, 2)):
+    @allow_list_args
+    def first_round_active_votes(self, tabulation_num=1):
         '''
         The number of votes that were awarded to any candidate in the first round. (weighted)
         '''
-        return ", ".join([str(self._first_round_active_votes(tabulation_num=i)) for i in tabulation_range])
+        tally_dict = self.get_round_full_tally_dict(1, tabulation_num=tabulation_num)
+        return float(sum(tally_dict.values()))
 
-    def _final_round_winner_percent(self, tabulation_num=1):
+    @allow_list_args
+    def final_round_winner_percent(self, tabulation_num=1):
+        '''
+        The percent of votes for the winner in the final round.
+        If more than one winner, return the final round count for the first winner elected. (weighted)
+        '''
         n_rounds = self.n_rounds(tabulation_num=tabulation_num)
         tally_dict = self.get_round_full_tally_dict(n_rounds, tabulation_num=tabulation_num)
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
         return float(tally_dict[winner[0]] / sum(tally_dict.values()))
 
-    def final_round_winner_percent(self, tabulation_range=range(1, 2)):
+    @allow_list_args
+    def final_round_winner_vote(self, tabulation_num=1):
         '''
         The percent of votes for the winner in the final round.
-        If more than one winner, return the final round count for the first winner elected. (weighted)
-        '''
-        return ", ".join([str(self._final_round_winner_percent(tabulation_num=i)) for i in tabulation_range])
-
-    def _final_round_winner_vote(self, tabulation_num=1):
-        '''
-        The number of votes for the winner in the final round.
         If more than one winner, return the final round count for the first winner elected. (weighted)
         '''
         n_rounds = self.n_rounds(tabulation_num=tabulation_num)
@@ -229,13 +249,7 @@ class RCV_Reporting:
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
         return float(tally_dict[winner[0]])
 
-    def final_round_winner_vote(self, tabulation_range=range(1, 2)):
-        '''
-        The percent of votes for the winner in the final round.
-        If more than one winner, return the final round count for the first winner elected. (weighted)
-        '''
-        return ", ".join([str(self._final_round_winner_vote(tabulation_num=i)) for i in tabulation_range])
-
+    @allow_list_args
     def final_round_winner_votes_over_first_round_valid(self, tabulation_num=1):
         '''
         The number of votes the winner receives in the final round divided by the
@@ -246,6 +260,7 @@ class RCV_Reporting:
         return float(self.final_round_winner_vote(tabulation_num=tabulation_num) /
                      self.first_round_active_votes(tabulation_num=tabulation_num))
 
+    @allow_list_args
     def first_round_winner_place(self, tabulation_num=1):
         '''
         In terms of first round votes, what place the eventual winner came in.
@@ -255,23 +270,25 @@ class RCV_Reporting:
         tally_tuple = self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)
         return tally_tuple[0].index(winner[0]) + 1
 
+    @allow_list_args
     def first_round_winner_percent(self, tabulation_num=1):
         '''
         The percent of votes for the winner in the first round.
         In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
         '''
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
-        tally_tuple = self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)
-        return float(tally_tuple[winner[0]] / sum(tally_tuple.values()))
+        tally_dict = self.get_round_trimmed_tally_dict(1, tabulation_num=tabulation_num)
+        return float(tally_dict[winner[0]] / sum(tally_dict.values()))
 
+    @allow_list_args
     def first_round_winner_vote(self, tabulation_num=1):
         '''
         The number of votes for the winner in the first round.
         In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
         '''
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
-        tally_tuple = self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)
-        return float(tally_tuple[winner[0]])
+        tally_dict = self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)
+        return float(tally_dict[winner[0]])
 
     def finalists(self, tabulation_num=1):
         """
@@ -305,11 +322,12 @@ class RCV_Reporting:
         """
         return len(self.winner())
 
-    def number_of_rounds(self, tabulation_num=range(1)):
+    @allow_list_args
+    def number_of_rounds(self, tabulation_num=1):
         """
         Count how many rounds a contest had.
         """
-        return [self.n_rounds(tabulation_num=i) for i in tabulation_num]
+        return self.n_rounds(tabulation_num=tabulation_num)
 
     def number_of_candidates(self):
         '''
@@ -317,11 +335,12 @@ class RCV_Reporting:
         '''
         return len(candidates_no_writeIns(self.ctx))
 
+    @allow_list_args
     def ranked_winner(self, tabulation_num=1):
         """
         Number of ballots with a non-overvote mark for the winner
         """
-        winners = self.winner()
+        winners = self.tabulation_winner(tabulation_num=tabulation_num)
         return sum(bool(set(winners).intersection(b)) for b in ballots(self.ctx)['ranks'])
 
     def win_threshold(self):
@@ -346,6 +365,7 @@ class RCV_Reporting:
                               if d['round_elected'] is not None]
         return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
 
+    @allow_list_args
     def winners_consensus_value(self, tabulation_num=1):
         '''
         The percentage of valid first round votes that rank any winner in the top 3.
@@ -353,7 +373,7 @@ class RCV_Reporting:
         return float(self.winner_in_top_3(tabulation_num=tabulation_num) /
                      self.first_round_active_votes(tabulation_num=tabulation_num))
 
-    def winner_ranking(self, tabulation_num=1):
+    def winner_ranking(self):
         """
         Returns a dictionary with ranking-count key-values, with count
         indicating the number of ballots in which the winner received each
@@ -361,10 +381,11 @@ class RCV_Reporting:
         If more than one winner is elected in the contest, the value returned for this function refers to the
         first winner elected.
         """
-        return Counter(
-            b.index(self.winner()[0]) + 1 if self.winner()[0] in b else None for b in cleaned(self.ctx)['ranks']
+        return Counter(b.index(self.winner()[0]) + 1 if self.winner()[0] in b else None
+                       for b in cleaned(self.ctx)['ranks']
         )
 
+    @allow_list_args
     def winner_in_top_3(self, tabulation_num=1):
         """
         Number of ballots that ranked any winner in the top 3 ranks. (weighted)
@@ -680,6 +701,7 @@ class RCV_Reporting:
         """
         return float(sum(ballots(self.ctx)['weight']))
 
+    @allow_list_args
     def total_exhausted(self, tabulation_num=1):
         """
         Number of ballots (excluding undervotes) that do not rank a finalist. (weighted)
@@ -688,6 +710,7 @@ class RCV_Reporting:
                           in zip(self.get_final_weights(tabulation_num=tabulation_num),
                                  self.exhausted(tabulation_num=tabulation_num))]))
 
+    @allow_list_args
     def total_exhausted_by_abstention(self, tabulation_num=1):
         """
         Number of ballots exhausted after all marked rankings used and ballot is not fully ranked. (weighted)
@@ -696,6 +719,7 @@ class RCV_Reporting:
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
                               self.exhausted_by_abstention(tabulation_num=tabulation_num))]))
 
+    @allow_list_args
     def total_exhausted_by_overvote(self, tabulation_num=1):
         """
         Number of ballots exhausted due to overvote. Only applicable to certain contests. (weighted)
@@ -704,6 +728,7 @@ class RCV_Reporting:
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
                               self.exhausted_by_overvote(tabulation_num=tabulation_num))]))
 
+    @allow_list_args
     def total_exhausted_by_rank_limit(self, tabulation_num=1):
         """
         Number of ballots exhausted after all marked rankings used and ballot is fully ranked. (weighted)
@@ -712,6 +737,7 @@ class RCV_Reporting:
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
                               self.exhausted_by_rank_limit(tabulation_num=tabulation_num))]))
 
+    @allow_list_args
     def total_exhausted_by_skipped_rankings(self, tabulation_num=1):
         """
         Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests. (weighted)

@@ -44,7 +44,6 @@ that did have irregular marks (skipped rank, duplicate rank, overvote) that were
 to rules prior to reaching the final rank. Any ballot exhausted not by overvote, repeated skipped ranks, or abstention.
 """
 
-
 ########################
 # helper funcs
 

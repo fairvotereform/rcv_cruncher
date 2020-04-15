@@ -1,6 +1,8 @@
 from abc import abstractmethod, ABC
 from collections import Counter
 import numpy as np
+import pandas as pd
+from inspect import signature
 
 from .rcv_reporting import RCV_Reporting
 from .definitions import remove
@@ -14,21 +16,70 @@ class RCV(ABC, RCV_Reporting):
     Tabulation skeleton is in tabulate()/run_contest()
     """
 
+    @abstractmethod
+    def variant_group(self):
+        """
+        Should return the name of the group this rcv variant belongs to. The groups
+        determine which contests are written out together in the same file. The groups and
+        their corresponding output files are separate from the per-rcv-variant output file that
+        are always generated.
+        """
+        pass
+
+    single_winner_group = -1
+    multi_winner_group = -2
+
+    # override me
+    @abstractmethod
+    def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
+        pass
+
+    def contest_stats_df(self):
+        """
+        Return a pandas data frame with a single row. Any functions that take
+        'tabulation_num' as parameter return a concatenating string with the function results for each
+        tabulation joined together. Any functions that do not take 'tabulation_num' just return their single value.
+        """
+        tabulation_list = list(range(1, self._tab_num+1))
+        dct = {f.__name__:
+                   [f(tabulation_num=tabulation_list)]
+                   if 'tabulation_num' in signature(f).parameters
+                   else [f()]
+               for f in self._contest_stats()}
+        return pd.DataFrame.from_dict(dct)
+
+    # override me
+    @abstractmethod
+    def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
+        pass
+
+    def tabulation_stats_df(self):
+        """
+        Return a pandas data frame with one row per tabulation. Any functions that take
+        'tabulation_num' as parameter return the value for each tabulation on that tabulation's row.
+        Any functions that do not take 'tabulation_num' just return their single value, repeated on each row.
+        """
+        tabulation_list = list(range(1, self._tab_num+1))
+        dct = {f.__name__:
+                   [f(tabulation_num=i) for i in tabulation_list]
+                   if 'tabulation_num' in signature(f).parameters
+                   else [f() for i in tabulation_list]
+               for f in self._tabulation_stats()}
+        return pd.DataFrame.from_dict(dct)
+
     # override me
     @abstractmethod
     def _set_round_winners(self):
         """
         This function should set self.round_winners to the list of candidates that won the round
-        """
-        pass
-
-    # override me
-    @abstractmethod
-    def _calc_round_transfer(self):
-        """
-        This function should append a dictionary to self._tabulations[self._tab_num-1]['transfers'] containing:
-        candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
-        values as round transfer flows.
         """
         pass
 
@@ -42,21 +93,12 @@ class RCV(ABC, RCV_Reporting):
         pass
 
     # override me
-    @staticmethod
     @abstractmethod
-    def _contest_stats(self):
+    def _calc_round_transfer(self):
         """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        pass
-
-    # override me
-    @staticmethod
-    def _tabulation_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
+        This function should append a dictionary to self._tabulations[self._tab_num-1]['transfers'] containing:
+        candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
+        values as round transfer flows.
         """
         pass
 

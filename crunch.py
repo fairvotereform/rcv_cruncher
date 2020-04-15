@@ -311,16 +311,17 @@ def main():
     # produce results
 
     rcv_variant_names = list(get_rcv_dict().keys())
-    rcv_variant_df_dict = {}
+    rcv_variant_df_dict = {variant_name: [] for variant_name in rcv_variant_names}
+    all_rcv_variants = []
 
-
-    single_winner_results_fid = open(single_winner_results_fpath, 'w', newline='')
-    single_winner_results_csv = csv.writer(single_winner_results_fid)
-    # write column names
-    single_winner_results_csv.writerow([fun.__name__ for fun in single_winner_func_list])
-    # write column notes
-    single_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
-                                        for fun in single_winner_func_list]
+    #
+    # single_winner_results_fid = open(single_winner_results_fpath, 'w', newline='')
+    # single_winner_results_csv = csv.writer(single_winner_results_fid)
+    # # write column names
+    # single_winner_results_csv.writerow([fun.__name__ for fun in single_winner_func_list])
+    # # write column notes
+    # single_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
+    #                                     for fun in single_winner_func_list]
 
 
 

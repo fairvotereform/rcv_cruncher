@@ -2,7 +2,8 @@
 This file contains classes for RCV contest types.
 """
 from .rcv_base import RCV
-from inspect import isclass
+from inspect import isclass, signature
+import pandas as pd
 
 def get_rcv_dict():
     """
@@ -21,13 +22,21 @@ class rcv_single_winner(RCV):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    #
-    @staticmethod
+    def variant_group(self):
+        return self.single_winner_group
+
     def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.single_winner_stats()
 
-    @staticmethod
     def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.single_winner_stats()
 
     #
@@ -89,12 +98,21 @@ class sequential_rcv(rcv_single_winner):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    @staticmethod
+    def variant_group(self):
+        return self.multi_winner_group
+
     def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.multi_winner_stats()
 
-    @staticmethod
     def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.single_winner_stats()
 
     # overwrite tabulate to run multiple single winner elections
@@ -137,12 +155,21 @@ class until2rcv(rcv_single_winner):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    @staticmethod
+    def variant_group(self):
+        return self.single_winner_group
+
     def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.single_winner_stats()
 
-    @staticmethod
     def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.single_winner_stats()
 
     #
@@ -173,12 +200,21 @@ class stv_fractional_ballot(RCV):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    @staticmethod
+    def variant_group(self):
+        return self.multi_winner_group
+
     def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.multi_winner_stats()
 
-    @staticmethod
     def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.multi_winner_stats()
 
     #
@@ -319,12 +355,21 @@ class rcv_multiWinner_thresh15(RCV):
     def __init__(self, ctx):
         super().__init__(ctx)
 
-    @staticmethod
+    def variant_group(self):
+        return self.multi_winner_group
+
     def _contest_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.multi_winner_stats()
 
-    @staticmethod
     def _tabulation_stats(self):
+        """
+        Every rcv variant must specify which stats list it uses.
+        Available lists should be set as rcv base methods or reporting methods.
+        """
         return self.multi_winner_stats()
 
     #
