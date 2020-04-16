@@ -16,6 +16,13 @@ class RCV(ABC, RCV_Reporting):
     Tabulation skeleton is in tabulate()/run_contest()
     """
 
+    @staticmethod
+    def run_rcv(ctx):
+        """
+        Pass in a ctx dictionary and run the constructor function stored within it
+        """
+        return ctx['rcv_type'](ctx)
+
     @abstractmethod
     def variant_group(self):
         """

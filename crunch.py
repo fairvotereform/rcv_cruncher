@@ -129,6 +129,18 @@ def write_cumulative_ranking_tables(contest):
     counts.to_csv(contest['cumulative_ranking_table_dir'] + "/" + contest['dop'] + "_count.csv", float_format="%.2f")
     percents.to_csv(contest['cumulative_ranking_table_dir'] + "/" + contest['dop'] + "_percent.csv", float_format="%.2f")
 
+def write_rank_usage_tables(contest):
+    df = rank_usage_tables(contest)
+    df.to_csv(contest['rank_usage_table_dir'] + "/" + contest['dop'] + '.csv', float_format='%.2f')
+
+def write_opponent_crossover_tables(contest):
+    count_df, percent_df = crossover_table(contest)
+    count_df.to_csv(contest['crossover_table_dir'] + "/" + contest['dop'] + '_count.csv', float_format='%.2f')
+    percent_df.to_csv(contest['crossover_table_dir'] + "/" + contest['dop'] + '_percent.csv', float_format='%.2f')
+
+def write_first_to_finalist_tables(contest):
+    df = first_choice_to_finalist_table(contest)
+    df.to_csv(contest['first_to_finalist_table_dir'] + '/' + contest['dop'] + '.csv', float_format='%.2f')
 
 def prepare_candidate_details(contest):
     """
@@ -293,6 +305,15 @@ def main():
 
     cumulative_ranking_dir = results_dir + '/cumulative_ranking'
     verifyDir(cumulative_ranking_dir)
+
+    rank_usage_table_dir = results_dir + '/rank_usage'
+    verifyDir(rank_usage_table_dir)
+
+    opponent_crossover_table_dir = results_dir + '/opponent_crossover'
+    verifyDir(opponent_crossover_table_dir)
+
+    first_to_finalist_table_dir = results_dir + '/first_to_finalist'
+    verifyDir(first_to_finalist_table_dir)
 
     candidate_details_fpath = results_dir + '/candidate_details.csv'
     single_winner_results_fpath = results_dir + '/single_winner.csv'
