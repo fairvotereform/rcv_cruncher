@@ -335,32 +335,19 @@ def main():
     rcv_variant_df_dict = {variant_name: [] for variant_name in rcv_variant_names}
     all_rcv_variants = []
 
-    #
-    # single_winner_results_fid = open(single_winner_results_fpath, 'w', newline='')
-    # single_winner_results_csv = csv.writer(single_winner_results_fid)
-    # # write column names
-    # single_winner_results_csv.writerow([fun.__name__ for fun in single_winner_func_list])
-    # # write column notes
-    # single_winner_results_csv.writerow([' '.join((fun.__doc__ or '').split())
-    #                                     for fun in single_winner_func_list]
-
-
-
-    # single_winner_rcv_set = [rcv_single_winner, until2rcv]
-    # multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot]
-    #multi_winner_rcv_set = [rcv_multiWinner_thresh15, stv_fractional_ballot, stv_whole_ballot]
-
-
-    # pause_list = ['Minneapolis__2009__Mayor__MinneapolisMayor2009', 'Minneapolis__2009__Ward1__MinneapolisWard12009',
-    #               'Minneapolis__2009__Ward10__MinneapolisWard102009', 'Minneapolis__2009__Ward3__MinneapolisWard32009',
-    #               '2009,BOE,Minneapolis']
-
     # loop through contests
     no_stats_contests = []
     for contest in sorted(contest_set, key=lambda x: x['date']):
 
         print()
         print(contest['dop'], end='')
+
+        rcv_variant_name = contest['rcv_type'].__name__
+
+        if rcv_variant_name in rcv_variant_df_dict:
+            rcv_variant_df_dict[rcv_variant_name].append(RCV.run_rcv(contest))
+            all_rcv_variants.append()
+
         # if contest['dop'] in pause_list or contest['unique_id'] in pause_list:
         #     print('debug!')
         #     x = 0
@@ -374,8 +361,8 @@ def main():
         # contest['condorcet_table_dir'] = condorcet_table_dir
         # write_condorcet_tables(contest)
 
-        contest['cumulative_ranking_table_dir'] = cumulative_ranking_dir
-        write_cumulative_ranking_tables(contest)
+        # contest['cumulative_ranking_table_dir'] = cumulative_ranking_dir
+        # write_cumulative_ranking_tables(contest)
 
     #     if contest['rcv_type'] in single_winner_rcv_set and single_winner_func_list:
     #
