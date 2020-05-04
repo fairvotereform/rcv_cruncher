@@ -1,14 +1,30 @@
 
 # package imports
+import os
+#from abc import ABC
 from collections import Counter, defaultdict
+import time
 from functools import wraps
+from csv import writer
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, EXHAUSTED_BY_OVERVOTE, \
     EXHAUSTED_BY_REPEATED_SKIPVOTE, EXHAUSTED_BY_RANK_LIMIT, EXHAUSTED_BY_ABSTENTION, UNDERVOTE
 from .cache_helpers import save
-from .misc_tabulation import ballots, cleaned, candidates_no_writeIns, condorcet_tables, candidates
+from .ballots import ballots, cleaned, candidates, candidates_no_writeIns
+#from .rcv_base import RCV
 
+global RECORD_FUNCTION_TIMES, USE_TEMP_DICT
+RECORD_FUNCTION_TIMES = True
+USE_TEMP_DICT = True
+
+def use_timekeeping():
+    global RECORD_FUNCTION_TIMES
+    return RECORD_FUNCTION_TIMES
+
+def use_temp_dict():
+    global USE_TEMP_DICT
+    return USE_TEMP_DICT
 
 def allow_list_args(f):
     """
@@ -20,21 +36,92 @@ def allow_list_args(f):
     def wrapper(*args, **kwargs):
 
         # ensure there is a kwarg
-        if kwargs is None:
-            print("you must has tabulation_num as a keyword argument 'f(tabulation_num=1)'")
+        if 'tabulation_num' not in f.__kwdefaults__:
+            print("you must have tabulation_num as a keyword argument 'f(tabulation_num=1)'")
             raise RuntimeError
+
+        # Used passed in arg or default if not passed
+        if 'tabulation_num' in kwargs:
+            tabulation_num = kwargs['tabulation_num']
+        else:
+            tabulation_num = f.__kwdefaults__['tabulation_num']
 
         # if list, return result of list comprehension over all elements as inputs
         # otherwise simply call the function
-        tabulation_num = kwargs['tabulation_num']
         if isinstance(tabulation_num, list):
-            return ", ".join([f(*args, tabulation_num=i) for i in tabulation_num])
+            return ", ".join([str(f(*args, tabulation_num=i)) for i in tabulation_num])
         else:
             return f(*args, tabulation_num=tabulation_num)
 
     return wrapper
+#
+# def for_all_methods(decorator):
+#     def decorate(cls):
+#         for attr in cls.__dict__: # there's probably a better way to do this
+#             if callable(getattr(cls, attr)):
+#                 setattr(cls, attr, decorator(getattr(cls, attr)))
+#         return cls
+#     return decorate
+
+def check_temp_dict(f):
+
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
+
+        fname = f.__name__
+
+        tabulation_num = 'no_tabulation'
+        if 'tabulation_num' in kwargs:
+            tabulation_num = kwargs['tabulation_num']
+
+        cache_key = fname + '_' + str(tabulation_num)
+
+        if cache_key in self.cache_dict:
+            res = self.cache_dict[cache_key]
+        else:
+            res = f(self, *args, **kwargs)
+            self.cache_dict[cache_key] = res
+
+        return res
+
+    return wrapper
 
 
+def write_func_time(fname, t):
+    time_fpath = "contest_sets/time.csv"
+    with open(time_fpath, 'a+', newline='') as write_obj:
+        csv_writer = writer(write_obj)
+        if os.path.exists(time_fpath) and os.stat(time_fpath).st_size == 0:
+            csv_writer.writerow(['function', 'time'])
+        csv_writer.writerow([fname, t])
+
+def timer(f):
+
+    if use_timekeeping():
+        @wraps(f)
+        def timed(*args, **kwargs):
+
+            ts = time.time()
+            result = f(*args, **kwargs)
+            te = time.time()
+
+            write_func_time(f.__name__, te - ts)
+            return result
+
+        return timed
+    else:
+        return f
+
+def class_decorators(cls):
+    for attr in cls.__dict__: # there's probably a better way to do this
+        if callable(getattr(cls, attr)):
+            if use_temp_dict():
+                setattr(cls, attr, check_temp_dict(getattr(cls, attr)))
+            if use_timekeeping(): # add timer decorator
+                setattr(cls, attr, timer(getattr(cls, attr)))
+    return cls
+
+@class_decorators
 class RCV_Reporting:
     """
     Mixin containing all reporting stats. Can be overriden by any rcv variant.
@@ -48,10 +135,11 @@ class RCV_Reporting:
             self.contest_name,
             self.place,
             self.state,
+            self.year,
             self.date,
             self.office,
             self.rcv_type,
-            self.num_winners,
+            self.number_of_winners,
             self.unique_id,
             self.contest_winner,
             self.number_of_candidates,
@@ -90,10 +178,11 @@ class RCV_Reporting:
             self.contest_name,
             self.place,
             self.state,
+            self.year,
             self.date,
             self.office,
             self.rcv_type,
-            self.num_winners,
+            self.number_of_winners,
             self.unique_id,
             self.win_threshold,
             self.number_of_candidates,
@@ -129,8 +218,11 @@ class RCV_Reporting:
     def state(self):
         return self.ctx['state']
 
+    def year(self):
+        return self.ctx['year']
+
     def date(self):
-        return self.ctx['data']
+        return self.ctx['date']
 
     def office(self):
         return self.ctx['office']
@@ -141,8 +233,9 @@ class RCV_Reporting:
     # def num_winners(self):
     #     return self.ctx['num_winners']
 
-    def unique_id(self):
-        return self.ctx['unique_id']
+    @allow_list_args
+    def unique_id(self, *, tabulation_num=1):
+        return self.ctx['unique_id'] + '_tab' + str(tabulation_num)
 
     ####################
     # OUTCOME STATS
@@ -158,7 +251,7 @@ class RCV_Reporting:
         return ", ".join([str(w).title() for w in self.winner()])
 
     @allow_list_args
-    def condorcet(self, tabulation_num=1):
+    def condorcet(self, *, tabulation_num=1):
         '''
         Is the winner the condorcet winner?
         The condorcet winner is the candidate that would win a 1-on-1 election versus
@@ -193,12 +286,12 @@ class RCV_Reporting:
 
         # any negative net values indicate a head-to-head where contest winner loses
         if min(net.values()) > 0:
-            return "Yes"
+            return "yes"
         else:
-            return "No"
+            return "no"
 
     @allow_list_args
-    def come_from_behind(self, tabulation_num=1):
+    def come_from_behind(self, *, tabulation_num=1):
         """
         "yes" if rcv winner is not first round leader, else "no"
 
@@ -211,7 +304,7 @@ class RCV_Reporting:
             return "no"
 
     @allow_list_args
-    def final_round_active_votes(self, tabulation_num=1):
+    def final_round_active_votes(self, *, tabulation_num=1):
         '''
         The number of votes that were awarded to any candidate in the final round. (weighted)
         '''
@@ -220,7 +313,7 @@ class RCV_Reporting:
         return float(sum(tally_dict.values()))
 
     @allow_list_args
-    def first_round_active_votes(self, tabulation_num=1):
+    def first_round_active_votes(self, *, tabulation_num=1):
         '''
         The number of votes that were awarded to any candidate in the first round. (weighted)
         '''
@@ -228,7 +321,7 @@ class RCV_Reporting:
         return float(sum(tally_dict.values()))
 
     @allow_list_args
-    def final_round_winner_percent(self, tabulation_num=1):
+    def final_round_winner_percent(self, *, tabulation_num=1):
         '''
         The percent of votes for the winner in the final round.
         If more than one winner, return the final round count for the first winner elected. (weighted)
@@ -239,7 +332,7 @@ class RCV_Reporting:
         return float(tally_dict[winner[0]] / sum(tally_dict.values()))
 
     @allow_list_args
-    def final_round_winner_vote(self, tabulation_num=1):
+    def final_round_winner_vote(self, *, tabulation_num=1):
         '''
         The percent of votes for the winner in the final round.
         If more than one winner, return the final round count for the first winner elected. (weighted)
@@ -250,7 +343,7 @@ class RCV_Reporting:
         return float(tally_dict[winner[0]])
 
     @allow_list_args
-    def final_round_winner_votes_over_first_round_valid(self, tabulation_num=1):
+    def final_round_winner_votes_over_first_round_valid(self, *, tabulation_num=1):
         '''
         The number of votes the winner receives in the final round divided by the
         number of valid votes in the first round.
@@ -261,7 +354,7 @@ class RCV_Reporting:
                      self.first_round_active_votes(tabulation_num=tabulation_num))
 
     @allow_list_args
-    def first_round_winner_place(self, tabulation_num=1):
+    def first_round_winner_place(self, *, tabulation_num=1):
         '''
         In terms of first round votes, what place the eventual winner came in.
         In the case of multi-winner elections, this result will only pertain to the first candidate elected.
@@ -271,7 +364,7 @@ class RCV_Reporting:
         return tally_tuple[0].index(winner[0]) + 1
 
     @allow_list_args
-    def first_round_winner_percent(self, tabulation_num=1):
+    def first_round_winner_percent(self, *, tabulation_num=1):
         '''
         The percent of votes for the winner in the first round.
         In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
@@ -281,16 +374,16 @@ class RCV_Reporting:
         return float(tally_dict[winner[0]] / sum(tally_dict.values()))
 
     @allow_list_args
-    def first_round_winner_vote(self, tabulation_num=1):
+    def first_round_winner_vote(self, *, tabulation_num=1):
         '''
         The number of votes for the winner in the first round.
         In the case of multi-winner elections, this result will only pertain to the first candidate elected. (weighted)
         '''
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
-        tally_dict = self.get_round_trimmed_tally_tuple(1, tabulation_num=tabulation_num)
+        tally_dict = self.get_round_trimmed_tally_dict(1, tabulation_num=tabulation_num)
         return float(tally_dict[winner[0]])
 
-    def finalists(self, tabulation_num=1):
+    def finalists(self, *, tabulation_num=1):
         """
         Any candidate that was active into the final round.
         """
@@ -298,7 +391,7 @@ class RCV_Reporting:
         tally_tuple = self.get_round_trimmed_tally_tuple(n_rounds, tabulation_num=tabulation_num)
         return tally_tuple[0]
 
-    def finalist_ind(self, tabulation_num=1):
+    def finalist_ind(self, *, tabulation_num=1):
         """
         Returns a list indicating the first rank on each ballot where a finalist is listed.
         List element is Inf if no finalist is present
@@ -316,14 +409,14 @@ class RCV_Reporting:
 
         return inds
 
-    def num_winners(self):
+    def number_of_winners(self):
         """
         Count how many winners a contest had.
         """
         return len(self.winner())
 
     @allow_list_args
-    def number_of_rounds(self, tabulation_num=1):
+    def number_of_rounds(self, *, tabulation_num=1):
         """
         Count how many rounds a contest had.
         """
@@ -336,7 +429,7 @@ class RCV_Reporting:
         return len(candidates_no_writeIns(self.ctx))
 
     @allow_list_args
-    def ranked_winner(self, tabulation_num=1):
+    def ranked_winner(self, *, tabulation_num=1):
         """
         Number of ballots with a non-overvote mark for the winner
         """
@@ -352,21 +445,20 @@ class RCV_Reporting:
         """
         # accumulate winners across tabulations
         winners = []
-        for i in range(1, self.n_tabulations()):
+        for i in range(1, self.n_tabulations()+1):
             winners += self.tabulation_winner(tabulation_num=i)
         return winners
 
-    def tabulation_winner(self, tabulation_num=1):
+    def tabulation_winner(self, *, tabulation_num=1):
         """
         Return winners from tabulation.
         """
-        elected_candidates = [d for d in
-                              self.get_candidate_outcomes(tabulation_num=tabulation_num)['candidate_outcomes']
+        elected_candidates = [d for d in self.get_candidate_outcomes(tabulation_num=tabulation_num)
                               if d['round_elected'] is not None]
         return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
 
     @allow_list_args
-    def winners_consensus_value(self, tabulation_num=1):
+    def winners_consensus_value(self, *, tabulation_num=1):
         '''
         The percentage of valid first round votes that rank any winner in the top 3.
         '''
@@ -386,12 +478,13 @@ class RCV_Reporting:
         )
 
     @allow_list_args
-    def winner_in_top_3(self, tabulation_num=1):
+    def winner_in_top_3(self, *, tabulation_num=1):
         """
         Number of ballots that ranked any winner in the top 3 ranks. (weighted)
         """
+        winner = self.tabulation_winner(tabulation_num=tabulation_num)
         top3 = [b[:min(3, len(b))] for b in ballots(self.ctx)['ranks']]
-        top3_check = [set(self.tabulation_winner(tabulation_num=tabulation_num)).intersection(b) for b in top3]
+        top3_check = [set(winner).intersection(b) for b in top3]
         return sum([weight * bool(top3) for weight, top3 in zip(ballots(self.ctx)['weight'], top3_check)])
 
     def any_repeat(self):
@@ -437,7 +530,7 @@ class RCV_Reporting:
             counts[len(ranks)] += weight
         return '; '.join('{}: {}'.format(a, b) for a, b in sorted(counts.items()))
 
-    def exhausted(self, tabulation_num=1):
+    def exhausted(self, *, tabulation_num=1):
         """
         Returns a boolean list indicating which ballots were exhausted.
         Does not include undervotes as exhausted.
@@ -445,7 +538,7 @@ class RCV_Reporting:
         return [True if x != NOT_EXHAUSTED and x != UNDERVOTE
                 else False for x in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_abstention(self, tabulation_num=1):
+    def exhausted_by_abstention(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted without being fully ranked and the
@@ -454,7 +547,7 @@ class RCV_Reporting:
         return [True if i == EXHAUSTED_BY_ABSTENTION else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_or_undervote(self, tabulation_num=1):
+    def exhausted_or_undervote(self, *, tabulation_num=1):
         """
         Returns bool list corresponding to each ballot.
         True when ballot when ballot was exhausted OR left blank (undervote)
@@ -463,7 +556,7 @@ class RCV_Reporting:
         return [True if x != NOT_EXHAUSTED or x == UNDERVOTE else False
                 for x in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_overvote(self, tabulation_num=1):
+    def exhausted_by_overvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted due to overvote
@@ -471,7 +564,7 @@ class RCV_Reporting:
         return [True if i == EXHAUSTED_BY_OVERVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_rank_limit(self, tabulation_num=1):
+    def exhausted_by_rank_limit(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted AND final rank was used and reached.
@@ -479,7 +572,7 @@ class RCV_Reporting:
         return [True if i == EXHAUSTED_BY_RANK_LIMIT else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_skipvote(self, tabulation_num=1):
+    def exhausted_by_skipvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted due to repeated_skipvotes
@@ -487,7 +580,7 @@ class RCV_Reporting:
         return [True if i == EXHAUSTED_BY_REPEATED_SKIPVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhaustion_check(self, tabulation_num=1):
+    def exhaustion_check(self, *, tabulation_num=1):
         """
         Returns a list with string elements indicating why each ballot
         was exhausted in a single-winner rcv contest.
@@ -529,17 +622,21 @@ class RCV_Reporting:
 
             # assemble dictionary of possible exhaustion causes and then remove any
             # that don't apply based on the contest rules
-            idx_dictlist = [{'exhaust_cause': EXHAUSTED_BY_OVERVOTE, 'idx': over_idx},
-                            {'exhaust_cause': EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx},
-                            {'exhaust_cause': NOT_EXHAUSTED, 'idx': final_idx}]
+            # idx_dictlist = [{'exhaust_cause': EXHAUSTED_BY_OVERVOTE, 'idx': over_idx},
+            #                 {'exhaust_cause': EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx},
+            #                 {'exhaust_cause': NOT_EXHAUSTED, 'idx': final_idx}]
+
+            idx_dictlist = [{'exhaust_cause': NOT_EXHAUSTED, 'idx': final_idx}]
 
             # check if overvote can cause exhaust
-            if self.ctx['break_on_overvote'] is False:
-                idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_OVERVOTE]
+            if self.ctx['break_on_overvote']:
+                idx_dictlist.append({'exhaust_cause': EXHAUSTED_BY_OVERVOTE, 'idx': over_idx})
+                #idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_OVERVOTE]
 
             # check if skipvotes can cause exhaustion
-            if self.ctx['break_on_repeated_skipvotes'] is False:
-                idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_REPEATED_SKIPVOTE]
+            if self.ctx['break_on_repeated_skipvotes']:
+                idx_dictlist.append({'exhaust_cause': EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx})
+                #idx_dictlist = [i for i in idx_dictlist if i['exhaust_cause'] != EXHAUSTED_BY_REPEATED_SKIPVOTE]
 
             # what comes first on ballot: overvote, skipvotes, or finalist?
             min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
@@ -702,7 +799,7 @@ class RCV_Reporting:
         return float(sum(ballots(self.ctx)['weight']))
 
     @allow_list_args
-    def total_exhausted(self, tabulation_num=1):
+    def total_exhausted(self, *, tabulation_num=1):
         """
         Number of ballots (excluding undervotes) that do not rank a finalist. (weighted)
         """
@@ -711,7 +808,7 @@ class RCV_Reporting:
                                  self.exhausted(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_abstention(self, tabulation_num=1):
+    def total_exhausted_by_abstention(self, *, tabulation_num=1):
         """
         Number of ballots exhausted after all marked rankings used and ballot is not fully ranked. (weighted)
         """
@@ -720,7 +817,7 @@ class RCV_Reporting:
                               self.exhausted_by_abstention(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_overvote(self, tabulation_num=1):
+    def total_exhausted_by_overvote(self, *, tabulation_num=1):
         """
         Number of ballots exhausted due to overvote. Only applicable to certain contests. (weighted)
         """
@@ -729,7 +826,7 @@ class RCV_Reporting:
                               self.exhausted_by_overvote(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_rank_limit(self, tabulation_num=1):
+    def total_exhausted_by_rank_limit(self, *, tabulation_num=1):
         """
         Number of ballots exhausted after all marked rankings used and ballot is fully ranked. (weighted)
         """
@@ -738,7 +835,7 @@ class RCV_Reporting:
                               self.exhausted_by_rank_limit(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_skipped_rankings(self, tabulation_num=1):
+    def total_exhausted_by_skipped_rankings(self, *, tabulation_num=1):
         """
         Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests. (weighted)
         """

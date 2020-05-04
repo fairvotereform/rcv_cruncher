@@ -86,7 +86,7 @@ def replace(target, replacement, l):
     return [replacement if i == target else i for i in l]
 
 def merge_writeIns(b):
-    return [WRITEIN if isinstance(i, str) and 'writein' in i.lower().replace('-', '')
+    return [WRITEIN if isinstance(i, str) and 'write' in i.lower().replace('-', '')
             else i for i in b]
 
 def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing folder'):
@@ -104,3 +104,6 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
         else:
             print(dir_path + ' ' + error_msg_tail)
             raise RuntimeError
+
+def flatten_list(lst):
+    return [i for sublist in lst for i in sublist]

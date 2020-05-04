@@ -3,6 +3,7 @@ field,typecast,default
 contest,str,""""""
 place,str,""""""
 state,str,""""""
+year,str,""""""
 date,str,""""""
 office,str,""""""
 break_on_overvote,bool,TRUE

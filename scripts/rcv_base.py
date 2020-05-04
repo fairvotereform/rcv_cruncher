@@ -1,15 +1,17 @@
 from abc import abstractmethod, ABC
 from collections import Counter
+
 import numpy as np
 import pandas as pd
 from inspect import signature
 
+from .ballots import cleaned, candidates
+from .cache_helpers import save
 from .rcv_reporting import RCV_Reporting
 from .definitions import remove
-from .misc_tabulation import candidates, cleaned
 
 
-class RCV(ABC, RCV_Reporting):
+class RCV(RCV_Reporting, ABC):
     """
     Base class for all RCV variants.
     State variables are listed in __init__.
@@ -17,6 +19,7 @@ class RCV(ABC, RCV_Reporting):
     """
 
     @staticmethod
+    @save
     def run_rcv(ctx):
         """
         Pass in a ctx dictionary and run the constructor function stored within it
@@ -33,8 +36,8 @@ class RCV(ABC, RCV_Reporting):
         """
         pass
 
-    single_winner_group = -1
-    multi_winner_group = -2
+    single_winner_group = 'single_winner'
+    multi_winner_group = 'multi_winner'
 
     # override me
     @abstractmethod
@@ -141,6 +144,8 @@ class RCV(ABC, RCV_Reporting):
         self._cleaned_dict = cleaned(ctx)
         self._bs = [{'ranks': ranks, 'weight': weight}
                     for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
+
+        self.cache_dict = {}
 
         # STATE
         # contest-level
@@ -350,7 +355,7 @@ class RCV(ABC, RCV_Reporting):
         Return a tuple containing a list of candidates and a list of their respective vote totals. Only candidates
         that accumulated new votes in this round are included. Lists are sorted in decreasing order.
         """
-        rounds_trimmed, _, _, _, _ = self._tabulations[tabulation_num-1]
+        rounds_trimmed = self._tabulations[tabulation_num-1]['rounds_trimmed']
         # pull round tally
         return rounds_trimmed[round_num-1]
 
@@ -360,7 +365,7 @@ class RCV(ABC, RCV_Reporting):
         Return a dictionary containing keys as candidates and values as their vote counts in the round. Includes
         zero vote candidates and those winners remaining at threshold.
         """
-        _, rounds_full, _, _, _ = self._tabulations[tabulation_num-1]
+        rounds_full = self._tabulations[tabulation_num-1]['rounds_full']
         # pull round tally
         return rounds_full[round_num-1]
 
@@ -387,7 +392,7 @@ class RCV(ABC, RCV_Reporting):
         """
         Return a dictionary containing keys as candidates + 'exhaust' and values as their round net transfer
         """
-        _, _, transfers, _, _ = self._tabulations[tabulation_num-1]
+        transfers = self._tabulations[tabulation_num-1]['transfers']
         # pull round transfer
         round_transfer = transfers[round_num-1]
         return round_transfer
@@ -397,15 +402,15 @@ class RCV(ABC, RCV_Reporting):
         """
         Return a list of dictionaries {keys: name, round_elected, round_eliminated}
         """
-        _, _, _, candidate_outcomes, _ = self._tabulations[tabulation_num-1]
-        return candidate_outcomes.values()
+        candidate_outcomes = self._tabulations[tabulation_num-1]['candidate_outcomes']
+        return list(candidate_outcomes.values())
 
     #
     def get_final_weights(self, tabulation_num=1):
         """
         Return a list of ballot weights after tabulation, index-matched with ballots
         """
-        _, _, _, _, final_weights = self._tabulations[tabulation_num-1]
+        final_weights = self._tabulations[tabulation_num-1]['final_weights']
         return final_weights
 
     #
@@ -413,7 +418,7 @@ class RCV(ABC, RCV_Reporting):
         """
         Return the number of rounds, for a given tabulation.
         """
-        _, rounds_full, _, _, _ = self._tabulations[tabulation_num-1]
+        rounds_full = self._tabulations[tabulation_num-1]['rounds_full']
         return len(rounds_full)
 
     def n_tabulations(self):
@@ -425,3 +430,5 @@ class RCV(ABC, RCV_Reporting):
     def compute_tabulation_stats(self):
         return [[f(tab_num=i) for f in self._tabulation_stats]
                 for i in range(1, self._tab_num+1)]
+
+

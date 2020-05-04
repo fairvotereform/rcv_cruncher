@@ -3,6 +3,7 @@ from glob import glob
 from collections import UserList, defaultdict
 from gmpy2 import mpq as Fraction
 from inspect import isfunction
+import pandas as pd
 import os
 import csv
 import json
@@ -17,6 +18,61 @@ def get_parser_dict():
     return {key: value for key, value in globals().items()
             if isfunction(value) and key != "get_parser_dict" and value.__module__ == __name__}
 
+def common_csv(ctx, path=None):
+
+    # if no path passed, get from ctx
+    if path is None:
+        path = ctx['path']
+
+    # assume contest-specific filename, otherwise revert to default name
+    cvr_path = path + '/' + ctx['dop'] + '.csv'
+    if os.path.isfile(cvr_path) is False:
+        cvr_path = path + '/cvr.csv'
+
+    df = pd.read_csv(cvr_path)
+
+    # find rank columns
+    rank_col = [col for col in df.columns if 'rank' in col.lower()]
+
+    # ensure rank columns are strings
+    df[rank_col] = df[rank_col].astype(str)
+
+    # if candidate codes file exist, swap in names
+    candidate_codes_fpath = path + '/candidate_codes.csv'
+    if os.path.isfile(candidate_codes_fpath):
+
+        cand_codes = pd.read_csv(candidate_codes_fpath)
+
+        cand_codes_dict = {str(code): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
+        replace_dict = {col: cand_codes_dict for col in rank_col}
+
+        df = df.replace(replace_dict)
+
+    # replace skipped ranks and overvotes with constants
+    df = df.replace({col: {'under': SKIPPEDRANK, 'over': OVERVOTE} for col in rank_col})
+
+    # pull out rank lists
+    rank_col_list = [df[col].tolist() for col in rank_col]
+    rank_lists = [list(rank_tuple) for rank_tuple in list(zip(*rank_col_list))]
+
+    # double check
+    if not all([len(i) == len(rank_lists[0]) for i in rank_lists]):
+        print('not all rank lists are same length. debug')
+        raise RuntimeError
+
+    # assemble dict
+    dct = {'ranks': rank_lists}
+
+    # add in non-rank columns
+    for col in df.columns:
+        if col not in rank_col:
+            dct[col] = df[col].tolist()
+
+    # add weight if not present in csv
+    if 'weight' not in dct:
+        dct['weight'] = [Fraction(1) for b in dct['ranks']]
+
+    return dct
 
 def dominion5_10(ctx):
 
@@ -310,7 +366,7 @@ def old(ctx):
 def minneapolis(ctx):
     choice_map = {}
     default = None
-    if ctx['date'] == '2009':
+    if ctx['year'] == '2009':
         with open('/'.join(ctx['path'].split('/')[:-1]+['convert.csv']), encoding='utf8') as f:
             for i in f:
                 split = i.strip().split('\t')
@@ -509,7 +565,7 @@ def ep(ctx):
                 [{'overvote':OVERVOTE, 'undervote':SKIPPEDRANK, 'UWI': WRITEIN}.get(i, i)
                 for i in b[3:]]
             )
-    print(ballots[:5])
+    #print(ballots[:5])
     return ballots
     
         

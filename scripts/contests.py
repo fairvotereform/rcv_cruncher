@@ -3,8 +3,9 @@ import pandas as pd
 import os
 import re
 # cruncher imports
-from .parsers import get_parser_dict
-from .rcv_variants import get_rcv_dict
+from .definitions import verifyDir
+from .parsers import *
+from .rcv_variants import *
 
 # read functions in parsers and rcv_variants
 rcv_dict = get_rcv_dict()
@@ -14,7 +15,9 @@ parser_dict = get_parser_dict()
 if [key for key in rcv_dict.keys() if key in parser_dict.keys()]:
     print("an rcv variant class and a parser function share the same name. Make them unique.")
     raise RuntimeError
-eval_dict = rcv_dict.update(parser_dict)
+
+def dummy(*args):
+    pass
 
 # typecast functions
 def cast_str(s):
@@ -37,22 +40,21 @@ def cast_bool(s):
     return eval(s.title())
 
 def cast_func(s):
-    if s in eval_dict:
-        return eval_dict[s]
-    else:
-        print(s + " is neither an rcv class or parser function.")
-        raise RuntimeError
+    try:
+        return eval(s)
+    except:
+        return dummy
 
 # other helpers
 def dop(ctx):
-    return ','.join([ctx['date'], ctx['office'], ctx['place']])
+    return '_'.join([ctx['year'], ctx['place'], ctx['office']])
 
 def unique_id(ctx):
 
-    pieces = [ctx['place'], ctx['date'], ctx['office'], ctx['contest']]
+    pieces = [ctx['place'], ctx['date'], ctx['office']]
     cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
 
-    return "__".join(cleaned_pieces)
+    return "_".join(cleaned_pieces)
 
 # primary function
 def load_contest_set(contest_set_path):
@@ -105,3 +107,41 @@ def load_contest_set(contest_set_path):
         d['unique_id'] = unique_id(d)
 
     return competitions
+
+
+def read_output_config(contest_set_path):
+    """
+    Read the output config and return it as a dictionary
+    """
+    config_path = contest_set_path + '/output_config.csv'
+    if os.path.isfile(config_path) is False:
+        print("output_config.csv does not exist. Use new_contest_set.py to make example config file.")
+
+    df = pd.read_csv(config_path)
+    return {tabulation: to_run for tabulation, to_run in zip(df['tabulation'], df['run'])}
+
+
+def new_contest_set():
+    """
+    Creates a new contest set directory and blank contest set csv file
+    """
+    # create new directory
+    set_name = "contest_sets/new_contest_set"
+    verifyDir(set_name)
+
+    # create new contest set csv
+    colnames = ['contest', 'place', 'state', 'date', 'year',
+                'office', 'rcv_type', 'num_winners', 'break_on_overvote',
+                'break_on_repeated_skipvotes', 'multi_winner_rounds', 'parser',
+                'path', 'idparser', 'master_lookup', 'chp', 'candidate_map', 'state_code', 'county']
+    df = pd.DataFrame(columns=colnames)
+    df.to_csv(set_name + '/contest_set.csv', index=False)
+
+    # create new output config
+    tabulations = ['per_rcv_group_stats', 'per_rcv_type_stats', 'condorcet',
+                   'crossover_support', 'cumulative_rankings', 'first_choice_to_finalist',
+                   'first_second_choices', 'rank_usage', 'candidate_details', 'round_by_round']
+    df = pd.DataFrame()
+    df['tabulation'] = tabulations
+    df['run'] = True
+    df.to_csv(set_name + '/output_config.csv', index=False)

@@ -1,7 +1,10 @@
 """
 This file contains classes for RCV contest types.
 """
+from copy import copy
+
 from .rcv_base import RCV
+#from .rcv_reporting import RCV_Reporting
 from inspect import isclass, signature
 import pandas as pd
 
@@ -71,7 +74,7 @@ class rcv_single_winner(RCV):
                     transfer_dict['exhaust'] += b['weight']
 
         transfer_dict[self._round_loser] = sum(transfer_dict.values()) * -1
-        self._tabulations[self._tab_num]['transfers'].append(transfer_dict)
+        self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
         
     #
     def _contest_not_complete(self):
@@ -123,7 +126,7 @@ class sequential_rcv(rcv_single_winner):
         self._tabulations = []
         
         # continue until the number of winners is reached OR until candidates run out
-        while len(winners) != self._n_winners and len(self._candidate_set - {winners}) != 0:
+        while len(winners) != self._n_winners and len(self._candidate_set - set(winners)) != 0:
             
             self._new_tabulation()
 
@@ -133,7 +136,7 @@ class sequential_rcv(rcv_single_winner):
 
             # STATE
             # tabulation-level
-            self._inactive_candidates = winners # mark previous iteration winners as inactive
+            self._inactive_candidates = copy(winners) # mark previous iteration winners as inactive
             self._removed_candidates = []
             self._extra_votes = {}
 
@@ -185,8 +188,8 @@ class until2rcv(rcv_single_winner):
             self._round_winners = [round_candidates[0]]
 
 
-class stv_whole_ballot:
-    pass
+# class stv_whole_ballot:
+#     pass
 
 
 class stv_fractional_ballot(RCV):

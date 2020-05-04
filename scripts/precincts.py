@@ -9,7 +9,8 @@ import csv
 # cruncher imports
 from .cache_helpers import save
 from .rcv_reporting import exhausted_or_undervote, overvote
-from .misc_tabulation import cleaned
+from .ballots import cleaned
+
 
 @save
 def precincts(ctx):
@@ -67,7 +68,7 @@ def processed_sov(file_name):
 def precinct_percent_sov(ctx, precinct, ethnicity):
     total = 0
     ethnic = 0
-    int_year = int(ctx['date'])
+    int_year = int(ctx['year'])
     year = str(min(int_year + int_year % 2, 2018))
     precincts = split_precincts(precinct)
     file_name = 'precincts/SOV/c{}_g{}_voters_by_g{}_srprec.csv'.format(ctx['county'], year[-2:], year[-2:])
@@ -96,7 +97,7 @@ def cvap_by_block(file_name):
 
 @save
 def block_ethnicities(ctx, ethnicity):
-    year = {'2019': '2017', '2018': '2017', '2012': '2013'}.get(ctx['date'], ctx['date'])
+    year = {'2019': '2017', '2018': '2017', '2012': '2013'}.get(ctx['year'], ctx['year'])
     file_name = 'precincts/CVAPBLOCK/{}/{}_cvap_by_block.dbf'.format(year, ethnicity.replace(' ', '_'))
     return cvap_by_block(file_name)
 
@@ -125,7 +126,7 @@ def split_precincts(precinct):
 @save
 def precinct_ethnicity_totals(ctx, precinct, ethnicity):
     ethnic = 0
-    int_year = int(ctx['date'])
+    int_year = int(ctx['year'])
     year = str(int_year - int_year % 2)
     precinct_block_fraction = 'precincts/precinct_block_maps/06/{}/c{}_g{}_sr_blk_map.csv'.format(
         ctx['county'], ctx['county'], year[-2:])
@@ -145,7 +146,7 @@ def precinct_ethnicity_totals(ctx, precinct, ethnicity):
 
 @save
 def election_ethnic_cvap_totals(ctx, ethnicity):
-    if ctx['state_code'] is None or int(ctx['date']) < 2012:
+    if ctx['state_code'] is None or int(ctx['year']) < 2012:
         return None or None
     return sum(precinct_ethnicity_totals(ctx, p, ethnicity)
                for p in unique_precincts(ctx))
@@ -171,7 +172,7 @@ def cvap_ethnicities(eth):
 def precinct_percent_cvap(ctx, precinct, ethnicity):
     total = 0
     ethnic = 0
-    int_year = int(ctx['date'])
+    int_year = int(ctx['year'])
     year = str(int_year - int_year % 2)
     precinct_block_fraction = 'precincts/precinct_block_maps/06/{}/c{}_g{}_sr_blk_map.csv'.format(
         ctx['county'], ctx['county'], year[-2:])
@@ -194,7 +195,7 @@ def precinct_estimate(eth, ethnicity_rate, precinct_metric, ctx):
     '''
     assumes precinct explains behavior
     '''
-    if ctx['state_code'] is None or int(ctx['date']) < 2012:
+    if ctx['state_code'] is None or int(ctx['year']) < 2012:
         return None
     numerator = 0
     for precinct, good_ballots in precinct_metric(ctx).items():
@@ -206,7 +207,7 @@ def ethnicity_estimate(eth, ethnicity_rate, precinct_metric, ctx):
     '''
     assumes group status explains behavior
     '''
-    if ctx['state_code'] is None or int(ctx['date']) < 2012:
+    if ctx['state_code'] is None or int(ctx['year']) < 2012:
         return None
     b = []
     A = []

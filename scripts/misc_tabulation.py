@@ -4,127 +4,14 @@ from statistics import median
 import pandas as pd
 import numpy as np
 from itertools import combinations
-from gmpy2 import mpq as Fraction
 from copy import deepcopy
 
 # cruncher imports
 from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN, \
-    index_inf, replace, merge_writeIns, remove
+    index_inf, replace, remove
 from .cache_helpers import save
 from .rcv_base import RCV
-
-
-@save
-def ballots(ctx):
-    """
-    Return parser results for contest.
-    Ballots are returned in a dictionary:
-
-    ballot_ranks - can contain candidate name, or OVERVOTE, WRITEIN, or SKIPPEDRANK constants
-
-    {
-    'ranks' - list of marks,
-    'weight' - (default 1) weight given to ballot,
-    ...
-    ... any other fields
-    }
-    """
-    res = ctx['parser'](ctx)
-
-    if isinstance(res, list):
-        return {'ranks': res,
-                'weight': [Fraction(1) for b in res]}
-    else:
-        if 'ranks' not in res or 'weight' not in res:
-            print('ballot dict is not properly formatted. debug')
-            exit(1)
-
-    return res
-
-
-@save
-def ballots_writeIns_merged(ctx):
-    """
-    Return ballots dict with all writeIn candidates merged together.
-    """
-    ballot_dict = deepcopy(ballots(ctx))
-    ballot_dict['ranks'] = [merge_writeIns(b) for b in ballot_dict['ranks']]
-    return ballot_dict
-
-
-@save
-def cleaned(ctx):
-    """
-        For each ballot, return a cleaned version that has pre-skipped
-        skipped and overvoted rankings and only includes one ranking
-        per candidate (the highest ranking for that candidate).
-
-        Additionally, each ballot may be cut short depending on the
-        -break_on_repeated_skipvotes- and -break_on_overvote- settings for
-        a contest.
-    """
-
-    # get ballots
-    ballot_dict = deepcopy(ballots(ctx))
-
-    new = []
-    for b in ballot_dict['ranks']:
-        result = []
-        # look at successive pairs of rankings - zip list with itself offset by 1
-        for elem_a, elem_b in zip(b, b[1:]+[None]):
-            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPPEDRANK}:
-                break
-            if ctx['break_on_overvote'] and elem_a == OVERVOTE:
-                break
-            if elem_a not in [*result, OVERVOTE, SKIPPEDRANK]:
-                result.append(elem_a)
-        new.append(result)
-
-    ballot_dict['ranks'] = new
-    return ballot_dict
-
-
-@save
-def cleaned_writeIns_merged(ctx):
-    """
-    Return ballots dict with all writeIn candidates merged together.
-    """
-    # get ballots
-    ballot_dict = deepcopy(ballots_writeIns_merged(ctx))
-
-    new = []
-    for b in ballot_dict['ranks']:
-        result = []
-        # look at successive pairs of rankings - zip list with itself offset by 1
-        for elem_a, elem_b in zip(b, b[1:]+[None]):
-            if ctx['break_on_repeated_skipvotes'] and {elem_a, elem_b} == {SKIPPEDRANK}:
-                break
-            if ctx['break_on_overvote'] and elem_a == OVERVOTE:
-                break
-            if elem_a not in [*result, OVERVOTE, SKIPPEDRANK]:
-                result.append(elem_a)
-        new.append(result)
-
-    ballot_dict['ranks'] = new
-    return ballot_dict
-
-
-@save
-def candidates(ctx):
-    cans = set()
-    for b in ballots(ctx)['ranks']:
-        cans.update(b)
-    return cans - {OVERVOTE, SKIPPEDRANK}
-
-
-@save
-def candidates_merged_writeIns(ctx):
-    return set(merge_writeIns(candidates(ctx)))
-
-
-@save
-def candidates_no_writeIns(ctx):
-    return candidates_merged_writeIns(ctx) - {WRITEIN}
+from .ballots import ballots, cleaned_writeIns_merged, candidates_merged_writeIns, ballots_writeIns_merged
 
 
 @save
@@ -170,7 +57,6 @@ def convert_cvr(ctx):
 ##########################
 # MISC TABULATION
 
-@save
 def cumulative_ranking_tables(ctx):
     """
     Return cumulative ranking tables. Rows are candidate names and columns are rank numbers.
@@ -199,7 +85,14 @@ def cumulative_ranking_tables(ctx):
     cumulative_count_df = pd.DataFrame(np.NaN, index=candidate_set, columns=col_names)
 
     # tally candidate counts by rank
-    rank_counts = [Counter([b['ranks'][i] for b in cleaned_ballots]) for i in range(ballot_length)]
+    rank_counts = []
+    for rank in range(0, ballot_length):
+        rank_cand_set = set([b['ranks'][rank] for b in cleaned_ballots]) - {'NA'}
+        current_rank_count = {cand: 0 for cand in rank_cand_set}
+        for cand in rank_cand_set:
+            current_rank_count[cand] = sum(b['weight'] for b in cleaned_ballots if cand == b['ranks'][rank])
+        rank_counts.append(current_rank_count)
+    #rank_counts = [Counter([b['ranks'][i] for b in cleaned_ballots]) for i in range(ballot_length)]
 
     # accumulate ballot counts that rank candidates
     cumulative_counter = {cand: 0 for cand in candidate_set}
@@ -221,8 +114,6 @@ def cumulative_ranking_tables(ctx):
 
     return cumulative_count_df, cumulative_percent_df
 
-
-@save
 def condorcet_tables(ctx):
     """
     Returns a two condorcet tables as a pandas data frame with candidate names as row and column indices.
@@ -317,7 +208,6 @@ def condorcet_tables(ctx):
     return condorcet_count_df, condorcet_percent_df, condorcet_winner
 
 
-@save
 def first_second_tables(ctx):
     """
     Return two pandas tables with candidates as columns and first row showing distribution of first round votes.
@@ -411,7 +301,7 @@ def rank_usage_tables(ctx):
     DOES NOT USE BALLOT WEIGHTS
     """
     candidate_set = sorted(candidates_merged_writeIns(ctx))
-    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots(ctx)['ranks']]
+    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots_writeIns_merged(ctx)['ranks']]
 
     all_ballots_label = "Any candidate (non-undervotes)"
     n_ballots_label = "Number of Ballots"
@@ -451,7 +341,7 @@ def crossover_table(ctx):
     candidate_set = sorted(candidates_merged_writeIns(ctx))
 
     rank_weights = deepcopy(ballots(ctx)['weight'])
-    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots(ctx)['ranks']]
+    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots_writeIns_merged(ctx)['ranks']]
     cleaned_ballots = [{'ranks': ranks, 'weight': weight}
                        for ranks, weight in zip(cleaned_ranks, rank_weights)]
 
@@ -490,10 +380,10 @@ def crossover_table(ctx):
 
     return count_df, percent_df
 
-#@save
+
 def first_choice_to_finalist_table(ctx):
 
-    non_exhausted_candidates = RCV.run_rcv(ctx).finalists(tabulation_num=1) + ['exhaust']
+    non_exhausted_candidates = list(RCV.run_rcv(ctx).finalists(tabulation_num=1)) + ['exhaust']
     candidate_set = sorted(candidates_merged_writeIns(ctx).difference(non_exhausted_candidates))
     cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
     cleaned_ballots = [{'ranks': ranks, 'weight': weight}
