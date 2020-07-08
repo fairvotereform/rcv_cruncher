@@ -1,8 +1,5 @@
-from functools import partial
-import pandas as pd
-import os
-import re
 # cruncher imports
+from functools import partial
 from .definitions import verifyDir
 from .parsers import *
 from .rcv_variants import *
@@ -50,10 +47,9 @@ def dop(ctx):
     return '_'.join([ctx['year'], ctx['place'], ctx['office']])
 
 def unique_id(ctx):
-
-    pieces = [ctx['place'], ctx['date'], ctx['office']]
+    filled_date = "/".join([piece if len(piece) > 1 else "0" + piece for piece in ctx['date'].split("/")])
+    pieces = [ctx['place'], filled_date, ctx['office']]
     cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
-
     return "_".join(cleaned_pieces)
 
 # primary function
@@ -92,6 +88,7 @@ def load_contest_set(contest_set_path):
 
     # read in contest set
     contest_set_df = pd.read_csv(contest_set_fpath, dtype=object)
+    cols_in_order = contest_set_df.columns
 
     # fill in na values with defaults and evaluate column, if indicated
     for col in contest_set_df:
@@ -105,6 +102,7 @@ def load_contest_set(contest_set_path):
     for d in competitions:
         d['dop'] = dop(d)
         d['unique_id'] = unique_id(d)
+        d['contest_set_line_df'] = pd.DataFrame([[d[col] for col in cols_in_order]], columns=cols_in_order)
 
     return competitions
 

@@ -107,3 +107,29 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
 
 def flatten_list(lst):
     return [i for sublist in lst for i in sublist]
+
+def project_root():
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    if '/' in dname:
+        return "/".join(dname.split("/")[:-1])
+    if '\\' in dname:
+        return "\\".join(dname.split("\\")[:-1])
+
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    print('\r', end='')
+    print_str = '[%s] ...%s' % (bar, status)
+    print(print_str + (" " * (120 - len(print_str))), end="", flush=True)
+
+def remove_dup(l):
+    x = []
+    for i in l:
+        if i not in x:
+            x.append(i)
+    return x

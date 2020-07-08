@@ -1,7 +1,5 @@
 from copy import deepcopy
 import os
-import pandas as pd
-
 from gmpy2 import mpq as Fraction
 
 from scripts.cache_helpers import save

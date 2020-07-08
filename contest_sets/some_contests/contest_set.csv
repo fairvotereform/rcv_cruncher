@@ -1,7 +1,2 @@
-contest,place,state,date,office,rcv_type,num_winners,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,parser,path,idparser,master_lookup,chp,candidate_map,state_code,county
-Cambridge City Council 2001,Cambridge,MA,2001,City Council,stv_whole_ballot,9,FALSE,FALSE,,prm,Ballot_Images/Cambridge/2001/Council - Wednesday/*.PRM,,,Ballot_Images/Cambridge/2001/Council - Wednesday/*.chp,,,
-Santa Fe Mayor 2018,Santa Fe,NM,2018,Mayor,rcv_single_winner,1,,,,"partial(santafe, 0, 1)",Ballot_Images/Santa_Fe/csvFiles/CvrExport.csv,"partial(santafe_id, 0, 1)",,,,,
-Eastpointe City Council 2019,Eastpointe,MI,2019,City Council,stv_fractional_ballot,2,,TRUE,TRUE,ep,Ballot_Images/Eastpointe/Eastpointe CVR Cleaned.csv,,,,,,
-Payson City Council 2019,Payson,UT,2019,City Council,sequential_rcv,3,TRUE,TRUE,,utah,Ballot_Images/Payson/2019/Payson.csv,,,,,,
-Vineyard City Council 2019,Vineyard,UT,2019,City Council,sequential_rcv,2,FALSE,FALSE,,utah,Ballot_Images/Vineyard/2019/Vineyard.csv,,,,,,
-San Francisco Treasurer 2019,San Francisco,CA,2019,Treasurer,rcv_single_winner,1,,,,sf2019,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446,,,,,"""06""","""075"""
+contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
+Minneapolis Park At Large 2017,Minneapolis,MN,2017,11/7/2017,Minneapolis Park & Rec Board,FALSE,,TRUE,,,,,minneapolis,,stv_fractional_ballot,3,Ballot_Images/Minneapolis/2017/csv2017/2017-park-at-large-cvr.xlsx.csv

@@ -1,5 +1,13 @@
-*.pyc
-.idea/*
-CVAP/*
-Ballot_Images/*
+*
+
+!contest_sets/
+!precincts/
+!reported_results
+!scripts
+!.gitattributes
+!.gitignore
+!README.txt
+!__init__.py
+!crunch.py
+!new_contest_set.py
 

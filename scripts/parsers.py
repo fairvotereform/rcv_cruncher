@@ -1,9 +1,10 @@
-from pathlib import Path
-from glob import glob
-from collections import UserList, defaultdict
+from collections import UserList, defaultdict, Counter
 from gmpy2 import mpq as Fraction
 from inspect import isfunction
 import pandas as pd
+import numpy as np
+import xmltodict
+import glob
 import os
 import csv
 import json
@@ -49,7 +50,8 @@ def common_csv(ctx, path=None):
         df = df.replace(replace_dict)
 
     # replace skipped ranks and overvotes with constants
-    df = df.replace({col: {'under': SKIPPEDRANK, 'over': OVERVOTE} for col in rank_col})
+    df = df.replace({col: {'under': SKIPPEDRANK, 'skipped': SKIPPEDRANK,
+                           'over': OVERVOTE, 'overvote': OVERVOTE} for col in rank_col})
 
     # pull out rank lists
     rank_col_list = [df[col].tolist() for col in rank_col]
@@ -191,8 +193,93 @@ def dominion5_10(ctx):
                    'precinct': ballot_precincts,
                    'ballot_type': ballot_types}
 
+    # check ballotIDs are unique
+    if len(set(ballot_dict['ballotID'])) != len(ballot_dict['ballotID']):
+        print("some non-unique ballot IDs")
+        exit(1)
+
     return ballot_dict
 
+def chp_names(ctx):
+    """
+    Read chp file and return candidate code map
+    """
+    mapping = {}
+    with open(ctx['path'], encoding='utf8') as f:
+        for i in f:
+            split = i.split()
+            if len(split) >= 3 and split[0] == '.CANDIDATE':
+                mapping[split[1].strip(',')] = i.split('"')[1].split('"')[0]
+    return mapping
+
+def chp_order(ctx):
+    """
+    Read chp file and return prm file paths in order listed. Order is important for cambridge elections.
+    """
+    path_dir = "/".join(ctx['path'].split("/")[:-1])
+    prm_filepaths = []
+    with open(ctx['path'], encoding='utf8') as f:
+        for i in f:
+            split = i.split()
+            if len(split) == 2 and split[0] == '.INCLUDE':
+                prm_filepaths.append(path_dir + "/" + split[1])
+    return prm_filepaths
+
+# TODO: add functionality to allow resolvalbe overvotes
+#       i.e. overvotes that are tabulated after all but
+#       one of the candidates in the overvote is eliminated
+#       burlington, and possibly cambridge will still count
+#       this vote
+def prm(ctx):
+    """
+    Parser based on CHP and PRM files. CHP file contains contest meta-info and candidate code maps.
+    PRM file contains ballot info. PRM files may appear separated out by precinct.
+    """
+    # get candidate code map
+    name_map = chp_names(ctx)
+    # get prm file list
+    prm_filepaths = chp_order(ctx)
+
+    ballots = []
+    for prm_filepath in prm_filepaths:
+        with open(prm_filepath, 'r', encoding='utf8') as f:
+            for i in f:
+                if any(map(str.isalnum, i)) and i.strip()[0] != '#':
+                    b = []
+                    s = i.split()
+                    choices = [] if len(s) == 1 else s[1].split(',')
+                    for choice in filter(None, choices):
+                        can, rank = choice.split(']')[0].split('[')
+                        b.extend([SKIPPEDRANK] * (int(rank) - len(b) - 1))
+                        b.append(OVERVOTE if '=' in choice else name_map[can])
+                    ballots.append(b)
+
+    # add in tail skipped ranks
+    maxlen = max(map(len, ballots))
+    for b in ballots:
+        b.extend([SKIPPEDRANK] * (maxlen - len(b)))
+
+    return {'ranks': ballots, 'weight': [Fraction(1) for b in ballots]}
+
+def burlington2006(ctx):
+    path = ctx['path']
+    ballots = []
+    with open(path, "r", encoding='utf8') as f:
+        for line in f:
+            ballots.append([OVERVOTE if '=' in i else i for i in line.split()[3:]])
+    maxlen = max(map(len, ballots))
+    for b in ballots:
+        b.extend([SKIPPEDRANK] * (maxlen - len(b)))
+
+    # read candidate codes
+    cand_codes = pd.read_csv("/".join(ctx['path'].split("/")[:-1]) + "/candidate_codes_2006.csv")
+    cand_codes_dict = {str(code): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
+
+    new_ballots = []
+    for b in ballots:
+        new_ballots.append([cand_codes_dict[cand] if cand in cand_codes_dict else cand for cand in b])
+
+    return new_ballots
 
 def sf_precinct_map(ctx):
     path = ctx['path']
@@ -234,54 +321,6 @@ def parse_master_lookup(ctx):
 def sf_name_map(ctx):
     return dict((k, {'WRITEIN': WRITEIN}.get(v.upper().replace('-', ''), v))
                 for k, v in parse_master_lookup(ctx)['Candidate'].items())
-
-def chp_names(ctx):
-    mapping = {}
-    with open(glob(ctx['chp'])[0], encoding='utf8') as f:
-        for i in f:
-            split = i.split()
-            if len(split) >= 3 and split[0] == '.CANDIDATE':
-                mapping[split[1].strip(',')] = i.split('"')[1].split('"')[0]
-    return mapping
-
-def burlington(ctx):
-    path = ctx['path']
-    ballots = []
-    with open(path, "r", encoding='utf8') as f:
-        for line in f:
-            ballots.append([OVERVOTE if '=' in i else i for i in line.split()[3:]])
-    maxlen = max(map(len,ballots))
-    for b in ballots:
-        b.extend([SKIPPEDRANK] * (maxlen - len(b)))
-    return ballots
-
-#TODO: add functionality to allow resolvalbe overvotes
-#       i.e. overvotes that are tabulated after all but
-#       one of the candidates in the overvote is eliminated
-#       burlington, and possibly cambridge will still count
-#       this vote
-def prm(ctx):
-    glob_path = ctx['path']
-    name_map = chp_names(ctx)
-    ballots = []
-    for path in glob(glob_path):
-        with open(path, 'r', encoding='utf8') as f:
-            for i in f:
-                if any(map(str.isalnum,i)) and i.strip()[0] != '#':
-                    b = []
-                    s = i.split()
-                    choices = [] if len(s) == 1 else s[1].split(',')
-                    for choice in filter(None,choices):
-                        can, rank = choice.split(']')[0].split('[')
-                        b.extend([SKIPPEDRANK] * (int(rank) - len(b) - 1))
-                        b.append(OVERVOTE if '=' in choice else name_map[can])
-                    ballots.append(b)
-                 
-    maxlen = max(map(len,ballots))
-    for b in ballots:
-        b.extend([SKIPPEDRANK] * (maxlen - len(b)))
-    return ballots
-        
 
 def sf(contest_id, ctx):
     path = ctx['path']
@@ -370,8 +409,11 @@ def minneapolis(ctx):
         with open('/'.join(ctx['path'].split('/')[:-1]+['convert.csv']), encoding='utf8') as f:
             for i in f:
                 split = i.strip().split('\t')
-                if len(split) >= 3:
+                if len(split) >= 3 and split[0] == ctx['office']:
                     choice_map[split[2]] = split[1]
+        if choice_map == {}:
+            print('No candidates found. Ensure "office" field in contest_set matches CVR.')
+            raise RuntimeError
         choice_map['XXX'] = SKIPPEDRANK
         default = WRITEIN
     else:
@@ -500,49 +542,96 @@ def sf2005(contest_ids, over, under, sep, ctx):
                                 for i in raw])
     return ballots
 
-def sf2019(ctx):
+def dominion5_2(ctx):
+
     with open(ctx['path'] + '/ContestManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             if i['Description'] == ctx['office'].upper():
                 contest_id = i['Id']
                 ranks = i['NumOfRanks']
+                if ranks == 0:
+                    ranks = 1
+
     candidates = {}
     with open(ctx['path'] + '/CandidateManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             if i['ContestId'] == contest_id:
                 candidates[i['Id']] = i['Description']
+
     precincts = {}
     with open(ctx['path'] + '/PrecinctPortionManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             precincts[i['Id']] = i['Description'].split()[1]
-    ballots = []
+
+    ballotType_manifest = {}
+    with open(ctx['path'] + '/BallotTypeManifest.json', encoding='utf8') as f:
+        for i in json.load(f)['List']:
+            ballotType_manifest[i['Id']] = i['Description']
+
+    countingGroup_manifest = {}
+    with open(ctx['path'] + '/CountingGroupManifest.json', encoding='utf8') as f:
+        for i in json.load(f)['List']:
+            countingGroup_manifest[i['Id']] = i['Description']
+
+    ballots = {'ranks': [], 'ballotID': [], 'precinct': [], 'ballotType': [], 'countingGroup': [], 'weight': []}
     with open(ctx['path'] + '/CvrExport.json', encoding='utf8') as f:
+
         for contests in json.load(f)['Sessions']:
+
+            # ballotID
+            ballotID_search = re.search('Images\\\\(.*)\*\.\*', contests['ImageMask'])
+            if ballotID_search:
+                ballotID = ballotID_search.group(1)
+            else:
+                print('regex is not working correctly. debug')
+                exit(1)
+
+            countingGroup = countingGroup_manifest[contests['CountingGroupId']]
+
             if contests['Original']['IsCurrent']:
                 current_contests = contests['Original']
             else:
-                current_contests = contests['Modified'] 
+                current_contests = contests['Modified']
+
             precinct = precincts[current_contests['PrecinctPortionId']]
+            ballotType = ballotType_manifest[current_contests['BallotTypeId']]
+
             for contest in current_contests['Contests']:
+
+                # confirm correct contest
                 if contest['Id'] == contest_id:
-                    ballot = UserList([SKIPPEDRANK] * ranks)
-                    ballot = UserList([SKIPPEDRANK] * ranks)
+
+                    # make empty ballot
+                    ballot = [SKIPPEDRANK] * ranks
+
+                    # look through marks
                     for mark in contest['Marks']:
                         candidate = candidates[mark['CandidateId']]
                         if candidate == 'Write-in':
                             candidate = WRITEIN
                         rank = mark['Rank']-1
                         if mark['IsAmbiguous']:
-                            pass 
+                            pass
                         elif ballot[rank] == OVERVOTE:
                             pass
                         elif ballot[rank] == SKIPPEDRANK:
                             ballot[rank] = candidate
                         elif ballot[rank] != candidate:
                             ballot[rank] = OVERVOTE
-                    ballot.precinct = precinct
-                    ballots.append(ballot)
-                        
+
+                    ballots['countingGroup'].append(countingGroup)
+                    ballots['ballotType'].append(ballotType)
+                    ballots['precinct'].append(precinct)
+                    ballots['ranks'].append(ballot)
+                    ballots['ballotID'].append(ballotID)
+
+    ballots['weight'] = [Fraction(1) for b in ballots['ranks']]
+
+    # check ballotIDs are unique
+    if len(set(ballots['ballotID'])) != len(ballots['ballotID']):
+        print("some non-unique ballot IDs")
+        exit(1)
+
     return ballots
             
 def utah(ctx):
@@ -551,7 +640,7 @@ def utah(ctx):
         next(f)
         for b in f:
             ballots.append(
-                [{'overvote':OVERVOTE, 'undervote':SKIPPEDRANK, '': SKIPPEDRANK}.get(i, i)
+                [{'overvote': OVERVOTE, 'undervote': SKIPPEDRANK, '': SKIPPEDRANK}.get(i, i)
                 for i in b.strip().split(',')[2:]]
             )
     return ballots
@@ -562,12 +651,129 @@ def ep(ctx):
         next(f)
         for b in csv.reader(f):
             ballots.append(
-                [{'overvote':OVERVOTE, 'undervote':SKIPPEDRANK, 'UWI': WRITEIN}.get(i, i)
+                [{'overvote': OVERVOTE, 'undervote': SKIPPEDRANK, 'UWI': WRITEIN}.get(i, i)
                 for i in b[3:]]
             )
     #print(ballots[:5])
     return ballots
     
-        
+def unisyn(ctx):
+    """
+    This parser was developed for the unisyn 2020 Hawaii Dem Primary CVR which only contained the
+    ranked choice votes for a single election. Unisyn uses the common data format in xml, however the
+    parser currently is not a complete common data format parser.
 
+    For more information on common data format, see:
+    https://pages.nist.gov/CastVoteRecords/
+    https://github.com/hiltonroscoe/cdfprototype
+    """
 
+    glob_str = ctx['path'] + '/*.xml'
+
+    contestIDdicts = {}
+    for f in glob.glob(glob_str):
+
+        with open(f) as fd:
+            xml_dict = xmltodict.parse(fd.read())
+
+        # get candidates
+        candidatesIDs = {}
+        for cand_dict in xml_dict['CastVoteRecordReport']['Election']['Candidate']:
+            candidatesIDs[cand_dict['@ObjectId']] = cand_dict['Name']
+
+        # loop through CVR snapshots
+        for cvr_dict in xml_dict['CastVoteRecordReport']['CVR']:
+
+            cvr_contest = cvr_dict['CVRSnapshot']['CVRContest']
+
+            if cvr_contest['ContestId'] not in contestIDdicts:
+                contestIDdicts.update({cvr_contest['ContestId']: []})
+            contestIDdicts[cvr_contest['ContestId']].append(cvr_contest['CVRContestSelection'])
+
+    # check that all rank lists are equal
+    first_rank = list(contestIDdicts.keys())[0]
+    rank_length_equal = [len(contestIDdicts[k]) == len(contestIDdicts[first_rank]) for k in contestIDdicts]
+    if not all(rank_length_equal):
+        print("not all rank lists are equal.")
+        raise RuntimeError
+
+    # combine ranks into lists
+    ballot_lists = []
+    for idx in range(len(contestIDdicts[first_rank])):
+
+        idx_ranks = [int(contestIDdicts[rank_key][idx]['Rank']) for rank_key in contestIDdicts]
+
+        idx_candidates = []
+        for rank_key in contestIDdicts:
+            contest_dict = contestIDdicts[rank_key][idx]
+            if 'SelectionPosition' in contest_dict:
+                if isinstance(contest_dict['SelectionPosition'], list):
+                    idx_candidates.append(OVERVOTE)
+                else:
+                    idx_candidates.append(candidatesIDs[contest_dict['SelectionPosition']['Position']])
+            elif contest_dict['TotalNumberVotes'] == '0':
+                idx_candidates.append(SKIPPEDRANK)
+
+        ordered_ranks = sorted(zip(idx_candidates, idx_ranks), key=lambda x: x[1])
+        ballot_lists.append([t[0] for t in ordered_ranks])
+
+    # assemble dict
+    dct = {'ranks': ballot_lists}
+    dct['weight'] = [Fraction(1) for b in dct['ranks']]
+
+    return dct
+
+def surveyUSA(ctx):
+    """
+    Survey USA files usually include all respondents and should be pre-filtered for any columns
+    prior to cruncher use (such as filtering likely democratic voters). Rank columns and ballotID columns
+    should also be renamed prior to parsing.
+
+    Rank columns can contain candidate codes or NaN. NaN is treated as a skipped rank.
+
+    Required files:
+    cvr.csv - contains ballots, ranks, weights
+    candidate_codes.csv - contains two columns ("code" and "candidate") that map cvr code numbers to candidate names.
+    """
+
+    csv_df = pd.read_csv(ctx['path'] + 'cvr.csv')
+    candidate_codes_df = pd.read_csv(ctx['path'] + 'candidate_codes.csv')
+
+    # candidate code dict
+    candidate_map = {row['code']: row['candidate'] for index, row in candidate_codes_df.iterrows()}
+
+    # find rank columns
+    rank_columns = [col for col in csv_df.columns if 'rank' in col.lower()]
+
+    ballots = []
+    for index, row in csv_df.iterrows():
+
+        b_ranks = [SKIPPEDRANK] * len(rank_columns)
+
+        saw_undecided = False
+        since_undecided = []
+
+        for idx, rank in enumerate(rank_columns):
+
+            # nan marks end of ranks
+            if np.isnan(row[rank]):
+                if since_undecided:
+                    print('some candidates appeared after an undecided vote! debug')
+                    raise RuntimeError
+                break
+
+            candidate = candidate_map[row[rank]]
+
+            if saw_undecided:
+                since_undecided.append(candidate)
+
+            if candidate == 'Undecided':
+                saw_undecided = True
+
+            if candidate != 'Undecided':
+                b_ranks[idx] = candidate
+
+        ballots.append(b_ranks)
+
+    ballot_dict = {'ranks': ballots, 'weight': csv_df['weight'], 'ballotID': csv_df['ballotID']}
+    return ballot_dict

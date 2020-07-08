@@ -1,14 +1,13 @@
 from abc import abstractmethod, ABC
 from collections import Counter
-
 import numpy as np
 import pandas as pd
 from inspect import signature
 
-from .ballots import cleaned, candidates
+from .ballots import candidates_merged_writeIns, cleaned_writeIns_merged, ballots_writeIns_merged
 from .cache_helpers import save
 from .rcv_reporting import RCV_Reporting
-from .definitions import remove
+from .definitions import remove, flatten_list, SKIPPEDRANK
 
 
 class RCV(RCV_Reporting, ABC):
@@ -26,8 +25,9 @@ class RCV(RCV_Reporting, ABC):
         """
         return ctx['rcv_type'](ctx)
 
+    @staticmethod
     @abstractmethod
-    def variant_group(self):
+    def variant_group():
         """
         Should return the name of the group this rcv variant belongs to. The groups
         determine which contests are written out together in the same file. The groups and
@@ -62,6 +62,10 @@ class RCV(RCV_Reporting, ABC):
                for f in self._contest_stats()}
         return pd.DataFrame.from_dict(dct)
 
+    def contest_stats_comments_df(self):
+        return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
+                                       for fun in self._contest_stats()})
+
     # override me
     @abstractmethod
     def _tabulation_stats(self):
@@ -84,6 +88,10 @@ class RCV(RCV_Reporting, ABC):
                    else [f() for i in tabulation_list]
                for f in self._tabulation_stats()}
         return pd.DataFrame.from_dict(dct)
+
+    def tabulation_stats_comments_df(self):
+        return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
+                                       for fun in self._tabulation_stats()})
 
     # override me
     @abstractmethod
@@ -113,7 +121,7 @@ class RCV(RCV_Reporting, ABC):
         pass
 
     # override me
-    def win_threshold(self):
+    def _win_threshold(self):
         """
         This function should return the win threshold used in the contest
         OR return 'dynamic' if threshold changes with each round.
@@ -140,9 +148,9 @@ class RCV(RCV_Reporting, ABC):
         # CONTEST INPUTS
         self._n_winners = ctx['num_winners']
         self._multi_winner_rounds = ctx['multi_winner_rounds']
-        self._candidate_set = candidates(ctx)
-        self._cleaned_dict = cleaned(ctx)
-        self._bs = [{'ranks': ranks, 'weight': weight}
+        self._candidate_set = candidates_merged_writeIns(ctx)
+        self._cleaned_dict = cleaned_writeIns_merged(ctx)
+        self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
                     for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
 
         self.cache_dict = {}
@@ -159,7 +167,6 @@ class RCV(RCV_Reporting, ABC):
 
         # round-level
         self._round_num = 0
-        self._round_results = []
         self._round_winners = []
         self._round_loser = None
 
@@ -175,11 +182,13 @@ class RCV(RCV_Reporting, ABC):
         new_outcomes = {cand: {'name': cand, 'round_eliminated': None, 'round_elected': None}
                                  for cand in self._candidate_set}
         self._tabulations.append({
-            'rounds_trimmed': [],
-            'rounds_full': [],
+            'rounds': [],
             'transfers': [],
             'candidate_outcomes': new_outcomes,
-            'final_weights': []})
+            'final_weights': [],
+            'final_weight_distrib': [],
+            'final_ranks': [],
+            'win_threshold': None})
 
     #
     def _tabulate(self):
@@ -187,19 +196,19 @@ class RCV(RCV_Reporting, ABC):
         Run the rounds of rcv contest.
         """
 
-        while self._contest_not_complete():
+        #############################################
+        # CLEAN ROUND BALLOTS
+        # remove inactive candidates
+        self._clean_round()
+
+        not_complete = self._contest_not_complete()
+        while not_complete:
             self._round_num += 1
 
             #############################################
             # CLEAR LAST ROUND VALUES
-            self._round_results = []
             self._round_winners = []
             self._round_loser = None
-
-            #############################################
-            # CLEAN ROUND BALLOTS
-            # remove inactive candidates
-            self._clean_round()
 
             #############################################
             # COUNT ROUND RESULTS
@@ -207,8 +216,8 @@ class RCV(RCV_Reporting, ABC):
 
             # one the first round, mark any candidates with zero votes for elimination
             if self._round_num == 1:
-                round_candidates, round_tallies = self._round_results
-                novote_losers = [cand for cand in self._candidate_set if cand not in round_candidates]
+                round_dict = self.get_round_tally_dict(self._round_num, tabulation_num=self._tab_num)
+                novote_losers = [cand for cand in self._candidate_set if round_dict[cand] == 0]
 
                 for loser in novote_losers:
                     self._tabulations[self._tab_num-1]['candidate_outcomes'][loser]['round_eliminated'] = 0
@@ -227,23 +236,39 @@ class RCV(RCV_Reporting, ABC):
             # UPDATE inactive candidate list using round winner/loser
             self._update_candidates()
 
+            # update complete flag
+            not_complete = self._contest_not_complete()
+
             #############################################
             # UPDATE WEIGHTS
             # don't update if contest over
-            if self._contest_not_complete():
+            if not_complete:
                 self._update_weights()
 
             #############################################
             # CALC ROUND TRANSFER
-            if self._contest_not_complete():
+            if not_complete:
                 self._calc_round_transfer()
             else:
                 self._tabulations[self._tab_num-1]['transfers'].append(
                     {cand: np.NaN for cand in self._candidate_set.union({'exhaust'})})
 
+            #############################################
+            # CLEAN ROUND BALLOTS
+            # remove inactive candidates
+            # don't clean if contest over
+            if not_complete:
+                self._clean_round()
+
+        # record final ballot weight distributions
+        self._tabulations[self._tab_num-1]['final_weight_distrib'] = \
+            [b['weight_distrib'] + [(b['ranks'][0], b['weight'])] if b['ranks']
+             else b['weight_distrib'] + [('empty', b['weight'])] for b in self._bs]
         # set final weight for each ballot
         self._tabulations[self._tab_num-1]['final_weights'] = [b['weight'] for b in self._bs]
-
+        # set final ranks for each ballot
+        self._tabulations[self._tab_num-1]['final_ranks'] = [b['ranks'] for b in self._bs]
+        self._tabulations[self._tab_num-1]['win_threshold'] = self._win_threshold()
     #
     def _tally_active_ballots(self):
         """
@@ -263,14 +288,8 @@ class RCV(RCV_Reporting, ABC):
 
         round_results = list(zip(*choices.most_common()))
 
-        # set self.round_results
-        self._round_results = round_results
-
-        # set rounds_trimmed
-        self._tabulations[self._tab_num-1]['rounds_trimmed'].append(self._round_results)
-
         # update rounds_full
-        round_candidates, round_tallies = self._round_results
+        round_candidates, round_tallies = round_results
         round_candidates = list(round_candidates)
         round_tallies = list(round_tallies)
 
@@ -288,8 +307,8 @@ class RCV(RCV_Reporting, ABC):
         round_candidates_full = round_candidates + round_inactive_candidates
         round_tallies_full = round_tallies + [0] * len(round_inactive_candidates)
 
-        self._tabulations[self._tab_num-1]['rounds_full'].append(
-            [tuple(round_candidates_full), tuple(round_tallies_full)])
+        tuple_list = [tuple(round_candidates_full), tuple(round_tallies_full)]
+        self._tabulations[self._tab_num-1]['rounds'].append(tuple_list)
 
     #
     def _clean_round(self):
@@ -298,7 +317,10 @@ class RCV(RCV_Reporting, ABC):
         """
         for inactive_cand in self._inactive_candidates:
             if inactive_cand not in self._removed_candidates:
-                self._bs = [{'ranks': remove(inactive_cand, b['ranks']), 'weight': b['weight']} for b in self._bs]
+                self._bs = [{'ranks': remove(inactive_cand, b['ranks']),
+                             'weight': b['weight'],
+                             'weight_distrib': b['weight_distrib']}
+                            for b in self._bs]
                 self._removed_candidates.append(inactive_cand)
 
     #
@@ -307,14 +329,15 @@ class RCV(RCV_Reporting, ABC):
         Find candidate from round with least votes.
         If more than one, choose randomly
         """
-        # split round results into two tuples (index-matched)
-        round_candidates, round_tallies = self._round_results
 
+        # split round results into two tuples (index-matched)
+        active_candidates, round_tallies = self.get_round_tally_tuple(self._round_num, self._tab_num,
+                                                                      only_round_active_candidates=True, desc_sort=True)
         # find round loser
         loser_count = min(round_tallies)
         # in case of tied losers, 'randomly' choose one to eliminate (the last one in alpha order)
         round_losers = sorted([cand for cand, cand_tally
-                               in zip(round_candidates, round_tallies)
+                               in zip(active_candidates, round_tallies)
                                if cand_tally == loser_count])
         self._round_loser = round_losers[-1]
 
@@ -350,42 +373,42 @@ class RCV(RCV_Reporting, ABC):
             self._inactive_candidates += remaining_candidates
 
     #
-    def get_round_trimmed_tally_tuple(self, round_num, tabulation_num=1):
+    def get_round_tally_tuple(self, round_num, tabulation_num=1, only_round_active_candidates=False, desc_sort=False):
         """
-        Return a tuple containing a list of candidates and a list of their respective vote totals. Only candidates
-        that accumulated new votes in this round are included. Lists are sorted in decreasing order.
+        Return a dictionary containing keys as candidates and values as their vote counts in the round.
         """
-        rounds_trimmed = self._tabulations[tabulation_num-1]['rounds_trimmed']
+        cands, tallies = self._tabulations[tabulation_num-1]['rounds'][round_num-1]
+
+        # remove elected or eliminated candidates
+        if only_round_active_candidates:
+            outcomes = self._tabulations[tabulation_num-1]['candidate_outcomes']
+            active_candidates = [
+                cand for cand in outcomes
+                if (outcomes[cand]['round_elected'] is None or outcomes[cand]['round_elected'] >= round_num)
+                   and (outcomes[cand]['round_eliminated'] is None or outcomes[cand]['round_eliminated'] >= round_num)]
+            tallies = [tally for idx, tally in enumerate(tallies) if cands[idx] in active_candidates]
+            cands = [cand for cand in cands if cand in active_candidates]
+
+        # sort
+        if desc_sort:
+            rounds = list(zip(*[(cand, tally) for cand, tally in sorted(zip(cands, tallies), key=lambda x: -x[1])]))
+        else:
+            rounds = [tuple(cands), tuple(tallies)]
+
         # pull round tally
-        return rounds_trimmed[round_num-1]
+        return rounds
 
     #
-    def get_round_full_tally_tuple(self, round_num, tabulation_num=1):
-        """
-        Return a dictionary containing keys as candidates and values as their vote counts in the round. Includes
-        zero vote candidates and those winners remaining at threshold.
-        """
-        rounds_full = self._tabulations[tabulation_num-1]['rounds_full']
-        # pull round tally
-        return rounds_full[round_num-1]
-
-    #
-    def get_round_trimmed_tally_dict(self, round_num, tabulation_num=1):
-        """
-        Return a dictionary containing keys as candidates and values as their vote counts in the round. Only candidates
-        that accumulated new votes in this round are included.
-        """
-        # convert to dict
-        return {cand: count for cand, count in zip(*self.get_round_trimmed_tally_tuple(round_num, tabulation_num))}
-
-    #
-    def get_round_full_tally_dict(self, round_num, tabulation_num=1):
+    def get_round_tally_dict(self, round_num, tabulation_num=1, only_round_active_candidates=False):
         """
         Return a dictionary containing keys as candidates and values as their vote counts in the round. Includes
         zero vote candidates and those winners remaining at threshold.
         """
         # convert to dict
-        return {cand: count for cand, count in zip(*self.get_round_full_tally_tuple(round_num, tabulation_num))}
+        return {cand: count for cand, count in
+                zip(*self.get_round_tally_tuple(round_num,
+                                                tabulation_num,
+                                                only_round_active_candidates=only_round_active_candidates))}
 
     #
     def get_round_transfer_dict(self, round_num, tabulation_num=1):
@@ -414,12 +437,41 @@ class RCV(RCV_Reporting, ABC):
         return final_weights
 
     #
+    def get_final_ranks(self, tabulation_num=1):
+        """
+        Return a list of ballot ranks after tabulation
+        """
+        final_ranks = self._tabulations[tabulation_num-1]['final_ranks']
+        return final_ranks
+
+    #
+    def get_final_weight_distrib(self, tabulation_num=1):
+        """
+        Return a list of ballot weight distributions after tabulation
+        """
+        final_weights = self._tabulations[tabulation_num-1]['final_weight_distrib']
+        return final_weights
+
+    #
+    def get_win_threshold(self, tabulation_num=1):
+        return self._tabulations[tabulation_num-1]['win_threshold']
+
+    #
+    def candidates_with_votes(self, tabulation_num=1):
+        """
+        Return list of candidates with any ballot weight allotted to them.
+        """
+        final_weight_distrib = self.get_final_weight_distrib(tabulation_num=tabulation_num)
+        final_weight_cands = list(set(t[0] for t in flatten_list(final_weight_distrib)).difference({'empty'}))
+        return final_weight_cands
+
+    #
     def n_rounds(self, tabulation_num=1):
         """
         Return the number of rounds, for a given tabulation.
         """
-        rounds_full = self._tabulations[tabulation_num-1]['rounds_full']
-        return len(rounds_full)
+        rounds = self._tabulations[tabulation_num-1]['rounds']
+        return len(rounds)
 
     def n_tabulations(self):
         return self._tab_num
@@ -430,5 +482,3 @@ class RCV(RCV_Reporting, ABC):
     def compute_tabulation_stats(self):
         return [[f(tab_num=i) for f in self._tabulation_stats]
                 for i in range(1, self._tab_num+1)]
-
-

@@ -9,9 +9,7 @@ office,str,""""""
 break_on_overvote,bool,TRUE
 multi_winner_rounds,bool,FALSE
 break_on_repeated_skipvotes,bool,FALSE
-write_ins,int,0
 master_lookup,str,None
-chp,str,None
 candidate_map,str,None
 parser,func,None
 idparser,func,None

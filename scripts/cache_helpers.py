@@ -1,6 +1,5 @@
 from hashlib import md5
 from inspect import getsource
-import shutil
 import os
 import pickle  # faster than json, shelve
 from contextlib import suppress
@@ -85,7 +84,7 @@ def shelve_key(arg):
             or callable.__name__ (if arg == callable)
     """
     if isinstance(arg, dict):
-        return arg['dop']
+        return arg['unique_id']
         #return dop(arg)
     if callable(arg):
         return arg.__name__
