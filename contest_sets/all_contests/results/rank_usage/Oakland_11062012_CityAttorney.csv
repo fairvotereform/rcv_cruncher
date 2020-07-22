@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,131609,1.5280641901389722,1
+BARBARA PARKER,90055,1.4848148353783799,1
+JANE BRUNNER,40488,1.6284331159849832,2.0
+writeIns,1066,1.3696060037523452,1.0

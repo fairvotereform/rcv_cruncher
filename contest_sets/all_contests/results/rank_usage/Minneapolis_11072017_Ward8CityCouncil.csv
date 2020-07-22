@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,7897,2.1527162213498796,2
+Andrea Jenkins,5766,2.0945195976413458,2.0
+April Kane,715,2.4055944055944054,3
+David Holsinger,390,2.0743589743589745,2.0
+Terry White,1009,2.3498513379583748,3
+writeIns,17,1.3529411764705883,1

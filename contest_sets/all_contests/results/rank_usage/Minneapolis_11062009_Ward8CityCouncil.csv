@@ -1,0 +1,8 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,3096,1.8953488372093024,2.0
+David Regan,174,1.839080459770115,2.0
+Elizabeth Glidden,2291,1.7861195984286338,2
+Gregory McDonald,115,2.2782608695652176,3
+Jeanine Estime,470,2.321276595744681,2.0
+Michael J. Cavlan,43,2.3255813953488373,3
+writeIns,3,1.0,1

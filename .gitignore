@@ -1,7 +1,10 @@
-*.pyc
-.idea/*
-CVAP/*
-Ballot_Images/*
-contest_sets/*/cache
-contest_sets/*/results
-contest_sets/*/common_cvr
+
+
+/_stashed/
+/Ballot_Images/
+/contest_sets/*/cache
+/contest_sets/*/common_cvr
+/contest_sets/*/results/ballot_stats_debug
+/master_db/
+/old_cruncher/
+/reported_results/

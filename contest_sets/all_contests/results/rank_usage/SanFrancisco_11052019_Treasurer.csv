@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,154853,1.0000452041613659,1
+JOSÉ CISNEROS,154847,1.0000258319502477,1
+writeIns,6,1.5,1.5

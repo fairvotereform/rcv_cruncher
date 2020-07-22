@@ -1,0 +1,633 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SCOPE_TYPE" value="3" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="second commit through pycharm">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/ballots.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/candidates.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/cleaned.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/run_rcv.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/contest_set.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/output_config.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/results/candidate_details.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/contest_set_key.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/contest_set.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/output_config.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/ballots.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_merged_writeIns.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_no_writeIns.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/cleaned.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/convert_cvr.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/run_rcv.check" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/contest_set.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/output_config.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/crunch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_reporting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rcv_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_variants.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1WqzMAuHEvWUbVy3dbXjHh3KmBk" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python&#10;HTML" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../sf_parsing/parse_sf2019.py" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="run.code.analysis.last.selected.profile" value="aDefault" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/crunch.py" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\scripts" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\header_lists" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\contest_sets\survey_2_27" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\precincts" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\header_lists" />
+      <recent name="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.maine_2020">
+    <configuration name="all" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set all_contests --make_debug_contest_set" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="cambridge" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set cambridge" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="compare all" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/master_db" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/master_db/compare_master_db.py" />
+      <option name="PARAMETERS" value="--contest_set all_contests" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="crunch test" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set some_contests --make_debug_contest_set" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="crunch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--precincts" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="empty official results" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="C:\Users\User\Documents\fairvote\projects\rcv-cruncher\reported_results\_generate_empty_files.py" />
+      <option name="PARAMETERS" value="--contest_set all_contests" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="hawaii" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set hawaii2020" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="july2020_maine_poll" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set july2020_maine_poll" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="maine_2020" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set maine_2020" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="new contest set" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/new_contest_set.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="parse_sf2019" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../sf_parsing" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../sf_parsing/parse_sf2019.py" />
+      <option name="PARAMETERS" value="C:\Users\User\Documents\fairvote\projects\sf_parsing C:\Users\User\Documents\fairvote\projects\sf_parsing\output2" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="parsers" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/parsers.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="primary" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set primary2020" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="scratch" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/scratch.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="seq" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set sequential_rcv" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sf" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set sf" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="single winner" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set single_winner" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="whole ballot" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set whole_ballot" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.crunch test" />
+      <item itemvalue="Python.new contest set" />
+      <item itemvalue="Python.all" />
+      <item itemvalue="Python.compare all" />
+      <item itemvalue="Python.empty official results" />
+      <item itemvalue="Python.primary" />
+      <item itemvalue="Python.single winner" />
+      <item itemvalue="Python.seq" />
+      <item itemvalue="Python.whole ballot" />
+      <item itemvalue="Python.scratch" />
+      <item itemvalue="Python.hawaii" />
+      <item itemvalue="Python.sf" />
+      <item itemvalue="Python.maine_2020" />
+      <item itemvalue="Python.cambridge" />
+      <item itemvalue="Python.july2020_maine_poll" />
+      <item itemvalue="Python.crunch" />
+      <item itemvalue="Python.parsers" />
+      <item itemvalue="Python.parse_sf2019" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.parse_sf2019" />
+        <item itemvalue="Python.parsers" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
+    <option name="ACTIVE_ACTIONS" value=",SHOW_FIELDS,SHOW_INHERITED,ALPHA_COMPARATOR" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="" />
+      <created>1579891863016</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1579891863016</updated>
+    </task>
+    <task id="LOCAL-00001" summary="first commit through pycharm">
+      <created>1580137551769</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1580137551769</updated>
+    </task>
+    <task id="LOCAL-00002" summary="second commit through pycharm">
+      <created>1580138235978</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1580138235978</updated>
+    </task>
+    <task id="LOCAL-00003" summary="rcv_multiwinner primary 2020">
+      <created>1583333829066</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1583333829066</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="first commit through pycharm" />
+    <MESSAGE value="second commit through pycharm" />
+    <MESSAGE value="rcv_multiwinner primary 2020" />
+    <option name="LAST_COMMIT_MESSAGE" value="rcv_multiwinner primary 2020" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595446336487">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="139" y="38" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1591308115352" />
+    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595446336487" />
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1587502872817">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1587502872817" />
+    <state x="803" y="410" width="390" height="534" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1587415344205">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="803" y="410" width="390" height="534" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587415344205" />
+    <state x="0" y="223" key="#xdebugger.XInspectDialog" timestamp="1590188260777">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="0" y="223" key="#xdebugger.XInspectDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590188260777" />
+    <state width="1418" height="666" key="DebuggerActiveHint" timestamp="1590189498311">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1418" height="666" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1590189498311" />
+    <state x="601" y="143" key="FileChooserDialogImpl" timestamp="1594675421955">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="428" y="100" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1590088755476" />
+    <state x="601" y="143" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1594675421955" />
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom" timestamp="1595449949050">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1345" height="439" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949050" />
+    <state width="1899" height="268" key="GridCell.Tab.0.center" timestamp="1595449949049">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1345" height="439" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
+    <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949049" />
+    <state width="1899" height="268" key="GridCell.Tab.0.left" timestamp="1595449949049">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1345" height="439" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
+    <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949049" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right" timestamp="1595449949050">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1345" height="439" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949050" />
+    <state width="1690" height="530" key="XDebugger.FullValuePopup" timestamp="1590510877458">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1202" height="371" key="XDebugger.FullValuePopup/0.0.1366.728@0.0.1366.728" timestamp="1587485989480" />
+    <state width="1690" height="530" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1590510877458" />
+    <state x="478" y="225" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1589480296416">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="478" y="225" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1589480296416" />
+    <state x="541" y="270" key="com.intellij.ide.util.TipDialog" timestamp="1594833580987">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="385" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1591026853618" />
+    <state x="541" y="270" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594833580987" />
+    <state x="388" y="201" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1589222412111">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="388" y="201" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1040@0.0.1920.1040" timestamp="1589222412111" />
+    <state x="511" y="218" width="896" height="820" key="search.everywhere.popup" timestamp="1588704545679">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="511" y="218" width="896" height="820" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1588704545679" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/scripts/scratch.py</url>
+          <line>92</line>
+          <option name="timeStamp" value="280" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/crunch.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="296" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

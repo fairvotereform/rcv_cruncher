@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,40000,2.0258,2.0
+Al Rose,12317,2.212308191929853,2
+Carolyn Merrival,7651,2.263887073585152,3
+Joyce McDonald,19967,1.8210547403215305,1
+writeIns,65,1.5538461538461539,1

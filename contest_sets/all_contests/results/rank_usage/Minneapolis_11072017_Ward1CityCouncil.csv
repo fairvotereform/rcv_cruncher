@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,8734,2.123425692695214,2.0
+Jillia Pessenda,3846,2.1942277691107646,2.0
+John Hayden,853,2.0386869871043376,2
+Kevin Reich,4015,2.0749688667496886,2
+writeIns,20,1.85,1.5

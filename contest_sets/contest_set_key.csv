@@ -1,0 +1,20 @@
+check contests.py for typecast options,,
+field,typecast,default
+contest,str,""""""
+place,str,""""""
+state,str,""""""
+year,str,""""""
+date,str,""""""
+office,str,""""""
+break_on_overvote,bool,TRUE
+multi_winner_rounds,bool,FALSE
+break_on_repeated_skipvotes,bool,FALSE
+master_lookup,str,None
+candidate_map,str,None
+parser,func,None
+idparser,func,None
+num_winners,int,1
+path,str,None
+state_code,str,None
+county,str,None
+rcv_type,func,None

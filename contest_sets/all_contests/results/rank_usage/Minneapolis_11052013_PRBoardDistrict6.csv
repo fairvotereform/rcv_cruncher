@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,13739,1.486352718538467,1
+BRAD BOURN,8903,1.4600696394473773,1
+JOSH NEIMAN,4775,1.533612565445026,2
+writeIns,61,1.6229508196721312,1

@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,4392,1.517304189435337,1.0
+Jeffrey Alan Wagner,321,1.9968847352024923,2
+Lisa Goodman,2997,1.3513513513513513,1
+Michael J. Katch,1042,1.8464491362763915,2.0
+writeIns,32,1.53125,1.0

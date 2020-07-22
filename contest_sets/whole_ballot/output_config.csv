@@ -1,0 +1,11 @@
+tabulation,run
+per_rcv_group_stats,True
+per_rcv_type_stats,True
+condorcet,True
+crossover_support,True
+cumulative_rankings,True
+first_choice_to_finalist,True
+first_second_choices,True
+rank_usage,True
+candidate_details,True
+round_by_round,True

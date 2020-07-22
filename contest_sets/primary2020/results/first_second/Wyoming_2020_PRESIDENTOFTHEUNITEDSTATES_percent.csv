@@ -1,0 +1,12 @@
+,(undeclared),Amy Klobuchar,Bernie Sanders,Elizabeth Warren,Joseph R. Biden,Michael R. Bloomberg,Pete Buttigieg,Tom Steyer,Tulsi Gabbard
+first_choice,0.96,0.91,23.91,4.48,65.66,1.00,1.91,0.31,0.87
+(undeclared),,2.14,1.74,0.73,0.71,0.65,0.68,2.13,2.99
+Amy Klobuchar,2.70,,1.68,14.22,7.86,2.60,17.69,8.51,8.96
+Bernie Sanders,8.78,2.86,,38.17,36.64,13.64,9.86,10.64,22.39
+Elizabeth Warren,1.35,27.86,21.14,,8.24,11.04,20.75,8.51,3.73
+Joseph R. Biden,7.43,30.71,48.34,31.93,,42.86,38.44,27.66,23.13
+Michael R. Bloomberg,0.68,3.57,1.03,1.60,5.02,,4.08,17.02,2.24
+Pete Buttigieg,2.70,19.29,2.80,9.43,7.04,12.34,,10.64,11.19
+Tom Steyer,2.70,5.71,0.73,1.45,0.96,7.79,3.06,,1.49
+Tulsi Gabbard,2.03,3.57,5.24,1.45,1.16,1.30,2.72,4.26,
+exhaust,71.62,4.29,17.28,1.02,32.38,7.79,2.72,10.64,23.88

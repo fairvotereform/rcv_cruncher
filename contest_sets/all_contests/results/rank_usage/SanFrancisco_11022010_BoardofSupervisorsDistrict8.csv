@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,34950,2.2096995708154505,2.0
+BILL HEMENGER,1802,2.109322974472808,2.0
+RAFAEL MANDELMAN,12433,2.104882168422746,2
+REBECCA PROZAN,5872,2.3596730245231607,3.0
+SCOTT WIENER,14813,2.252548437183555,3
+writeIns,30,1.1666666666666667,1.0

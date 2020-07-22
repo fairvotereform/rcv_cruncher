@@ -1,0 +1,21 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,16046,5.585753458805933,5.0
+"Adkins, Lawrence J.",242,6.148760330578512,5.0
+"Condit, James E., III",41,6.2926829268292686,5
+"Davis, Henrietta",1457,5.913520933424846,5
+"Decker, Marjorie C.",1524,5.851706036745407,5.0
+"Galluccio, Anthony D.",1997,5.202303455182774,4
+"Gordon, Jesse A.",625,6.344,6
+"Green, Andre Lerone",181,5.464088397790055,4
+"Hall, Robert Lee, Sr.",74,5.77027027027027,4.0
+"Hees, Bill",197,6.192893401015229,5
+"Kelley, Craig A.",1041,5.699327569644573,5
+"LaTremouille, Robert J.",118,6.101694915254237,5.0
+"Maher, David P.",900,4.982222222222222,4.0
+"Murphy, Brian",1236,5.698220064724919,5.0
+"Reeves, Kenneth E.",1205,5.606639004149377,4
+"Seidel, Sam",973,6.683453237410072,6
+"Simmons, Denise",1327,5.727957799547852,5
+"Sullivan, Michael A.",1462,5.461012311901505,4.0
+"Toomey, Timothy J., Jr.",1431,4.39412997903564,3
+writeIns,15,3.1333333333333333,1

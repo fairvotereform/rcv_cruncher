@@ -1,0 +1,8 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,2170,2.0705069124423963,2.0
+Don Samuels,1020,1.8401960784313725,2.0
+Kenya McKnight,336,2.4761904761904763,3.0
+Lennie Chism,61,2.5081967213114753,3
+Natalie Johnson Lee,652,2.188650306748466,3.0
+Roger Smithrud,93,2.053763440860215,2
+writeIns,8,1.625,1.0

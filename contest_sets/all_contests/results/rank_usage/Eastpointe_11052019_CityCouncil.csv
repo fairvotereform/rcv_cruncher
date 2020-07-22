@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,5006,2.9123052337195365,4.0
+Harvey Curley,1611,2.7591558038485413,3
+Larry Edwards,464,2.997844827586207,4.0
+Mary Hall-Rayford,1058,3.0340264650283553,4.0
+Sarah A. Lucido,1854,2.964940668824164,4.0
+writeIns,19,1.894736842105263,1

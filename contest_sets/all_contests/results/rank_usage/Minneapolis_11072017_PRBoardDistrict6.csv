@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,18485,1.8487422234243982,2
+Bob Fine,7491,1.8200507275397144,2
+Brad Bourn,8083,1.7844859581838426,2
+Jennifer Zielinski,2271,2.0841039189784234,2
+"Robert M Schlosser ""Bob""",584,2.23972602739726,3.0
+writeIns,56,1.3392857142857142,1.0

@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,5143,1.0147773672953528,1
+Anita Tabb,5012,1.0113727055067838,1.0
+writeIns,131,1.1450381679389312,1
