@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,97625,1.688358514724712,2
+COURTNEY RUBY,65335,1.6511517563327467,2
+MICHAEL KILIAN,31086,1.7702824422569645,2.0
+writeIns,1204,1.5921926910299002,1.0

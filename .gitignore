@@ -1,13 +1,10 @@
-*
 
-!contest_sets/
-!precincts/
-!reported_results
-!scripts
-!.gitattributes
-!.gitignore
-!README.txt
-!__init__.py
-!crunch.py
-!new_contest_set.py
 
+/_stashed/
+/Ballot_Images/
+/contest_sets/*/cache
+/contest_sets/*/common_cvr
+/contest_sets/*/results/ballot_stats_debug
+/master_db/
+/old_cruncher/
+/reported_results/

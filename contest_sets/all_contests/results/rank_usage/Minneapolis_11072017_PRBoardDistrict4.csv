@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,13511,1.4867885426689365,1
+Jono Cowgill,6794,1.5223726817780394,1.0
+Tom Nordyke,6614,1.453432113698216,1.0
+writeIns,103,1.2815533980582525,1

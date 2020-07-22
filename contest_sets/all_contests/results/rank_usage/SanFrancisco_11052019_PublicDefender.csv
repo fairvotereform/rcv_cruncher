@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,161304,1.0000557952685611,1.0
+"MANOHAR ""MANO"" RAJU",161295,1.0000433987414366,1
+writeIns,9,1.2222222222222223,1

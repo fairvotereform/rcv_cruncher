@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,4010,1.6615960099750624,2.0
+David A. Alvarado,704,1.4446022727272727,1.0
+Gregg A Iverson,734,1.9155313351498637,2.0
+John Quincy,2551,1.6495491963935711,2
+writeIns,21,1.5238095238095237,1

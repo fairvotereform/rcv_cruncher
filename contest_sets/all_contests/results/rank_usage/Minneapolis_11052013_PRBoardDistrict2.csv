@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,6054,1.487611496531219,1.0
+DAVID LUCE,1931,1.5820818228896945,2
+JON OLSON,4070,1.442014742014742,1.0
+writeIns,53,1.5471698113207548,1

@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,16235,1.987742531567601,2
+Andrea Fahrenkrug,2689,2.298252138341391,3
+Bill Shroyer,3989,2.005765856104287,2
+Steffanie Musich,9466,1.8991126135643355,2.0
+writeIns,91,1.2417582417582418,1

@@ -1,0 +1,10 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,17941,1.9980491611392899,2
+Chris Daly,8746,1.8582209009833066,1.0
+Davy Jones,389,2.3624678663239074,3
+George Dias,230,2.5434782608695654,3.0
+"Manuel Jimenez, Jr.",317,2.4006309148264986,3
+Matt Drake,679,2.378497790868925,3
+Rob Black,7115,2.052424455375966,2
+Robert Jordan,125,2.136,3
+Viliam Dugovic,340,2.485294117647059,3.0

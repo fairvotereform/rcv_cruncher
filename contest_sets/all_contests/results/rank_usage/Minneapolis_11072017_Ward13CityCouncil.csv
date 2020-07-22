@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,11313,1.283302395474233,1
+Bob Reuer,1835,1.3683923705722072,1
+Linea Palmisano,9410,1.265356004250797,1.0
+writeIns,68,1.4705882352941178,1.0

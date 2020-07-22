@@ -1,0 +1,14 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,15280,4.060209424083769,3.0
+"Fantini, Alfred B.",2372,3.3490725126475547,3.0
+"Forster, Bill",329,4.589665653495441,4
+"Gerber, Joyce C.",434,4.716589861751152,4.0
+"Harding, Jr., Richard",1850,3.943783783783784,3.0
+"Holland, John J.",387,4.108527131782946,3
+"McGovern, Marc C.",1769,4.199547767100056,4
+"Nolan, Patricia M.",2125,4.364235294117647,4
+"Osborne, Mervan F.",2065,4.174334140435835,4
+"Stead, Sr., Charles Lewis",293,4.21160409556314,3
+"Tauber, Nancy",1489,4.182672934855608,4
+"Turkel, Alice L.",2111,4.1473235433443865,4
+writeIns,56,2.017857142857143,1.0

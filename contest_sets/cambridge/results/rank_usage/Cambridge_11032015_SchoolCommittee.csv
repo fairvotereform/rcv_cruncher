@@ -1,0 +1,14 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,16791,4.035733428622477,3
+"Bowman, Manikka L.",1488,4.310483870967742,4.0
+"Cisternino, Pia",656,4.8125,4.0
+"Cronin, Fran Albin",1417,4.189837685250529,4
+"Crutchfield, Jake W.",1221,3.696150696150696,3
+"Dexter, Emily R.",1402,4.415121255349501,4.0
+"Fantini, Alfred B.",2721,3.354649026093348,3
+"Harding, Jr., Richard",1988,3.8184104627766597,3.0
+"Kadete, Elechi M.",426,4.593896713615023,4.0
+"Kelly, Kathleen M.",1710,4.1345029239766085,4.0
+"Nolan, Patricia M.",3005,4.2153078202995005,4
+"Weinstein, David J.",695,4.266187050359712,4
+writeIns,62,2.8225806451612905,1.0

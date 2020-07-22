@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,10124,1.0766495456341367,1.0
+DAVID KAKISHIBA,9892,1.072482814395471,1.0
+writeIns,232,1.2543103448275863,1.0

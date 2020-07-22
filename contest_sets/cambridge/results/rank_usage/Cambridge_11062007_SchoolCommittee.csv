@@ -1,0 +1,12 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,13259,3.8070744400030168,3
+"Fantini, Alfred B.",2013,3.4416294088425237,3
+"Grassi, Joseph G.",1625,3.4633846153846153,3
+"Harding, Richard, Jr.",1561,3.7475976937860347,3
+"Lemily Wiggins, Gail",1024,4.017578125,4.0
+"Malner, Stefan",133,4.383458646616542,4
+"McGovern, Marc C.",2275,3.9283516483516485,3
+"Nolan, Patricia M.",1672,4.083133971291866,4.0
+"Schuster, Luc",1675,3.986268656716418,4
+"Tauber, Nancy",1245,3.9012048192771083,3
+writeIns,36,2.138888888888889,1.0

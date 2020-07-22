@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,2995,1.9585976627712856,2
+Dave Bicking,816,2.2169117647058822,2.0
+Gary Schiff,1818,1.8718371837183718,2.0
+Khalif Jama,83,2.1686746987951806,2
+Todd J. Eberhardy,270,1.6851851851851851,1.0
+writeIns,8,2.375,3.0

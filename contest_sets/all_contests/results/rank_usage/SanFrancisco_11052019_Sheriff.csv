@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,149033,1.0000670992330558,1
+PAUL MIYAMOTO,149025,1.0000469719845664,1
+writeIns,8,1.375,1.0

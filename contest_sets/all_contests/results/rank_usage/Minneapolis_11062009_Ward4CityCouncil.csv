@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,3299,1.9496817217338587,2
+Barbara A. Johnson,1546,1.725743855109961,1.0
+Grant Cermak,386,1.8523316062176165,2.0
+Marcus Harcus,442,2.420814479638009,3.0
+Troy Parker,921,2.1433224755700326,2
+writeIns,4,1.25,1.0

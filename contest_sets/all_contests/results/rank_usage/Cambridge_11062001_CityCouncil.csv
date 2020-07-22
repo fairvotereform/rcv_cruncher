@@ -1,0 +1,22 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,16956,5.59377211606511,5.0
+"Condit, James E., III",62,6.919354838709677,6.0
+"Davis, Henrietta",1697,6.084266352386565,6
+"Decker, Marjorie C.",1525,6.07344262295082,6
+"Dixon, Vincent Lawrence",87,6.367816091954023,5
+"Galluccio, Anthony D.",3212,5.2596513075965134,4.0
+"Hall, Robert L.",149,7.416107382550336,8
+"Horowitz, Jacob",150,5.906666666666666,6.0
+"Iskovitz, Steve",340,6.3352941176470585,6.0
+"Jens, Steven E.",275,5.24,4
+"King, Ethridge A.",370,5.927027027027027,5.0
+"Maher, David P.",1008,4.982142857142857,4.0
+"Murphy, Brian",1707,5.8400702987697715,6
+"Peixoto, Helder",61,5.245901639344262,4
+"Pitkin, John",1084,6.034132841328414,6.0
+"Reeves, Kenneth E.",1133,5.702559576345984,5
+"Simmons, Denise",1327,5.9902034664657124,6
+"Sullivan, Michael A.",1297,4.892058596761758,4
+"Toomey, Timothy J., Jr.",1387,4.649603460706561,4
+"Williamson, James M.",55,7.6,6
+writeIns,30,4.366666666666666,3.0

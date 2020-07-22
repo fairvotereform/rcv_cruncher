@@ -1,0 +1,13 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,20327,2.0414227382299406,2
+Amy Klobuchar,57,2.7719298245614037,3
+Andrew Yang,153,2.65359477124183,3
+Bernie Sanders,6710,2.194485842026826,2.0
+Deval Patrick,7,2.857142857142857,3
+Elizabeth Warren,930,2.8129032258064517,3.0
+Joseph R. Biden,10997,1.8494134764026553,2
+Michael R.,192,2.5520833333333335,3.0
+Pete Buttigieg,154,2.707792207792208,3.0
+Tom Steyer,19,2.6842105263157894,3
+Tulsi Gabbard,924,2.2045454545454546,3.0
+Uncommitted,184,1.2934782608695652,1.0

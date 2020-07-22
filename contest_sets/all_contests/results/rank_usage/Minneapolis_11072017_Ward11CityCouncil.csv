@@ -1,0 +1,6 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,9160,2.296834061135371,3.0
+Erica Mauter,2696,2.451780415430267,3.0
+Jeremy Schroeder,3230,2.35015479876161,3.0
+John Quincy,3200,2.1228125,2.0
+writeIns,34,1.3235294117647058,1.0

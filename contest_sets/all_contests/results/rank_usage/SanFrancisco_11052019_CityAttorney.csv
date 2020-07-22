@@ -1,0 +1,4 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,163865,1.000048820675556,1
+DENNIS J. HERRERA,163850,1.0000427220018309,1.0
+writeIns,15,1.0666666666666667,1

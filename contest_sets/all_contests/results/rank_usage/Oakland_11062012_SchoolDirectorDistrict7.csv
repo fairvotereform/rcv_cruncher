@@ -1,0 +1,5 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,14106,1.5817382674039415,2.0
+ALICE A. SPEARMAN,5966,1.6010727455581628,2.0
+JAMES HARRIS,7986,1.5717505634861006,2.0
+writeIns,154,1.3506493506493507,1.0

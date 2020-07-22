@@ -1,0 +1,28 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,17730,6.011054709531867,5.0
+"Benzan, Dennis A.",1300,5.964615384615384,5.0
+"Carlone, Dennis J.",1151,6.808861859252824,6
+"Cheung, Leland",2391,6.533667921371811,6
+"House, Janneke Ann",409,7.048899755501222,6
+"Kelley, Craig A.",1093,5.933211344922232,5
+"Lee, James",91,6.923076923076923,6
+"Leslie, Logan Edward",504,4.404761904761905,3.0
+"Maher, David P.",1463,4.835953520164047,4
+"Mazen, Nadeem A.",985,6.229441624365482,5
+"McGovern, Marc C.",1187,6.123841617523167,5
+"Mello, Gary W.",107,7.747663551401869,7
+"Mirza, Mushtaque A.",283,4.424028268551237,3
+"Moree, Gregg J.",37,5.243243243243243,3
+"Peden, Ronald",49,7.653061224489796,6
+"Phillips, Lesley Rebecca",82,7.682926829268292,6.0
+"Reeves, Kenneth E.",933,5.696677384780279,4
+"Seidel, Sam",701,6.359486447931526,6
+"Simmons, E. Denise",1183,6.222316145393068,5
+"Smith, Jefferson R.",579,6.573402417962003,5
+"Toomey, Jr., Timothy J.",1456,4.493818681318682,3.0
+"Vasquez, Luis",263,7.152091254752852,5
+"Von Hoffmann, Kristen Lane",420,6.65952380952381,6.0
+"Williamson, James M.",74,7.837837837837838,6.0
+"Yarden, Elie",102,7.784313725490196,7.0
+"vanBeuzekom, Minka Y.",872,6.636467889908257,6.0
+writeIns,15,4.2,1
