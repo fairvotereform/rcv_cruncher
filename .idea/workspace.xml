@@ -5,30 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="second commit through pycharm">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/ballots.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/candidates.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/cleaned.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/run_rcv.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/results/candidate_details.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/contest_set_key.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/ballots.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_merged_writeIns.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_no_writeIns.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/cleaned.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/convert_cvr.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/run_rcv.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/crunch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parsers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_reporting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/rcv_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_variants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rcv_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_base.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

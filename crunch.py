@@ -265,8 +265,8 @@ def prepare_candidate_details(obj):
         reorder_dicts = []
         for d in cand_outcomes:
 
-            # don't add candidates if they received zero votes in the first round.
-            if rounds_full_dict[0][d['name']] == 0:
+            # don't add candidates if they received zero votes throughout the contest.
+            if sum(rounds_dict[d['name']] for rounds_dict in rounds_full_dict) == 0:
                 continue
 
             if d['round_elected']:

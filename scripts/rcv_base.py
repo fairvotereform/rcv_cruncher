@@ -196,6 +196,9 @@ class RCV(RCV_Reporting, ABC):
         Run the rounds of rcv contest.
         """
 
+        # use to mark first elimination round
+        first_elimination_round = None
+
         #############################################
         # CLEAN ROUND BALLOTS
         # remove inactive candidates
@@ -214,19 +217,20 @@ class RCV(RCV_Reporting, ABC):
             # COUNT ROUND RESULTS
             self._tally_active_ballots()
 
-            # one the first round, mark any candidates with zero votes for elimination
-            if self._round_num == 1:
+            #############################################
+            # CHECK FOR ROUND WINNERS
+            self._set_round_winners()
+
+            # one the first elimination round, mark any candidates with zero votes for elimination
+            if first_elimination_round is None and not self._round_winners:
                 round_dict = self.get_round_tally_dict(self._round_num, tabulation_num=self._tab_num)
                 novote_losers = [cand for cand in self._candidate_set if round_dict[cand] == 0]
 
                 for loser in novote_losers:
-                    self._tabulations[self._tab_num-1]['candidate_outcomes'][loser]['round_eliminated'] = 0
+                    self._tabulations[self._tab_num-1]['candidate_outcomes'][loser]['round_eliminated'] = self._round_num
 
                 self._inactive_candidates += novote_losers
-
-            #############################################
-            # CHECK FOR ROUND WINNERS
-            self._set_round_winners()
+                first_elimination_round = False
 
             #############################################
             # IDENTIFY ROUND LOSER
