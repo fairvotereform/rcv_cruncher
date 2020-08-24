@@ -564,6 +564,15 @@ class RCV_Reporting:
         return [True if i == EXHAUSTED_BY_ABSTENTION else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
+    def exhausted_or_undervote(self, *, tabulation_num=1):
+        """
+        Returns bool list corresponding to each ballot.
+        True when ballot when ballot was exhausted OR left blank (undervote)
+        False otherwise
+        """
+        return [True if x != NOT_EXHAUSTED or x == UNDERVOTE else False
+                for x in self.exhaustion_check(tabulation_num=tabulation_num)]
+
     def exhausted_by_overvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.

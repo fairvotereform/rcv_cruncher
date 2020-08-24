@@ -76,9 +76,6 @@ def common_csv(ctx, path=None):
 
     return dct
 
-def dominion5_4(ctx):
-    return dominion5_10(ctx)
-
 def dominion5_10(ctx):
 
     path = ctx['path']
@@ -95,16 +92,10 @@ def dominion5_10(ctx):
         for i in json.load(f)['List']:
             candidate_manifest[i['Id']] = i['Description']
 
-    precinctPortion_manifest = {}
+    precinct_manifest = {}
     with open(path + '/PrecinctPortionManifest.json') as f:
         for i in json.load(f)['List']:
-            precinctPortion_manifest[i['Id']] = {'Portion': i['Description'], 'PrecinctId': i['PrecinctId']}
-
-    precinct_manifest = {}
-    if os.path.isfile(path + '/PrecinctManifest.json'):
-        with open(path + '/PrecinctManifest.json') as f:
-            for i in json.load(f)['List']:
-                precinct_manifest[i['Id']] = i['Description']
+            precinct_manifest[i['Id']] = i['Description']
 
     ballotType_manifest = {}
     with open(path + '/BallotTypeManifest.json') as f:
@@ -128,10 +119,8 @@ def dominion5_10(ctx):
     # read in ballots
     ballot_ranks = []
     ballot_IDs = []
-    ballot_precinctPortions = []
     ballot_precincts = []
     ballot_types = []
-    ballot_countingGroups = []
     with open(path + '/CvrExport.json') as f:
         for contests in json.load(f)['Sessions']:
 
@@ -143,8 +132,6 @@ def dominion5_10(ctx):
                 print('regex is not working correctly. debug')
                 exit(1)
 
-            countingGroup = countingGroup_manifest[contests['CountingGroupId']]
-
             # for each session use original, or if isCurrent is False,
             # use modified
             if contests['Original']['IsCurrent']:
@@ -153,28 +140,22 @@ def dominion5_10(ctx):
                 current_contests = contests['Modified']
 
             # precinctId for this ballot
-            precinctPortion = precinctPortion_manifest[current_contests['PrecinctPortionId']]['Portion']
-            precinctId = precinctPortion_manifest[current_contests['PrecinctPortionId']]['PrecinctId']
-
-            precinct = None
-            if precinct_manifest:
-                precinct = precinct_manifest[precinctId]
+            precinct = precinct_manifest[current_contests['PrecinctPortionId']]
 
             # ballotType for this ballot
             ballotType = ballotType_manifest[current_contests['BallotTypeId']]
 
-            if len(current_contests['Cards']) > 1:
+            if len(current_contests['Cards']) > 1 or len(current_contests['Cards'][0]['Contests']) > 1:
                 print('"Cards" has length greater than 1, not prepared for this. debug')
                 exit(1)
+            else:
+                current_contests = current_contests['Cards'][0]['Contests'][0]
 
-            ballot_contest_marks = None
-            for ballot_contest in current_contests['Cards'][0]['Contests']:
-                if ballot_contest['Id'] == current_contest_id:
-                    ballot_contest_marks = ballot_contest['Marks']
-
-            # skip ballot if didn't contain contest
-            if ballot_contest_marks is None:
+            # skip other contests
+            if current_contests['Id'] != current_contest_id:
                 continue
+
+            ballot_contest_marks = current_contests['Marks']
 
             # check for marks on each rank expected for this contest
             currentRank = 1
@@ -202,22 +183,15 @@ def dominion5_10(ctx):
                 currentRank += 1
 
             ballot_ranks.append(current_ballot_ranks)
-            ballot_precinctPortions.append(precinctPortion)
             ballot_precincts.append(precinct)
             ballot_IDs.append(ballotID)
             ballot_types.append(ballotType)
-            ballot_countingGroups.append(countingGroup)
 
     ballot_dict = {'ranks': ballot_ranks,
                    'weight': [Fraction(1) for b in ballot_ranks],
                    'ballotID': ballot_IDs,
-                   'precinctPortion': ballot_precinctPortions,
-                   'ballot_type': ballot_types,
-                   'countingGroup': ballot_countingGroups}
-
-    # make sure precinctManifest was part of CVR, otherwise exclude precinct column
-    if len(ballot_precincts) != sum(i is None for i in ballot_precincts):
-        ballot_dict['precinct'] = ballot_precincts
+                   'precinct': ballot_precincts,
+                   'ballot_type': ballot_types}
 
     # check ballotIDs are unique
     if len(set(ballot_dict['ballotID'])) != len(ballot_dict['ballotID']):
