@@ -5,30 +5,70 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="second commit through pycharm">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/ballots.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/candidates.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/cleaned.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/cache/run_rcv.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/all_contests/results/candidate_details.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/contest_set_key.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/new_contest_set/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/ballots.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_merged_writeIns.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/candidates_no_writeIns.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/cleaned.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/convert_cvr.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/cache/run_rcv.check" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/contest_set.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/some_contests/output_config.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/crunch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/contest_set.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/contest_set.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/misc_tabulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/misc_tabulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/parsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/rcv_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/rcv_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/rcv_reporting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/candidate_details.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/candidate_details.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/condorcet/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/crossover_support/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/cumulative_ranking/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict41_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict41_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_choice_to_finalist_tab1/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent_no_exhaust.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_percent_no_exhaust.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent_no_exhaust.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_percent_no_exhaust.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent_no_exhaust.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_percent_no_exhaust.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_count.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent_no_exhaust.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/first_second/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_percent_no_exhaust.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/group_single_winner.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/group_single_winner.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/rank_usage/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/rcv_single_winner.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/rcv_single_winner.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict41_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict41_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict47_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateHouseDistrict90_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_DemocraticCandidateforMaineStateSenateDistrict11_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_tab1.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/round_by_round/Maine_07142020_RepublicanCandidateforUSHouseofRepresentativesDistrict2_tab1.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/reporting_time.csv" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/reporting_time.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/misc_tabulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/misc_tabulation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/parsers.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/parsers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rcv_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_base.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_reporting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/rcv_variants.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_variants.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +268,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="july2020_maine_poll" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="july2020_vp_poll" type="PythonConfigurationType" factoryName="Python">
       <module name="rcv-cruncher" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -241,7 +281,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
-      <option name="PARAMETERS" value="--contest_set july2020_maine_poll" />
+      <option name="PARAMETERS" value="--contest_set july2020_vp_poll" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="lascruces" type="PythonConfigurationType" factoryName="Python">
+      <module name="rcv-cruncher" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\User\Anaconda3\python.exe" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/crunch.py" />
+      <option name="PARAMETERS" value="--contest_set lascruces" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -460,24 +521,25 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.crunch test" />
-      <item itemvalue="Python.new contest set" />
       <item itemvalue="Python.all" />
-      <item itemvalue="Python.compare all" />
-      <item itemvalue="Python.empty official results" />
-      <item itemvalue="Python.primary" />
-      <item itemvalue="Python.single winner" />
-      <item itemvalue="Python.seq" />
-      <item itemvalue="Python.whole ballot" />
-      <item itemvalue="Python.scratch" />
-      <item itemvalue="Python.hawaii" />
-      <item itemvalue="Python.sf" />
-      <item itemvalue="Python.maine_2020" />
       <item itemvalue="Python.cambridge" />
-      <item itemvalue="Python.july2020_maine_poll" />
+      <item itemvalue="Python.compare all" />
+      <item itemvalue="Python.crunch test" />
+      <item itemvalue="Python.empty official results" />
+      <item itemvalue="Python.hawaii" />
+      <item itemvalue="Python.july2020_vp_poll" />
+      <item itemvalue="Python.maine_2020" />
+      <item itemvalue="Python.new contest set" />
+      <item itemvalue="Python.primary" />
+      <item itemvalue="Python.scratch" />
+      <item itemvalue="Python.seq" />
+      <item itemvalue="Python.sf" />
+      <item itemvalue="Python.lascruces" />
+      <item itemvalue="Python.single winner" />
+      <item itemvalue="Python.whole ballot" />
       <item itemvalue="Python.crunch" />
-      <item itemvalue="Python.parsers" />
       <item itemvalue="Python.parse_sf2019" />
+      <item itemvalue="Python.parsers" />
     </list>
     <recent_temporary>
       <list>
@@ -545,11 +607,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="rcv_multiwinner primary 2020" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595446336487">
+    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596242307315">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="139" y="38" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.728@0.0.1366.728" timestamp="1591308115352" />
-    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595446336487" />
+    <state x="749" y="53" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596242307315" />
     <state x="765" y="236" key="#com.intellij.ide.util.MemberChooser" timestamp="1587502872817">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -566,31 +628,31 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1418" height="666" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1590189498311" />
-    <state x="601" y="143" key="FileChooserDialogImpl" timestamp="1594675421955">
+    <state x="601" y="143" key="FileChooserDialogImpl" timestamp="1595516048375">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="428" y="100" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1590088755476" />
-    <state x="601" y="143" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1594675421955" />
-    <state width="1899" height="268" key="GridCell.Tab.0.bottom" timestamp="1595449949050">
+    <state x="601" y="143" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1595516048375" />
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom" timestamp="1597682537040">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1345" height="439" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
-    <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949050" />
-    <state width="1899" height="268" key="GridCell.Tab.0.center" timestamp="1595449949049">
+    <state width="1899" height="268" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1597682537040" />
+    <state width="1899" height="268" key="GridCell.Tab.0.center" timestamp="1597682537039">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1345" height="439" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
-    <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949049" />
-    <state width="1899" height="268" key="GridCell.Tab.0.left" timestamp="1595449949049">
+    <state width="1899" height="268" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1597682537039" />
+    <state width="1899" height="268" key="GridCell.Tab.0.left" timestamp="1597682537039">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1345" height="439" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
-    <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949049" />
-    <state width="1899" height="268" key="GridCell.Tab.0.right" timestamp="1595449949050">
+    <state width="1899" height="268" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1597682537039" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right" timestamp="1597682537039">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1345" height="439" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1592334442279" />
-    <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1595449949050" />
+    <state width="1899" height="268" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1597682537039" />
     <state width="1690" height="530" key="XDebugger.FullValuePopup" timestamp="1590510877458">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -600,11 +662,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="478" y="225" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1589480296416" />
-    <state x="541" y="270" key="com.intellij.ide.util.TipDialog" timestamp="1594833580987">
+    <state x="541" y="270" key="com.intellij.ide.util.TipDialog" timestamp="1595516235158">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="385" y="189" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1591026853618" />
-    <state x="541" y="270" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1594833580987" />
+    <state x="541" y="270" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1595516235158" />
     <state x="388" y="201" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1589222412111">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

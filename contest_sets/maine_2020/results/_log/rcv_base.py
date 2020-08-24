@@ -269,6 +269,7 @@ class RCV(RCV_Reporting, ABC):
         # set final ranks for each ballot
         self._tabulations[self._tab_num-1]['final_ranks'] = [b['ranks'] for b in self._bs]
         self._tabulations[self._tab_num-1]['win_threshold'] = self._win_threshold()
+
     #
     def _tally_active_ballots(self):
         """
