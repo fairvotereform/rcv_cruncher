@@ -5,10 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="second commit through pycharm">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/crunch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/crunch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/definitions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_reporting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -441,24 +437,24 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.crunch test" />
-      <item itemvalue="Python.new contest set" />
       <item itemvalue="Python.all" />
-      <item itemvalue="Python.compare all" />
-      <item itemvalue="Python.empty official results" />
-      <item itemvalue="Python.primary" />
-      <item itemvalue="Python.single winner" />
-      <item itemvalue="Python.seq" />
-      <item itemvalue="Python.whole ballot" />
-      <item itemvalue="Python.scratch" />
-      <item itemvalue="Python.hawaii" />
-      <item itemvalue="Python.sf" />
-      <item itemvalue="Python.maine_2020" />
       <item itemvalue="Python.cambridge" />
-      <item itemvalue="Python.july2020_maine_poll" />
+      <item itemvalue="Python.compare all" />
+      <item itemvalue="Python.crunch test" />
       <item itemvalue="Python.crunch" />
-      <item itemvalue="Python.parsers" />
+      <item itemvalue="Python.empty official results" />
+      <item itemvalue="Python.hawaii" />
+      <item itemvalue="Python.july2020_maine_poll" />
+      <item itemvalue="Python.maine_2020" />
+      <item itemvalue="Python.new contest set" />
       <item itemvalue="Python.parse_sf2019" />
+      <item itemvalue="Python.parsers" />
+      <item itemvalue="Python.primary" />
+      <item itemvalue="Python.scratch" />
+      <item itemvalue="Python.seq" />
+      <item itemvalue="Python.sf" />
+      <item itemvalue="Python.single winner" />
+      <item itemvalue="Python.whole ballot" />
     </list>
     <recent_temporary>
       <list>

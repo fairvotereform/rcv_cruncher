@@ -553,7 +553,6 @@ class RCV_Reporting:
     def posttally_exhausted(self, *, tabulation_num=1):
         """
         Returns a boolean list indicating which ballots were exhausted.
-        Does not include undervotes as exhausted.
         """
         return [True if x != NOT_EXHAUSTED and x != UNDERVOTE
                 else False for x in self.exhaustion_check(tabulation_num=tabulation_num)]
@@ -561,8 +560,6 @@ class RCV_Reporting:
     def posttally_exhausted_by_abstention(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
-        True if ballot was exhausted without being fully ranked and the
-        cause of exhaustion was not overvotes or skipped rankings.
         """
         return [True if i == POSTTALLY_EXHAUSTED_BY_ABSTENTION else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
@@ -570,7 +567,6 @@ class RCV_Reporting:
     def posttally_exhausted_by_overvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
-        True if ballot was exhausted due to overvote
         """
         return [True if i == POSTTALLY_EXHAUSTED_BY_OVERVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
@@ -578,7 +574,6 @@ class RCV_Reporting:
     def posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
-        True if ballot was exhausted AND final rank was used and reached.
         """
         return [True if i == POSTTALLY_EXHAUSTED_BY_RANK_LIMIT else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
@@ -586,7 +581,6 @@ class RCV_Reporting:
     def posttally_exhausted_by_skipvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
-        True if ballot was exhausted due to repeated_skipvotes
         """
         return [True if i == POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
@@ -594,7 +588,6 @@ class RCV_Reporting:
     def pretally_exhaust(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
-        True if ballot was exhausted prior to first round.
         """
         return [True if i == PRETALLY_EXHAUST else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
