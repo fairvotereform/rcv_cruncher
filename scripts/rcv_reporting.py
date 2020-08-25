@@ -196,6 +196,7 @@ class RCV_Reporting:
             self.total_undervote,
             self.first_round_overvote,
             self.total_ballots_with_overvote,
+            self.total_pretally_exhausted,
             self.total_posttally_exhausted,
             self.total_posttally_exhausted_by_overvote,
             self.total_posttally_exhausted_by_skipped_rankings,
