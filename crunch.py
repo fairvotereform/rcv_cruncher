@@ -44,7 +44,7 @@ def stats_check(obj):
 
         first_round_active = obj.first_round_active_votes(tabulation_num=iTab)
         final_round_active = obj.final_round_active_votes(tabulation_num=iTab)
-        n_exhaust = obj.total_exhausted(tabulation_num=iTab)
+        n_exhaust = obj.total_posttally_exhausted(tabulation_num=iTab) + obj.total_pretally_exhausted(tabulation_num=iTab)
 
         ############################
         # intermediary recalculations
@@ -113,7 +113,7 @@ def tabulation_check(obj):
 
             tabulated_final_round_dict = obj.get_round_tally_dict(round_num=obj.n_rounds(tabulation_num=iTab),
                                                                   tabulation_num=iTab)
-            tabulated_final_round_dict['exhaust'] = obj.total_exhausted(tabulation_num=iTab)
+            tabulated_final_round_dict['exhaust'] = obj.total_posttally_exhausted(tabulation_num=iTab)
 
             tabulated_win_threshold = obj.win_threshold(tabulation_num=iTab)
 
@@ -305,7 +305,7 @@ def write_rcv_rounds(obj, results_dir):
 
         num_rounds = obj.n_rounds(tabulation_num=iTab)
 
-        first_round_exhaust = obj.total_ballots() - obj.total_undervote() - obj.first_round_active_votes(tabulation_num=iTab)
+        first_round_exhaust = obj.total_pretally_exhausted(tabulation_num=iTab)
 
         # get rcv results
         rounds_full = [obj.get_round_tally_tuple(i, tabulation_num=iTab) for i in range(1, num_rounds + 1)]

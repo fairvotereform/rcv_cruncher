@@ -10,8 +10,9 @@ from inspect import signature
 import pandas as pd
 
 # cruncher imports
-from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, EXHAUSTED_BY_OVERVOTE, \
-    EXHAUSTED_BY_REPEATED_SKIPVOTE, EXHAUSTED_BY_RANK_LIMIT, EXHAUSTED_BY_ABSTENTION, UNDERVOTE, replace, remove
+from .definitions import SKIPPEDRANK, OVERVOTE, isInf, WRITEIN, NOT_EXHAUSTED, POSTTALLY_EXHAUSTED_BY_OVERVOTE, \
+    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE, POSTTALLY_EXHAUSTED_BY_RANK_LIMIT, POSTTALLY_EXHAUSTED_BY_ABSTENTION, UNDERVOTE, PRETALLY_EXHAUST, \
+    replace, remove
 from .ballots import ballots, cleaned, candidates, candidates_no_writeIns
 
 global RECORD_FUNCTION_TIMES, USE_TEMP_DICT
@@ -161,11 +162,12 @@ class RCV_Reporting:
             self.total_ballots,
             self.total_ballots_with_overvote,
             self.total_undervote,
-            self.total_exhausted,
-            self.total_exhausted_by_overvote,
-            self.total_exhausted_by_skipped_rankings,
-            self.total_exhausted_by_abstention,
-            self.total_exhausted_by_rank_limit]
+            self.total_pretally_exhausted,
+            self.total_posttally_exhausted,
+            self.total_posttally_exhausted_by_overvote,
+            self.total_posttally_exhausted_by_skipped_rankings,
+            self.total_posttally_exhausted_by_abstention,
+            self.total_posttally_exhausted_by_rank_limit]
 
     def multi_winner_stats(self):
         return [
@@ -194,11 +196,11 @@ class RCV_Reporting:
             self.total_undervote,
             self.first_round_overvote,
             self.total_ballots_with_overvote,
-            self.total_exhausted,
-            self.total_exhausted_by_overvote,
-            self.total_exhausted_by_skipped_rankings,
-            self.total_exhausted_by_abstention,
-            self.total_exhausted_by_rank_limit,
+            self.total_posttally_exhausted,
+            self.total_posttally_exhausted_by_overvote,
+            self.total_posttally_exhausted_by_skipped_rankings,
+            self.total_posttally_exhausted_by_abstention,
+            self.total_posttally_exhausted_by_rank_limit,
             self.includes_duplicate_ranking,
             self.includes_skipped_ranking,
             self.total_irregular]
@@ -210,14 +212,14 @@ class RCV_Reporting:
 
         # compute ballot stats
         func_list = [self.duplicates,
-                     self.exhausted,
-                     self.exhausted_by_abstention,
-                     self.exhausted_by_overvote,
-                     self.exhausted_by_rank_limit,
-                     self.exhausted_by_skipvote,
+                     self.posttally_exhausted,
+                     self.posttally_exhausted_by_abstention,
+                     self.posttally_exhausted_by_overvote,
+                     self.posttally_exhausted_by_rank_limit,
+                     self.posttally_exhausted_by_skipvote,
                      self.first_round_overvote_bool,
                      self.fully_ranked,
-                     self.modified_fully_ranked,
+                     self.used_last_rank,
                      self.overvote,
                      self.ranked_multiple_bool,
                      self.ranked_single_bool,
@@ -547,7 +549,7 @@ class RCV_Reporting:
             counts[len(ranks)] += weight
         return '; '.join('{}: {}'.format(a, b) for a, b in sorted(counts.items()))
 
-    def exhausted(self, *, tabulation_num=1):
+    def posttally_exhausted(self, *, tabulation_num=1):
         """
         Returns a boolean list indicating which ballots were exhausted.
         Does not include undervotes as exhausted.
@@ -555,57 +557,102 @@ class RCV_Reporting:
         return [True if x != NOT_EXHAUSTED and x != UNDERVOTE
                 else False for x in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_abstention(self, *, tabulation_num=1):
+    def posttally_exhausted_by_abstention(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted without being fully ranked and the
         cause of exhaustion was not overvotes or skipped rankings.
         """
-        return [True if i == EXHAUSTED_BY_ABSTENTION else False
+        return [True if i == POSTTALLY_EXHAUSTED_BY_ABSTENTION else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_overvote(self, *, tabulation_num=1):
+    def posttally_exhausted_by_overvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted due to overvote
         """
-        return [True if i == EXHAUSTED_BY_OVERVOTE else False
+        return [True if i == POSTTALLY_EXHAUSTED_BY_OVERVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_rank_limit(self, *, tabulation_num=1):
+    def posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted AND final rank was used and reached.
         """
-        return [True if i == EXHAUSTED_BY_RANK_LIMIT else False
+        return [True if i == POSTTALLY_EXHAUSTED_BY_RANK_LIMIT else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
-    def exhausted_by_skipvote(self, *, tabulation_num=1):
+    def posttally_exhausted_by_skipvote(self, *, tabulation_num=1):
         """
         Returns bool list with elements corresponding to ballots.
         True if ballot was exhausted due to repeated_skipvotes
         """
-        return [True if i == EXHAUSTED_BY_REPEATED_SKIPVOTE else False
+        return [True if i == POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE else False
                 for i in self.exhaustion_check(tabulation_num=tabulation_num)]
+
+    def pretally_exhaust(self, *, tabulation_num=1):
+        """
+        Returns bool list with elements corresponding to ballots.
+        True if ballot was exhausted prior to first round.
+        """
+        return [True if i == PRETALLY_EXHAUST else False
+                for i in self.exhaustion_check(tabulation_num=tabulation_num)]
+
+    def contest_rank_limit(self):
+        """
+        The number of rankings allowed on the ballot.
+        """
+        bs = ballots(self.ctx)['ranks']
+
+        if len(set(len(b) for b in bs)) > 1:
+            raise RuntimeError("contest has ballots with varying rank limits.")
+        return len(bs[0])
+
+    def restrictive_rank_limit(self):
+        """
+        True if the contest allowed less than n-1 rankings, where n in the number of candidates.
+        """
+        if self.contest_rank_limit() < (self.number_of_candidates() - 1):
+            return True
+        else:
+            return False
 
     def exhaustion_check(self, *, tabulation_num=1):
         """
-        Returns a list with string elements indicating why each ballot
+        Returns a list with constants indicating why each ballot
         was exhausted in a single-winner rcv contest.
 
         Possible list values are:
-        - EXHAUST_BY_OVERVOTE: if an overvote was the cause of exhaustion (depends on break_on_overvote manifest value)
-        - EXHAUSTED_BY_REPEATED_SKIPVOTE: if repeated skipvotes were the cause of exhaustion
-        (depends on break_on_repeated_skipvotes manifest value)
+
+        - UNDERVOTE : if the ballot was undervote, and therefore neither active nor exhaustable.
+
         - NOT_EXHAUSTED: if finalist was present on the ballot and was ranked higher than an exhaust condition
         (overvote or repeated_skipvotes)
-        - EXHAUSTED_BY_RANK_LIMIT: if no finalist was present on the ballot and all ballot ranks were considered
-        - EXHAUSTED_BY_ABSTENTION: if no finalist was present on the ballot and the ballot was NOT fully ranked
-        - UNDERVOTE : if the ballot was undervote, and therefore neither active nor exhaustable
+
+        - PRETALLY_EXHAUST: if the ballot was exahusted by overvote or skipped rankings prior to being counted in the first round.
+
+        - POSTTALLY_EXHAUSTED_BY_OVERVOTE: overvote rules apply to contest, and an overvote is encountered prior to a
+        final round candidate or another exhaust condition.
+
+        - POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE: skipped rankings rules apply to contest, and two or more repeated skipped
+         rankings are encountered prior to a final round candidate or another exhaust condition. The skipped rankings
+          must be followed by a non-skipped ranking for this condition to apply.
+
+        - POSTTALLY_EXHAUSTED_BY_ABSTENTION: if the ballot is rank restricted, then a ballot receives this label if the final
+        rank was skipped. If the ballot is not rank restricted, then all ballots that do not reach another exhaust
+        condition and do not rank a final round candidate receive this label.
+
+        - POSTTALLY_EXHAUSTED_BY_RANK_LIMIT: if the ballot is rank restricted, then a ballot recieves this label if the final
+        rank was marked. If the ballot is not rank restricted, then no ballots recieve this label.
+
+        rank restricted ballot: less than or equal to n-2 ranks, where n is number of candidates (not counting writeins).
         """
 
+        restrictive_rank_limit = self.restrictive_rank_limit()
+
         # gather ballot info
-        ziplist = zip(self.modified_fully_ranked(),  # True if fully ranked
+        ziplist = zip(self.used_last_rank(),
+                      self.pretally_exhaust(),  # True if exhausted before the first round
                       self.overvote_ind(),  # Inf if no overvote
                       self.repeated_skipvote_ind(),  # Inf if no repeated skipvotes
                       self.get_final_ranks(tabulation_num=tabulation_num),
@@ -614,13 +661,18 @@ class RCV_Reporting:
         why_exhaust = []
 
         # loop through each ballot
-        for is_fully_ranked, over_idx, repskip_idx, final_ranks, is_under in ziplist:
+        for last_rank_used, is_pre_tally_exhaust, over_idx, repskip_idx, final_ranks, is_under in ziplist:
 
             # if the ballot is an undervote,
             # nothing else to check
             if is_under:
                 why_exhaust.append(UNDERVOTE)
                 continue
+
+            # if the ballot was exhausted before the first round
+            # no further categorization needed
+            if is_pre_tally_exhaust:
+                why_exhaust.append(PRETALLY_EXHAUST)
 
             # if the ballot still had some ranks at the end of tabulation
             # then it wasnt exhausted
@@ -632,11 +684,11 @@ class RCV_Reporting:
             idx_dictlist = []
             # check if overvote can cause exhaust
             if self.ctx['break_on_overvote'] and not isInf(over_idx):
-                idx_dictlist.append({'exhaust_cause': EXHAUSTED_BY_OVERVOTE, 'idx': over_idx})
+                idx_dictlist.append({'exhaust_cause': POSTTALLY_EXHAUSTED_BY_OVERVOTE, 'idx': over_idx})
 
             # check if skipvotes can cause exhaustion
             if self.ctx['break_on_repeated_skipvotes'] and not isInf(repskip_idx):
-                idx_dictlist.append({'exhaust_cause': EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx})
+                idx_dictlist.append({'exhaust_cause': POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE, 'idx': repskip_idx})
 
             if idx_dictlist:
 
@@ -648,10 +700,10 @@ class RCV_Reporting:
 
                 # means this ballot contained neither skipped ranks or overvote, it will be exhausted
                 # either for rank limit or abstention
-                if is_fully_ranked:
-                    exhaust_cause = EXHAUSTED_BY_RANK_LIMIT
+                if restrictive_rank_limit and last_rank_used:
+                    exhaust_cause = POSTTALLY_EXHAUSTED_BY_RANK_LIMIT
                 else:
-                    exhaust_cause = EXHAUSTED_BY_ABSTENTION
+                    exhaust_cause = POSTTALLY_EXHAUSTED_BY_ABSTENTION
 
             why_exhaust.append(exhaust_cause)
 
@@ -682,18 +734,12 @@ class RCV_Reporting:
         return float(sum([weight * flag for weight, flag
                           in zip(ballots(self.ctx)['weight'], self.first_round_overvote_bool())]))
 
-    def modified_fully_ranked(self):
+    def used_last_rank(self):
         """
-            Returns a list of bools with each item corresponding to a ballot.
-            True indicates a fully ranked ballot.
-
-            Fully ranked here means the last rank was used OR all candidates were ranked
+        Returns boolean list, corresponding to ballots.
+        Returns True if the ballot used the final rank.
         """
-        return [(set(b) & candidates_no_writeIns(self.ctx)) == candidates_no_writeIns(self.ctx) or
-                # voters ranked every possible candidate
-                a[-1] != SKIPPEDRANK
-                # or did not, but at least ranked up until the last rank
-                for a, b in zip(ballots(self.ctx)['ranks'], cleaned(self.ctx)['ranks'])]
+        return [b[-1] != SKIPPEDRANK for b in ballots(self.ctx)['ranks']]
 
     def fully_ranked(self):
         """
@@ -815,51 +861,63 @@ class RCV_Reporting:
         return float(sum(ballots(self.ctx)['weight']))
 
     @allow_list_args
-    def total_exhausted(self, *, tabulation_num=1):
+    def total_posttally_exhausted(self, *, tabulation_num=1):
         """
         Number of ballots (excluding undervotes) that do not rank a finalist or
-        were exhausted from overvotes/skipped ranks rules. (weighted)
+        were exhausted from overvotes/skipped ranks rules after being active in the first round. (weighted)
         """
         return float(sum([weight * flag for weight, flag
                           in zip(self.get_final_weights(tabulation_num=tabulation_num),
-                                 self.exhausted(tabulation_num=tabulation_num))]))
+                                 self.posttally_exhausted(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_abstention(self, *, tabulation_num=1):
+    def total_pretally_exhausted(self, *, tabulation_num=1):
         """
-        Number of ballots exhausted after all marked rankings used and ballot is not fully ranked. (weighted)
+        Number of ballots that were exhausted prior to the first round count. (weighted)
+        """
+        return float(sum([weight * flag for weight, flag
+                          in zip(self.get_final_weights(tabulation_num=tabulation_num),
+                                 self.pretally_exhaust(tabulation_num=tabulation_num))]))
+
+    @allow_list_args
+    def total_posttally_exhausted_by_abstention(self, *, tabulation_num=1):
+        """
+        Number of initially (reached first round count) active ballots exhausted after all marked rankings used and
+        no finalists are present on the ballot. (weighted)
         """
         return float(sum([weight * flag for weight, flag in
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
-                              self.exhausted_by_abstention(tabulation_num=tabulation_num))]))
+                              self.posttally_exhausted_by_abstention(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_overvote(self, *, tabulation_num=1):
+    def total_posttally_exhausted_by_overvote(self, *, tabulation_num=1):
         """
-        Number of ballots exhausted due to overvote. Only applicable to certain contests. (weighted)
+        Number of ballots exhausted due to overvote that were initially active in the first round.
+        Only applicable to certain contests. (weighted)
         """
         return float(sum([weight * flag for weight, flag in
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
-                              self.exhausted_by_overvote(tabulation_num=tabulation_num))]))
+                              self.posttally_exhausted_by_overvote(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_rank_limit(self, *, tabulation_num=1):
+    def total_posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
         """
-        Number of ballots exhausted after all marked rankings used and ballot is fully ranked.
-        Fully ranked here means the last rank was used OR all candidates were ranked(weighted)
+        Number of initially (reached first round count) active ballots exhausted after all marked rankings used and
+        no finalists are present on the ballot. Ballots are only considered as exhausted by rank limit if the final rank
+        on the ballot was marked and the contest imposed a restrictive rank limit on voters. (weighted)
         """
         return float(sum([weight * flag for weight, flag in
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
-                              self.exhausted_by_rank_limit(tabulation_num=tabulation_num))]))
+                              self.posttally_exhausted_by_rank_limit(tabulation_num=tabulation_num))]))
 
     @allow_list_args
-    def total_exhausted_by_skipped_rankings(self, *, tabulation_num=1):
+    def total_posttally_exhausted_by_skipped_rankings(self, *, tabulation_num=1):
         """
-        Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests. (weighted)
+        Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests.(weighted)
         """
         return float(sum([weight * flag for weight, flag in
                           zip(self.get_final_weights(tabulation_num=tabulation_num),
-                              self.exhausted_by_skipvote(tabulation_num=tabulation_num))]))
+                              self.posttally_exhausted_by_skipvote(tabulation_num=tabulation_num))]))
 
     def total_ballots_with_overvote(self):
         """

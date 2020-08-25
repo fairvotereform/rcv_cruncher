@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="0ed84979-f8d7-493a-b84c-63973bc19580" name="Default Changelist" comment="second commit through pycharm">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/rcv_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/contest_sets/maine_2020/results/_log/crunch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crunch.py" beforeDir="false" afterPath="$PROJECT_DIR$/crunch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/definitions.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/definitions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/rcv_reporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/rcv_reporting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
