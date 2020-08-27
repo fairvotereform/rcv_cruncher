@@ -188,7 +188,6 @@ class RCV(RCV_Reporting, ABC):
             'final_weights': [],
             'final_weight_distrib': [],
             'final_ranks': [],
-            'initial_weights': [],
             'win_threshold': None})
 
     #
@@ -204,8 +203,6 @@ class RCV(RCV_Reporting, ABC):
         # CLEAN ROUND BALLOTS
         # remove inactive candidates
         self._clean_round()
-
-        self._tabulations[self._tab_num-1]['initial_ranks'] = [b['ranks'] for b in self._bs]
 
         not_complete = self._contest_not_complete()
         while not_complete:
@@ -443,14 +440,6 @@ class RCV(RCV_Reporting, ABC):
         """
         final_weights = self._tabulations[tabulation_num-1]['final_weights']
         return final_weights
-
-    #
-    def get_initial_ranks(self, tabulation_num=1):
-        """
-        Return a list of ballot ranks prior to tabulation, but after an initial cleaning.
-        """
-        initial_ranks = self._tabulations[tabulation_num-1]['initial_ranks']
-        return initial_ranks
 
     #
     def get_final_ranks(self, tabulation_num=1):

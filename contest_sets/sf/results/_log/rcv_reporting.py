@@ -556,7 +556,7 @@ class RCV_Reporting:
         """
         Returns a boolean list indicating which ballots were exhausted.
         """
-        return [True if x != NOT_EXHAUSTED and x != UNDERVOTE and x != PRETALLY_EXHAUST
+        return [True if x != NOT_EXHAUSTED and x != UNDERVOTE
                 else False for x in self.exhaustion_check(tabulation_num=tabulation_num)]
 
     def posttally_exhausted_by_abstention(self, *, tabulation_num=1):
@@ -591,8 +591,8 @@ class RCV_Reporting:
         """
         Returns bool list with elements corresponding to ballots.
         """
-        return [True if not a and not b else False for a, b in
-                zip(self.get_initial_ranks(tabulation_num=tabulation_num), self.undervote())]
+        return [True if i == PRETALLY_EXHAUST else False
+                for i in self.exhaustion_check(tabulation_num=tabulation_num)]
 
     def contest_rank_limit(self):
         """
@@ -612,14 +612,6 @@ class RCV_Reporting:
             return True
         else:
             return False
-
-    # def first_round_empty_ballot(self, *, tabulation_num=1):
-    #     """
-    #     True if cleaned ballots are empty prior to the first round. Could be undervotes,
-    #     ballots immediately exhausted by overvote or skipped rankings, or a ballot in a sequential rcv contest that only
-    #     ranked the first tabulation winner.
-    #     """
-    #     return [True if not b else False for b in self.get_initial_ranks(tabulation_num=tabulation_num)]
 
     def exhaustion_check(self, *, tabulation_num=1):
         """
@@ -656,7 +648,7 @@ class RCV_Reporting:
 
         # gather ballot info
         ziplist = zip(self.used_last_rank(),
-                      self.pretally_exhaust(tabulation_num=tabulation_num),  # True if exhausted or undervote
+                      self.pretally_exhaust(),  # True if exhausted before the first round
                       self.overvote_ind(),  # Inf if no overvote
                       self.repeated_skipvote_ind(),  # Inf if no repeated skipvotes
                       self.get_final_ranks(tabulation_num=tabulation_num),
@@ -665,7 +657,7 @@ class RCV_Reporting:
         why_exhaust = []
 
         # loop through each ballot
-        for last_rank_used, pretally_exhaust, over_idx, repskip_idx, final_ranks, is_under in ziplist:
+        for last_rank_used, is_pre_tally_exhaust, over_idx, repskip_idx, final_ranks, is_under in ziplist:
 
             # if the ballot is an undervote,
             # nothing else to check
@@ -673,11 +665,10 @@ class RCV_Reporting:
                 why_exhaust.append(UNDERVOTE)
                 continue
 
-            # if not undervote and the ballot was exhausted before the first round
+            # if the ballot was exhausted before the first round
             # no further categorization needed
-            if pretally_exhaust:
+            if is_pre_tally_exhaust:
                 why_exhaust.append(PRETALLY_EXHAUST)
-                continue
 
             # if the ballot still had some ranks at the end of tabulation
             # then it wasnt exhausted

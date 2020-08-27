@@ -569,7 +569,7 @@ def main():
                 fmt_order = fmt_df['cruncher_col'].tolist()
 
                 df = pd.concat(rcv_group_stats_df_dict[group], axis=0, ignore_index=True, sort=False)
-                df = df.reindex(fmt_order, axis=1)
+                df.reindex(fmt_order, axis=1)
                 df.to_csv(results_dir + '/group_' + group + '_masterDBfmt.csv', index=False)
 
     if 'per_rcv_type_stats' in output_config and output_config['per_rcv_type_stats']:

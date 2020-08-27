@@ -1,7 +1,0 @@
-mismatch with reported results for SanFrancisco_11052019_CityAttorney_tab1
-mismatch with reported results for SanFrancisco_11052019_DistrictAttorney_tab1
-mismatch with reported results for SanFrancisco_11052019_Mayor_tab1
-mismatch with reported results for SanFrancisco_11052019_MemberBoardofSupervisorsDistrict5_tab1
-mismatch with reported results for SanFrancisco_11052019_PublicDefender_tab1
-mismatch with reported results for SanFrancisco_11052019_Sheriff_tab1
-mismatch with reported results for SanFrancisco_11052019_Treasurer_tab1
