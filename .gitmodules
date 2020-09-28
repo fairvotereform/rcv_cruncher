@@ -1,3 +1,0 @@
-[submodule "rcv-parsers"]
-	path = rcv-parsers
-	url = https://github.com/fairvotereform/rcv-parsers.git

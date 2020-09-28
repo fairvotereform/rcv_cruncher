@@ -4,7 +4,8 @@ from gmpy2 import mpq as Fraction
 
 from scripts.cache_helpers import save
 from scripts.definitions import merge_writeIns, SKIPPEDRANK, OVERVOTE, WRITEIN
-from scripts.parsers import common_csv
+from
+import common_csv
 
 global COMMON_CVR_DIR
 
