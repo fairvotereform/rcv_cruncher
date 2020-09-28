@@ -1,3 +1,3 @@
-Ballots with first choice:,Number of Ballots,% of votes to DENNIS J. HERRERA,% of votes to writeIns,% of votes to exhaust,percent_sum
-DENNIS J. HERRERA,163850,100,0,0,100
-writeIns,15,0,100,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to DENNIS J. HERRERA,% of votes to exhaust,percent_sum
+DENNIS J. HERRERA,163850,0,100,0,100
+writeIns,15,100,0,0,100

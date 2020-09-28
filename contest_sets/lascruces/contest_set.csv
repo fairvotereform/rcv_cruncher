@@ -1,0 +1,4 @@
+contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
+Las Cruces Mayor 2019,Las Cruces,NM,2019,11/5/2019,MAYOR CITY OF LAS CRUCES,TRUE,,,,,,,dominion5_4,,rcv_single_winner,1,C:/Users/User/Documents/fairvote/projects/rcv-cruncher/Ballot_Images/LasCruces/2019
+Las Cruces Mayor 2019,Las Cruces,NM,2019,11/5/2019,COUNCILOR POSITION 2 CITY OF LAS CRUCES DISTRICT 2 COUNCILOR,TRUE,,,,,,,dominion5_4,,rcv_single_winner,1,C:/Users/User/Documents/fairvote/projects/rcv-cruncher/Ballot_Images/LasCruces/2019
+Las Cruces Mayor 2019,Las Cruces,NM,2019,11/5/2019,COUNCILOR POSITION 4 CITY OF LAS CRUCES DISTRICT 4 COUNCILOR,TRUE,,,,,,,dominion5_4,,rcv_single_winner,1,C:/Users/User/Documents/fairvote/projects/rcv-cruncher/Ballot_Images/LasCruces/2019

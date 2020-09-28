@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to David Schorn,% of votes to Saralyn Romanishan,% of votes to Lisa Bender,% of votes to Bruce Lundeen,% of votes to writeIns,% of votes to exhaust,percent_sum
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to David Schorn,% of votes to Saralyn Romanishan,% of votes to Bruce Lundeen,% of votes to Lisa Bender,% of votes to exhaust,percent_sum
 Bruce Lundeen,419,0,0,0,100,0,0,100
-David Schorn,709,100,0,0,0,0,0,100
-Lisa Bender,4886,0,0,100,0,0,0,100
-Saralyn Romanishan,1562,0,100,0,0,0,0,100
-writeIns,20,0,0,0,0,100,0,100
+David Schorn,709,0,100,0,0,0,0,100
+Lisa Bender,4886,0,0,0,0,100,0,100
+Saralyn Romanishan,1562,0,0,100,0,0,0,100
+writeIns,20,100,0,0,0,0,0,100

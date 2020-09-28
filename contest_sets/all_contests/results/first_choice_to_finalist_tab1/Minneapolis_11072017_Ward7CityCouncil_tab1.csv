@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to Lisa Goodman,% of votes to Janne Flisrand,% of votes to Joe Kovacs,% of votes to writeIns,% of votes to Teqen Zéa-Aida,% of votes to exhaust,percent_sum
-Janne Flisrand,2834,0,100,0,0,0,0,100
-Joe Kovacs,602,0,0,100,0,0,0,100
-Lisa Goodman,4751,100,0,0,0,0,0,100
-Teqen Zéa-Aida,889,0,0,0,0,100,0,100
-writeIns,14,0,0,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Lisa Goodman,% of votes to Teqen Zéa-Aida,% of votes to Janne Flisrand,% of votes to Joe Kovacs,% of votes to exhaust,percent_sum
+Janne Flisrand,2834,0,0,0,100,0,0,100
+Joe Kovacs,602,0,0,0,0,100,0,100
+Lisa Goodman,4751,0,100,0,0,0,0,100
+Teqen Zéa-Aida,889,0,0,100,0,0,0,100
+writeIns,14,100,0,0,0,0,0,100

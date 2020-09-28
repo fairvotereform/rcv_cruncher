@@ -48,6 +48,8 @@ sort_for_cruncher_export,Sort for Cruncher Export
 unique_id,RaceID
 contest_name,
 rcv_type,
+exhaust_on_overvote,
+exhaust_on_repeated_skipped_rankings,
 number_of_winners,
 total_pretally_exhausted,
 total_irregular,

@@ -1,7 +1,7 @@
-Ballots with first choice:,Number of Ballots,% of votes to Bob Kiss,% of votes to Hinda Miller,% of votes to exhaust,percent_sum
-Bob Kiss,3809.0,100.0,0.0,0.0,100.0
-Hinda Miller,3106.0,0.0,100.0,0.0,100.0
-Kevin Curley,2609.0,31.93,31.35,36.72,100.0
-Louie the Cowman Beaudin,119.0,39.5,20.17,40.34,100.0
-Loyal Ploof,57.0,47.37,33.33,19.3,99.99999999999999
-writeIns,78.0,57.69,23.08,19.23,99.99999999999999
+Ballots with first choice:,Number of Ballots,% of votes to Hinda Miller,% of votes to Bob Kiss,% of votes to exhaust,percent_sum
+Bob Kiss,3809.0,0.0,100.0,0.0,100.0
+Hinda Miller,3106.0,100.0,0.0,0.0,100.0
+Kevin Curley,2609.0,31.35,31.93,36.72,100.0
+Louie the Cowman Beaudin,119.0,20.17,39.5,40.34,100.0
+Loyal Ploof,57.0,33.33,47.37,19.3,99.99999999999999
+writeIns,78.0,23.08,57.69,19.23,99.99999999999999

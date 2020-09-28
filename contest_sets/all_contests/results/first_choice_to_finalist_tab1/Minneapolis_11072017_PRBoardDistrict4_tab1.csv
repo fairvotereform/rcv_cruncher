@@ -1,4 +1,4 @@
-Ballots with first choice:,Number of Ballots,% of votes to Jono Cowgill,% of votes to writeIns,% of votes to Tom Nordyke,% of votes to exhaust,percent_sum
-Jono Cowgill,6794,100,0,0,0,100
-Tom Nordyke,6615,0,0,100,0,100
-writeIns,104,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Tom Nordyke,% of votes to Jono Cowgill,% of votes to exhaust,percent_sum
+Jono Cowgill,6794,0,0,100,0,100
+Tom Nordyke,6615,0,100,0,0,100
+writeIns,104,100,0,0,0,100

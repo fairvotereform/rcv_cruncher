@@ -1,10 +1,10 @@
-Ballots with first choice:,Number of Ballots,% of votes to Annie Young,% of votes to John Erwin,% of votes to Bob Fine,% of votes to exhaust,percent_sum
-Annie Young,6941.0,100.0,0.0,0.0,0.0,100.0
-Bob Fine,8089.0,0.36,0.2,98.23,1.21,100.0
-David Wahstedt,2807.0,10.03,7.78,12.74,69.45,100.0
-John Butler,1114.0,15.38,18.25,11.29,55.08,100.0
-John Erwin,6376.0,0.0,100.0,0.0,0.0,100.0
-Mary Merrill Anderson,5394.0,29.01,26.79,0.0,44.2,100.0
-Nancy Bernard,2024.0,34.76,7.52,8.4,49.32,100.0
-Tom Nordyke,3716.0,18.96,29.22,15.04,36.77,99.99999999999999
-writeIns,194.0,6.19,2.08,3.04,88.7,99.99999999999999
+Ballots with first choice:,Number of Ballots,% of votes to John Erwin,% of votes to Annie Young,% of votes to Bob Fine,% of votes to exhaust,percent_sum
+Annie Young,6941.0,0.0,100.0,0.0,0.0,100.0
+Bob Fine,8089.0,0.2,0.36,98.23,1.21,100.0
+David Wahstedt,2807.0,7.78,10.03,12.74,69.45,100.0
+John Butler,1114.0,18.25,15.38,11.29,55.08,100.0
+John Erwin,6376.0,100.0,0.0,0.0,0.0,100.0
+Mary Merrill Anderson,5394.0,26.79,29.01,0.0,44.2,100.0
+Nancy Bernard,2024.0,7.52,34.76,8.4,49.32,100.0
+Tom Nordyke,3716.0,29.22,18.96,15.04,36.77,99.99999999999999
+writeIns,194.0,2.08,6.19,3.04,88.7,99.99999999999999

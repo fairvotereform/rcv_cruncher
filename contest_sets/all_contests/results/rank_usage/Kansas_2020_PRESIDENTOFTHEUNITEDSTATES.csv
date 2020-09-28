@@ -1,0 +1,7 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,146873,2.799418545273808,3
+Bernie Sanders,26555,3.433590660892487,3
+Elizabeth Warren,11518,3.5619899288070846,3.0
+Joseph R. Biden,102829,2.569119606336734,2
+Tulsi Gabbard,1604,3.4114713216957604,4.0
+Uncommitted,4367,2.1298374169910694,1

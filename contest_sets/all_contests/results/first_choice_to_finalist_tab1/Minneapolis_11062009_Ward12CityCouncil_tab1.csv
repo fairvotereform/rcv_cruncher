@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to Sandy Colvin Roy,% of votes to Charley Underwood,% of votes to writeIns,% of votes to Rick L. Nyhlen,% of votes to Brent Perry,% of votes to exhaust,percent_sum
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Charley Underwood,% of votes to Rick L. Nyhlen,% of votes to Sandy Colvin Roy,% of votes to Brent Perry,% of votes to exhaust,percent_sum
 Brent Perry,130,0,0,0,0,100,0,100
 Charley Underwood,663,0,100,0,0,0,0,100
-Rick L. Nyhlen,880,0,0,0,100,0,0,100
-Sandy Colvin Roy,3035,100,0,0,0,0,0,100
-writeIns,10,0,0,100,0,0,0,100
+Rick L. Nyhlen,880,0,0,100,0,0,0,100
+Sandy Colvin Roy,3035,0,0,0,100,0,0,100
+writeIns,10,100,0,0,0,0,0,100

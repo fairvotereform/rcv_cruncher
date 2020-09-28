@@ -1,7 +1,7 @@
-Ballots with first choice:,Number of Ballots,% of votes to Gregory McDonald,% of votes to Elizabeth Glidden,% of votes to Jeanine Estime,% of votes to writeIns,% of votes to David Regan,% of votes to Michael J. Cavlan,% of votes to exhaust,percent_sum
-David Regan,174,0,0,0,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Elizabeth Glidden,% of votes to Gregory McDonald,% of votes to David Regan,% of votes to Michael J. Cavlan,% of votes to Jeanine Estime,% of votes to exhaust,percent_sum
+David Regan,174,0,0,0,100,0,0,0,100
 Elizabeth Glidden,2291,0,100,0,0,0,0,0,100
-Gregory McDonald,115,100,0,0,0,0,0,0,100
-Jeanine Estime,470,0,0,100,0,0,0,0,100
-Michael J. Cavlan,43,0,0,0,0,0,100,0,100
-writeIns,3,0,0,0,100,0,0,0,100
+Gregory McDonald,115,0,0,100,0,0,0,0,100
+Jeanine Estime,470,0,0,0,0,0,100,0,100
+Michael J. Cavlan,43,0,0,0,0,100,0,0,100
+writeIns,3,100,0,0,0,0,0,0,100

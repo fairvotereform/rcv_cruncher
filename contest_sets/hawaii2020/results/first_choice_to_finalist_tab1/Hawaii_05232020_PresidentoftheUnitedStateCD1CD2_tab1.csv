@@ -1,12 +1,12 @@
-Ballots with first choice:,Number of Ballots,% of votes to Bernie Sanders,% of votes to Joseph R. Biden,% of votes to exhaust,percent_sum
-Amy Klobuchar,93.0,15.05,54.84,30.11,100.0
-Andrew Yang,340.0,41.18,27.06,31.76,100.0
-Bernie Sanders,10777.0,100.0,0.0,0.0,100.0
-Deval Patrick,11.0,18.18,27.27,54.55,100.0
-Elizabeth Warren,1689.0,48.67,40.62,10.72,100.0
-Joseph R. Biden,19593.0,0.0,100.0,0.0,100.0
-Michael R.,460.0,14.57,55.0,30.43,100.0
-Pete Buttigieg,311.0,17.36,59.16,23.47,100.0
-Tom Steyer,34.0,23.53,35.29,41.18,99.99999999999999
-Tulsi Gabbard,1377.0,31.66,22.73,45.61,100.0
-Uncommitted,291.0,5.84,9.62,84.54,100.0
+Ballots with first choice:,Number of Ballots,% of votes to Joseph R. Biden,% of votes to Bernie Sanders,% of votes to exhaust,percent_sum
+Amy Klobuchar,93.0,54.84,15.05,30.11,100.0
+Andrew Yang,340.0,27.06,41.18,31.76,100.0
+Bernie Sanders,10777.0,0.0,100.0,0.0,100.0
+Deval Patrick,11.0,27.27,18.18,54.55,100.0
+Elizabeth Warren,1689.0,40.62,48.67,10.72,100.0
+Joseph R. Biden,19593.0,100.0,0.0,0.0,100.0
+Michael R.,460.0,55.0,14.57,30.43,100.0
+Pete Buttigieg,311.0,59.16,17.36,23.47,100.0
+Tom Steyer,34.0,35.29,23.53,41.18,99.99999999999999
+Tulsi Gabbard,1377.0,22.73,31.66,45.61,100.0
+Uncommitted,291.0,9.62,5.84,84.54,100.0

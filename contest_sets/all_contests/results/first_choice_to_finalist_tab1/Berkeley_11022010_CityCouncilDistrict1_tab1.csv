@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to JASPER KINGETER,% of votes to LINDA MAIO,% of votes to MERRILIE MITCHELL,% of votes to writeIns,% of votes to ANTHONY Di DONATO,% of votes to exhaust,percent_sum
-ANTHONY Di DONATO,192,0,0,0,0,100,0,100
-JASPER KINGETER,1278,100,0,0,0,0,0,100
-LINDA MAIO,3735,0,100,0,0,0,0,100
-MERRILIE MITCHELL,476,0,0,100,0,0,0,100
-writeIns,19,0,0,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to MERRILIE MITCHELL,% of votes to writeIns,% of votes to ANTHONY Di DONATO,% of votes to JASPER KINGETER,% of votes to LINDA MAIO,% of votes to exhaust,percent_sum
+ANTHONY Di DONATO,192,0,0,100,0,0,0,100
+JASPER KINGETER,1278,0,0,0,100,0,0,100
+LINDA MAIO,3735,0,0,0,0,100,0,100
+MERRILIE MITCHELL,476,100,0,0,0,0,0,100
+writeIns,19,0,100,0,0,0,0,100

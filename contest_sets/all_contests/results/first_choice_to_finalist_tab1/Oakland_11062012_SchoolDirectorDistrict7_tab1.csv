@@ -1,4 +1,4 @@
-Ballots with first choice:,Number of Ballots,% of votes to JAMES HARRIS,% of votes to ALICE A. SPEARMAN,% of votes to writeIns,% of votes to exhaust,percent_sum
-ALICE A. SPEARMAN,5966,0,100,0,0,100
-JAMES HARRIS,7986,100,0,0,0,100
-writeIns,154,0,0,100,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to JAMES HARRIS,% of votes to ALICE A. SPEARMAN,% of votes to exhaust,percent_sum
+ALICE A. SPEARMAN,5966,0,0,100,0,100
+JAMES HARRIS,7986,0,100,0,0,100
+writeIns,154,100,0,0,0,100

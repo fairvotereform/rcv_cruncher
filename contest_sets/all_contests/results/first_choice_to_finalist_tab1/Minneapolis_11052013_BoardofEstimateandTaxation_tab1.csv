@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to CAROL J. BECKER,% of votes to DOUGLAS SEMBLA,% of votes to DAVID PASCOE,% of votes to writeIns,% of votes to DAVID B WHEELER,% of votes to exhaust,percent_sum
-CAROL J. BECKER,23949,100,0,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to CAROL J. BECKER,% of votes to DOUGLAS SEMBLA,% of votes to DAVID PASCOE,% of votes to DAVID B WHEELER,% of votes to exhaust,percent_sum
+CAROL J. BECKER,23949,0,100,0,0,0,0,100
 DAVID B WHEELER,16370,0,0,0,0,100,0,100
-DAVID PASCOE,5813,0,0,100,0,0,0,100
-DOUGLAS SEMBLA,2308,0,100,0,0,0,0,100
-writeIns,415,0,0,0,100,0,0,100
+DAVID PASCOE,5813,0,0,0,100,0,0,100
+DOUGLAS SEMBLA,2308,0,0,100,0,0,0,100
+writeIns,415,100,0,0,0,0,0,100

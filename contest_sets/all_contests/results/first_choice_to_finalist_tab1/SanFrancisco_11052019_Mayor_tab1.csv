@@ -1,9 +1,9 @@
-Ballots with first choice:,Number of Ballots,% of votes to MARC ROTH,% of votes to PAUL YBARRA ROBERTSON,% of votes to JOEL VENTRESCA,% of votes to ELLEN LEE ZHOU,"% of votes to ROBERT L. JORDAN, JR.",% of votes to writeIns,% of votes to WILMA PANG,% of votes to LONDON N. BREED,% of votes to exhaust,percent_sum
-ELLEN LEE ZHOU,25003,0,0,0,100,0,0,0,0,0,100
-JOEL VENTRESCA,13277,0,0,100,0,0,0,0,0,0,100
-LONDON N. BREED,126207,0,0,0,0,0,0,0,100,0,100
-MARC ROTH,7,100,0,0,0,0,0,0,0,0,100
-PAUL YBARRA ROBERTSON,7647,0,100,0,0,0,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to WILMA PANG,% of votes to writeIns,% of votes to ELLEN LEE ZHOU,% of votes to JOEL VENTRESCA,"% of votes to ROBERT L. JORDAN, JR.",% of votes to LONDON N. BREED,% of votes to MARC ROTH,% of votes to PAUL YBARRA ROBERTSON,% of votes to exhaust,percent_sum
+ELLEN LEE ZHOU,25003,0,0,100,0,0,0,0,0,0,100
+JOEL VENTRESCA,13277,0,0,0,100,0,0,0,0,0,100
+LONDON N. BREED,126207,0,0,0,0,0,100,0,0,0,100
+MARC ROTH,7,0,0,0,0,0,0,100,0,0,100
+PAUL YBARRA ROBERTSON,7647,0,0,0,0,0,0,0,100,0,100
 "ROBERT L. JORDAN, JR.",2458,0,0,0,0,100,0,0,0,0,100
-WILMA PANG,4961,0,0,0,0,0,0,100,0,0,100
-writeIns,1,0,0,0,0,0,100,0,0,0,100
+WILMA PANG,4961,100,0,0,0,0,0,0,0,0,100
+writeIns,1,0,100,0,0,0,0,0,0,0,100
