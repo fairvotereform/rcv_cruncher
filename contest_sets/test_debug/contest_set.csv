@@ -1,0 +1,2 @@
+contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
+single winner test,test,test,test,test,test,True,True,False,,,<function common_csv at 0x0000025735827B88>,,<class 'scripts.rcv_variants.rcv_single_winner'>,1,contest_sets/test/

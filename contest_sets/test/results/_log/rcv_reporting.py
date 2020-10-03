@@ -778,7 +778,8 @@ class RCV_Reporting:
 
     def includes_skipped_ranking(self):
         """
-        The number of ballots that have an skipped ranking followed by any other marked ranking. (weighted)
+        The number of ballots that have an skipped ranking followed by any other mark
+        valid ranking. (weighted)
         """
         return float(sum([weight * flag for weight, flag in zip(ballots(self.ctx)['weight'], self.skipped())]))
 
@@ -952,7 +953,7 @@ class RCV_Reporting:
     def total_irregular(self):
         """
         Number of ballots that either had a multiple ranking, overvote,
-        or a skipped ranking (only those followed by a mark). This includes ballots even where the irregularity was not
+        or a skipped ranking. This includes ballots even where the irregularity was not
         the cause of exhaustion. (weighted)
         """
         return float(sum([weight * flag for weight, flag in zip(ballots(self.ctx)['weight'], self.irregular_bool())]))
