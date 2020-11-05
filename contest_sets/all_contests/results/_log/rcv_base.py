@@ -343,6 +343,12 @@ class RCV(RCV_Reporting, ABC):
                                                                       only_round_active_candidates=True, desc_sort=True)
         # find round loser
         loser_count = min(round_tallies)
+
+        # haven't implemented any special rules for tied losers. Print a warning if one is reached
+        if len([cand for cand, cand_tally
+                in zip(active_candidates, round_tallies) if cand_tally == loser_count]) > 1:
+            print("reached a round with tied losers....")
+
         # in case of tied losers, 'randomly' choose one to eliminate (the last one in alpha order)
         round_losers = sorted([cand for cand, cand_tally
                                in zip(active_candidates, round_tallies)

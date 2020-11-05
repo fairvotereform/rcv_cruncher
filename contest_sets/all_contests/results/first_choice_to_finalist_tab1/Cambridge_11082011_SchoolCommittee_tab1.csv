@@ -1,13 +1,13 @@
-Ballots with first choice:,Number of Ballots,"% of votes to McGovern, Marc C.","% of votes to Fantini, Alfred B.","% of votes to Nolan, Patricia M.","% of votes to Turkel, Alice L.","% of votes to Osborne, Mervan F.","% of votes to Harding, Jr., Richard",% of votes to exhaust,percent_sum
-"Fantini, Alfred B.",2372.0,1.77,92.12,0.84,0.97,0.51,2.53,1.26,100.00000000000001
-"Forster, Bill",330.0,15.45,0.0,8.79,6.36,13.33,13.64,42.42,100.0
-"Gerber, Joyce C.",434.0,27.65,0.0,0.0,0.0,0.0,21.43,50.92,100.0
-"Harding, Jr., Richard",1851.0,0.0,0.0,0.0,0.0,0.0,100.0,0.0,100.0
-"Holland, John J.",388.0,21.65,0.0,0.0,7.99,14.69,10.57,45.1,100.0
-"McGovern, Marc C.",1771.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0
-"Nolan, Patricia M.",2126.0,0.09,0.0,99.86,0.05,0.0,0.0,0.0,100.0
-"Osborne, Mervan F.",2065.0,0.48,0.0,0.0,0.39,98.35,0.58,0.19,100.0
-"Stead, Sr., Charles Lewis",293.0,10.58,0.0,3.75,8.53,12.97,31.74,32.42,99.99999999999999
-"Tauber, Nancy",1490.0,35.91,0.0,0.0,0.0,0.0,20.13,43.96,100.0
-"Turkel, Alice L.",2112.0,0.85,0.0,0.0,98.2,0.0,0.43,0.52,99.99999999999999
-writeIns,58.0,3.45,0.0,3.45,3.45,5.17,3.45,81.03,100.0
+Ballots with first choice:,Number of Ballots,"% of votes to Harding, Jr., Richard","% of votes to Turkel, Alice L.","% of votes to Osborne, Mervan F.","% of votes to McGovern, Marc C.","% of votes to Fantini, Alfred B.","% of votes to Nolan, Patricia M.",% of votes to exhaust,percent_sum
+"Fantini, Alfred B.",2372.0,2.53,0.97,0.51,1.77,92.12,0.84,1.26,100.0
+"Forster, Bill",330.0,13.64,6.36,13.33,15.45,0.0,8.79,42.42,100.0
+"Gerber, Joyce C.",434.0,21.43,0.0,0.0,27.65,0.0,0.0,50.92,100.0
+"Harding, Jr., Richard",1851.0,100.0,0.0,0.0,0.0,0.0,0.0,0.0,100.0
+"Holland, John J.",388.0,10.57,7.99,14.69,21.65,0.0,0.0,45.1,99.99999999999999
+"McGovern, Marc C.",1771.0,0.0,0.0,0.0,100.0,0.0,0.0,0.0,100.0
+"Nolan, Patricia M.",2126.0,0.0,0.05,0.0,0.09,0.0,99.86,0.0,100.0
+"Osborne, Mervan F.",2065.0,0.58,0.39,98.35,0.48,0.0,0.0,0.19,100.0
+"Stead, Sr., Charles Lewis",293.0,31.74,8.53,12.97,10.58,0.0,3.75,32.42,99.99999999999999
+"Tauber, Nancy",1490.0,20.13,0.0,0.0,35.91,0.0,0.0,43.96,100.0
+"Turkel, Alice L.",2112.0,0.43,98.2,0.0,0.85,0.0,0.0,0.52,99.99999999999999
+writeIns,58.0,3.45,3.45,5.17,3.45,0.0,3.45,81.03,100.0

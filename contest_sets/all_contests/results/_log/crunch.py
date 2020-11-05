@@ -472,7 +472,6 @@ def main():
             invalid_contests.append(contest)
 
     stats_debugs = []
-    tabulation_debugs = []
     progress_total = 15
     # loop through contests and tabulate the elections
     for idx, contest in enumerate(valid_contests):
@@ -487,10 +486,6 @@ def main():
         if STATS_CHECK:
             progress(2, progress_total, status="check stats")
             stats_debugs.append(stats_check(rcv_obj))
-
-        if TABULATION_CHECK:
-            progress(3, progress_total, status="check tabulation")
-            tabulation_debugs.append(tabulation_check(rcv_obj))
 
         ########################
         # RESULTS-BASED OUTPUTS
@@ -609,21 +604,8 @@ def main():
         print(str(len(stats_debugs)) + " contests failed the stats consistency check. " +
               "They are listed in " + stats_fname)
 
-    tabulation_debugs = sorted(flatten_list(tabulation_debugs))
-    if tabulation_debugs:
-
-        tabs_fname = 'contest_sets/' + contest_set_name + '/tabulation_consistency_check.txt'
-
-        tabs_f = open(tabs_fname, 'w')
-        for debug_str in tabulation_debugs:
-            tabs_f.write(debug_str[0] + "\n")
-        tabs_f.close()
-
-        print(str(len(tabulation_debugs)) + " contests failed the tabulation consistency check. " +
-              "They are listed in " + tabs_fname)
-
     # make debug version of contest set
-    all_debugs = tabulation_debugs + stats_debugs
+    all_debugs = stats_debugs
     if make_debug_contest_set and all_debugs:
 
         debug_contest_set_dir = 'contest_sets/' + contest_set_name + '_debug'

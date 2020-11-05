@@ -1,13 +1,13 @@
-Ballots with first choice:,Number of Ballots,% of votes to James R. Everett,% of votes to writeIns,% of votes to Al Flowers,% of votes to Dick Franson,% of votes to Christopher Clark,% of votes to Tom Fiske,% of votes to Bob Carney Jr.,% of votes to Bill McGaughey,% of votes to Joey Lombard,% of votes to John Charles Wilson,% of votes to Papa John Kolstad,% of votes to R.T. Rybak,% of votes to exhaust,percent_sum
-Al Flowers,1795,0,0,100,0,0,0,0,0,0,0,0,0,0,100
-Bill McGaughey,232,0,0,0,0,0,0,0,100,0,0,0,0,0,100
-Bob Carney Jr.,228,0,0,0,0,0,0,100,0,0,0,0,0,0,100
-Christopher Clark,1337,0,0,0,0,100,0,0,0,0,0,0,0,0,100
-Dick Franson,1579,0,0,0,100,0,0,0,0,0,0,0,0,0,100
-James R. Everett,357,100,0,0,0,0,0,0,0,0,0,0,0,0,100
-Joey Lombard,444,0,0,0,0,0,0,0,0,100,0,0,0,0,100
-John Charles Wilson,137,0,0,0,0,0,0,0,0,0,100,0,0,0,100
-Papa John Kolstad,4953,0,0,0,0,0,0,0,0,0,0,100,0,0,100
-R.T. Rybak,33234,0,0,0,0,0,0,0,0,0,0,0,100,0,100
-Tom Fiske,650,0,0,0,0,0,100,0,0,0,0,0,0,0,100
-writeIns,211,0,100,0,0,0,0,0,0,0,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to R.T. Rybak,% of votes to Bob Carney Jr.,% of votes to James R. Everett,% of votes to John Charles Wilson,% of votes to Joey Lombard,% of votes to Christopher Clark,% of votes to Tom Fiske,% of votes to Dick Franson,% of votes to Bill McGaughey,% of votes to Papa John Kolstad,% of votes to Al Flowers,% of votes to writeIns,% of votes to exhaust,percent_sum
+Al Flowers,1795,0,0,0,0,0,0,0,0,0,0,100,0,0,100
+Bill McGaughey,232,0,0,0,0,0,0,0,0,100,0,0,0,0,100
+Bob Carney Jr.,228,0,100,0,0,0,0,0,0,0,0,0,0,0,100
+Christopher Clark,1337,0,0,0,0,0,100,0,0,0,0,0,0,0,100
+Dick Franson,1579,0,0,0,0,0,0,0,100,0,0,0,0,0,100
+James R. Everett,357,0,0,100,0,0,0,0,0,0,0,0,0,0,100
+Joey Lombard,444,0,0,0,0,100,0,0,0,0,0,0,0,0,100
+John Charles Wilson,137,0,0,0,100,0,0,0,0,0,0,0,0,0,100
+Papa John Kolstad,4953,0,0,0,0,0,0,0,0,0,100,0,0,0,100
+R.T. Rybak,33234,100,0,0,0,0,0,0,0,0,0,0,0,0,100
+Tom Fiske,650,0,0,0,0,0,0,100,0,0,0,0,0,0,100
+writeIns,211,0,0,0,0,0,0,0,0,0,0,0,100,0,100

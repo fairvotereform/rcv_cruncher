@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to April Kane,% of votes to Terry White,% of votes to David Holsinger,% of votes to Andrea Jenkins,% of votes to exhaust,percent_sum
-Andrea Jenkins,5766,0,0,0,0,100,0,100
-April Kane,716,0,100,0,0,0,0,100
-David Holsinger,390,0,0,0,100,0,0,100
-Terry White,1009,0,0,100,0,0,0,100
-writeIns,17,100,0,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Terry White,% of votes to Andrea Jenkins,% of votes to April Kane,% of votes to writeIns,% of votes to David Holsinger,% of votes to exhaust,percent_sum
+Andrea Jenkins,5766,0,100,0,0,0,0,100
+April Kane,716,0,0,100,0,0,0,100
+David Holsinger,390,0,0,0,0,100,0,100
+Terry White,1009,100,0,0,0,0,0,100
+writeIns,17,0,0,0,100,0,0,100

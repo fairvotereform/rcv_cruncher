@@ -1,4 +1,4 @@
-Ballots with first choice:,Number of Ballots,% of votes to JANE BRUNNER,% of votes to writeIns,% of votes to BARBARA PARKER,% of votes to exhaust,percent_sum
-BARBARA PARKER,90055,0,0,100,0,100
-JANE BRUNNER,40488,100,0,0,0,100
-writeIns,1066,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to BARBARA PARKER,% of votes to JANE BRUNNER,% of votes to exhaust,percent_sum
+BARBARA PARKER,90055,0,100,0,0,100
+JANE BRUNNER,40488,0,0,100,0,100
+writeIns,1066,100,0,0,0,100

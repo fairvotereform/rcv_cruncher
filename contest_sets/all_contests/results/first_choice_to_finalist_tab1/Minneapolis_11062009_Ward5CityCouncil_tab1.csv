@@ -1,7 +1,7 @@
-Ballots with first choice:,Number of Ballots,% of votes to Don Samuels,% of votes to Natalie Johnson Lee,% of votes to exhaust,percent_sum
-Don Samuels,1020.0,100.0,0.0,0.0,100.0
-Kenya McKnight,336.0,23.21,54.46,22.32,99.99999999999999
-Lennie Chism,61.0,19.67,49.18,31.15,100.0
-Natalie Johnson Lee,652.0,0.0,100.0,0.0,100.0
-Roger Smithrud,93.0,21.51,27.96,50.54,100.0
-writeIns,8.0,12.5,25.0,62.5,100.0
+Ballots with first choice:,Number of Ballots,% of votes to Natalie Johnson Lee,% of votes to Don Samuels,% of votes to exhaust,percent_sum
+Don Samuels,1020.0,0.0,100.0,0.0,100.0
+Kenya McKnight,336.0,54.46,23.21,22.32,99.99999999999999
+Lennie Chism,61.0,49.18,19.67,31.15,100.0
+Natalie Johnson Lee,652.0,100.0,0.0,0.0,100.0
+Roger Smithrud,93.0,27.96,21.51,50.54,100.0
+writeIns,8.0,25.0,12.5,62.5,100.0

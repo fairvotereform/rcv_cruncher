@@ -1,0 +1,15 @@
+Ballots with first choice:,Number of Ballots (excluding undervotes and ballots with first round overvote),Mean Valid Rankings Used (excluding duplicates),Median Valid Rankings Used (excluding duplicates)
+Any candidate,7733,1.8744342428552956,1
+AJ Awed,1721,1.7884950610110402,1
+AK Hassan,1064,1.9351503759398496,2.0
+Abdirizak Bihi,1002,1.625748502994012,1.0
+Alex Palacios,382,2.7094240837696337,3.0
+Jamal Osman,2130,1.463380281690141,1.0
+Joshua Scheunemann,120,2.4833333333333334,3.0
+Michael P. Dougherty,391,2.342710997442455,3
+Mohamoud Hassan,134,2.4029850746268657,3.0
+Nebiha Mohammed,260,2.5961538461538463,3.0
+Saciido Shaie,330,2.6484848484848484,3.0
+Sara Mae Engberg,119,2.638655462184874,3
+Suud Olat,61,2.540983606557377,3
+writeIns,19,1.2105263157894737,1

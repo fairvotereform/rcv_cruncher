@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Fadumo Yusuf,% of votes to Tiffini Forslund,% of votes to Mohamud Noor,% of votes to Abdi Warsame,% of votes to exhaust,percent_sum
-Abdi Warsame,3629,0,0,0,0,100,0,100
-Fadumo Yusuf,183,0,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Fadumo Yusuf,% of votes to Abdi Warsame,% of votes to Tiffini Forslund,% of votes to Mohamud Noor,% of votes to writeIns,% of votes to exhaust,percent_sum
+Abdi Warsame,3629,0,100,0,0,0,0,100
+Fadumo Yusuf,183,100,0,0,0,0,0,100
 Mohamud Noor,3390,0,0,0,100,0,0,100
 Tiffini Forslund,6,0,0,100,0,0,0,100
-writeIns,26,100,0,0,0,0,0,100
+writeIns,26,0,0,0,0,100,0,100

@@ -1,8 +1,8 @@
-Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to M. Cali,% of votes to Andy Exley,% of votes to Bruce Lundeen,% of votes to Laura Jean,% of votes to Robert Lilligren,% of votes to Michael Tupper,% of votes to exhaust,percent_sum
-Andy Exley,165,0,0,100,0,0,0,0,0,100
-Bruce Lundeen,60,0,0,0,100,0,0,0,0,100
-Laura Jean,231,0,0,0,0,100,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Robert Lilligren,% of votes to M. Cali,% of votes to Michael Tupper,% of votes to Laura Jean,% of votes to Bruce Lundeen,% of votes to Andy Exley,% of votes to writeIns,% of votes to exhaust,percent_sum
+Andy Exley,165,0,0,0,0,0,100,0,0,100
+Bruce Lundeen,60,0,0,0,0,100,0,0,0,100
+Laura Jean,231,0,0,0,100,0,0,0,0,100
 M. Cali,158,0,100,0,0,0,0,0,0,100
-Michael Tupper,292,0,0,0,0,0,0,100,0,100
-Robert Lilligren,1020,0,0,0,0,0,100,0,0,100
-writeIns,4,100,0,0,0,0,0,0,0,100
+Michael Tupper,292,0,0,100,0,0,0,0,0,100
+Robert Lilligren,1020,100,0,0,0,0,0,0,0,100
+writeIns,4,0,0,0,0,0,0,100,0,100

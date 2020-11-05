@@ -1,7 +1,7 @@
-Ballots with first choice:,Number of Ballots,% of votes to Larry Ranallo,% of votes to Kevin Reich,% of votes to writeIns,% of votes to Thomas Alessi,% of votes to Mark Fox,% of votes to Susan Howitz Hanna,% of votes to exhaust,percent_sum
-Kevin Reich,1997,0,100,0,0,0,0,0,100
-Larry Ranallo,941,100,0,0,0,0,0,0,100
-Mark Fox,153,0,0,0,0,100,0,0,100
-Susan Howitz Hanna,535,0,0,0,0,0,100,0,100
-Thomas Alessi,340,0,0,0,100,0,0,0,100
-writeIns,3,0,0,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Mark Fox,% of votes to Susan Howitz Hanna,% of votes to Larry Ranallo,% of votes to Kevin Reich,% of votes to Thomas Alessi,% of votes to writeIns,% of votes to exhaust,percent_sum
+Kevin Reich,1997,0,0,0,100,0,0,0,100
+Larry Ranallo,941,0,0,100,0,0,0,0,100
+Mark Fox,153,100,0,0,0,0,0,0,100
+Susan Howitz Hanna,535,0,100,0,0,0,0,0,100
+Thomas Alessi,340,0,0,0,0,100,0,0,100
+writeIns,3,0,0,0,0,0,100,0,100

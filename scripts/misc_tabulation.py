@@ -35,10 +35,6 @@ def convert_cvr(ctx):
     # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
     bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
 
-    # ballotIDs in extras?
-    if 'ballotID' not in ballot_dict:
-        ballot_dict['ballotID'] = [i for i in range(1, len(bs) + 1)]
-
     # assemble output_table, start with extras
     output_df = pd.DataFrame.from_dict(ballot_dict)
 

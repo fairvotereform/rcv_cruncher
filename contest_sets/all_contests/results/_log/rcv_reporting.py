@@ -132,6 +132,8 @@ class RCV_Reporting:
             self.date,
             self.office,
             self.rcv_type,
+            self.exhaust_on_overvote,
+            self.exhaust_on_repeated_skipped_rankings,
             self.contest_rank_limit,
             self.number_of_winners,
             self.tabulation_num,
@@ -179,6 +181,8 @@ class RCV_Reporting:
             self.date,
             self.office,
             self.rcv_type,
+            self.exhaust_on_overvote,
+            self.exhaust_on_repeated_skipped_rankings,
             self.contest_rank_limit,
             self.number_of_winners,
             self.tabulation_num,
@@ -292,9 +296,6 @@ class RCV_Reporting:
 
     def exhaust_on_repeated_skipped_rankings(self):
         return self.ctx['break_on_repeated_skipvotes']
-
-    def break_on_repeated_skipvotes(self):
-        return self.ctx['multi_winner_rounds']
 
     @allow_list_args
     def unique_id(self, *, tabulation_num=1):
@@ -778,8 +779,7 @@ class RCV_Reporting:
 
     def includes_skipped_ranking(self):
         """
-        The number of ballots that have an skipped ranking followed by any other mark
-        valid ranking. (weighted)
+        The number of ballots that have an skipped ranking followed by any other marked ranking. (weighted)
         """
         return float(sum([weight * flag for weight, flag in zip(ballots(self.ctx)['weight'], self.skipped())]))
 
@@ -953,7 +953,7 @@ class RCV_Reporting:
     def total_irregular(self):
         """
         Number of ballots that either had a multiple ranking, overvote,
-        or a skipped ranking. This includes ballots even where the irregularity was not
+        or a skipped ranking (only those followed by a mark). This includes ballots even where the irregularity was not
         the cause of exhaustion. (weighted)
         """
         return float(sum([weight * flag for weight, flag in zip(ballots(self.ctx)['weight'], self.irregular_bool())]))
