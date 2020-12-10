@@ -5,11 +5,11 @@ from shutil import copyfile
 # cruncher imports
 from scripts.definitions import *
 from scripts.contests import *
-from scripts.misc_tabulation import *
 from scripts.ballots import *
 from scripts.rcv_variants import *
 from scripts.rcv_reporting import *
 from scripts.rcv_base import *
+from scripts.write_out import *
 
 import scripts.cache_helpers as cache
 
@@ -149,228 +149,6 @@ def tabulation_check(obj):
 
     return debug_ids
 
-def write_converted_cvr(contest, results_dir):
-    """
-    Convert cvr into common csv format and write out
-    """
-    outfile = results_dir + "/" + contest["unique_id"] + ".csv"
-    if os.path.isfile(outfile) is False:
-        cvr = convert_cvr(contest)
-        cvr.to_csv(outfile, index=False)
-
-def write_condorcet_tables(contest, results_dir):
-    """
-    Calculate and write condorcet tables (both count and percents) for contest
-    """
-    counts, percents, condorcet_winner = condorcet_tables(contest)
-
-    if condorcet_winner:
-        condorcet_str = "condorcet winner: " + condorcet_winner
-    else:
-        condorcet_str = "condorcet winner: None"
-
-    counts.index.name = condorcet_str
-    percents.index.name = condorcet_str
-
-    condorcet_table_dir = results_dir + '/condorcet'
-    verifyDir(condorcet_table_dir)
-
-    counts.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_percent.csv", float_format="%.2f")
-
-def write_first_second_tables(contest, results_dir):
-    """
-    Calculate and write first choice - second choice tables (both count and percents) for contest
-    """
-    counts, percents, percents_no_exhaust = first_second_tables(contest)
-
-    first_second_table_dir = results_dir + '/first_second'
-    verifyDir(first_second_table_dir)
-
-    counts.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_percent.csv", float_format="%.2f")
-    percents_no_exhaust.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_percent_no_exhaust.csv",
-                               float_format="%.2f")
-
-def write_cumulative_ranking_tables(contest, results_dir):
-    """
-    Calculate and write cumulative ranking tables (both count and percent) for contest
-    """
-    counts, percents = cumulative_ranking_tables(contest)
-
-    cumulative_ranking_dir = results_dir + '/cumulative_ranking'
-    verifyDir(cumulative_ranking_dir)
-
-    counts.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_count.csv", float_format="%.2f")
-    percents.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_percent.csv", float_format="%.2f")
-
-def write_rank_usage_tables(contest, results_dir):
-    """
-    Calculate and write rank usage statistics.
-    """
-    df = rank_usage_tables(contest)
-
-    rank_usage_table_dir = results_dir + '/rank_usage'
-    verifyDir(rank_usage_table_dir)
-
-    df.to_csv(rank_usage_table_dir + "/" + contest['unique_id'] + '.csv', float_format='%.2f')
-
-def write_opponent_crossover_tables(contest, results_dir):
-    """
-    Calculate crossover support between candidates and write table.
-    """
-    count_df, percent_df = crossover_table(contest)
-
-    opponent_crossover_table_dir = results_dir + '/crossover_support'
-    verifyDir(opponent_crossover_table_dir)
-
-    count_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_count.csv', float_format='%.2f')
-    percent_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_percent.csv', float_format='%.2f')
-
-def write_first_to_finalist_tables(contest, results_dir):
-    """
-    Calculate distribution of ballots allocated to non-winners during first round and their transfer
-    to eventual winners.
-    """
-    df = first_choice_to_finalist_table(contest)
-
-    first_to_finalist_table_dir = results_dir + '/first_choice_to_finalist_tab1'
-    verifyDir(first_to_finalist_table_dir)
-
-    df.to_csv(first_to_finalist_table_dir + '/' + contest['unique_id'] + '_tab1.csv', float_format='%.2f')
-
-def prepare_candidate_details(obj):
-    """
-    Return pandas data frame of candidate info with round-by-round vote counts
-    """
-    all_dfs = []
-
-    for iTab in range(1, obj.n_tabulations()+1):
-
-        raceID = obj.unique_id(tabulation_num=iTab)
-        n_rounds = obj.n_rounds(tabulation_num=iTab)
-
-        # get rcv results
-        rounds_full = [obj.get_round_tally_tuple(i, tabulation_num=iTab) for i in range(1, n_rounds + 1)]
-        cand_outcomes = obj.get_candidate_outcomes(tabulation_num=iTab)
-
-        # reformat contest outputs into useful dicts
-        cand_outcomes_dict = {d['name']: d for d in cand_outcomes}
-        rounds_full_dict = [{cand: float(count) for cand, count in zip(*rnd_count)}
-                            for rnd_count in rounds_full]
-
-        # reorder candidate names
-        # winners in ascending order of round won
-        # followed by losers in descending order of round lost
-        reorder_dicts = []
-        for d in cand_outcomes:
-
-            # don't add candidates if they received zero votes throughout the contest.
-            if sum(rounds_dict[d['name']] for rounds_dict in rounds_full_dict) == 0:
-                continue
-
-            if d['round_elected']:
-                d['order'] = -1 * (1/d['round_elected'])
-            else:
-                d['order'] = 1/d['round_eliminated']
-
-            reorder_dicts.append(d)
-
-        ordered_candidates_names = [d['name'] for d in sorted(reorder_dicts, key=lambda x: x['order'])]
-
-        # create table
-        colnames = ['raceID', 'candidate', 'round_elected', 'round_eliminated'] + \
-                   ['round_' + str(i) + '_vote' for i in range(1, n_rounds + 1)]
-
-        # assemble rows
-        cand_rows = []
-        for cand in ordered_candidates_names:
-
-            cand_rows.append([raceID,
-                              cand,
-                              cand_outcomes_dict[cand]['round_elected'],
-                              cand_outcomes_dict[cand]['round_eliminated']] + \
-                             [d[cand] for d in rounds_full_dict])
-
-        df = pd.DataFrame(cand_rows, columns=colnames)
-        all_dfs.append(df)
-
-    return all_dfs
-
-def write_rcv_rounds(obj, results_dir):
-    """
-    Write out rcv contest round-by-round counts and transfers
-    """
-    for iTab in range(1, obj.n_tabulations()+1):
-
-        num_rounds = obj.n_rounds(tabulation_num=iTab)
-
-        first_round_exhaust = obj.total_pretally_exhausted(tabulation_num=iTab)
-
-        # get rcv results
-        rounds_full = [obj.get_round_tally_tuple(i, tabulation_num=iTab) for i in range(1, num_rounds + 1)]
-        transfers = [obj.get_round_transfer_dict(i, tabulation_num=iTab) for i in range(1, num_rounds + 1)]
-
-        # setup data frame
-        row_names = list(candidates_merged_writeIns(obj.ctx)) + ['exhaust']
-        rcv_df = pd.DataFrame(np.NaN, index=row_names + ['colsum'], columns=['candidate'])
-        rcv_df.loc[row_names + ['colsum'], 'candidate'] = row_names + ['colsum']
-
-        # loop through rounds
-        for rnd in range(1, num_rounds + 1):
-
-            rnd_info = {rnd_cand: rnd_tally for rnd_cand, rnd_tally in zip(*rounds_full[rnd-1])}
-            rnd_info['exhaust'] = 0
-
-            rnd_transfer = dict(transfers[rnd-1])
-
-            # add round data
-            for cand in row_names:
-
-                rnd_percent_col = 'r' + str(rnd) + '_active_percent'
-                rnd_count_col = 'r' + str(rnd) + '_count'
-                rnd_transfer_col = 'r' + str(rnd) + '_transfer'
-
-                rcv_df.loc[cand, rnd_percent_col] = round(float(100*(rnd_info[cand]/sum(rnd_info.values()))), 3)
-                rcv_df.loc[cand, rnd_count_col] = float(rnd_info[cand])
-                rcv_df.loc[cand, rnd_transfer_col] = float(rnd_transfer[cand])
-
-            # maintain cumulative exhaust total
-            if rnd == 1:
-                rcv_df.loc['exhaust', rnd_count_col] = first_round_exhaust
-            else:
-                last_rnd_count_col = 'r' + str(rnd-1) + '_count'
-                last_rnd_transfer_col = 'r' + str(rnd-1) + '_transfer'
-                rcv_df.loc['exhaust', rnd_count_col] = rcv_df.loc['exhaust', last_rnd_count_col] + \
-                                                        rcv_df.loc['exhaust', last_rnd_transfer_col]
-
-            # sum round columns
-            rcv_df.loc['colsum', rnd_count_col] = sum(rcv_df.loc[row_names, rnd_count_col])
-            rcv_df.loc['colsum', rnd_transfer_col] = sum(rcv_df.loc[row_names, rnd_transfer_col])
-            rcv_df.loc['colsum', rnd_percent_col] = sum(rcv_df.loc[row_names, rnd_percent_col])
-
-        # remove count columns
-        # for rnd in range(1, num_rounds + 1):
-        #     rcv_df = rcv_df.drop('r' + str(rnd) + '_count', axis=1)
-
-        round_by_round_dir = results_dir + '/round_by_round'
-        verifyDir(round_by_round_dir)
-
-        rcv_df.to_csv(round_by_round_dir + '/' + obj.ctx['unique_id'] + '_tab' + str(iTab) + '.csv', index=False)
-
-def write_ballot_debug_info(obj, results_dir):
-    """
-    Write ballot debug CVR
-    """
-    for iTab in range(1, obj.n_tabulations()+1):
-
-        ballot_debug_df = obj.ballot_debug_df(tabulation_num=iTab)
-
-        output_dir = results_dir + '/ballot_stats_debug'
-        verifyDir(output_dir)
-
-        ballot_debug_df.to_csv(output_dir + "/" + obj.ctx['unique_id'] + '_ballot_debug.csv', index=False)
-
 def main():
 
     ###########################
@@ -451,6 +229,9 @@ def main():
         if parser_file.split("\\")[1][0] != "_":
             shutil.copy2(parser_file, result_log_dir + "/rcv_parsers")
 
+    shutil.copy2(contest_set_path + "/contest_set.csv", result_log_dir)
+    shutil.copy2(contest_set_path + "/output_config.csv", result_log_dir)
+
     ########################
     # load manifest
     contest_set = load_contest_set(contest_set_path, path_prefix=config_dict['cvr_dir_path'])
@@ -459,7 +240,7 @@ def main():
     # confirm parsed cvrs
 
     # check results dir
-    cvr_dir = contest_set_path + '/common_cvr'
+    cvr_dir = contest_set_path + '/converted_cvr'
     verifyDir(cvr_dir)
     set_cvr_dir(cvr_dir)
 
@@ -500,6 +281,7 @@ def main():
             invalid_contests.append(contest)
 
     stats_debugs = []
+    progress_inc = 1
     progress_total = 15
     # loop through contests and tabulate the elections
     for idx, contest in enumerate(valid_contests):
@@ -507,69 +289,87 @@ def main():
         print(str(idx+1) + ' of ' + str(len(valid_contests)) + ' ' + contest['unique_id'] + ' ...')
 
         # create RCV obj + tabulate
-        progress(1, progress_total, status="tabulating")
+        progress(progress_inc, progress_total, status="tabulating")
+        progress_inc += 1
         rcv_obj = RCV.run_rcv(contest)
 
         # stats double check
         if STATS_CHECK:
-            progress(2, progress_total, status="check stats")
+            progress(progress_inc, progress_total, status="check stats")
+            progress_inc += 1
             stats_debugs.append(stats_check(rcv_obj))
 
         ########################
         # RESULTS-BASED OUTPUTS
 
         if 'per_rcv_type_stats' in output_config and output_config['per_rcv_type_stats']:
-            progress(4, progress_total, status="store tabulation stats")
+            progress(progress_inc, progress_total, status="store tabulation stats")
+            progress_inc += 1
             if not rcv_variant_stats_df_dict[rcv_obj.__class__.__name__]:
                 rcv_variant_stats_df_dict[rcv_obj.__class__.__name__].append(rcv_obj.tabulation_stats_comments_df())
             rcv_variant_stats_df_dict[rcv_obj.__class__.__name__].append(rcv_obj.tabulation_stats_df())
 
         if 'per_rcv_group_stats' in output_config and output_config['per_rcv_group_stats']:
-            progress(5, progress_total, status="store contest stats")
+            progress(progress_inc, progress_total, status="store contest stats")
+            progress_inc += 1
             if not rcv_group_stats_df_dict[rcv_obj.variant_group()]:
                 rcv_group_stats_df_dict[rcv_obj.variant_group()].append(rcv_obj.contest_stats_comments_df())
             rcv_group_stats_df_dict[rcv_obj.variant_group()].append(rcv_obj.contest_stats_df())
 
         if 'candidate_details' in output_config and output_config['candidate_details']:
-            progress(6, progress_total, status="store candidate details")
+            progress(progress_inc, progress_total, status="store candidate details")
+            progress_inc += 1
             candidate_details_dfs.append(prepare_candidate_details(rcv_obj))
 
         if 'round_by_round' in output_config and output_config['round_by_round']:
-            progress(7, progress_total, status="write round by round results")
+            progress(progress_inc, progress_total, status="write round by round results")
+            progress_inc += 1
             write_rcv_rounds(rcv_obj, results_dir)
 
         if 'ballot_stats_debug' in output_config and output_config['ballot_stats_debug']:
-            progress(8, progress_total, status="ballot stats debug")
+            progress(progress_inc, progress_total, status="ballot stats debug")
+            progress_inc += 1
             write_ballot_debug_info(rcv_obj, results_dir)
+
+        if 'cvr_ballot_allocation' in output_config and output_config['cvr_ballot_allocation']:
+            progress(progress_inc, progress_total, status="write cvr with final allocations")
+            progress_inc += 1
+            write_converted_cvr_annotated(rcv_obj, results_dir)
 
         ################
         # BALLOT-BASED OUTPUTS
 
         if 'condorcet' in output_config and output_config['condorcet']:
-            progress(9, progress_total, status="write condorcet table")
+            progress(progress_inc, progress_total, status="write condorcet table")
+            progress_inc += 1
             write_condorcet_tables(contest, results_dir)
 
         if 'first_second_choices' in output_config and output_config['first_second_choices']:
-            progress(10, progress_total, status="write first and second choices table")
+            progress(progress_inc, progress_total, status="write first and second choices table")
+            progress_inc += 1
             write_first_second_tables(contest, results_dir)
 
-        if 'cumulative_rankings' in output_config and output_config['cumulative_rankings']:
-            progress(11, progress_total, status="write cumulative ranking table")
+        if 'cumulative_ranking' in output_config and output_config['cumulative_ranking']:
+            progress(progress_inc, progress_total, status="write cumulative ranking table")
+            progress_inc += 1
             write_cumulative_ranking_tables(contest, results_dir)
 
         if 'rank_usage' in output_config and output_config['rank_usage']:
-            progress(12, progress_total, status="write rank usage table")
+            progress(progress_inc, progress_total, status="write rank usage table")
+            progress_inc += 1
             write_rank_usage_tables(contest, results_dir)
 
         if 'crossover_support' in output_config and output_config['crossover_support']:
-            progress(13, progress_total, status="write crossover support table")
+            progress(progress_inc, progress_total, status="write crossover support table")
+            progress_inc += 1
             write_opponent_crossover_tables(contest, results_dir)
 
         if 'first_choice_to_finalist' in output_config and output_config['first_choice_to_finalist']:
-            progress(14, progress_total, status="write first choice to finalist table")
+            progress(progress_inc, progress_total, status="write first choice to finalist table")
+            progress_inc += 1
             write_first_to_finalist_tables(contest, results_dir)
 
-        progress(15, progress_total, status="")
+        progress(progress_total, progress_total, status="")
         print("")
 
     print()

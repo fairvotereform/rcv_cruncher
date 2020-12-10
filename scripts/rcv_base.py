@@ -188,6 +188,7 @@ class RCV(RCV_Reporting, ABC):
             'final_weights': [],
             'final_weight_distrib': [],
             'final_ranks': [],
+            'initial_ranks': [],
             'initial_weights': [],
             'win_threshold': None})
 
@@ -206,6 +207,7 @@ class RCV(RCV_Reporting, ABC):
         self._clean_round()
 
         self._tabulations[self._tab_num-1]['initial_ranks'] = [b['ranks'] for b in self._bs]
+        self._tabulations[self._tab_num-1]['initial_weights'] = [b['weight'] for b in self._bs]
 
         not_complete = self._contest_not_complete()
         while not_complete:
@@ -453,15 +455,23 @@ class RCV(RCV_Reporting, ABC):
     #
     def get_initial_ranks(self, tabulation_num=1):
         """
-        Return a list of ballot ranks prior to tabulation, but after an initial cleaning.
+        Return a list of ballot ranks prior to tabulation, but after an initial cleaning. Each set of ranks is a list.
         """
         initial_ranks = self._tabulations[tabulation_num-1]['initial_ranks']
         return initial_ranks
 
     #
+    def get_initial_weights(self, tabulation_num=1):
+        """
+        Return a list of ballot weights prior to tabulation, but after an initial cleaning. Each set of ranks is a list.
+        """
+        initial_weights = self._tabulations[tabulation_num-1]['initial_weights']
+        return initial_weights
+
+    #
     def get_final_ranks(self, tabulation_num=1):
         """
-        Return a list of ballot ranks after tabulation
+        Return a list of ballot ranks after tabulation. Each set of ranks is a list.
         """
         final_ranks = self._tabulations[tabulation_num-1]['final_ranks']
         return final_ranks
@@ -469,7 +479,9 @@ class RCV(RCV_Reporting, ABC):
     #
     def get_final_weight_distrib(self, tabulation_num=1):
         """
-        Return a list of ballot weight distributions after tabulation
+        Return a list of ballot weight distributions after tabulation. Each set of weight distributions
+        is a ranking-weight tuple pair. Ballots that exhausted have the string 'empty' in the ranking position of
+        the tuple.
         """
         final_weights = self._tabulations[tabulation_num-1]['final_weight_distrib']
         return final_weights
@@ -479,9 +491,9 @@ class RCV(RCV_Reporting, ABC):
         return self._tabulations[tabulation_num-1]['win_threshold']
 
     #
-    def candidates_with_votes(self, tabulation_num=1):
+    def finalist_candidates(self, tabulation_num=1):
         """
-        Return list of candidates with any ballot weight allotted to them.
+        Return list of candidates with any ballot weight allotted to them by the end of tabulation.
         """
         final_weight_distrib = self.get_final_weight_distrib(tabulation_num=tabulation_num)
         final_weight_cands = list(set(t[0] for t in flatten_list(final_weight_distrib)).difference({'empty'}))

@@ -13,8 +13,10 @@ if [key for key in rcv_dict.keys() if key in parser_dict.keys()]:
     print("an rcv variant class and a parser function share the same name. Make them unique.")
     raise RuntimeError
 
+
 def dummy(*args):
     pass
+
 
 # typecast functions
 def cast_str(s):
@@ -30,11 +32,14 @@ def cast_str(s):
     else:
         return str(s)
 
+
 def cast_int(s):
     return int(s)
 
+
 def cast_bool(s):
     return eval(s.title())
+
 
 def cast_func(s):
     try:
@@ -42,9 +47,11 @@ def cast_func(s):
     except:
         return dummy
 
+
 # other helpers
 def dop(ctx):
     return '_'.join([ctx['year'], ctx['place'], ctx['office']])
+
 
 def unique_id(ctx):
     filled_date = "/".join([piece if len(piece) > 1 else "0" + piece for piece in ctx['date'].split("/")])
@@ -52,9 +59,9 @@ def unique_id(ctx):
     cleaned_pieces = [re.sub('[^0-9a-zA-Z_]+', '', x) for x in pieces]
     return "_".join(cleaned_pieces)
 
+
 # primary function
 def load_contest_set(contest_set_path, path_prefix=""):
-
     ##########################
     # verify paths
     contest_set_defaults_fpath = contest_set_path + '/../contest_set_key.csv'
@@ -92,6 +99,11 @@ def load_contest_set(contest_set_path, path_prefix=""):
 
     # fill in na values with defaults and evaluate column, if indicated
     for col in contest_set_df:
+
+        if col not in defaults:
+            raise RuntimeError(col + ' is a column field in contest_set.csv but ' + \
+                               'is missing in ../contest_set_key.csv defaults file.')
+
         contest_set_df[col] = contest_set_df[col].fillna(defaults[col]['default'])
         contest_set_df[col] = [cast_dict[defaults[col]['type']](i) for i in contest_set_df[col].tolist()]
 
@@ -105,6 +117,10 @@ def load_contest_set(contest_set_path, path_prefix=""):
         d['contest_set_line_df'] = pd.DataFrame([[d[col] for col in cols_in_order]], columns=cols_in_order)
         if path_prefix is not "":
             d['path'] = path_prefix + "/" + d['path']
+            if d['master_lookup']:
+                d['master_lookup'] = path_prefix + "/" + d['master_lookup']
+            if d['candidate_map']:
+                d['candidate_map'] = path_prefix + "/" + d['candidate_map']
 
     return competitions
 

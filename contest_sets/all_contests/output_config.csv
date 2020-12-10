@@ -4,7 +4,7 @@ per_rcv_group_stats_masterDBfmt,TRUE
 per_rcv_type_stats,TRUE
 condorcet,TRUE
 crossover_support,TRUE
-cumulative_rankings,TRUE
+cumulative_ranking,TRUE
 first_choice_to_finalist,TRUE
 first_second_choices,TRUE
 rank_usage,TRUE

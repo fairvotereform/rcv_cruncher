@@ -395,6 +395,18 @@ def main():
     make_debug_contest_set = args.make_debug_contest_set
 
     ##########################
+    # confirm cvr location
+    cvr_dir_path = dname + "/config.csv"
+    if os.path.isfile(cvr_dir_path) is False:
+        raise RuntimeError("config.csv is not rcv_cruncher directory.")
+
+    for index, row in pd.read_csv(cvr_dir_path).iterrows():
+        config_dict = {row["field"]: row["value"]}
+
+    if "cvr_dir_path" not in config_dict:
+        raise RuntimeError("field 'cvr_dir_path' not present in config.csv")
+
+    ##########################
     # confirm contest set
     contest_set_path = dname + '/contest_sets/' + contest_set_name
     verifyDir(contest_set_path, make_if_missing=False, error_msg_tail='is not an existing folder in contest_sets')
@@ -424,13 +436,27 @@ def main():
     verifyDir(result_log_dir)
 
     shutil.copy2("crunch.py", result_log_dir)
+
+    if os.path.isdir(result_log_dir + "/scripts") is False:
+        os.mkdir(result_log_dir + "/scripts")
+
     for script_file in glob.glob("scripts/*"):
         if script_file.split("\\")[1][0] != "_":
-            shutil.copy2(script_file, result_log_dir)
+            shutil.copy2(script_file, result_log_dir + "/scripts")
+
+    if os.path.isdir(result_log_dir + "/rcv_parsers") is False:
+        os.mkdir(result_log_dir + "/rcv_parsers")
+
+    for parser_file in glob.glob("rcv_parsers/*"):
+        if parser_file.split("\\")[1][0] != "_":
+            shutil.copy2(parser_file, result_log_dir + "/rcv_parsers")
+
+    shutil.copy2(contest_set_path + "/contest_set.csv", result_log_dir)
+    shutil.copy2(contest_set_path + "/output_config.csv", result_log_dir)
 
     ########################
     # load manifest
-    contest_set = load_contest_set(contest_set_path)
+    contest_set = load_contest_set(contest_set_path, path_prefix=config_dict['cvr_dir_path'])
 
     ########################
     # confirm parsed cvrs
@@ -452,6 +478,11 @@ def main():
     if not any(output_config.values()):
         print("no outputs marked as True in output_config.csv. Exiting.")
         return
+
+    # store contest_set and output config in log folder
+    shutil.copy2(contest_set_path + "/contest_set.csv", result_log_dir)
+    shutil.copy2(contest_set_path + "/output_config.csv", result_log_dir)
+    shutil.copy2(contest_set_path + "/../contest_set_key.csv", result_log_dir)
 
     ########################
     # produce results

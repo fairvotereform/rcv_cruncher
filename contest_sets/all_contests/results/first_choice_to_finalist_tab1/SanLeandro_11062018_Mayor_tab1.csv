@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to JEROMEY SHAFER,% of votes to PAULINE RUSSO CUTTER,% of votes to DAN DILLMAN,% of votes to BENNY LEE,% of votes to exhaust,percent_sum
-BENNY LEE,7045,0,0,0,100,0,100
+Ballots with first choice:,Number of Ballots,% of votes to PAULINE RUSSO CUTTER,% of votes to BENNY LEE,% of votes to DAN DILLMAN,% of votes to JEROMEY SHAFER,% of votes to exhaust,percent_sum
+BENNY LEE,7045,0,100,0,0,0,100
 DAN DILLMAN,1824,0,0,100,0,0,100
-JEROMEY SHAFER,3567,100,0,0,0,0,100
-PAULINE RUSSO CUTTER,13355,0,100,0,0,0,100
+JEROMEY SHAFER,3567,0,0,0,100,0,100
+PAULINE RUSSO CUTTER,13355,100,0,0,0,0,100

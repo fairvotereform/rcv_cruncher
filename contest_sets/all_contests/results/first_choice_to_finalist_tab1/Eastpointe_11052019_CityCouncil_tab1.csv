@@ -1,6 +1,6 @@
-Ballots with first choice:,Number of Ballots,% of votes to Mary Hall-Rayford,% of votes to Sarah A. Lucido,% of votes to Larry Edwards,% of votes to writeIns,% of votes to Harvey Curley,% of votes to exhaust,percent_sum
-Harvey Curley,1610.0,0.0,0.0,0.0,0.0,100.0,0.0,100.0
-Larry Edwards,464.0,0.0,0.0,100.0,0.0,0.0,0.0,100.0
-Mary Hall-Rayford,1058.0,100.0,0.0,0.0,0.0,0.0,0.0,100.0
-Sarah A. Lucido,1853.0,3.56,90.07,1.51,0.03,3.34,1.5,100.0
-writeIns,19.0,0.0,0.0,0.0,100.0,0.0,0.0,100.0
+Ballots with first choice:,Number of Ballots,% of votes to Sarah A. Lucido,% of votes to Harvey Curley,% of votes to writeIns,% of votes to Mary Hall-Rayford,% of votes to Larry Edwards,% of votes to exhaust,percent_sum
+Harvey Curley,1610.0,0.0,100.0,0.0,0.0,0.0,0.0,100.0
+Larry Edwards,464.0,0.0,0.0,0.0,0.0,100.0,0.0,100.0
+Mary Hall-Rayford,1058.0,0.0,0.0,0.0,100.0,0.0,0.0,100.0
+Sarah A. Lucido,1853.0,90.07,3.34,0.03,3.56,1.51,1.5,100.0
+writeIns,19.0,0.0,0.0,100.0,0.0,0.0,0.0,100.0

@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to BILLY BOB WHITMER,% of votes to writeIns,% of votes to SEAN R. ELSBERND,% of votes to JULIAN P. LAGOS,% of votes to exhaust,percent_sum
-BILLY BOB WHITMER,2994,100,0,0,0,0,100
-JULIAN P. LAGOS,5854,0,0,0,100,0,100
-SEAN R. ELSBERND,22105,0,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to JULIAN P. LAGOS,% of votes to writeIns,% of votes to BILLY BOB WHITMER,% of votes to SEAN R. ELSBERND,% of votes to exhaust,percent_sum
+BILLY BOB WHITMER,2994,0,0,100,0,0,100
+JULIAN P. LAGOS,5854,100,0,0,0,0,100
+SEAN R. ELSBERND,22105,0,0,0,100,0,100
 writeIns,212,0,100,0,0,0,100

@@ -1,4 +1,4 @@
-Ballots with first choice:,Number of Ballots,% of votes to SOPHIE HAHN,% of votes to LAURIE CAPITELLI,% of votes to writeIns,% of votes to exhaust,percent_sum
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to LAURIE CAPITELLI,% of votes to SOPHIE HAHN,% of votes to exhaust,percent_sum
 LAURIE CAPITELLI,4333,0,100,0,0,100
-SOPHIE HAHN,3623,100,0,0,0,100
-writeIns,28,0,0,100,0,100
+SOPHIE HAHN,3623,0,0,100,0,100
+writeIns,28,100,0,0,0,100

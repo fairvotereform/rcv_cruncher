@@ -1,8 +1,8 @@
-Ballots with first choice:,Number of Ballots,% of votes to Sala Chandler,% of votes to Charlie Walker,% of votes to Marie L. Harrison,% of votes to Sophie Maxwell,% of votes to Dwayne Jusino,% of votes to Rodney Hampton Jr.,% of votes to Espanola Jackson,% of votes to exhaust,percent_sum
-Charlie Walker,481,0,100,0,0,0,0,0,0,100
-Dwayne Jusino,1723,0,0,0,0,100,0,0,0,100
-Espanola Jackson,1483,0,0,0,0,0,0,100,0,100
-Marie L. Harrison,1166,0,0,100,0,0,0,0,0,100
-Rodney Hampton Jr.,1196,0,0,0,0,0,100,0,0,100
-Sala Chandler,276,100,0,0,0,0,0,0,0,100
-Sophie Maxwell,7997,0,0,0,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Dwayne Jusino,% of votes to Rodney Hampton Jr.,% of votes to Sala Chandler,% of votes to Charlie Walker,% of votes to Espanola Jackson,% of votes to Sophie Maxwell,% of votes to Marie L. Harrison,% of votes to exhaust,percent_sum
+Charlie Walker,481,0,0,0,100,0,0,0,0,100
+Dwayne Jusino,1723,100,0,0,0,0,0,0,0,100
+Espanola Jackson,1483,0,0,0,0,100,0,0,0,100
+Marie L. Harrison,1166,0,0,0,0,0,0,100,0,100
+Rodney Hampton Jr.,1196,0,100,0,0,0,0,0,0,100
+Sala Chandler,276,0,0,100,0,0,0,0,0,100
+Sophie Maxwell,7997,0,0,0,0,0,100,0,0,100

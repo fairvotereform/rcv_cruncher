@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to Joseph Henry,% of votes to Kris Broberg,% of votes to writeIns,% of votes to Betsy Hodges,% of votes to exhaust,percent_sum
-Betsy Hodges,4141,0,0,0,100,0,100
-Joseph Henry,256,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Kris Broberg,% of votes to Betsy Hodges,% of votes to Joseph Henry,% of votes to exhaust,percent_sum
+Betsy Hodges,4141,0,0,100,0,0,100
+Joseph Henry,256,0,0,0,100,0,100
 Kris Broberg,1578,0,100,0,0,0,100
-writeIns,6,0,0,100,0,0,100
+writeIns,6,100,0,0,0,0,100

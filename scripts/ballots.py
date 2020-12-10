@@ -6,19 +6,19 @@ from scripts.cache_helpers import save
 from scripts.definitions import merge_writeIns, SKIPPEDRANK, OVERVOTE, WRITEIN
 from rcv_parsers.parsers import common_csv
 
-global COMMON_CVR_DIR
+global CONVERTED_CVR_DIR
 
 def set_cvr_dir(d):
-    global COMMON_CVR_DIR
-    COMMON_CVR_DIR = d
+    global CONVERTED_CVR_DIR
+    CONVERTED_CVR_DIR = d
 
 def cvr(ctx):
     """
     If existing common csv exists, use it. Otherwise run parser.
     """
-    global COMMON_CVR_DIR
-    if os.path.isfile(COMMON_CVR_DIR + '/' + ctx['dop'] + '.csv'):
-        return common_csv(ctx, COMMON_CVR_DIR)
+    global CONVERTED_CVR_DIR
+    if os.path.isfile(CONVERTED_CVR_DIR + '/' + ctx['dop'] + '.csv'):
+        return common_csv(ctx, CONVERTED_CVR_DIR)
     else:
         return ctx['parser'](ctx)
 

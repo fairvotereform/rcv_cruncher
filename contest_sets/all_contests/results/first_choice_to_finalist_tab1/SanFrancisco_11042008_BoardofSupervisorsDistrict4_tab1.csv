@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to CARMEN CHU,% of votes to DAVE FERGUSON,% of votes to writeIns,% of votes to RON DUDUM,% of votes to exhaust,percent_sum
-CARMEN CHU,15405,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to RON DUDUM,% of votes to DAVE FERGUSON,% of votes to writeIns,% of votes to CARMEN CHU,% of votes to exhaust,percent_sum
+CARMEN CHU,15405,0,0,0,100,0,100
 DAVE FERGUSON,3635,0,100,0,0,0,100
-RON DUDUM,10346,0,0,0,100,0,100
+RON DUDUM,10346,100,0,0,0,0,100
 writeIns,53,0,0,100,0,0,100

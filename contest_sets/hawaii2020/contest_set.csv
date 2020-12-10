@@ -1,4 +1,4 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
-Hawaii Dem Presidential Primary  2020 CD1,Hawaii,HI,2020,5/23/2020,President of the United State CD1,FALSE,FALSE,,,,,,unisyn,,rcv_multiWinner_thresh15,,../dem_primary2020/Hawaii_cvr/CD1
-Hawaii Dem Presidential Primary  2020 CD2,Hawaii,HI,2020,5/23/2020,President of the United State CD2,FALSE,FALSE,,,,,,unisyn,,rcv_multiWinner_thresh15,,../dem_primary2020/Hawaii_cvr/CD2
-Hawaii Dem Presidential Primary  2020 CD1 CD2,Hawaii,HI,2020,5/23/2020,President of the United State CD1 CD2,FALSE,FALSE,,,,,,unisyn,,rcv_multiWinner_thresh15,,../dem_primary2020/Hawaii_cvr/CD1_CD2
+contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
+Hawaii Dem Presidential Primary  2020 CD1,Hawaii,HI,2020,5/23/2020,President of the United State CD1,FALSE,FALSE,,,,unisyn,,rcv_multiWinner_thresh15,,Ballot_Images\Hawaii\2020\dem_presidential_primary\CD1
+Hawaii Dem Presidential Primary  2020 CD2,Hawaii,HI,2020,5/23/2020,President of the United State CD2,FALSE,FALSE,,,,unisyn,,rcv_multiWinner_thresh15,,Ballot_Images\Hawaii\2020\dem_presidential_primary\CD2
+Hawaii Dem Presidential Primary  2020 CD1 CD2,Hawaii,HI,2020,5/23/2020,President of the United State CD1 CD2,FALSE,FALSE,,,,unisyn,,rcv_multiWinner_thresh15,,Ballot_Images\Hawaii\2020\dem_presidential_primary\CD1_CD2

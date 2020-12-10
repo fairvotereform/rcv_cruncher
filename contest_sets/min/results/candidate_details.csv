@@ -1,14 +1,12 @@
-raceID,candidate,round_elected,round_eliminated,round_1_vote,round_2_vote,round_3_vote,round_4_vote,round_5_vote,round_6_vote,round_7_vote,round_8_vote,round_9_vote,round_10_vote,round_11_vote,round_12_vote
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Jamal Osman,12.0,,2131.0,2131.0,2144.0,2151.0,2180.0,2197.0,2254.0,2315.0,2384.0,2460.0,2578.0,2795.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,AJ Awed,,12.0,1722.0,1723.0,1729.0,1745.0,1751.0,1788.0,1821.0,1864.0,1879.0,1982.0,2091.0,2286.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,AK Hassan,,11.0,1066.0,1066.0,1073.0,1077.0,1088.0,1096.0,1139.0,1223.0,1247.0,1349.0,1437.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Abdirizak Bihi,,10.0,1002.0,1002.0,1004.0,1007.0,1015.0,1016.0,1034.0,1076.0,1094.0,1141.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Alex Palacios,,9.0,384.0,384.0,390.0,402.0,406.0,417.0,454.0,504.0,621.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Michael P. Dougherty,,8.0,391.0,392.0,394.0,412.0,423.0,448.0,458.0,467.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Saciido Shaie,,7.0,333.0,333.0,335.0,341.0,347.0,350.0,389.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Nebiha Mohammed,,6.0,261.0,261.0,265.0,285.0,308.0,316.0,0.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Joshua Scheunemann,,5.0,121.0,121.0,124.0,142.0,144.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Mohamoud Hassan,,4.0,135.0,135.0,136.0,138.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Sara Mae Engberg,,3.0,119.0,119.0,123.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,Suud Olat,,2.0,62.0,62.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
-Minneapolis_08112020_Ward6CityCouncilSpecialElection_tab1,writeIns,,1.0,19.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+raceID,candidate,round_elected,round_eliminated,round_1_vote,round_2_vote,round_3_vote,round_4_vote,round_5_vote,round_6_vote,round_7_vote,round_8_vote,round_9_vote,round_10_vote
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Meg Forney,8.0,,19010.0,19011.0,19025.0,19174.0,19578.0,20366.0,21066.0,22506.0,21087.0,21087.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Latrisha Vetaw,8.0,,18526.0,18526.0,18534.0,18631.0,18888.0,19142.0,20529.0,22827.0,21087.0,21087.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Londel French,10.0,,12405.0,12405.0,12407.0,12450.0,12589.0,12815.0,14308.0,17947.0,18772.626048447797,20134.037841050245
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Mike Derus,,9.0,10679.0,10679.0,10686.0,10931.0,11404.0,12335.0,12849.0,13970.0,14588.532643277427,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Russ Henry,,7.0,9056.0,9056.0,9063.0,9209.0,9529.0,9815.0,11014.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Devin Hogan,,6.0,6246.0,6246.0,6250.0,6327.0,6471.0,6735.0,0.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Charlie Casserly,,5.0,3756.0,3758.0,3760.0,3914.0,4156.0,0.0,0.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Jonathan Honerbrink,,4.0,2617.0,2617.0,2618.0,2947.0,0.0,0.0,0.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Bob Sullentrop,,3.0,1659.0,1659.0,1664.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,writeIns,,2.0,390.0,390.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Minneapolis_11072017_ParkBoardAtLarge_tab1,Scott Vreeland,,1.0,3.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0

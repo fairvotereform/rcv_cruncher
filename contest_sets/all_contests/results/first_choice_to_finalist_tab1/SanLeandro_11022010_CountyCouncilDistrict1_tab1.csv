@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to CAROL LIBBRECHT,"% of votes to DAVID L. ANDERSON, SR.",% of votes to MICHAEL J. GREGORY,% of votes to writeIns,% of votes to exhaust,percent_sum
-CAROL LIBBRECHT,120,100,0,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to MICHAEL J. GREGORY,"% of votes to DAVID L. ANDERSON, SR.",% of votes to CAROL LIBBRECHT,% of votes to writeIns,% of votes to exhaust,percent_sum
+CAROL LIBBRECHT,120,0,0,100,0,0,100
 "DAVID L. ANDERSON, SR.",6742,0,100,0,0,0,100
-MICHAEL J. GREGORY,13030,0,0,100,0,0,100
+MICHAEL J. GREGORY,13030,100,0,0,0,0,100
 writeIns,152,0,0,0,100,0,100

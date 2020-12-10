@@ -392,69 +392,67 @@ def first_choice_to_finalist_table(ctx):
 
     rcv_obj = RCV.run_rcv(ctx)
 
-    # who had any ballot weight allotted
-    candidates_w_votes = list(rcv_obj.candidates_with_votes(tabulation_num=1)) + ['exhaust']
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
-    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
-    cleaned_ballots = [{'ranks': ranks, 'weight': weight, 'weight_distrib': distrib}
-                       for ranks, weight, distrib
-                       in zip(cleaned_dict['ranks'], cleaned_dict['weight'],
-                              rcv_obj.get_final_weight_distrib(tabulation_num=1))]
+    dfs = []
+    for iTab in range(1, rcv_obj.n_tabulations()):
 
-    index_label = "Ballots with first choice:"
-    n_ballots_label = "Number of Ballots"
+        # who had any ballot weight allotted
+        finalist_candidates = list(rcv_obj.finalist_candidates(tabulation_num=iTab)) + ['exhaust']
+        candidate_set = sorted(candidates_merged_writeIns(ctx))
+        cleaned_ballots = [{'ranks': ranks, 'weight': weight, 'weight_distrib': distrib}
+                           for ranks, weight, distrib
+                           in zip(rcv_obj.initial_ranks(tabulation_num=iTab),
+                                  rcv_obj.initial_weights(tabulation_num=iTab),
+                                  rcv_obj.get_final_weight_distrib(tabulation_num=1))]
 
-    colname_dict = {cand: "% of votes to " + cand for cand in candidates_w_votes}
+        index_label = "Ballots with first choice:"
+        n_ballots_label = "Number of Ballots"
 
-    rows = candidate_set
-    cols = [n_ballots_label] + list(colname_dict.values())
-    df = pd.DataFrame(index=rows, columns=cols + ['percent_sum'])
-    df.index.name = index_label
+        colname_dict = {cand: "% of votes to " + cand for cand in finalist_candidates}
 
-    # group ballots by first choice
-    first_choices = {cand: [] for cand in candidate_set}
-    for b in cleaned_ballots:
-        if len(b['ranks']) >= 1 and b['ranks'][0] in first_choices:
-            first_choices[b['ranks'][0]].append(b)
+        rows = candidate_set
+        cols = [n_ballots_label] + list(colname_dict.values())
+        df = pd.DataFrame(index=rows, columns=cols + ['percent_sum'])
+        df.index.name = index_label
 
-    for cand in candidate_set:
+        # group ballots by first choice
+        first_choices = {cand: [] for cand in candidate_set}
+        for b in cleaned_ballots:
+            if len(b['ranks']) >= 1 and b['ranks'][0] in first_choices:
+                first_choices[b['ranks'][0]].append(b)
 
-        total_first_choice_ballots = sum(b['weight'] for b in first_choices[cand])
-        df.loc[cand, n_ballots_label] = float(total_first_choice_ballots)
+        for cand in candidate_set:
 
-        if total_first_choice_ballots:
+            total_first_choice_ballots = sum(b['weight'] for b in first_choices[cand])
+            df.loc[cand, n_ballots_label] = float(total_first_choice_ballots)
 
-            redistrib = {opponent: 0 for opponent in candidates_w_votes}
-            for b in first_choices[cand]:
-                for el in b['weight_distrib']:
-                    if el[0] == 'empty':
-                        redistrib['exhaust'] += el[1]
-                    else:
-                        redistrib[el[0]] += el[1]
-                # highest_ranked_opponent = 'exhaust'
-                # highest_ranked_opponent_idx = float('inf')
-                # for opponent in non_exhausted_candidates:
-                #     if opponent in b['ranks'] and \
-                #             b['ranks'].index(opponent) < highest_ranked_opponent_idx:
-                #         highest_ranked_opponent = opponent
-                #         highest_ranked_opponent_idx = b['ranks'].index(opponent)
-                # redistrib[highest_ranked_opponent] += b['weight']
+            if total_first_choice_ballots:
 
-            redistrib_total_check = 0
-            for opponent in redistrib:
-                redistrib_percent = float(redistrib[opponent]/total_first_choice_ballots) * 100
-                df.loc[cand, colname_dict[opponent]] = round(redistrib_percent, 2)
-                redistrib_total_check += redistrib_percent
-            df.loc[cand, 'percent_sum'] = float(redistrib_total_check)
+                redistrib = {opponent: 0 for opponent in finalist_candidates}
+                for b in first_choices[cand]:
+                    for el in b['weight_distrib']:
+                        if el[0] == 'empty':
+                            redistrib['exhaust'] += el[1]
+                        else:
+                            redistrib[el[0]] += el[1]
 
-        else:
-            for opponent in candidates_w_votes:
-                df.loc[cand, colname_dict[opponent]] = 0
-            df.loc[cand, 'percent_sum'] = 0
+                redistrib_total_check = 0
+                for opponent in redistrib:
+                    redistrib_percent = float(redistrib[opponent] / total_first_choice_ballots) * 100
+                    df.loc[cand, colname_dict[opponent]] = round(redistrib_percent, 2)
+                    redistrib_total_check += redistrib_percent
+                df.loc[cand, 'percent_sum'] = float(redistrib_total_check)
 
-    return df
+            else:
+                for opponent in finalist_candidates:
+                    df.loc[cand, colname_dict[opponent]] = 0
+                df.loc[cand, 'percent_sum'] = 0
+
+        dfs.append(df)
+
+    return dfs
 
 # def prepare_json(ctx):
+# prepare json file for RCVIS
 #
 #     # get rcv results
 #     rounds_full = round_by_round_full(ctx)

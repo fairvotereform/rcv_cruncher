@@ -397,7 +397,7 @@ def first_choice_to_finalist_table(ctx):
     rcv_obj = RCV.run_rcv(ctx)
 
     # who had any ballot weight allotted
-    candidates_w_votes = list(rcv_obj.candidates_with_votes(tabulation_num=1)) + ['exhaust']
+    candidates_w_votes = list(rcv_obj.finalist_candidates(tabulation_num=1)) + ['exhaust']
     candidate_set = sorted(candidates_merged_writeIns(ctx))
     cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
     cleaned_ballots = [{'ranks': ranks, 'weight': weight, 'weight_distrib': distrib}

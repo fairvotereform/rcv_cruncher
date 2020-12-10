@@ -1,5 +1,5 @@
-Ballots with first choice:,Number of Ballots,% of votes to Bernie Kunza,% of votes to John Malone,% of votes to writeIns,% of votes to Liz Wielinski,% of votes to exhaust,percent_sum
-Bernie Kunza,909,100,0,0,0,0,100
-John Malone,565,0,100,0,0,0,100
-Liz Wielinski,4335,0,0,0,100,0,100
-writeIns,33,0,0,100,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Liz Wielinski,% of votes to Bernie Kunza,% of votes to John Malone,% of votes to exhaust,percent_sum
+Bernie Kunza,909,0,0,100,0,0,100
+John Malone,565,0,0,0,100,0,100
+Liz Wielinski,4335,0,100,0,0,0,100
+writeIns,33,100,0,0,0,0,100

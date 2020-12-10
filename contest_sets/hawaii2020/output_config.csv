@@ -10,3 +10,4 @@ rank_usage,TRUE
 candidate_details,TRUE
 round_by_round,TRUE
 ballot_stats_debug,TRUE
+cvr_ballot_allocation,TRUE

@@ -1,2 +1,0 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
-Special Election for Council Member Ward 6,Minneapolis,MN,2020,8/11/2020,Ward 6 City Council Special Election,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,Ballot_Images/Minneapolis/2020/Special_Ward_6_Cast_Vote_Record_Clean.csv

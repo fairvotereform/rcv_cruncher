@@ -1,4 +1,4 @@
-Ballots with first choice:,Number of Ballots,% of votes to writeIns,% of votes to Scott Vreeland,% of votes to Mike Wendorf,% of votes to exhaust,percent_sum
-Mike Wendorf,1239,0,0,100,0,100
-Scott Vreeland,3430,0,100,0,0,100
-writeIns,67,100,0,0,0,100
+Ballots with first choice:,Number of Ballots,% of votes to Mike Wendorf,% of votes to writeIns,% of votes to Scott Vreeland,% of votes to exhaust,percent_sum
+Mike Wendorf,1239,100,0,0,0,100
+Scott Vreeland,3430,0,0,100,0,100
+writeIns,67,0,100,0,0,100
