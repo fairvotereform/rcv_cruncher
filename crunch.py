@@ -381,10 +381,10 @@ def main():
                 df = pd.concat(rcv_group_stats_df_dict[group], axis=0, ignore_index=True, sort=False)
                 df.to_csv(results_dir + '/group_' + group + '.csv', index=False)
 
-    if 'per_rcv_group_stats_masterDBfmt' in output_config and output_config['per_rcv_group_stats_masterDBfmt']:
-        print("write group stats in masterDB order ...")
+    if 'per_rcv_group_stats_fvDBfmt' in output_config and output_config['per_rcv_group_stats_fvDBfmt']:
+        print("write group stats in fvDB order ...")
         for group in rcv_group_stats_df_dict:
-            format_fpath = "extra/master_db_format/" + group + "_columns.csv"
+            format_fpath = "extra/fv_db_format/" + group + "_columns.csv"
             if rcv_group_stats_df_dict[group] and os.path.isfile(format_fpath):
 
                 # read in column order
@@ -393,7 +393,7 @@ def main():
 
                 df = pd.concat(rcv_group_stats_df_dict[group], axis=0, ignore_index=True, sort=False)
                 df = df.reindex(fmt_order, axis=1)
-                df.to_csv(results_dir + '/group_' + group + '_masterDBfmt.csv', index=False)
+                df.to_csv(results_dir + '/group_' + group + '_fvDBfmt.csv', index=False)
 
     if 'per_rcv_type_stats' in output_config and output_config['per_rcv_type_stats']:
         print("Write tabulation stats ...")
