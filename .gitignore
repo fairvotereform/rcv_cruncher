@@ -2,7 +2,7 @@
 
 /_stashed/
 /Ballot_Images/
-/contest_sets/
+/contest_sets/*
 /master_db/
 /old_cruncher/
 /reported_results/
