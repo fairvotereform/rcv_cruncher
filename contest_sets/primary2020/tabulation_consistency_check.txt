@@ -1,6 +1,0 @@
-missing reported results for Alaska_2020_PRESIDENTOFTHEUNITEDSTATES_tab1
-missing reported results for Hawaii_2020_PresidentoftheUnitedStateCD1CD2_tab1
-missing reported results for Hawaii_2020_PresidentoftheUnitedStateCD1_tab1
-missing reported results for Hawaii_2020_PresidentoftheUnitedStateCD2_tab1
-missing reported results for Kansas_2020_PRESIDENTOFTHEUNITEDSTATES_tab1
-missing reported results for Wyoming_2020_PRESIDENTOFTHEUNITEDSTATES_tab1

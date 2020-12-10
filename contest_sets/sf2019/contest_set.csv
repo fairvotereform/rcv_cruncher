@@ -1,8 +1,0 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
-"San Francisco Board of Supervisors, District 5 2019",San Francisco,CA,2019,11/5/2019,"Member, Board of Supervisors, District 5",TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco City Attorney 2019,San Francisco,CA,2019,11/5/2019,City Attorney,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco District Attorney 2019,San Francisco,CA,2019,11/5/2019,District Attorney,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco Mayor 2019,San Francisco,CA,2019,11/5/2019,Mayor,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco Public Defender 2019,San Francisco,CA,2019,11/5/2019,Public Defender,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco Sheriff 2019,San Francisco,CA,2019,11/5/2019,Sheriff,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446
-San Francisco Treasurer 2019,San Francisco,CA,2019,11/5/2019,Treasurer,TRUE,,,"""06""","""075""",,,dominion5_2,,rcv_single_winner,1,Ballot_Images/San Francisco/San Fran_Nov 2019/CVR_Export_20191125163446

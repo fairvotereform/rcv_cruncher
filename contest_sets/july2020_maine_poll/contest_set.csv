@@ -1,3 +1,0 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
-Poll - Maine Congressional District 2 GOP Primary,Maine,ME,2020,7/8/2020,Candidate House of Representatives,FALSE,FALSE,,,,,,surveyUSA,,rcv_single_winner,1,../july_maine_poll/house/
-Poll - Maine 2024 GOP Presidential Primary,Maine,ME,2020,7/8/2020,Candidate Preisdent of the United States,FALSE,FALSE,,,,,,surveyUSA,,rcv_single_winner,1,../july_maine_poll/president/

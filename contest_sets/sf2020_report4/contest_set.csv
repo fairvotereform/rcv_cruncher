@@ -1,7 +1,0 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,ignore_writeins,path
-San Francisco Board of Supervisors District 1,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 1,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4
-San Francisco Board of Supervisors District 3,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 3,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4
-San Francisco Board of Supervisors District 5,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 5,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4
-San Francisco Board of Supervisors District 7,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 7,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4
-San Francisco Board of Supervisors District 9,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 9,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4
-San Francisco Board of Supervisors District 11,San Francisco,CA,2020,11/3/2020,BOARD OF SUPERVISORS DISTRICT 11,TRUE,FALSE,,,,dominion5_10,,rcv_single_winner,1,TRUE,Ballot_Images/San Francisco/San Fran_Nov 2020/report4

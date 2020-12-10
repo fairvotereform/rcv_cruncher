@@ -1,2 +1,0 @@
-contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,state_code,county,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
-Minneapolis Park At Large 2017,Minneapolis,MN,2017,11/7/2017,Minneapolis Park & Rec Board,FALSE,,TRUE,,,,,minneapolis,,stv_fractional_ballot,3,Ballot_Images/Minneapolis/2017/csv2017/2017-park-at-large-cvr.xlsx.csv
