@@ -384,7 +384,7 @@ def main():
     if 'per_rcv_group_stats_masterDBfmt' in output_config and output_config['per_rcv_group_stats_masterDBfmt']:
         print("write group stats in masterDB order ...")
         for group in rcv_group_stats_df_dict:
-            format_fpath = "master_db_format/" + group + "_columns.csv"
+            format_fpath = "extra/master_db_format/" + group + "_columns.csv"
             if rcv_group_stats_df_dict[group] and os.path.isfile(format_fpath):
 
                 # read in column order

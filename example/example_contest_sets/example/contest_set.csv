@@ -1,0 +1,23 @@
+contest,place,state,year,date,office,break_on_overvote,break_on_repeated_skipvotes,multi_winner_rounds,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,path
+Minneapolis BOE 2017,Minneapolis,MN,2017,11/7/2017,Board of Estimate and Taxation,FALSE,FALSE,TRUE,,,minneapolis,,stv_fractional_ballot,2,minneapolis2017/2017-boe-cvr.xlsx.csv
+Minneapolis Mayor 2017,Minneapolis,MN,2017,11/7/2017,Mayor,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-mayor-cvr.xlsx.csv
+Minneapolis Park At Large 2017,Minneapolis,MN,2017,11/7/2017,Park Board At Large,FALSE,FALSE,TRUE,,,minneapolis,,stv_fractional_ballot,3,minneapolis2017/2017-park-at-large-cvr.xlsx.csv
+Minneapolis Park District 1 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 1,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-1-cvr.xlsx.csv
+Minneapolis Park District 2 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 2,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-2-cvr.xlsx.csv
+Minneapolis Park District 3 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 3,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-3-cvr.xlsx.csv
+Minneapolis Park District 4 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 4,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-4-cvr.xlsx.csv
+Minneapolis Park District 5 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 5,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-5-cvr.xlsx.csv
+Minneapolis Park District 6 2017,Minneapolis,MN,2017,11/7/2017,P&R Board District 6,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-park-district-6-cvr.xlsx.csv
+Minneapolis Ward 1 2017,Minneapolis,MN,2017,11/7/2017,Ward 1 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-1-cvr.xlsx.csv
+Minneapolis Ward 10 2017,Minneapolis,MN,2017,11/7/2017,Ward 10 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-10-cvr.xlsx.csv
+Minneapolis Ward 11 2017,Minneapolis,MN,2017,11/7/2017,Ward 11 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-11-cvr.xlsx.csv
+Minneapolis Ward 12 2017,Minneapolis,MN,2017,11/7/2017,Ward 12 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-12-cvr.xlsx.csv
+Minneapolis Ward 13 2017,Minneapolis,MN,2017,11/7/2017,Ward 13 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-13-cvr.xlsx.csv
+Minneapolis Ward 2 2017,Minneapolis,MN,2017,11/7/2017,Ward 2 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-2-cvr.xlsx.csv
+Minneapolis Ward 3 2017,Minneapolis,MN,2017,11/7/2017,Ward 3 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-3-cvr.xlsx.csv
+Minneapolis Ward 4 2017,Minneapolis,MN,2017,11/7/2017,Ward 4 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-4-cvr.xlsx.csv
+Minneapolis Ward 5 2017,Minneapolis,MN,2017,11/7/2017,Ward 5 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-5-cvr.xlsx.csv
+Minneapolis Ward 6 2017,Minneapolis,MN,2017,11/7/2017,Ward 6 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-6-cvr.xlsx.csv
+Minneapolis Ward 7 2017,Minneapolis,MN,2017,11/7/2017,Ward 7 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-7-cvr.xlsx.csv
+Minneapolis Ward 8 2017,Minneapolis,MN,2017,11/7/2017,Ward 8 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-8-cvr.xlsx.csv
+Minneapolis Ward 9 2017,Minneapolis,MN,2017,11/7/2017,Ward 9 City Council ,FALSE,FALSE,,,,minneapolis,,rcv_single_winner,1,minneapolis2017/2017-ward-9-cvr.xlsx.csv
