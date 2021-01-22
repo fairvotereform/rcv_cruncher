@@ -1,3 +1,4 @@
+import shutil
 from hashlib import md5
 from inspect import getsource
 import os
@@ -11,12 +12,14 @@ def set_global_dict(d):
     global_dict = d
 
 global cache_dir
-def set_cache_dir(d):
+def set_cache_dir(d, *, delete_cache=True):
     global cache_dir
     cache_dir = d
 
-    if os.path.isdir(cache_dir) is False:
-        os.mkdir(cache_dir)
+    if os.path.isdir(cache_dir) and delete_cache:
+        shutil.rmtree(cache_dir)
+
+    os.mkdir(cache_dir)
 
 
 def unwrap(function):

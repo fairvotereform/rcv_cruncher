@@ -1,6 +1,7 @@
 import shutil
 from argparse import ArgumentParser
 from shutil import copyfile
+import math
 
 # cruncher imports
 from scripts.definitions import *
@@ -21,20 +22,17 @@ def stats_check(obj):
     Calculate several totals a second way to make sure some identity equations hold.
     """
 
-    all_candidates = candidates(obj.ctx)
-    ballot_ranks = ballots(obj.ctx)['ranks']
-    cleaned_ranks = cleaned(obj.ctx)['ranks']
-    ballot_weights = ballots(obj.ctx)['weight']
-    n_ballots = sum(ballot_weights)
+    all_candidates = candidates(obj.ctx, exclude_writeins=False, combine_writeins=False)
+    ballot_dict = ballots(obj.ctx, combine_writeins=False)
+    n_ballots = sum(ballot_dict['weight'])
 
-    undervotes = obj.undervote()
     n_undervote = obj.total_undervote()
     n_ranked_single = obj.ranked_single()
     n_ranked_multiple = obj.ranked_multiple()
 
     debug_ids = []
     # right now just test first tabulations
-    for iTab in [1]:
+    for iTab in range(1, obj.n_tabulations()+1):
 
         ############################
         # calculated outputs
@@ -52,9 +50,9 @@ def stats_check(obj):
 
         n_first_round_exhausted = obj.total_ballots() - obj.total_undervote() - obj.first_round_active_votes(tabulation_num=iTab)
 
-        tab_exhausts = [float(obj.get_round_transfer_dict(iRound, tabulation_num=iTab)['exhaust']) for
+        tab_exhausts = [obj.get_round_transfer_dict(iRound, tabulation_num=iTab)['exhaust'] for
                                  iRound in range(1, obj.n_rounds(tabulation_num=iTab)+1)]
-        cumulative_exhaust = sum(i for i in tab_exhausts if not np.isnan(i))
+        cumulative_exhaust = sum(i for i in tab_exhausts if not math.isnan(i))
 
         ############################
         # secondary crosschecks
@@ -74,10 +72,10 @@ def stats_check(obj):
         # the first round active ballots,
         n_undervote_crosscheck = n_ballots - first_round_active - n_first_round_exhausted
 
-        n_ranked_single_crosscheck = sum([weight for i, weight in zip(ballot_ranks, ballot_weights)
+        n_ranked_single_crosscheck = sum([weight for i, weight in zip(ballot_dict['ranks'], ballot_dict['weight'])
                                           if len(set(i) & all_candidates) == 1])
 
-        n_ranked_multiple_crosscheck = sum([weight for i, weight in zip(ballot_ranks, ballot_weights)
+        n_ranked_multiple_crosscheck = sum([weight for i, weight in zip(ballot_dict['ranks'], ballot_dict['weight'])
                                             if len(set(i) & all_candidates) > 1])
 
         problem = False
@@ -160,7 +158,6 @@ def main():
     # necessary for cache_helpers
     gbls = globals()
     gbls.update({RCV.run_rcv.__name__: RCV.run_rcv})
-    cache.set_global_dict(gbls)
 
     ###########################
     # parse args
@@ -201,13 +198,17 @@ def main():
 
     ########################
     # cache outputs
-    cache_dir = contest_set_path + '/cache'
-    cache.set_cache_dir(cache_dir)
+    #cache_dir = contest_set_path + '/.cache'
+    #cache.set_cache_dir(cache_dir, delete_cache=delete_cache)
 
     ########################
     # check results dir
     results_dir = contest_set_path + '/results'
     verifyDir(results_dir)
+
+    cvr_dir = contest_set_path + '/converted_cvr'
+    verifyDir(cvr_dir)
+    set_cvr_dir(cvr_dir)
 
     # copy these scripts into results
     result_log_dir = results_dir + "/_log"
@@ -244,11 +245,11 @@ def main():
     verifyDir(cvr_dir)
     set_cvr_dir(cvr_dir)
 
-    for idx, contest in enumerate(sorted(contest_set, key=lambda x: x['year'])):
-        print('convert cvr: ' + str(idx) + ' of ' + str(len(contest_set)) + ' ' + contest['unique_id'], end='')
-        write_converted_cvr(contest, cvr_dir)
-        print('\b' * 100, end='')
-    print('convert cvr: ' + str(len(contest_set)) + ' of ' + str(len(contest_set)) + ' contests complete')
+    # for idx, contest in enumerate(sorted(contest_set, key=lambda x: x['year'])):
+    #     print('convert cvr: ' + str(idx) + ' of ' + str(len(contest_set)) + ' ' + contest['unique_id'], end='')
+    #     write_converted_cvr(contest, cvr_dir)
+    #     print('\b' * 100, end='')
+    # print('convert cvr: ' + str(len(contest_set)) + ' of ' + str(len(contest_set)) + ' contests complete')
 
     ########################
     # read output config
@@ -281,12 +282,16 @@ def main():
             invalid_contests.append(contest)
 
     stats_debugs = []
-    progress_inc = 1
     progress_total = 15
     # loop through contests and tabulate the elections
     for idx, contest in enumerate(valid_contests):
 
+        progress_inc = 1
         print(str(idx+1) + ' of ' + str(len(valid_contests)) + ' ' + contest['unique_id'] + ' ...')
+
+        progress(progress_inc, progress_total, status="converting cvr")
+        progress_inc += 1
+        write_converted_cvr(contest, cvr_dir)
 
         # create RCV obj + tabulate
         progress(progress_inc, progress_total, status="tabulating")
@@ -336,6 +341,11 @@ def main():
             progress_inc += 1
             write_converted_cvr_annotated(rcv_obj, results_dir)
 
+        if 'first_choice_to_finalist' in output_config and output_config['first_choice_to_finalist']:
+            progress(progress_inc, progress_total, status="write first choice to finalist table")
+            progress_inc += 1
+            write_first_to_finalist_tables(rcv_obj, results_dir)
+
         ################
         # BALLOT-BASED OUTPUTS
 
@@ -349,7 +359,7 @@ def main():
             progress_inc += 1
             write_first_second_tables(contest, results_dir)
 
-        if 'cumulative_ranking' in output_config and output_config['cumulative_ranking']:
+        if 'cumulative_rankings' in output_config and output_config['cumulative_rankings']:
             progress(progress_inc, progress_total, status="write cumulative ranking table")
             progress_inc += 1
             write_cumulative_ranking_tables(contest, results_dir)
@@ -364,10 +374,8 @@ def main():
             progress_inc += 1
             write_opponent_crossover_tables(contest, results_dir)
 
-        if 'first_choice_to_finalist' in output_config and output_config['first_choice_to_finalist']:
-            progress(progress_inc, progress_total, status="write first choice to finalist table")
-            progress_inc += 1
-            write_first_to_finalist_tables(contest, results_dir)
+        # free memory from cvr
+        contest['cvr'] = None
 
         progress(progress_total, progress_total, status="")
         print("")
@@ -448,6 +456,9 @@ def main():
 
         print('Debug contest set created at ' + debug_contest_set_dir +
               '. Contests that have failed consistency checks have been copied there.')
+
+    shutil.make_archive(result_log_dir, 'zip', result_log_dir)
+    shutil.rmtree(result_log_dir)
 
     print("DONE!")
 

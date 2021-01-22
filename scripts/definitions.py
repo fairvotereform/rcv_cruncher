@@ -1,11 +1,14 @@
 import os
+import decimal
 
 ###############################################################
 # constants
 
+NAN = decimal.Decimal('NaN')
+
 SKIPPEDRANK = -1
 OVERVOTE = -2
-WRITEIN = 'writeIns'
+WRITEIN = 'writein'
 
 """
 undervote = matching the non-rcv context, an undervote is when no marks are made 
@@ -30,6 +33,7 @@ POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = -100
 POSTTALLY_EXHAUSTED_BY_ABSTENTION = -101
 POSTTALLY_EXHAUSTED_BY_OVERVOTE = -102
 POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE = -103
+POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = -105
 
 """
 exhaust by overvote - if rules apply, exhaust ballot when overvote is reached
@@ -134,3 +138,18 @@ def remove_dup(l):
         if i not in x:
             x.append(i)
     return x
+
+def decimal2float(stat, round_places=3):
+    """Convert any decimal objects used internally into float for reporting.
+
+    Args:
+        stat (any): Any value.
+
+    Returns:
+        any type not Decimal: If the stat passed is type Decimal, it is converted to float.  
+    """
+
+    if isinstance(stat, decimal.Decimal):
+        return round(float(stat), round_places)
+    else:
+        return stat

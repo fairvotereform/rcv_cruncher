@@ -3,18 +3,21 @@ import os
 import shutil
 from pandas import Series
 
+from .ballots import candidates
 from .misc_tabulation import *
 from .definitions import verifyDir, POSTTALLY_EXHAUSTED_BY_OVERVOTE, \
     POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE, POSTTALLY_EXHAUSTED_BY_RANK_LIMIT, POSTTALLY_EXHAUSTED_BY_ABSTENTION, \
-    UNDERVOTE, PRETALLY_EXHAUST
+    UNDERVOTE, PRETALLY_EXHAUST, NAN
 
 def write_converted_cvr(contest, results_dir):
     """
     Convert cvr into common csv format and write out
     """
     outfile = results_dir + "/" + contest["unique_id"] + ".csv"
-    cvr = convert_cvr(contest)
-    cvr.to_csv(outfile, index=False)
+
+    if os.path.isfile(outfile) is False:
+        cvr = convert_cvr(contest)
+        cvr.to_csv(outfile, index=False)
 
     # copy readme into output folder
     if not os.path.isfile("docs/converted_cvr_README.pdf"):
@@ -40,7 +43,7 @@ def write_converted_cvr_annotated(rcv_obj, results_dir):
 
         # get cvr df
         cvr = convert_cvr(rcv_obj.ctx)
-        cvr['allocationID'] = cvr.index + 1
+        cvr['ballot_split_ID'] = cvr.index + 1
         cvr['exhaustion_check'] = rcv_obj.exhaustion_check(tabulation_num=iTab)
 
         # duplicate ballot rows in df for each time the ballot was split
@@ -87,10 +90,10 @@ def write_converted_cvr_annotated(rcv_obj, results_dir):
         del cvr['exhaustion_check']
 
         # reorder columns
-        allocationID_col = cvr.pop('allocationID')
-        cvr.insert(0, 'allocationID', allocationID_col)
+        ballot_split_ID_col = cvr.pop('ballot_split_ID')
+        cvr.insert(0, 'ballot_split_ID', ballot_split_ID_col)
 
-        outfile = cvr_allocation_dir + "/" + rcv_obj.unique_id(tabulation_num=iTab) + ".csv"
+        outfile = cvr_allocation_dir + "/" + rcv_obj.unique_id(tabulation_num=iTab) + "_ballot_allocation.csv"
         cvr.to_csv(outfile, index=False)
 
 def write_condorcet_tables(contest, results_dir):
@@ -110,8 +113,8 @@ def write_condorcet_tables(contest, results_dir):
     condorcet_table_dir = results_dir + '/condorcet'
     verifyDir(condorcet_table_dir)
 
-    counts.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_percent.csv", float_format="%.2f")
+    counts.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_condorcet_count.csv", float_format="%.2f")
+    percents.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_condorcet_percent.csv", float_format="%.2f")
 
     # copy readme into output folder
     if not os.path.isfile("docs/condorcet_README.pdf"):
@@ -128,9 +131,9 @@ def write_first_second_tables(contest, results_dir):
     first_second_table_dir = results_dir + '/first_second'
     verifyDir(first_second_table_dir)
 
-    counts.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_count.csv", float_format="%.2f")
-    percents.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_percent.csv", float_format="%.2f")
-    percents_no_exhaust.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_percent_no_exhaust.csv",
+    counts.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_count.csv", float_format="%.2f")
+    percents.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_percent.csv", float_format="%.2f")
+    percents_no_exhaust.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_percent_no_exhaust.csv",
                                float_format="%.2f")
 
     # copy readme into output folder
@@ -148,8 +151,8 @@ def write_cumulative_ranking_tables(contest, results_dir):
     cumulative_ranking_dir = results_dir + '/cumulative_ranking'
     verifyDir(cumulative_ranking_dir)
 
-    counts.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_count.csv", float_format="%.2f")
-    percents.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_percent.csv", float_format="%.2f")
+    counts.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_cumulative_ranking_count.csv", float_format="%.2f")
+    percents.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_cumulative_ranking_percent.csv", float_format="%.2f")
 
     # copy readme into output folder
     if not os.path.isfile("docs/cumulative_ranking_README.pdf"):
@@ -166,7 +169,7 @@ def write_rank_usage_tables(contest, results_dir):
     rank_usage_table_dir = results_dir + '/rank_usage'
     verifyDir(rank_usage_table_dir)
 
-    df.to_csv(rank_usage_table_dir + "/" + contest['unique_id'] + '.csv', float_format='%.2f')
+    df.to_csv(rank_usage_table_dir + "/" + contest['unique_id'] + '_rank_usage.csv', float_format='%.2f')
 
     # copy readme into output folder
     if not os.path.isfile("docs/rank_usage_README.pdf"):
@@ -184,10 +187,10 @@ def write_opponent_crossover_tables(contest, results_dir):
     opponent_crossover_table_dir = results_dir + '/crossover_support'
     verifyDir(opponent_crossover_table_dir)
 
-    count_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_count.csv', float_format='%.2f')
-    percent_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_percent.csv', float_format='%.2f')
+    count_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_crossover_support_count.csv', float_format='%.2f')
+    percent_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_crossover_support_percent.csv', float_format='%.2f')
 
-def write_first_to_finalist_tables(contest, results_dir):
+def write_first_to_finalist_tables(rcv_obj, results_dir):
     """
     Calculate distribution of ballots allocated to non-finalists during first round and their transfer
     to eventual finalists.
@@ -196,10 +199,10 @@ def write_first_to_finalist_tables(contest, results_dir):
     first_to_finalist_table_dir = results_dir + '/first_choice_to_finalist'
     verifyDir(first_to_finalist_table_dir)
 
-    dfs = first_choice_to_finalist_table(contest)
+    dfs = first_choice_to_finalist_table(rcv_obj)
 
     for iTab in range(1, len(dfs) + 1):
-        dfs[iTab-1].to_csv(first_to_finalist_table_dir + '/' + contest['unique_id'] + '_tab' + str(iTab) + '.csv', float_format='%.2f')
+        dfs[iTab-1].to_csv(first_to_finalist_table_dir + '/' + rcv_obj.ctx['unique_id'] + '_tab' + str(iTab) + '_first_to_finalist.csv', float_format='%.2f')
 
     # copy readme into output folder
     if not os.path.isfile("docs/first_choice_to_finalist_README.pdf"):
@@ -280,9 +283,27 @@ def write_rcv_rounds(obj, results_dir):
         rounds_full = [obj.get_round_tally_tuple(i, tabulation_num=iTab) for i in range(1, num_rounds + 1)]
         transfers = [obj.get_round_transfer_dict(i, tabulation_num=iTab) for i in range(1, num_rounds + 1)]
 
+        # reformat contest outputs into useful dicts
+        cand_outcomes = obj.get_candidate_outcomes(tabulation_num=iTab)
+
+        # reorder candidate names
+        # winners in ascending order of round won
+        # followed by losers in descending order of round lost
+        reorder_dicts = []
+        for d in cand_outcomes:
+
+            if d['round_elected']:
+                d['order'] = -1 * (1 / d['round_elected'])
+            else:
+                d['order'] = 1 / d['round_eliminated']
+
+            reorder_dicts.append(d)
+
+        ordered_candidates_names = [d['name'] for d in sorted(reorder_dicts, key=lambda x: x['order'])]
+
         # setup data frame
-        row_names = list(candidates_merged_writeIns(obj.ctx)) + ['exhaust']
-        rcv_df = pd.DataFrame(np.NaN, index=row_names + ['colsum'], columns=['candidate'])
+        row_names = ordered_candidates_names + ['exhaust']
+        rcv_df = pd.DataFrame(NAN, index=row_names + ['colsum'], columns=['candidate'])
         rcv_df.loc[row_names + ['colsum'], 'candidate'] = row_names + ['colsum']
 
         # loop through rounds
@@ -300,9 +321,9 @@ def write_rcv_rounds(obj, results_dir):
                 rnd_count_col = 'r' + str(rnd) + '_count'
                 rnd_transfer_col = 'r' + str(rnd) + '_transfer'
 
-                rcv_df.loc[cand, rnd_percent_col] = round(float(100*(rnd_info[cand]/sum(rnd_info.values()))), 3)
-                rcv_df.loc[cand, rnd_count_col] = float(rnd_info[cand])
-                rcv_df.loc[cand, rnd_transfer_col] = float(rnd_transfer[cand])
+                rcv_df.loc[cand, rnd_percent_col] = 100*(rnd_info[cand]/sum(rnd_info.values()))
+                rcv_df.loc[cand, rnd_count_col] = rnd_info[cand]
+                rcv_df.loc[cand, rnd_transfer_col] = rnd_transfer[cand]
 
             # maintain cumulative exhaust total
             if rnd == 1:
@@ -318,14 +339,14 @@ def write_rcv_rounds(obj, results_dir):
             rcv_df.loc['colsum', rnd_transfer_col] = sum(rcv_df.loc[row_names, rnd_transfer_col])
             rcv_df.loc['colsum', rnd_percent_col] = sum(rcv_df.loc[row_names, rnd_percent_col])
 
-        # remove count columns
-        # for rnd in range(1, num_rounds + 1):
-        #     rcv_df = rcv_df.drop('r' + str(rnd) + '_count', axis=1)
+        # # convert from decimal to float
+        rcv_df.loc[row_names + ['colsum'], rcv_df.columns != "candidate"] = \
+            rcv_df.loc[row_names + ['colsum'], rcv_df.columns != "candidate"].astype(float).round(3)
 
         round_by_round_dir = results_dir + '/round_by_round'
         verifyDir(round_by_round_dir)
 
-        rcv_df.to_csv(round_by_round_dir + '/' + obj.ctx['unique_id'] + '_tab' + str(iTab) + '.csv', index=False)
+        rcv_df.to_csv(round_by_round_dir + '/' + obj.ctx['unique_id'] + '_tab' + str(iTab) + '_round_by_round.csv', index=False)
 
         if not os.path.isfile("docs/round_by_round_README.pdf"):
             print("missing README: docs/round_by_round_README.pdf")

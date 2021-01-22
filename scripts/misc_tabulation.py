@@ -1,3 +1,4 @@
+import decimal
 import os
 from statistics import median
 import pandas as pd
@@ -6,19 +7,18 @@ from itertools import combinations
 from copy import deepcopy
 
 # cruncher imports
-from .definitions import SKIPPEDRANK, OVERVOTE, WRITEIN, index_inf, replace, remove, remove_dup
+from .definitions import NAN, SKIPPEDRANK, OVERVOTE, WRITEIN, index_inf, replace, remove, remove_dup
 from .cache_helpers import save
 from .rcv_base import RCV
-from .ballots import ballots, cleaned_writeIns_merged, candidates_merged_writeIns, ballots_writeIns_merged
+from .ballots import ballots, cleaned_ballots, candidates
 
 
-@save
 def convert_cvr(ctx):
     """
     convert ballots read in with parser into common csv format.
     One ballot per row, columns: ID, extra_info, rank1, rank2 ...
     """
-    ballot_dict = deepcopy(ballots(ctx))
+    ballot_dict = deepcopy(ballots(ctx, combine_writeins=False))
     bs = ballot_dict['ranks']
     weight = ballot_dict['weight']
     del ballot_dict['ranks']
@@ -29,7 +29,6 @@ def convert_cvr(ctx):
 
     # replace constants with strings
     bs = [replace(SKIPPEDRANK, 'skipped', b) for b in bs]
-    bs = [replace(WRITEIN, 'writein', b) for b in bs]
     bs = [replace(OVERVOTE, 'overvote', b) for b in bs]
 
     # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
@@ -40,7 +39,7 @@ def convert_cvr(ctx):
 
     # are weights all one, then dont add to output
     if not all([i == 1 for i in weight]):
-        output_df['weight'] = weight
+        output_df['weight'] = [float(w) for w in weight]
 
     # add in rank columns
     for i in range(1, num_ranks + 1):
@@ -60,33 +59,32 @@ def cumulative_ranking_tables(ctx):
     """
 
     # get inputs
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
+    candidate_set = sorted(candidates(ctx))
 
     # ballot rank limit
     ballot_length = len(ballots(ctx)['ranks'][0])
 
     # get cleaned ballots
-    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
-    cleaned_ballots = [{'ranks': ranks + (['NA'] * (ballot_length - len(ranks))), 'weight': weight}
-                       for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
+    cleaned_dict = deepcopy(cleaned_ballots(ctx))
+    ballot_set = [{'ranks': ranks + (['NA'] * (ballot_length - len(ranks))), 'weight': weight}
+                  for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
     # total ballots
-    total_ballots = sum([d['weight'] for d in cleaned_ballots])
+    total_ballots = sum([d['weight'] for d in ballot_set])
 
     # create data frame that will be populated and output
     col_names = ["Rank " + str(i + 1) for i in range(ballot_length)] + ['Did Not Rank']
-    cumulative_percent_df = pd.DataFrame(np.NaN, index=candidate_set, columns=col_names)
-    cumulative_count_df = pd.DataFrame(np.NaN, index=candidate_set, columns=col_names)
+    cumulative_percent_df = pd.DataFrame(NAN, index=candidate_set, columns=col_names)
+    cumulative_count_df = pd.DataFrame(NAN, index=candidate_set, columns=col_names)
 
     # tally candidate counts by rank
     rank_counts = []
     for rank in range(0, ballot_length):
-        rank_cand_set = set([b['ranks'][rank] for b in cleaned_ballots]) - {'NA'}
+        rank_cand_set = set([b['ranks'][rank] for b in ballot_set]) - {'NA'}
         current_rank_count = {cand: 0 for cand in rank_cand_set}
         for cand in rank_cand_set:
-            current_rank_count[cand] = sum(b['weight'] for b in cleaned_ballots if cand == b['ranks'][rank])
+            current_rank_count[cand] = sum(b['weight'] for b in ballot_set if cand == b['ranks'][rank])
         rank_counts.append(current_rank_count)
-    #rank_counts = [Counter([b['ranks'][i] for b in cleaned_ballots]) for i in range(ballot_length)]
 
     # accumulate ballot counts that rank candidates
     cumulative_counter = {cand: 0 for cand in candidate_set}
@@ -96,15 +94,16 @@ def cumulative_ranking_tables(ctx):
             if cand in rank_counts[rank]:
                 cumulative_counter[cand] += rank_counts[rank][cand]
             # update tables
-            cumulative_count_df.loc[cand, 'Rank ' + str(rank + 1)] = float(cumulative_counter[cand])
-            cumulative_percent_df.loc[cand, 'Rank ' + str(rank + 1)] = float(
-                cumulative_counter[cand] * 100 / total_ballots)
+            cumulative_count_df.loc[cand, 'Rank ' + str(rank + 1)] = cumulative_counter[cand]
+            cumulative_percent_df.loc[cand, 'Rank ' + str(rank + 1)] = cumulative_counter[cand] * 100 / total_ballots
 
     # fill in Did Not Rank column
     for cand in candidate_set:
-        cumulative_count_df.loc[cand, 'Did Not Rank'] = float(total_ballots - cumulative_counter[cand])
-        cumulative_percent_df.loc[cand, 'Did Not Rank'] = float(
-            (total_ballots - cumulative_counter[cand]) * 100 / total_ballots)
+        cumulative_count_df.loc[cand, 'Did Not Rank'] = total_ballots - cumulative_counter[cand]
+        cumulative_percent_df.loc[cand, 'Did Not Rank'] = (total_ballots - cumulative_counter[cand]) * 100 / total_ballots
+
+    cumulative_count_df = cumulative_count_df.astype(float).round(3)
+    cumulative_percent_df = cumulative_percent_df.astype(float).round(3)
 
     return cumulative_count_df, cumulative_percent_df
 
@@ -119,20 +118,19 @@ def condorcet_tables(ctx):
 
     Symmetric cells about the diagonal should sum to 100 (for the percent table).
     """
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
-    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
-    cleaned_ballots = [{'ranks': ranks, 'weight': weight}
-                       for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
-
+    candidate_set = sorted(candidates(ctx))
+    cleaned_dict = deepcopy(cleaned_ballots(ctx))
+    ballot_set = [{'ranks': ranks, 'weight': weight}
+                  for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
     # create data frame that will be populated and output
-    condorcet_percent_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
-    condorcet_count_df = pd.DataFrame(np.NaN, index=candidate_set, columns=candidate_set)
+    condorcet_percent_df = pd.DataFrame(NAN, index=candidate_set, columns=candidate_set)
+    condorcet_count_df = pd.DataFrame(NAN, index=candidate_set, columns=candidate_set)
 
     # turn ballot-lists into ballot-dict with
     # key 'id' containing a unique integer id for the ballot
     # key 'ranks' containing the original ballot-list
-    ballot_dicts = [{'id': ind, 'ballot': ballot} for ind, ballot in enumerate(cleaned_ballots)]
+    ballot_dicts = [{'id': ind, 'ballot': ballot} for ind, ballot in enumerate(ballot_set)]
 
     # make dictionary with candidate as key, and value as list of ballot-dicts
     # that contain their name in any rank
@@ -164,8 +162,8 @@ def condorcet_tables(ctx):
                                        in zip(uniq_pair_ballots_weights, cand2_vs_cand1))
 
         # add counts to df
-        condorcet_count_df.loc[cand1, cand2] = float(cand1_vs_cand2_weightsum)
-        condorcet_count_df.loc[cand2, cand1] = float(cand2_vs_cand1_weightsum)
+        condorcet_count_df.loc[cand1, cand2] = cand1_vs_cand2_weightsum
+        condorcet_count_df.loc[cand2, cand1] = cand2_vs_cand1_weightsum
 
         # calculate percent
         if sum_weighted_ballots:
@@ -176,8 +174,8 @@ def condorcet_tables(ctx):
             cand2_percent = 0
 
         # add to df
-        condorcet_percent_df.loc[cand1, cand2] = float(cand1_percent)
-        condorcet_percent_df.loc[cand2, cand1] = float(cand2_percent)
+        condorcet_percent_df.loc[cand1, cand2] = cand1_percent
+        condorcet_percent_df.loc[cand2, cand1] = cand2_percent
 
     # find condorcet winner and set index name to include winner
     condorcet_winner = None
@@ -199,6 +197,10 @@ def condorcet_tables(ctx):
                     print("cannottt be more than one condorcet winner!!!!")
                     exit(1)
 
+    # convert decimal to float
+    condorcet_count_df = condorcet_count_df.astype(float).round(3)
+    condorcet_percent_df = condorcet_percent_df.astype(float).round(3)
+
     return condorcet_count_df, condorcet_percent_df, condorcet_winner
 
 
@@ -211,20 +213,19 @@ def first_second_tables(ctx):
     second table is percentages
     """
 
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
-    cleaned_dict = deepcopy(cleaned_writeIns_merged(ctx))
-    cleaned_ballots = [{'ranks': ranks, 'weight': weight}
-                       for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
-
+    candidate_set = sorted(candidates(ctx))
+    cleaned_dict = deepcopy(cleaned_ballots(ctx))
+    ballot_set = [{'ranks': ranks, 'weight': weight}
+                  for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
     # create data frame that will be populated and output
-    percent_no_exhaust_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set], columns=candidate_set)
-    percent_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
-    count_df = pd.DataFrame(np.NaN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
+    percent_no_exhaust_df = pd.DataFrame(NAN, index=['first_choice', *candidate_set], columns=candidate_set)
+    percent_df = pd.DataFrame(NAN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
+    count_df = pd.DataFrame(NAN, index=['first_choice', *candidate_set, 'exhaust'], columns=candidate_set)
 
     # group ballots by first choice
     first_choices = {cand: [] for cand in candidate_set}
-    for b in cleaned_ballots:
+    for b in ballot_set:
         if len(b['ranks']) >= 1:
             first_choices[b['ranks'][0]].append(b)
 
@@ -242,9 +243,9 @@ def first_second_tables(ctx):
         first_choice_count = sum([b['weight'] for b in first_choices[cand]])
         first_choice_percent = (first_choice_count / total_first_round_votes) * 100
 
-        count_df.loc['first_choice', cand] = float(first_choice_count)
-        percent_df.loc['first_choice', cand] = float(first_choice_percent)
-        percent_no_exhaust_df.loc['first_choice', cand] = float(first_choice_percent)
+        count_df.loc['first_choice', cand] = first_choice_count
+        percent_df.loc['first_choice', cand] = first_choice_percent
+        percent_no_exhaust_df.loc['first_choice', cand] = first_choice_percent
 
         ############################################################
         # calculate second choices, group second choices by candidate
@@ -283,10 +284,14 @@ def first_second_tables(ctx):
             else:
                 second_choice_percent_no_exhaust = (second_choice_count / total_second_choices_no_exhaust) * 100
 
-            count_df.loc[backup_cand, cand] = float(second_choice_count)
-            percent_df.loc[backup_cand, cand] = float(second_choice_percent)
+            count_df.loc[backup_cand, cand] = second_choice_count
+            percent_df.loc[backup_cand, cand] = second_choice_percent
             if backup_cand != 'exhaust':
-                percent_no_exhaust_df.loc[backup_cand, cand] = float(second_choice_percent_no_exhaust)
+                percent_no_exhaust_df.loc[backup_cand, cand] = second_choice_percent_no_exhaust
+
+    count_df = count_df.astype(float).round(3)
+    percent_df = percent_df.astype(float).round(3)
+    percent_no_exhaust_df = percent_no_exhaust_df.astype(float).round(3)
 
     return count_df, percent_df, percent_no_exhaust_df
 
@@ -294,16 +299,17 @@ def rank_usage_tables(ctx):
     """
     DOES NOT USE BALLOT WEIGHTS
     """
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
+    candidate_set = sorted(candidates(ctx, exclude_writeins=False))
 
     # remove skipped ranks
-    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots_writeIns_merged(ctx)['ranks']]
+    ballot_set = [remove(SKIPPEDRANK, b) for b in ballots(ctx)['ranks']]
+
     # remove empty ballots and those that start with overvote
-    cleaned_ranks = [b for b in cleaned_ranks if len(b) >= 1 and b[0] != OVERVOTE]
+    ballot_set = [b for b in ballot_set if len(b) >= 1 and b[0] != OVERVOTE]
     # remove other overvotes
-    cleaned_ranks = [remove(OVERVOTE, b) for b in cleaned_ranks]
+    ballot_set = [remove(OVERVOTE, b) for b in ballot_set]
     # remove duplicate rankings
-    cleaned_ranks = [remove_dup(b) for b in cleaned_ranks]
+    ballot_set = [remove_dup(b) for b in ballot_set]
 
     all_ballots_label = "Any candidate"
     n_ballots_label = "Number of Ballots (excluding undervotes and ballots with first round overvote)"
@@ -315,9 +321,9 @@ def rank_usage_tables(ctx):
     df = pd.DataFrame(index=rows, columns=cols)
     df.index.name = "Ballots with first choice:"
 
-    n_ballots = len(cleaned_ranks)
-    mean_rankings = sum(len(b) for b in cleaned_ranks)/n_ballots
-    median_rankings = median(len(b) for b in cleaned_ranks)
+    n_ballots = len(ballot_set)
+    mean_rankings = sum(len(b) for b in ballot_set)/n_ballots
+    median_rankings = median(len(b) for b in ballot_set)
 
     df.loc[all_ballots_label, n_ballots_label] = n_ballots
     df.loc[all_ballots_label, mean_label] = mean_rankings
@@ -325,7 +331,7 @@ def rank_usage_tables(ctx):
 
     # group ballots by first choice
     first_choices = {cand: [] for cand in candidate_set}
-    for b in cleaned_ranks:
+    for b in ballot_set:
         first_choices[b[0]].append(b)
 
     for cand in candidate_set:
@@ -341,13 +347,13 @@ def rank_usage_tables(ctx):
 
 def crossover_table(ctx):
 
-    candidate_set = sorted(candidates_merged_writeIns(ctx))
+    candidate_set = sorted(candidates(ctx, exclude_writeins=False))
 
-    rank_weights = deepcopy(ballots(ctx)['weight'])
-    cleaned_ranks = [remove(SKIPPEDRANK, b) for b in ballots_writeIns_merged(ctx)['ranks']]
-    cleaned_ballots = [{'ranks': ranks, 'weight': weight}
-                       for ranks, weight in zip(cleaned_ranks, rank_weights)]
-
+    ballot_dict = ballots(ctx)
+    ballot_weights = deepcopy(ballot_dict['weight'])
+    ranks = [remove(SKIPPEDRANK, b) for b in ballot_dict['ranks']]
+    ballot_set = [{'ranks': ranks, 'weight': weight}
+                  for ranks, weight in zip(ranks, ballot_weights)]
 
     index_label = "Ballots with first choice:"
     n_ballots_label = "Number of Ballots"
@@ -363,13 +369,13 @@ def crossover_table(ctx):
 
     # group ballots by first choice
     first_choices = {cand: [] for cand in candidate_set}
-    for b in cleaned_ballots:
+    for b in ballot_set:
         if len(b['ranks']) >= 1 and b['ranks'][0] != OVERVOTE:
             first_choices[b['ranks'][0]].append(b)
 
     for cand in candidate_set:
 
-        n_first_choice = float(sum(b['weight'] for b in first_choices[cand]))
+        n_first_choice = sum(b['weight'] for b in first_choices[cand])
         count_df.loc[cand, n_ballots_label] = n_first_choice
         percent_df.loc[cand, n_ballots_label] = n_first_choice
 
@@ -379,30 +385,33 @@ def crossover_table(ctx):
                 crossover_ballots = [True if opponent in b['ranks'][0:min(3, len(b['ranks']))] else False
                                      for b in first_choices[cand]]
                 crossover_val = sum(b['weight'] for b, flag in zip(first_choices[cand], crossover_ballots) if flag)
-                count_df.loc[cand, colname_dict[opponent]] = float(crossover_val)
-                percent_df.loc[cand, colname_dict[opponent]] = round(float(crossover_val)*100/n_first_choice, 2)
+                count_df.loc[cand, colname_dict[opponent]] = crossover_val
+                percent_df.loc[cand, colname_dict[opponent]] = crossover_val*100/n_first_choice
             else:
                 count_df.loc[cand, colname_dict[opponent]] = 0
                 percent_df.loc[cand, colname_dict[opponent]] = 0
 
+    # convert decimal to float
+    count_df = count_df.astype(float).round(3)
+    percent_df = percent_df.astype(float).round(3)
+
     return count_df, percent_df
 
 
-def first_choice_to_finalist_table(ctx):
-
-    rcv_obj = RCV.run_rcv(ctx)
+def first_choice_to_finalist_table(rcv_obj):
 
     dfs = []
-    for iTab in range(1, rcv_obj.n_tabulations()):
+    for iTab in range(1, rcv_obj.n_tabulations()+1):
 
         # who had any ballot weight allotted
         finalist_candidates = list(rcv_obj.finalist_candidates(tabulation_num=iTab)) + ['exhaust']
-        candidate_set = sorted(candidates_merged_writeIns(ctx))
-        cleaned_ballots = [{'ranks': ranks, 'weight': weight, 'weight_distrib': distrib}
-                           for ranks, weight, distrib
-                           in zip(rcv_obj.initial_ranks(tabulation_num=iTab),
-                                  rcv_obj.initial_weights(tabulation_num=iTab),
-                                  rcv_obj.get_final_weight_distrib(tabulation_num=1))]
+        candidate_set = sorted(candidates(rcv_obj.ctx))
+
+        ballot_set = [{'ranks': ranks, 'weight': weight, 'weight_distrib': distrib}
+                      for ranks, weight, distrib
+                      in zip(rcv_obj.get_initial_ranks(tabulation_num=iTab),
+                             rcv_obj.get_initial_weights(tabulation_num=iTab),
+                             rcv_obj.get_final_weight_distrib(tabulation_num=iTab))]
 
         index_label = "Ballots with first choice:"
         n_ballots_label = "Number of Ballots"
@@ -416,14 +425,14 @@ def first_choice_to_finalist_table(ctx):
 
         # group ballots by first choice
         first_choices = {cand: [] for cand in candidate_set}
-        for b in cleaned_ballots:
+        for b in ballot_set:
             if len(b['ranks']) >= 1 and b['ranks'][0] in first_choices:
                 first_choices[b['ranks'][0]].append(b)
 
         for cand in candidate_set:
 
             total_first_choice_ballots = sum(b['weight'] for b in first_choices[cand])
-            df.loc[cand, n_ballots_label] = float(total_first_choice_ballots)
+            df.loc[cand, n_ballots_label] = total_first_choice_ballots
 
             if total_first_choice_ballots:
 
@@ -437,15 +446,17 @@ def first_choice_to_finalist_table(ctx):
 
                 redistrib_total_check = 0
                 for opponent in redistrib:
-                    redistrib_percent = float(redistrib[opponent] / total_first_choice_ballots) * 100
-                    df.loc[cand, colname_dict[opponent]] = round(redistrib_percent, 2)
+                    redistrib_percent = redistrib[opponent] / total_first_choice_ballots * 100
+                    df.loc[cand, colname_dict[opponent]] = redistrib_percent
                     redistrib_total_check += redistrib_percent
-                df.loc[cand, 'percent_sum'] = float(redistrib_total_check)
+                df.loc[cand, 'percent_sum'] = redistrib_total_check
 
             else:
                 for opponent in finalist_candidates:
                     df.loc[cand, colname_dict[opponent]] = 0
                 df.loc[cand, 'percent_sum'] = 0
+
+        df = df.astype(float).round(3)
 
         dfs.append(df)
 

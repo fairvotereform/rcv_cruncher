@@ -1,13 +1,15 @@
 from abc import abstractmethod, ABC
 from collections import Counter
 import numpy as np
+from numpy.lib.arraysetops import isin
 import pandas as pd
 from inspect import signature
+import decimal
 
-from .ballots import candidates_merged_writeIns, cleaned_writeIns_merged, ballots_writeIns_merged
+from .ballots import candidates, cleaned_ballots
 from .cache_helpers import save
 from .rcv_reporting import RCV_Reporting
-from .definitions import remove, flatten_list, SKIPPEDRANK
+from .definitions import decimal2float, remove, flatten_list, NAN
 
 
 class RCV(RCV_Reporting, ABC):
@@ -18,7 +20,6 @@ class RCV(RCV_Reporting, ABC):
     """
 
     @staticmethod
-    @save
     def run_rcv(ctx):
         """
         Pass in a ctx dictionary and run the constructor function stored within it
@@ -56,9 +57,9 @@ class RCV(RCV_Reporting, ABC):
         """
         tabulation_list = list(range(1, self._tab_num+1))
         dct = {f.__name__:
-                   [f(tabulation_num=tabulation_list)]
+                   [decimal2float(f(tabulation_num=tabulation_list))]
                    if 'tabulation_num' in signature(f).parameters
-                   else [f()]
+                   else [decimal2float(f())]
                for f in self._contest_stats()}
         return pd.DataFrame.from_dict(dct)
 
@@ -83,9 +84,9 @@ class RCV(RCV_Reporting, ABC):
         """
         tabulation_list = list(range(1, self._tab_num+1))
         dct = {f.__name__:
-                   [f(tabulation_num=i) for i in tabulation_list]
+                   [decimal2float(f(tabulation_num=i)) for i in tabulation_list]
                    if 'tabulation_num' in signature(f).parameters
-                   else [f() for i in tabulation_list]
+                   else [decimal2float(f()) for i in tabulation_list]
                for f in self._tabulation_stats()}
         return pd.DataFrame.from_dict(dct)
 
@@ -148,8 +149,8 @@ class RCV(RCV_Reporting, ABC):
         # CONTEST INPUTS
         self._n_winners = ctx['num_winners']
         self._multi_winner_rounds = ctx['multi_winner_rounds']
-        self._candidate_set = candidates_merged_writeIns(ctx)
-        self._cleaned_dict = cleaned_writeIns_merged(ctx)
+        self._candidate_set = candidates(ctx)
+        self._cleaned_dict = cleaned_ballots(ctx)
         self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
                     for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
 
@@ -260,7 +261,7 @@ class RCV(RCV_Reporting, ABC):
                 self._calc_round_transfer()
             else:
                 self._tabulations[self._tab_num-1]['transfers'].append(
-                    {cand: np.NaN for cand in self._candidate_set.union({'exhaust'})})
+                    {cand: NAN for cand in self._candidate_set.union({'exhaust'})})
 
             #############################################
             # CLEAN ROUND BALLOTS
@@ -510,9 +511,9 @@ class RCV(RCV_Reporting, ABC):
     def n_tabulations(self):
         return self._tab_num
 
-    def compute_contest_stats(self):
-        return [f() for f in self._contest_stats()]
+    # def compute_contest_stats(self):
+    #     return [f() for f in self._contest_stats()]
 
-    def compute_tabulation_stats(self):
-        return [[f(tab_num=i) for f in self._tabulation_stats]
-                for i in range(1, self._tab_num+1)]
+    # def compute_tabulation_stats(self):
+    #     return [[f(tab_num=i) for f in self._tabulation_stats]
+    #             for i in range(1, self._tab_num+1)]

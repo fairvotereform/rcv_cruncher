@@ -3,7 +3,7 @@ When the 'cvr_ballot_allocation' option is marked as TRUE in the output_config.c
 These output files contain the per-ballot ranking information as well as columns that indicate how the ballot was allocated in the final round (whether for a candidate, exhausted, or undervote).
 
 These new columns are:
-*   allocationID - While some CVR files will give each ballot a unique ID, not all do. The ID contained in this column is unique to each individual input ballot. For non-fractional transfer elections, this column will just contain a unique value on each row. However, for fractional transfer elections, allocationIDs will be repeated across rows to indicate ballot fractions that come from the same input ballot.
+*   ballot_split_ID - While some CVR files will give each ballot a unique ID, not all do. The ID contained in this column is unique to each individual input ballot. For non-fractional transfer elections, this column will just contain a unique value on each row. However, for fractional transfer elections, ballot_split_IDs will be repeated across rows to indicate ballot fractions that come from the same input ballot.
 
 *   final_allocation - This column indicates which candidate the ballot counted for in the final round. If the ballot did not count for any candidates (undervote, exhausted), it is marked as 'inactive'.
 

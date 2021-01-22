@@ -122,6 +122,8 @@ def load_contest_set(contest_set_path, path_prefix=""):
             if d['candidate_map']:
                 d['candidate_map'] = path_prefix + "/" + d['candidate_map']
 
+    competitions = [comp for comp in competitions if 'ignore_contest' not in comp or comp['ignore_contest'] is False]
+
     return competitions
 
 
@@ -136,28 +138,3 @@ def read_output_config(contest_set_path):
     df = pd.read_csv(config_path)
     return {tabulation: to_run for tabulation, to_run in zip(df['tabulation'], df['run'])}
 
-
-def new_contest_set():
-    """
-    Creates a new contest set directory and blank contest set csv file
-    """
-    # create new directory
-    set_name = "contest_sets/new_contest_set"
-    verifyDir(set_name)
-
-    # create new contest set csv
-    colnames = ['contest', 'place', 'state', 'date', 'year',
-                'office', 'rcv_type', 'num_winners', 'break_on_overvote',
-                'break_on_repeated_skipvotes', 'multi_winner_rounds', 'parser',
-                'path', 'idparser', 'master_lookup', 'chp', 'candidate_map', 'state_code', 'county']
-    df = pd.DataFrame(columns=colnames)
-    df.to_csv(set_name + '/contest_set.csv', index=False)
-
-    # create new output config
-    tabulations = ['per_rcv_group_stats', 'per_rcv_type_stats', 'condorcet',
-                   'crossover_support', 'cumulative_rankings', 'first_choice_to_finalist',
-                   'first_second_choices', 'rank_usage', 'candidate_details', 'round_by_round']
-    df = pd.DataFrame()
-    df['tabulation'] = tabulations
-    df['run'] = True
-    df.to_csv(set_name + '/output_config.csv', index=False)
