@@ -1,0 +1,70 @@
+# This file exists so you can easily regenerate your project.
+#
+# `cookiepatcher` is a convenient shim around `cookiecutter`
+# for regenerating projects (it will generate a .cookiecutterrc
+# automatically for any template). To use it:
+#
+#    pip install cookiepatcher
+#    cookiepatcher gh:ionelmc/cookiecutter-pylibrary rcv_cruncher
+#
+# See:
+#    https://pypi.org/project/cookiepatcher
+#
+# Alternatively, you can run:
+#
+#    cookiecutter --overwrite-if-exists --config-file=rcv_cruncher/.cookiecutterrc gh:ionelmc/cookiecutter-pylibrary
+
+default_context:
+
+    _extensions:               ['jinja2_time.TimeExtension']
+    _template:                 'gh:ionelmc/cookiecutter-pylibrary'
+    allow_tests_inside_package: 'no'
+    appveyor:                  'yes'
+    c_extension_function:      'longest'
+    c_extension_module:        '_rcv_cruncher'
+    c_extension_optional:      'no'
+    c_extension_support:       'no'
+    c_extension_test_pypi:     'no'
+    c_extension_test_pypi_username: 'czawora'
+    codacy:                    'yes'
+    codacy_projectid:          '[![Codacy Badge](https://app.codacy.com/project/badge/Grade/64aee10ae16e407ab16b3e8a3e9b064e)](https://www.codacy.com/gh/fairvotereform/rcv_cruncher/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fairvotereform/rcv_cruncher&amp;utm_campaign=Badge_Grade)'
+    codeclimate:               'no'
+    codecov:                   'yes'
+    command_line_interface:    'plain'
+    command_line_interface_bin_name: 'rcv-cruncher'
+    coveralls:                 'yes'
+    coveralls_token:           'P8orECeS5LZEiZ0T6tiVvdJaNyGgdpN0j'
+    distribution_name:         'rcv-cruncher'
+    email:                     'christopher.zawora@gmail.com'
+    full_name:                 'Chris Zawora'
+    legacy_python:             'no'
+    license:                   'no'
+    linter:                    'flake8'
+    package_name:              'rcv_cruncher'
+    pre_commit:                'yes'
+    project_name:              'rcv_cruncher'
+    project_short_description: 'Analyze RCV elections'
+    pypi_badge:                'yes'
+    pypi_disable_upload:       'no'
+    release_date:              'today'
+    repo_hosting:              'github.com'
+    repo_hosting_domain:       'github.com'
+    repo_name:                 'rcv_cruncher'
+    repo_username:             'czawora'
+    requiresio:                'yes'
+    scrutinizer:               'no'
+    setup_py_uses_setuptools_scm: 'no'
+    setup_py_uses_test_runner: 'no'
+    sphinx_docs:               'yes'
+    sphinx_docs_hosting:       'https://rcv_cruncher.readthedocs.io/'
+    sphinx_doctest:            'no'
+    sphinx_theme:              'sphinx-rtd-theme'
+    test_matrix_configurator:  'no'
+    test_matrix_separate_coverage: 'no'
+    test_runner:               'pytest'
+    travis:                    'no'
+    travis_osx:                'no'
+    version:                   '0.0.0'
+    website:                   'https://github.com/fairvotereform/rcv_cruncher'
+    year_from:                 '2021'
+    year_to:                   '2021'

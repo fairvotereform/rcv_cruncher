@@ -1,0 +1,2 @@
+notes,jurisdiction,state,year,date,office,exhaust_on_overvote,exhaust_on_repeated_skipped_rankings,exhaust_on_duplicate_rankings,multi_winner_rounds,skip_writeins,combine_writeins,treat_combined_writeins_as_duplicates,master_lookup,candidate_map,parser,idparser,rcv_type,num_winners,cvr_path
+test1 rcv single winner,FV,FV,2020,1/1/1111,chief voter,TRUE,FALSE,FALSE,,,,,,,cruncher_csv,,rcv_single_winner,1,tests/contest_sets/tabulation_test/rcv_single_winner/test1/input/cvr.csv

@@ -1,0 +1,9 @@
+candidate,r1_count,r2_count,r3_count,r4_count,r5_count
+A,6,6,6,6,6
+B,8,8,8,8,10
+C,5,6,8,11,9
+D,3,3,3,0,0
+E,2,2,0,0,0
+F,1,0,0,0,0
+exhaust,0,0,0,0,0
+colsum,25,25,25,25,25

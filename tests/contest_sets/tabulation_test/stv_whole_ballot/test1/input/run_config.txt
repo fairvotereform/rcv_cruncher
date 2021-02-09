@@ -1,0 +1,16 @@
+per_rcv_group_stats 		= 	FALSE
+per_rcv_group_stats_fvDBfmt 	= 	FALSE
+per_rcv_type_stats 		= 	FALSE
+condorcet 			= 	FALSE
+crossover_support		= 	FALSE
+cumulative_rankings		= 	FALSE
+first_choice_to_finalist	= 	FALSE
+first_second_choices		= 	FALSE
+rank_usage			= 	FALSE
+candidate_details		= 	FALSE
+round_by_round		 	= 	FALSE
+ballot_stats_debug		= 	FALSE
+cvr_ballot_allocation		= 	TRUE
+convert_cvr 			= 	FALSE
+
+cvr_path_root 			= 	C:\Users\User\Documents\fairvote\projects\rcv_cruncher

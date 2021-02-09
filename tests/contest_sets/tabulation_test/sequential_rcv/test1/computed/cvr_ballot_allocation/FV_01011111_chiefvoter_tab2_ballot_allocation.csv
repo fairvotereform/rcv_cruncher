@@ -1,0 +1,15 @@
+ballot_split_ID,rank1,rank2,rank3,final_allocation,weight,inactive_type
+1,A,C,skipped,C,1.0,NA
+2,A,D,skipped,inactive,1.0,posttally_exhausted_by_abstention
+3,A,C,skipped,C,1.0,NA
+4,A,B,skipped,B,1.0,NA
+5,A,C,skipped,C,1.0,NA
+6,B,skipped,skipped,B,1.0,NA
+7,B,skipped,skipped,B,1.0,NA
+8,B,skipped,skipped,B,1.0,NA
+9,B,skipped,skipped,B,1.0,NA
+10,C,A,skipped,C,1.0,NA
+11,C,B,skipped,C,1.0,NA
+12,C,B,skipped,C,1.0,NA
+13,D,A,skipped,inactive,1.0,posttally_exhausted_by_abstention
+14,D,A,skipped,inactive,1.0,posttally_exhausted_by_abstention

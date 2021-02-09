@@ -1,0 +1,15 @@
+rank1,rank2,rank3
+A,C,skipped
+A,D,skipped
+A,C,skipped
+A,B,skipped
+A,C,skipped
+B,skipped,skipped
+B,skipped,skipped
+B,skipped,skipped
+B,skipped,skipped
+C,A,skipped
+C,B,skipped
+C,B,skipped
+D,A,skipped
+D,A,skipped

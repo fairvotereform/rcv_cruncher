@@ -1,0 +1,90 @@
+{
+    "notes": {
+        "type":	"str",
+        "default": ""
+    },
+    "state": {
+        "type":	"str",
+        "default": ""
+    },
+    "jurisdiction": {
+        "type": "str",
+        "default": ""
+    },
+    "year": {
+        "type":	"str",
+        "default": ""
+    },
+    "date": {
+        "type":	"str",
+        "default": ""
+    },
+    "office": {
+        "type":	"str",
+        "default": ""
+    },
+
+
+    "exhaust_on_overvote": {
+        "type":	"bool",
+        "default": false
+    },
+    "multi_winner_rounds": {
+        "type":	"bool",
+        "default": false
+    },
+    "exhaust_on_repeated_skipped_rankings": {
+        "type":	"bool",
+        "default": false
+    },
+    "exhaust_on_duplicate_rankings": {
+        "type":	"bool",
+        "default": false
+    },
+    "skip_writeins": {
+        "type":	"bool",
+        "default": false
+    },
+    "combine_writeins": {
+        "type":	"bool",
+        "default": false
+    },
+    "treat_combined_writeins_as_duplicates": {
+        "type":	"bool",
+        "default": false
+    },
+    "ignore_contest": {
+        "type":	"bool",
+        "default": false
+    },
+
+
+    "master_lookup": {
+        "type":	"str",
+        "default": "None"
+    },
+    "candidate_map": {
+        "type":	"str",
+        "default": "None"
+    },
+    "parser": {
+        "type":	"func",
+        "default": "None"
+    },
+    "idparser": {
+        "type":	"func",
+        "default": "None"
+    },
+    "num_winners": {
+        "type":	"int",
+        "default": "1"
+    },
+    "cvr_path": {
+        "type":	"str",
+        "default": "None"
+    },
+    "rcv_type": {
+        "type":	"func",
+        "default": "None"
+    }
+}

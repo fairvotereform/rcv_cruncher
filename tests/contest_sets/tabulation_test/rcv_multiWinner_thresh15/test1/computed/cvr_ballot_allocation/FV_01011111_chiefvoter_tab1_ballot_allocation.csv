@@ -1,0 +1,11 @@
+ballot_split_ID,rank1,rank2,rank3,final_allocation,weight,inactive_type
+1,A,skipped,skipped,A,1.0,NA
+2,A,skipped,skipped,A,1.0,NA
+3,A,skipped,skipped,A,1.0,NA
+4,B,skipped,skipped,B,1.0,NA
+5,B,skipped,skipped,B,1.0,NA
+6,B,skipped,skipped,B,1.0,NA
+7,C,skipped,skipped,C,1.0,NA
+8,C,skipped,skipped,C,1.0,NA
+9,C,skipped,skipped,C,1.0,NA
+10,D,A,skipped,A,1.0,NA
