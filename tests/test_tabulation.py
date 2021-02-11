@@ -23,7 +23,7 @@ def read_test_config(test_config_path):
     return test_config
 
 
-def test_tabulation(ballot_path):
+def test_tabulation(test_root_path, ballot_path):
 
     # check for skips
     # load test config
@@ -41,7 +41,7 @@ def test_tabulation(ballot_path):
         os.mkdir(computed_output_path)
 
     # generate computed results
-    contest_set, _ = contests.read_contest_set(contest_set_path)
+    contest_set, _ = contests.read_contest_set(contest_set_path, override_cvr_root_dir=test_root_path)
     rcv_obj = rcv_base.RCV.run_rcv(contest_set[0])
     computed_rbrs = misc_tabulation.round_by_round(rcv_obj)
 

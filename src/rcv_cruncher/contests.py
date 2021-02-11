@@ -75,7 +75,7 @@ def unique_id(ctx):
     return "_".join(cleaned_pieces)
 
 
-def read_contest_set(contest_set_path):
+def read_contest_set(contest_set_path, override_cvr_root_dir=None):
 
     # assemble typecast funcs
     cast_dict = {'str': cast_str, 'int': cast_int,
@@ -131,8 +131,8 @@ def read_contest_set(contest_set_path):
             run_config.update({field: run_config_settings[field]['default']})
 
     # make sure cvr path is provided
-    if not run_config['cvr_path_root']:
-        raise RuntimeError('No "cvr_path_root" provided in run_config.txt. This is required.')
+    # if not run_config['cvr_path_root']:
+    #     raise RuntimeError('No "cvr_path_root" provided in run_config.txt. This is required.')
 
     # read contest_set.csv
     contest_set_fpath = f'{contest_set_path}/contest_set.csv'
@@ -161,7 +161,11 @@ def read_contest_set(contest_set_path):
         d['unique_id'] = unique_id(d)
         d['contest_set_line_df'] = pd.DataFrame([[d[col].__name__ if callable(d[col]) else d[col] for col in cols_in_order]],
                                                 columns=cols_in_order)
-        d['cvr_path'] = f"{run_config['cvr_path_root']}/{d['cvr_path']}"
+        if override_cvr_root_dir:
+            d['cvr_path'] = f"{override_cvr_root_dir}/{d['cvr_path']}"
+        else:
+            d['cvr_path'] = f"{run_config['cvr_path_root']}/{d['cvr_path']}"
+
         if d['master_lookup']:
             d['master_lookup'] = f"{run_config['cvr_path_root']}/{d['master_lookup']}"
         if d['candidate_map']:
