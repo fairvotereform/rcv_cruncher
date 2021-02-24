@@ -1,11 +1,13 @@
 import os
+from threading import stack_size
 import time
-from collections import Counter
-from collections import defaultdict
-from copy import deepcopy
-from csv import writer
-from functools import wraps
-from inspect import signature
+import statistics
+import collections
+import copy
+import csv
+import functools
+import inspect
+from numpy.random import weibull
 
 import pandas as pd
 
@@ -34,13 +36,12 @@ def allow_list_args(f):
     a single value or list accordingly
     """
 
-    @wraps(f)
+    @functools.wraps(f)
     def wrapper(*args, **kwargs):
 
         # ensure there is a kwarg
         if 'tabulation_num' not in f.__kwdefaults__:
-            print("you must have tabulation_num as a keyword argument 'f(tabulation_num=1)'")
-            raise RuntimeError
+            raise RuntimeError("you must have tabulation_num as a keyword argument 'f(*, tabulation_num=1)'")
 
         # Used passed in arg or default if not passed
         if 'tabulation_num' in kwargs:
@@ -48,18 +49,21 @@ def allow_list_args(f):
         else:
             tabulation_num = f.__kwdefaults__['tabulation_num']
 
+        copy_kwargs = copy.deepcopy(kwargs)
+        del copy_kwargs['tabulation_num']
+
         # if list, return result of list comprehension over all elements as inputs
         # otherwise simply call the function
         if isinstance(tabulation_num, list):
-            return "; ".join([str(f(*args, tabulation_num=i)) for i in tabulation_num])
+            return "; ".join([str(f(*args, tabulation_num=i, **copy_kwargs)) for i in tabulation_num])
         else:
-            return f(*args, tabulation_num=tabulation_num)
+            return f(*args, tabulation_num=tabulation_num, **copy_kwargs)
 
     return wrapper
 
 
 def check_temp_dict(f):
-    @wraps(f)
+    @functools.wraps(f)
     def wrapper(self, *args, **kwargs):
 
         fname = f.__name__
@@ -84,7 +88,7 @@ def check_temp_dict(f):
 def write_func_time(id, fname, t):
     time_fpath = "contest_sets/reporting_time.csv"
     with open(time_fpath, 'a+', newline='') as write_obj:
-        csv_writer = writer(write_obj)
+        csv_writer = csv.writer(write_obj)
         if os.path.exists(time_fpath) and os.stat(time_fpath).st_size == 0:
             csv_writer.writerow(['id', 'function', 'time'])
         csv_writer.writerow([id, fname, t])
@@ -92,14 +96,14 @@ def write_func_time(id, fname, t):
 
 def timer(f):
     if use_timekeeping():
-        @wraps(f)
+        @functools.wraps(f)
         def timed(self, *args, **kwargs):
 
             ts = time.time()
             result = f(self, *args, **kwargs)
             te = time.time()
 
-            write_func_time(self.ctx['unique_id'], f.__name__, te - ts)
+            write_func_time(self.ctx['uid'], f.__name__, te - ts)
             return result
 
         return timed
@@ -126,10 +130,10 @@ class RCV_Reporting:
     ####################
     # STATS LISTS
 
-    def single_winner_stats(self):
+    def base_stats(self):
         return [
-            self.contest_name,
-            self.place,
+            self.notes,
+            self.jurisdiction,
             self.state,
             self.year,
             self.date,
@@ -148,24 +152,20 @@ class RCV_Reporting:
             self.winner,
             self.number_of_candidates,
             self.number_of_rounds,
-            self.final_round_winner_vote,
-            self.final_round_winner_percent,
-            self.final_round_active_votes,
-            self.first_round_winner_vote,
-            self.first_round_winner_percent,
-            self.first_round_active_votes,
-            self.first_round_winner_place,
-            self.final_round_winner_votes_over_first_round_valid,
             self.winners_consensus_value,
-            self.condorcet,
-            self.come_from_behind,
-            self.effective_ballot_length,
+            self.first_round_active_votes,
+            self.final_round_active_votes,
+        ]
+
+    def ballot_stats(self):
+        return [
             self.first_round_overvote,
             self.ranked_single,
             self.ranked_multiple,
             self.ranked_3_or_more,
+            self.mean_rankings_used,
+            self.median_rankings_used,
             self.total_fully_ranked,
-            self.ranked_winner,
             self.includes_duplicate_ranking,
             self.includes_skipped_ranking,
             self.total_irregular,
@@ -178,52 +178,62 @@ class RCV_Reporting:
             self.total_posttally_exhausted_by_skipped_rankings,
             self.total_posttally_exhausted_by_abstention,
             self.total_posttally_exhausted_by_rank_limit,
-            self.total_posttally_exhausted_by_duplicate_rankings]
+            self.total_posttally_exhausted_by_duplicate_rankings
+        ]
+
+    def split_stats(self):
+        return [
+            self.split_id,
+            self.split_field,
+            self.split_value,
+            self.split_first_round_overvote,
+            self.split_ranked_single,
+            self.split_ranked_multiple,
+            self.split_ranked_3_or_more,
+            self.split_mean_rankings_used,
+            self.split_median_rankings_used,
+            self.split_total_fully_ranked,
+            self.split_includes_duplicate_ranking,
+            self.split_includes_skipped_ranking,
+            self.split_total_irregular,
+            self.split_total_ballots,
+            self.split_total_ballots_with_overvote,
+            self.split_total_undervote,
+            self.split_total_pretally_exhausted,
+            self.split_total_posttally_exhausted,
+            self.split_total_posttally_exhausted_by_overvote,
+            self.split_total_posttally_exhausted_by_skipped_rankings,
+            self.split_total_posttally_exhausted_by_abstention,
+            self.split_total_posttally_exhausted_by_rank_limit,
+            self.split_total_posttally_exhausted_by_duplicate_rankings
+        ]
+
+    def single_winner_stats(self):
+        stat_list = [
+            self.first_round_winner_vote,
+            self.final_round_winner_vote,
+            self.first_round_winner_percent,
+            self.final_round_winner_percent,
+            self.first_round_winner_place,
+            self.final_round_winner_votes_over_first_round_valid,
+            self.condorcet,
+            self.come_from_behind,
+            self.effective_ballot_length,
+            self.ranked_winner
+        ]
+
+        if self.split_id():
+            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
+        else:
+            return self.base_stats() + stat_list + self.ballot_stats()
 
     def multi_winner_stats(self):
-        return [
-            self.contest_name,
-            self.place,
-            self.state,
-            self.year,
-            self.date,
-            self.office,
-            self.rcv_type,
-            self.exhaust_on_overvote,
-            self.exhaust_on_repeated_skipped_rankings,
-            self.exhaust_on_duplicate_rankings,
-            self.combine_writeins,
-            self.treat_combined_writeins_as_duplicates,
-            self.skip_writeins,
-            self.contest_rank_limit,
-            self.number_of_winners,
-            self.tabulation_num,
-            self.winner,
-            self.unique_id,
-            self.win_threshold,
-            self.number_of_candidates,
-            self.number_of_rounds,
-            self.winners_consensus_value,
-            self.total_ballots,
-            self.first_round_active_votes,
-            self.final_round_active_votes,
-            self.total_fully_ranked,
-            self.ranked_single,
-            self.ranked_multiple,
-            self.ranked_3_or_more,
-            self.total_undervote,
-            self.first_round_overvote,
-            self.total_ballots_with_overvote,
-            self.total_pretally_exhausted,
-            self.total_posttally_exhausted,
-            self.total_posttally_exhausted_by_overvote,
-            self.total_posttally_exhausted_by_skipped_rankings,
-            self.total_posttally_exhausted_by_abstention,
-            self.total_posttally_exhausted_by_rank_limit,
-            self.total_posttally_exhausted_by_duplicate_rankings,
-            self.includes_duplicate_ranking,
-            self.includes_skipped_ranking,
-            self.total_irregular]
+        stat_list = [self.win_threshold]
+
+        if self.split_id():
+            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
+        else:
+            return self.base_stats() + stat_list + self.ballot_stats()
 
     def ballot_debug_df(self, *, tabulation_num=1):
         """
@@ -249,29 +259,18 @@ class RCV_Reporting:
                      self.undervote,
                      self.irregular_bool]
 
-        dct = {f.__name__: f(tabulation_num=tabulation_num) if 'tabulation_num' in signature(f).parameters else f()
+        dct = {f.__name__: f(tabulation_num=tabulation_num) if 'tabulation_num' in inspect.signature(f).parameters else f()
                for f in func_list}
 
         # get ballot info
-        ballot_dict = deepcopy(ballots.input_ballots(self.ctx, combine_writeins=False))
+        ballot_dict = copy.deepcopy(ballots.input_ballots(self.ctx, combine_writeins=False))
         bs = ballot_dict['ranks']
-
-        # ballotIDs?
-        if 'ballotID' not in ballot_dict:
-            ballotIDs = {'ballotID': [i for i in range(1, len(bs) + 1)]}
-        else:
-            ballotIDs = {'ballotID': ballot_dict['ballotID']}
 
         # how many ranks?
         num_ranks = max(len(i) for i in bs)
 
-        # replace constants with strings
-        bs = [util.replace(util.BallotMarks.SKIPPEDRANK, 'skipped', b) for b in bs]
-        bs = [util.replace(util.BallotMarks.WRITEIN, 'writein', b) for b in bs]
-        bs = [util.replace(util.BallotMarks.OVERVOTE, 'overvote', b) for b in bs]
-
         # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
-        bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
+        bs = [b + ([util.BallotMarks.SKIPPEDRANK] * (num_ranks - len(b))) for b in bs]
 
         # add in rank columns
         ranks = {}
@@ -279,16 +278,22 @@ class RCV_Reporting:
             ranks['rank' + str(i)] = [b[i - 1] for b in bs]
 
         # assemble output_table, start with extras
-        return pd.DataFrame.from_dict({**ballotIDs, **ranks, **dct})
+        return pd.DataFrame.from_dict({**ranks, **dct})
 
     ####################
     # CONTEST INFO
 
-    def contest_name(self):
-        return self.ctx['contest']
+    def conditional_weighted_sum(self, condition, *, weights=None):
+        if weights:
+            return sum(weight for weight, cond in zip(weights, condition) if cond)
+        else:
+            return sum(weight for weight, cond in zip(self._cleaned_dict['weight'], condition) if cond)
 
-    def place(self):
-        return self.ctx['place']
+    def notes(self):
+        return self.ctx['notes']
+
+    def jurisdiction(self):
+        return self.ctx['jurisdiction']
 
     def state(self):
         return self.ctx['state']
@@ -323,9 +328,36 @@ class RCV_Reporting:
     def treat_combined_writeins_as_duplicates(self):
         return self.ctx['treat_combined_writeins_as_duplicates']
 
-    @allow_list_args
-    def unique_id(self, *, tabulation_num=1):
-        return self.ctx['unique_id'] + '_tab' + str(tabulation_num)
+    def unique_id(self):
+        """
+        Unique id for each contest. Combination of jurisdiction, date, and office.
+        """
+        return self.ctx['uid']
+
+    def split_id(self):
+        """
+        String describing which field and value the cvr ballots were filtered on. If no filtering done, it is empty.
+        """
+        return self.ctx['split_id']
+
+    def split_field(self):
+        return self.ctx['split_field']
+
+    def split_value(self):
+        return self.ctx['split_value']
+
+    def file_stub(self, *, tabulation_num=None):
+
+        stub = ""
+        if not self.ctx['split_id']:
+            stub += self.ctx['uid']
+        else:
+            stub += self.ctx['split_id']
+
+        if tabulation_num:
+            stub += '_tab-' + str(tabulation_num)
+
+        return stub
 
     ####################
     # OUTCOME STATS
@@ -362,7 +394,7 @@ class RCV_Reporting:
         winner = self.tabulation_winner(tabulation_num=tabulation_num)[0]
         losers = [cand for cand in cands if cand != winner]
 
-        net = Counter()
+        net = collections.Counter()
         for b in ballots.cleaned_ballots(self.ctx)['ranks']:
             for loser in losers:
 
@@ -502,10 +534,11 @@ class RCV_Reporting:
     @allow_list_args
     def ranked_winner(self, *, tabulation_num=1):
         """
-        Number of ballots with a non-overvote mark for the winner
+        Number of ballots with a non-overvote mark for the winner. (weighted) (filtered)
         """
         winners = self.tabulation_winner(tabulation_num=tabulation_num)
-        return sum(bool(set(winners).intersection(b)) for b in ballots.input_ballots(self.ctx)['ranks'])
+        winner_marked = [bool(set(winners).intersection(b)) for b in ballots.input_ballots(self.ctx)['ranks']]
+        return self.conditional_weighted_sum(winner_marked)
 
     @allow_list_args
     def win_threshold(self, *, tabulation_num=1):
@@ -544,17 +577,6 @@ class RCV_Reporting:
         return (self.winner_in_top_3(tabulation_num=tabulation_num) /
                 self.first_round_active_votes(tabulation_num=tabulation_num)) * 100
 
-    def winner_ranking(self):
-        """
-        Returns a dictionary with ranking-count key-values, with count
-        indicating the number of ballots in which the winner received each
-        ranking.
-        If more than one winner is elected in the contest, the value returned for this function refers to the
-        first winner elected.
-        """
-        return Counter(b.index(self.all_winner()[0]) + 1 if self.all_winner()[0] in b else None
-                       for b in ballots.cleaned_ballots(self.ctx)['ranks'])
-
     @allow_list_args
     def winner_in_top_3(self, *, tabulation_num=1):
         """
@@ -562,8 +584,8 @@ class RCV_Reporting:
         """
         winner = self.tabulation_winner(tabulation_num=tabulation_num)
         top3 = [b[:min(3, len(b))] for b in ballots.input_ballots(self.ctx)['ranks']]
-        top3_check = [set(winner).intersection(b) for b in top3]
-        return sum([weight * bool(top3) for weight, top3 in zip(ballots.input_ballots(self.ctx)['weight'], top3_check)])
+        top3_check = [bool(set(winner).intersection(b)) for b in top3]
+        return self.conditional_weighted_sum(top3_check)
 
     def duplicates(self):
         """
@@ -575,7 +597,7 @@ class RCV_Reporting:
               for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
         bs = [util.remove(util.BallotMarks.OVERVOTE, b) for b in bs]
         # count all ranks for candidates
-        counters = [Counter(b) for b in bs]
+        counters = [collections.Counter(b) for b in bs]
         # check if any candidates were ranked more than once
         bools = [max(counter.values()) > 1 if counter else False for counter in counters]
         return bools
@@ -586,7 +608,7 @@ class RCV_Reporting:
         valid choices. (weighted)
         """
         ballot_dict = ballots.cleaned_ballots(self.ctx)
-        counts = defaultdict(int)
+        counts = collections.defaultdict(int)
         for ranks, weight in zip(ballot_dict['ranks'], ballot_dict['weight']):
             counts[len(ranks)] += weight
         return '; '.join('{}: {}'.format(a, b) for a, b in sorted(counts.items()))
@@ -817,8 +839,7 @@ class RCV_Reporting:
 
         Other jursidictions (Minneapolis) simply skip over overvotes in a ballot.
         '''
-        return sum([weight * flag for weight, flag
-                    in zip(ballots.input_ballots(self.ctx)['weight'], self.first_round_overvote_bool())])
+        return self.conditional_weighted_sum(self.first_round_overvote_bool())
 
     def used_last_rank(self):
         """
@@ -846,14 +867,13 @@ class RCV_Reporting:
         '''
         The number of ballots that rank the same candidate more than once. (weighted)
         '''
-        # return weighted sum
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.duplicates())])
+        return self.conditional_weighted_sum(self.duplicates())
 
     def includes_skipped_ranking(self):
         """
         The number of ballots that have an skipped ranking followed by any other marked ranking. (weighted)
         """
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.skipped())])
+        return self.conditional_weighted_sum(self.skipped())
 
     def overvote(self):
         return [util.BallotMarks.OVERVOTE in b for b in ballots.input_ballots(self.ctx)['ranks']]
@@ -874,17 +894,17 @@ class RCV_Reporting:
         """
         The number of voters that validly used only a single ranking. (weighted)
         """
-        return sum(weight * flag for weight, flag
-                   in zip(ballots.input_ballots(self.ctx)['weight'], self.ranked_single_bool()))
+        return self.conditional_weighted_sum(self.ranked_single_bool())
+
+    def ranked_3_or_more_bool(self):
+        return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) >= 3
+                for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
 
     def ranked_3_or_more(self):
         """
         The number of voters that validly used 3 or more rankings. (weighted)
         """
-        bools = [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) >= 3
-                 for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
-        return sum(weight * flag for weight, flag
-                   in zip(ballots.input_ballots(self.ctx)['weight'], bools))
+        return self.conditional_weighted_sum(self.ranked_3_or_more_bool())
 
     def ranked_multiple_bool(self):
         return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) > 1
@@ -894,8 +914,31 @@ class RCV_Reporting:
         """
         The number of voters that validly use more than one ranking. (weighted)
         """
-        return sum(weight * flag for weight, flag
-                   in zip(ballots.input_ballots(self.ctx)['weight'], self.ranked_multiple_bool()))
+        return self.conditional_weighted_sum(self.ranked_multiple_bool())
+
+    def mean_rankings_used(self):
+        """
+        Mean number of validly used rankings across all non-undervote ballots. (weighted)
+        """
+        # remove duplicate rankings
+        ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
+        weights = ballots.input_ballots(self.ctx)['weight']
+
+        numer = sum(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
+                    for b, w, under in zip(ballot_set, weights, self.undervote()) if not under)
+        return float(numer)/self.total_ballots()
+
+    def median_rankings_used(self):
+        """
+        Median number of validly used rankings across all non-undervote ballots. (weighted)
+        """
+        # remove duplicate rankings
+        ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
+        weights = ballots.input_ballots(self.ctx)['weight']
+
+        val = statistics.median(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
+                                for b, w, under in zip(ballot_set, weights, self.undervote()) if not under)
+        return val
 
     def repeated_skipvote_ind(self):
         """
@@ -956,18 +999,16 @@ class RCV_Reporting:
         Number of ballots (excluding undervotes) that do not rank a finalist or
         were exhausted from overvotes/skipped ranks rules after being active in the first round. (weighted)
         """
-        return sum(weight * flag for weight, flag
-                   in zip(self.get_final_weights(tabulation_num=tabulation_num),
-                          self.posttally_exhausted(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_pretally_exhausted(self, *, tabulation_num=1):
         """
         Number of ballots that were exhausted prior to the first round count. (weighted)
         """
-        return sum(weight * flag for weight, flag
-                   in zip(self.get_final_weights(tabulation_num=tabulation_num),
-                          self.pretally_exhausted(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.pretally_exhausted(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_posttally_exhausted_by_abstention(self, *, tabulation_num=1):
@@ -975,9 +1016,8 @@ class RCV_Reporting:
         Number of initially (reached first round count) active ballots exhausted after all marked rankings used and
         no finalists are present on the ballot. (weighted)
         """
-        return sum(weight * flag for weight, flag in
-                   zip(self.get_final_weights(tabulation_num=tabulation_num),
-                       self.posttally_exhausted_by_abstention(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted_by_abstention(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_posttally_exhausted_by_overvote(self, *, tabulation_num=1):
@@ -985,9 +1025,8 @@ class RCV_Reporting:
         Number of ballots exhausted due to overvote that were initially active in the first round.
         Only applicable to certain contests. (weighted)
         """
-        return sum(weight * flag for weight, flag in
-                   zip(self.get_final_weights(tabulation_num=tabulation_num),
-                       self.posttally_exhausted_by_overvote(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted_by_overvote(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
@@ -996,40 +1035,37 @@ class RCV_Reporting:
         no finalists are present on the ballot. Ballots are only considered as exhausted by rank limit if the final rank
         on the ballot was marked and the contest imposed a restrictive rank limit on voters. (weighted)
         """
-        return sum(weight * flag for weight, flag in
-                   zip(self.get_final_weights(tabulation_num=tabulation_num),
-                       self.posttally_exhausted_by_rank_limit(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted_by_rank_limit(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_posttally_exhausted_by_duplicate_rankings(self, *, tabulation_num=1):
         """
         Number of ballots exhausted due to duplicate rankings. Only applicable to certain contests.(weighted)
         """
-        return sum(weight * flag for weight, flag in
-                   zip(self.get_final_weights(tabulation_num=tabulation_num),
-                       self.posttally_exhausted_by_duplicate_rankings(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted_by_duplicate_rankings(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     @allow_list_args
     def total_posttally_exhausted_by_skipped_rankings(self, *, tabulation_num=1):
         """
         Number of ballots exhausted due to repeated skipped rankings. Only applicable to certain contests.(weighted)
         """
-        return sum(weight * flag for weight, flag in
-                   zip(self.get_final_weights(tabulation_num=tabulation_num),
-                       self.posttally_exhausted_by_skipvote(tabulation_num=tabulation_num)))
+        return self.conditional_weighted_sum(self.posttally_exhausted_by_skipvote(tabulation_num=tabulation_num),
+                                             weights=self.get_final_weights(tabulation_num=tabulation_num))
 
     def total_ballots_with_overvote(self):
         """
         Number of ballots with at least one overvote. Not necessarily cause of exhaustion. (weighted)
         """
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.overvote())])
+        return self.conditional_weighted_sum(self.overvote())
 
     def total_fully_ranked(self):
         """
         The number of voters that have validly used all available rankings on the
         ballot, or that have validly ranked all non-write-in candidates. (weighted)
         """
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.fully_ranked())])
+        return self.conditional_weighted_sum(self.fully_ranked())
 
     def irregular_bool(self):
         return [True if a or b or c else False for a, b, c in zip(self.duplicates(), self.overvote(), self.skipped())]
@@ -1040,16 +1076,118 @@ class RCV_Reporting:
         or a skipped ranking (only those followed by a mark). This includes ballots even where the irregularity was not
         the cause of exhaustion. (weighted)
         """
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.irregular_bool())])
+        return self.conditional_weighted_sum(self.irregular_bool())
 
     def total_undervote(self):
         """
         Ballots completely made up of skipped rankings (no marks). (weighted)
         """
-        return sum([weight * flag for weight, flag in zip(ballots.input_ballots(self.ctx)['weight'], self.undervote())])
+        return self.conditional_weighted_sum(self.undervote())
 
     def undervote(self):
         """
         Returns a boolean list with True indicating ballots that were undervotes (left blank)
         """
         return [set(x) == {util.BallotMarks.SKIPPEDRANK} for x in ballots.input_ballots(self.ctx)['ranks']]
+
+    def split_first_round_overvote(self):
+        anded = [a and b for a, b in zip(self.first_round_overvote_bool(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_ranked_single(self):
+        anded = [a and b for a, b in zip(self.ranked_single_bool(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_ranked_multiple(self):
+        anded = [a and b for a, b in zip(self.ranked_multiple_bool(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_ranked_3_or_more(self):
+        anded = [a and b for a, b in zip(self.ranked_3_or_more_bool(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_mean_rankings_used(self):
+
+        # remove duplicate rankings
+        ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
+        weights = ballots.input_ballots(self.ctx)['weight']
+
+        numer = sum(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
+                    for b, w, under, cond in zip(ballot_set, weights, self.undervote(), self.split_filter())
+                    if not under and cond)
+        return float(numer)/self.split_total_ballots()
+
+    def split_median_rankings_used(self):
+        """
+        Median number of validly used rankings across all non-undervote ballots. (weighted)
+        """
+        # remove duplicate rankings
+        ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
+        weights = ballots.input_ballots(self.ctx)['weight']
+
+        val = statistics.median(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
+                                for b, w, under, cond in zip(ballot_set, weights, self.undervote(), self.split_filter())
+                                if not under and cond)
+        return val
+
+    def split_total_fully_ranked(self):
+        anded = [a and b for a, b in zip(self.fully_ranked(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_includes_duplicate_ranking(self):
+        anded = [a and b for a, b in zip(self.duplicates(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_includes_skipped_ranking(self):
+        anded = [a and b for a, b in zip(self.skipped(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_total_irregular(self):
+        anded = [a and b for a, b in zip(self.irregular_bool(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_total_ballots(self):
+        return self.conditional_weighted_sum(self.split_filter())
+
+    def split_total_ballots_with_overvote(self):
+        anded = [a and b for a, b in zip(self.overvote(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    def split_total_undervote(self):
+        anded = [a and b for a, b in zip(self.undervote(), self.split_filter())]
+        return self.conditional_weighted_sum(anded)
+
+    @allow_list_args
+    def split_total_pretally_exhausted(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.pretally_exhausted(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted_by_overvote(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted_by_overvote(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted_by_skipped_rankings(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted_by_skipvote(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted_by_abstention(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted_by_abstention(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted_by_rank_limit(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))
+
+    @allow_list_args
+    def split_total_posttally_exhausted_by_duplicate_rankings(self, *, tabulation_num=1):
+        anded = [a and b for a, b in zip(self.posttally_exhausted_by_duplicate_rankings(), self.split_filter())]
+        return self.conditional_weighted_sum(anded, weights=self.get_final_weights(tabulation_num=tabulation_num))

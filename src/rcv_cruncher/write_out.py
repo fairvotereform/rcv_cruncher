@@ -12,31 +12,32 @@ def write_converted_cvr(contest, results_dir):
     """
     Convert cvr into common csv format and write out
     """
-    outfile = results_dir + "/" + contest["unique_id"] + ".csv"
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    outfile = results_dir / f"{uid}.csv"
 
     if os.path.isfile(outfile) is False:
         cvr = misc_tabulation.convert_cvr(contest)
-        cvr.to_csv(outfile, index=False)
+        cvr.to_csv(util.longname(outfile), index=False)
 
     # copy readme into output folder
-    if not os.path.isfile("docs/converted_cvr_README.pdf"):
-        print("missing README: docs/converted_cvr_README.pdf")
-    else:
-        shutil.copy2("docs/converted_cvr_README.pdf", results_dir)
+    # if not os.path.isfile("docs/converted_cvr_README.pdf"):
+    #     print("missing README: docs/converted_cvr_README.pdf")
+    # else:
+    #     shutil.copy2("docs/converted_cvr_README.pdf", results_dir)
 
 
 def write_converted_cvr_annotated(rcv_obj, results_dir):
     """
     Convert cvr into common csv format, with appended columns and write out
     """
-    cvr_allocation_dir = results_dir + '/cvr_ballot_allocation'
+    cvr_allocation_dir = results_dir / 'cvr_ballot_allocation'
     util.verifyDir(cvr_allocation_dir)
 
     # copy readme into output folder
-    if not os.path.isfile("docs/cvr_ballot_allocation_README.pdf"):
-        print("missing README: docs/cvr_ballot_allocation_README.pdf")
-    else:
-        shutil.copy2("docs/cvr_ballot_allocation_README.pdf", cvr_allocation_dir)
+    # if not os.path.isfile("docs/cvr_ballot_allocation_README.pdf"):
+    #     print("missing README: docs/cvr_ballot_allocation_README.pdf")
+    # else:
+    #     shutil.copy2("docs/cvr_ballot_allocation_README.pdf", cvr_allocation_dir)
 
     for iTab in range(1, rcv_obj.n_tabulations()+1):
 
@@ -72,14 +73,6 @@ def write_converted_cvr_annotated(rcv_obj, results_dir):
         # inactive_type column
         cvr.loc[cvr['inactive_type'] != 'empty', 'inactive_type'] = 'NA'
         cvr.loc[cvr['inactive_type'] == 'empty', 'inactive_type'] = cvr.loc[cvr['inactive_type'] == 'empty', 'exhaustion_check']
-        cvr['inactive_type'] = cvr['inactive_type'].replace(to_replace={
-            util.InactiveType.POSTTALLY_EXHAUSTED_BY_OVERVOTE: 'posttally_exhausted_by_overvote',
-            util.InactiveType.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE: 'posttally_exhausted_by_repeated_skipped_ranking',
-            util.InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT: 'posttally_exhausted_by_rank_limit',
-            util.InactiveType.POSTTALLY_EXHAUSTED_BY_ABSTENTION: 'posttally_exhausted_by_abstention',
-            util.InactiveType.UNDERVOTE: 'undervote',
-            util.InactiveType.PRETALLY_EXHAUST: 'pretally_exhaust'
-        })
 
         # final_allocation_column
         cvr['final_allocation'] = cvr['final_allocation'].replace(to_replace="empty", value="inactive")
@@ -92,8 +85,9 @@ def write_converted_cvr_annotated(rcv_obj, results_dir):
         ballot_split_ID_col = cvr.pop('ballot_split_ID')
         cvr.insert(0, 'ballot_split_ID', ballot_split_ID_col)
 
-        outfile = cvr_allocation_dir + "/" + rcv_obj.unique_id(tabulation_num=iTab) + "_ballot_allocation.csv"
-        cvr.to_csv(outfile, index=False)
+        uid = rcv_obj.file_stub(tabulation_num=iTab)
+        outfile = cvr_allocation_dir / f'{uid}_ballot_allocation.csv'
+        cvr.to_csv(util.longname(outfile), index=False)
 
 
 def write_condorcet_tables(contest, results_dir):
@@ -110,17 +104,18 @@ def write_condorcet_tables(contest, results_dir):
     counts.index.name = condorcet_str
     percents.index.name = condorcet_str
 
-    condorcet_table_dir = results_dir + '/condorcet'
+    condorcet_table_dir = results_dir / 'condorcet'
     util.verifyDir(condorcet_table_dir)
 
-    counts.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_condorcet_count.csv", float_format="%.2f")
-    percents.to_csv(condorcet_table_dir + "/" + contest["unique_id"] + "_condorcet_percent.csv", float_format="%.2f")
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    counts.to_csv(util.longname(condorcet_table_dir / f"{uid}_condorcet_count.csv"), float_format="%.2f")
+    percents.to_csv(util.longname(condorcet_table_dir / f"{uid}_condorcet_percent.csv"), float_format="%.2f")
 
     # copy readme into output folder
-    if not os.path.isfile("docs/condorcet_README.pdf"):
-        print("missing README: docs/condorcet_README.pdf")
-    else:
-        shutil.copy2("docs/condorcet_README.pdf", condorcet_table_dir)
+    # if not os.path.isfile("docs/condorcet_README.pdf"):
+    #     print("missing README: docs/condorcet_README.pdf")
+    # else:
+    #     shutil.copy2("docs/condorcet_README.pdf", condorcet_table_dir)
 
 
 def write_first_second_tables(contest, results_dir):
@@ -129,19 +124,19 @@ def write_first_second_tables(contest, results_dir):
     """
     counts, percents, percents_no_exhaust = misc_tabulation.first_second_tables(contest)
 
-    first_second_table_dir = results_dir + '/first_second'
+    first_second_table_dir = results_dir / 'first_second'
     util.verifyDir(first_second_table_dir)
 
-    counts.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_count.csv", float_format="%.2f")
-    percents.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_percent.csv", float_format="%.2f")
-    percents_no_exhaust.to_csv(first_second_table_dir + "/" + contest["unique_id"] + "_first_second_choices_percent_no_exhaust.csv",
-                               float_format="%.2f")
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    counts.to_csv(util.longname(first_second_table_dir / f"{uid}_first_second_choices_count.csv"), float_format="%.2f")
+    percents.to_csv(util.longname(first_second_table_dir / f"{uid}_first_second_choices_percent.csv"), float_format="%.2f")
+    percents_no_exhaust.to_csv(util.longname(first_second_table_dir / f"{uid}_first_second_choices_percent_no_exhaust.csv"), float_format="%.2f")
 
     # copy readme into output folder
-    if not os.path.isfile("docs/first_second_README.pdf"):
-        print("missing README: docs/first_second_README.pdf")
-    else:
-        shutil.copy2("docs/first_second_README.pdf", first_second_table_dir)
+    # if not os.path.isfile("docs/first_second_README.pdf"):
+    #     print("missing README: docs/first_second_README.pdf")
+    # else:
+    #     shutil.copy2("docs/first_second_README.pdf", first_second_table_dir)
 
 
 def write_cumulative_ranking_tables(contest, results_dir):
@@ -150,17 +145,18 @@ def write_cumulative_ranking_tables(contest, results_dir):
     """
     counts, percents = misc_tabulation.cumulative_ranking_tables(contest)
 
-    cumulative_ranking_dir = results_dir + '/cumulative_ranking'
+    cumulative_ranking_dir = results_dir / 'cumulative_ranking'
     util.verifyDir(cumulative_ranking_dir)
 
-    counts.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_cumulative_ranking_count.csv", float_format="%.2f")
-    percents.to_csv(cumulative_ranking_dir + "/" + contest['unique_id'] + "_cumulative_ranking_percent.csv", float_format="%.2f")
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    counts.to_csv(util.longname(cumulative_ranking_dir / f"{uid}_cumulative_ranking_count.csv"), float_format="%.2f")
+    percents.to_csv(util.longname(cumulative_ranking_dir / f"{uid}_cumulative_ranking_percent.csv"), float_format="%.2f")
 
     # copy readme into output folder
-    if not os.path.isfile("docs/cumulative_ranking_README.pdf"):
-        print("missing README: docs/cumulative_ranking_README.pdf")
-    else:
-        shutil.copy2("docs/cumulative_ranking_README.pdf", cumulative_ranking_dir)
+    # if not os.path.isfile("docs/cumulative_ranking_README.pdf"):
+    #     print("missing README: docs/cumulative_ranking_README.pdf")
+    # else:
+    #     shutil.copy2("docs/cumulative_ranking_README.pdf", cumulative_ranking_dir)
 
 
 def write_rank_usage_tables(contest, results_dir):
@@ -169,16 +165,17 @@ def write_rank_usage_tables(contest, results_dir):
     """
     df = misc_tabulation.rank_usage_tables(contest)
 
-    rank_usage_table_dir = results_dir + '/rank_usage'
+    rank_usage_table_dir = results_dir / 'rank_usage'
     util.verifyDir(rank_usage_table_dir)
 
-    df.to_csv(rank_usage_table_dir + "/" + contest['unique_id'] + '_rank_usage.csv', float_format='%.2f')
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    df.to_csv(util.longname(rank_usage_table_dir / f'{uid}_rank_usage.csv'), float_format='%.2f')
 
     # copy readme into output folder
-    if not os.path.isfile("docs/rank_usage_README.pdf"):
-        print("missing README: docs/rank_usage_README.pdf")
-    else:
-        shutil.copy2("docs/rank_usage_README.pdf", rank_usage_table_dir)
+    # if not os.path.isfile("docs/rank_usage_README.pdf"):
+    #     print("missing README: docs/rank_usage_README.pdf")
+    # else:
+    #     shutil.copy2("docs/rank_usage_README.pdf", rank_usage_table_dir)
 
 
 def write_opponent_crossover_tables(contest, results_dir):
@@ -187,11 +184,12 @@ def write_opponent_crossover_tables(contest, results_dir):
     """
     count_df, percent_df = misc_tabulation.crossover_table(contest)
 
-    opponent_crossover_table_dir = results_dir + '/crossover_support'
+    opponent_crossover_table_dir = results_dir / 'crossover_support'
     util.verifyDir(opponent_crossover_table_dir)
 
-    count_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_crossover_support_count.csv', float_format='%.2f')
-    percent_df.to_csv(opponent_crossover_table_dir + "/" + contest['unique_id'] + '_crossover_support_percent.csv', float_format='%.2f')
+    uid = contest['uid'] if not contest.get('split_id') else contest.get('split_id')
+    count_df.to_csv(util.longname(opponent_crossover_table_dir / f'{uid}_crossover_support_count.csv'), float_format='%.2f')
+    percent_df.to_csv(util.longname(opponent_crossover_table_dir / f'{uid}_crossover_support_percent.csv'), float_format='%.2f')
 
 
 def write_first_to_finalist_tables(rcv_obj, results_dir):
@@ -200,21 +198,21 @@ def write_first_to_finalist_tables(rcv_obj, results_dir):
     to eventual finalists.
     """
 
-    first_to_finalist_table_dir = results_dir + '/first_choice_to_finalist'
+    first_to_finalist_table_dir = results_dir / 'first_choice_to_finalist'
     util.verifyDir(first_to_finalist_table_dir)
 
     dfs = misc_tabulation.first_choice_to_finalist_table(rcv_obj)
 
     for iTab in range(1, len(dfs) + 1):
-        uid = rcv_obj.ctx["unique_id"]
-        csv_fname = f'{first_to_finalist_table_dir}/{uid}_tab{iTab}_first_to_finalist.csv'
-        dfs[iTab-1].to_csv(csv_fname, float_format='%.2f')
+        uid = rcv_obj.file_stub(tabulation_num=iTab)
+        csv_fname = first_to_finalist_table_dir / f'{uid}_first_to_finalist.csv'
+        dfs[iTab-1].to_csv(util.longname(csv_fname), float_format='%.2f')
 
     # copy readme into output folder
-    if not os.path.isfile("docs/first_choice_to_finalist_README.pdf"):
-        print("missing README: docs/first_choice_to_finalist_README.pdf")
-    else:
-        shutil.copy2("docs/first_choice_to_finalist_README.pdf", first_to_finalist_table_dir)
+    # if not os.path.isfile("docs/first_choice_to_finalist_README.pdf"):
+    #     print("missing README: docs/first_choice_to_finalist_README.pdf")
+    # else:
+    #     shutil.copy2("docs/first_choice_to_finalist_README.pdf", first_to_finalist_table_dir)
 
 
 def prepare_candidate_details(obj):
@@ -225,7 +223,7 @@ def prepare_candidate_details(obj):
 
     for iTab in range(1, obj.n_tabulations()+1):
 
-        raceID = obj.unique_id(tabulation_num=iTab)
+        uid = obj.file_stub(tabulation_num=iTab)
         n_rounds = obj.n_rounds(tabulation_num=iTab)
 
         # get rcv results
@@ -257,14 +255,14 @@ def prepare_candidate_details(obj):
         ordered_candidates_names = [d['name'] for d in sorted(reorder_dicts, key=lambda x: x['order'])]
 
         # create table
-        colnames = ['raceID', 'candidate', 'round_elected', 'round_eliminated'] + \
+        colnames = ['unique_id', 'candidate', 'round_elected', 'round_eliminated'] + \
                    ['round_' + str(i) + '_vote' for i in range(1, n_rounds + 1)]
 
         # assemble rows
         cand_rows = []
         for cand in ordered_candidates_names:
 
-            cand_rows.append([raceID,
+            cand_rows.append([uid,
                               cand,
                               cand_outcomes_dict[cand]['round_elected'],
                               cand_outcomes_dict[cand]['round_eliminated']] +
@@ -281,18 +279,19 @@ def write_rcv_rounds(obj, results_dir):
     Write out rcv contest round-by-round counts and transfers
     """
 
-    round_by_round_dir = results_dir + '/round_by_round'
+    round_by_round_dir = results_dir / 'round_by_round'
     util.verifyDir(round_by_round_dir)
 
-    if not os.path.isfile("docs/round_by_round_README.pdf"):
-        print("missing README: docs/round_by_round_README.pdf")
-    else:
-        shutil.copy2("docs/round_by_round_README.pdf", round_by_round_dir)
+    # if not os.path.isfile("docs/round_by_round_README.pdf"):
+    #     print("missing README: docs/round_by_round_README.pdf")
+    # else:
+    #     shutil.copy2("docs/round_by_round_README.pdf", round_by_round_dir)
 
     rcv_dfs = misc_tabulation.round_by_round(obj)
 
     for iTab, rcv_df in enumerate(rcv_dfs, start=1):
-        rcv_df.to_csv(round_by_round_dir + '/' + obj.ctx['unique_id'] + '_tab' + str(iTab) + '_round_by_round.csv', index=False)
+        uid = obj.file_stub(tabulation_num=iTab)
+        rcv_df.to_csv(util.longname(round_by_round_dir / f'{uid}_round_by_round.csv'), index=False)
 
 
 def write_ballot_debug_info(obj, results_dir):
@@ -303,7 +302,8 @@ def write_ballot_debug_info(obj, results_dir):
 
         ballot_debug_df = obj.ballot_debug_df(tabulation_num=iTab)
 
-        output_dir = results_dir + '/ballot_stats_debug'
+        output_dir = results_dir / 'ballot_stats_debug'
         util.verifyDir(output_dir)
 
-        ballot_debug_df.to_csv(output_dir + "/" + obj.ctx['unique_id'] + '_ballot_debug.csv', index=False)
+        uid = obj.file_stub(tabulation_num=iTab)
+        ballot_debug_df.to_csv(util.longname(output_dir / f'{uid}_ballot_debug.csv'), index=False)

@@ -13,7 +13,7 @@ def cvr(ctx):
     """
     If cvr is already stored in ctx use it, else if existing common csv exists, use it. Otherwise run parser.
     """
-    converted_path = f"{ctx['contest_set_path']}/converted_cvr/{ctx['unique_id']}.csv"
+    converted_path = f"{ctx['contest_set_path']}/converted_cvr/{ctx['uid']}.csv"
 
     if os.path.isfile(converted_path):
         ctx['converted_path'] = converted_path
@@ -137,8 +137,9 @@ def candidates(ctx, *, combine_writeins=None, exclude_writeins=None):
         cans = set(util.merge_writeIns(cans))
 
         # safety check
-        writeins = [cand for cand in cans if 'write' in cand.lower() or 'uwi' in cand.lower()]
-        if len(writeins) > 0:
+        uncaught_writeins = [cand for cand in cans
+                             if cand != util.BallotMarks.WRITEIN and ('write' in cand.lower() or 'uwi' in cand.lower())]
+        if len(uncaught_writeins) > 0:
             raise RuntimeError('more than one writein remaining after merge. debug')
 
     if exclude_writeins_flag:

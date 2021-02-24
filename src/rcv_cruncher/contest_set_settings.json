@@ -59,10 +59,6 @@
     },
 
 
-    "master_lookup": {
-        "type":	"str",
-        "default": "None"
-    },
     "candidate_map": {
         "type":	"str",
         "default": "None"
@@ -86,5 +82,18 @@
     "rcv_type": {
         "type":	"func",
         "default": "None"
+    },
+    "split_fields":{
+        "type": "list",
+        "default": ""
+    },
+
+    "uid":{
+        "type": "str",
+        "default": ""
+    },
+    "split_id":{
+        "type": "str",
+        "default": ""
     }
 }

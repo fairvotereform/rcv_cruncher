@@ -2,6 +2,7 @@ import abc
 import collections
 import inspect
 import math
+from multiprocessing.pool import RUN
 
 import pandas as pd
 
@@ -35,8 +36,31 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         """
         pass
 
+    @staticmethod
+    def get_variant_group(rcv_obj):
+        return rcv_obj.variant_group()
+
+    @staticmethod
+    def get_variant_name(rcv_obj):
+        return rcv_obj.rcv_type()
+
     single_winner_group = 'single_winner'
     multi_winner_group = 'multi_winner'
+
+    @staticmethod
+    def _stat_param(func, *, tabulation_num=None, ballot_filter=None):
+        """
+        Pack arguments for rcv_reporting calls.
+        """
+        arg_pack = {}
+        func_params = inspect.signature(func).parameters
+
+        if 'tabulation_num' in func_params and tabulation_num:
+            arg_pack.update({'tabulation_num': tabulation_num})
+        if 'ballot_filter' in func_params and ballot_filter:
+            arg_pack.update({'ballot_filter': ballot_filter})
+
+        return arg_pack
 
     # override me
     @abc.abstractmethod
@@ -47,23 +71,21 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         """
         pass
 
-    def contest_stats_df(self):
+    @staticmethod
+    def contest_stats_df(rcv_obj):
         """
         Return a pandas data frame with a single row. Any functions that take
         'tabulation_num' as parameter return a concatenating string with the function results for each
         tabulation joined together. Any functions that do not take 'tabulation_num' just return their single value.
         """
-        tabulation_list = list(range(1, self._tab_num+1))
-        dct = {f.__name__:
-               [util.decimal2float(f(tabulation_num=tabulation_list))]
-               if 'tabulation_num' in inspect.signature(f).parameters
-               else [util.decimal2float(f())]
-               for f in self._contest_stats()}
+        tabulation_list = list(range(1, rcv_obj._tab_num+1))
+        f_args = RCV._stat_param(tabulation_num=tabulation_list, ballot_filter=rcv_obj.get_ballot_filter())
+        dct = {f.__name__: [util.decimal2float(f(**f_args))] for f in rcv_obj._contest_stats()}
         return pd.DataFrame.from_dict(dct)
 
-    def contest_stats_comments_df(self):
-        return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
-                                       for fun in self._contest_stats()})
+    # def contest_stats_comments_df(self):
+    #     return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
+    #                                    for fun in self._contest_stats()})
 
     # override me
     @abc.abstractmethod
@@ -74,23 +96,23 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         """
         pass
 
-    def tabulation_stats_df(self):
+    @staticmethod
+    def tabulation_stats_df(rcv_obj):
         """
         Return a pandas data frame with one row per tabulation. Any functions that take
         'tabulation_num' as parameter return the value for each tabulation on that tabulation's row.
         Any functions that do not take 'tabulation_num' just return their single value, repeated on each row.
         """
-        tabulation_list = list(range(1, self._tab_num+1))
+        tabulation_list = list(range(1, rcv_obj._tab_num+1))
         dct = {f.__name__:
-               [util.decimal2float(f(tabulation_num=i)) for i in tabulation_list]
-               if 'tabulation_num' in inspect.signature(f).parameters
-               else [util.decimal2float(f()) for i in tabulation_list]
-               for f in self._tabulation_stats()}
+                [f(**RCV._stat_param(f, tabulation_num=i, ballot_filter=rcv_obj.get_ballot_filter())) for i in tabulation_list]
+               for f in rcv_obj._tabulation_stats()}
+        dct = {k: [util.decimal2float(i) for i in v] for k, v in dct.items()}
         return pd.DataFrame.from_dict(dct)
 
-    def tabulation_stats_comments_df(self):
-        return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
-                                       for fun in self._tabulation_stats()})
+    # def tabulation_stats_comments_df(self):
+    #     return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
+    #                                    for fun in self._tabulation_stats()})
 
     # override me
     @abc.abstractmethod
@@ -141,20 +163,13 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
     #
     def __init__(self, ctx):
 
+        self._init_complete = False
+
         # STORE CONTEST INFO
         self.ctx = ctx
 
-        # CONTEST INPUTS
-        self._n_winners = ctx['num_winners']
-        self._multi_winner_rounds = ctx['multi_winner_rounds']
-        self._candidate_set = ballots.candidates(ctx)
-        self._cleaned_dict = ballots.cleaned_ballots(ctx)
-        self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
-                    for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
+        # STATE INFO
 
-        self.cache_dict = {}
-
-        # STATE
         # contest-level
         self._tab_num = 0
         self._tabulations = []
@@ -169,16 +184,34 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._round_winners = []
         self._round_loser = None
 
-        self._tabulation_complete = False
-        self._stats_safety_check_log = []
+        # CONTEST INPUTS
+        self._n_winners = ctx['num_winners']
+        self._multi_winner_rounds = ctx['multi_winner_rounds']
+        self._candidate_set = ballots.candidates(ctx)
+        self._cleaned_dict = ballots.cleaned_ballots(ctx)
+        self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
+                    for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
+        self.cache_dict = {}
+        self._ballot_filter = [True] * len(self._bs)
 
         # RUN
         self._run_contest()
 
-        self._tabulation_complete = True
-        self._stats_check()
+        self._init_complete = True
+        self._accounting_check()
 
-    #
+    def _pre_check(self):
+        """
+        Any checks on the input data to make sure tabulation will be possible.
+
+        If all undervotes, raise AllUndervoteError
+        """
+
+        # check for all blank ballots, undervote or blank before exhaust
+        ballot_sets = [set(b['ranks']) for b in self._bs]
+        if not set.union(*ballot_sets):
+            raise RuntimeError(f"rcv_base._pre_check: (tabulation={self._tab_num}) all effectively blank ballots")
+
     def _new_tabulation(self):
         """
         Add a new set of results to edited in the tabulations list
@@ -210,6 +243,9 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         # CLEAN ROUND BALLOTS
         # remove inactive candidates
         self._clean_round()
+
+        # checks to make tabulation can proceed
+        self._pre_check()
 
         self._tabulations[self._tab_num-1]['initial_ranks'] = [b['ranks'] for b in self._bs]
         self._tabulations[self._tab_num-1]['initial_weights'] = [b['weight'] for b in self._bs]
@@ -523,13 +559,13 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
     def get_stats_check_log(self):
         return self._stats_safety_check_log
 
-    def _stats_check(self):
+    def _accounting_check(self):
         """
         Calculate several totals a second way to make sure some identity equations hold.
         """
 
-        if not self._tabulation_complete:
-            raise RuntimeError("Cannot call this function until rcv object has completed tabulation.")
+        if not self._init_complete:
+            raise RuntimeError("rcv_base._accounting_check: Cannot call this function until rcv object has completed tabulation.")
 
         all_candidates = ballots.candidates(self.ctx, exclude_writeins=False, combine_writeins=False)
         ballot_dict = ballots.input_ballots(self.ctx, combine_writeins=False)
@@ -539,7 +575,7 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         n_ranked_single = self.ranked_single()
         n_ranked_multiple = self.ranked_multiple()
 
-        stats_safety_check_log = []
+        problems = []
         # right now just test first tabulations
         for iTab in range(1, self.n_tabulations()+1):
 
@@ -589,19 +625,27 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
             n_ranked_multiple_crosscheck = sum([weight for i, weight in zip(ballot_dict['ranks'], ballot_dict['weight'])
                                                 if len(set(i) & all_candidates) > 1])
 
-            problems = []
             if float(weight_distrib_sum) != float(n_ballots):
-                problems.append("ballot total mismatch")
+                problems.append(f"(tabulation={iTab}) ballot total mismatch")
             if round(n_exhaust_crosscheck1, 3) != round(n_exhaust, 3) or round(n_exhaust_crosscheck2, 3) != round(n_exhaust, 3):
-                problems.append("exhaust total mismatch")
+                problems.append(f"(tabulation={iTab}) exhaust total mismatch")
             if round(n_undervote_crosscheck, 3) != round(n_undervote, 3):
-                problems.append("undervote mismatch")
+                problems.append(f"(tabulation={iTab}) undervote mismatch")
             if round(n_ranked_single_crosscheck, 3) != round(n_ranked_single, 3):
-                problems.append("ranked single mismatch")
+                problems.append(f"(tabulation={iTab}) ranked single mismatch")
             if round(n_ranked_multiple_crosscheck, 3) != round(n_ranked_multiple, 3):
-                problems.append("ranked multiple mismatch")
+                problems.append(f"(tabulation={iTab}) ranked multiple mismatch")
 
-            if problems:
-                stats_safety_check_log.append((self.unique_id(tabulation_num=iTab), self.ctx['contest_set_line_df'], problems))
+        if problems:
+            raise RuntimeError("rcv_base._accounting_check: " + ",".join(problems))
 
-        self._stats_safety_check_log = stats_safety_check_log
+    def tabulation_complete(self):
+        return self._init_complete
+
+    def set_ballot_filter(self, ballot_filter):
+        if len(ballot_filter) != len(self._bs):
+            raise RuntimeError('rcv_base.set_ballot_filter: ballot filter length != length of ballots')
+        self._ballot_filter = ballot_filter
+
+    def get_ballot_filter(self):
+        return self._ballot_filter

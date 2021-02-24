@@ -1,6 +1,6 @@
 from copy import deepcopy
 from itertools import combinations
-from statistics import median
+import statistics
 
 import pandas as pd
 
@@ -22,13 +22,8 @@ def convert_cvr(ctx):
     # how many ranks?
     num_ranks = max(len(i) for i in bs)
 
-    # replace constants with strings
-    bs = [util.replace(util.BallotMarks.SKIPPEDRANK, 'skipped', b) for b in bs]
-    bs = [util.replace(util.BallotMarks.OVERVOTE, 'overvote', b) for b in bs]
-    bs = [util.replace(util.BallotMarks.WRITEIN, 'writein', b) for b in bs]
-
     # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
-    bs = [b + (['skipped'] * (num_ranks - len(b))) for b in bs]
+    bs = [b + ([util.BallotMarks.SKIPPEDRANK] * (num_ranks - len(b))) for b in bs]
 
     # assemble output_table, start with extras
     output_df = pd.DataFrame.from_dict(ballot_dict)
@@ -59,7 +54,7 @@ def cumulative_ranking_tables(ctx):
     candidate_set = sorted(ballots.candidates(ctx))
 
     # ballot rank limit
-    ballot_length = len(ballots(ctx)['ranks'][0])
+    ballot_length = len(ballots.input_ballots(ctx)['ranks'][0])
 
     # get cleaned ballots
     cleaned_dict = deepcopy(ballots.cleaned_ballots(ctx))
@@ -301,7 +296,7 @@ def rank_usage_tables(ctx):
     candidate_set = sorted(ballots.candidates(ctx, exclude_writeins=False))
 
     # remove skipped ranks
-    ballot_set = [util.remove(util.BallotMarks.SKIPPEDRANK, b) for b in ballots(ctx)['ranks']]
+    ballot_set = [util.remove(util.BallotMarks.SKIPPEDRANK, b) for b in ballots.input_ballots(ctx)['ranks']]
 
     # remove empty ballots and those that start with overvote
     ballot_set = [b for b in ballot_set if len(b) >= 1 and b[0] != util.BallotMarks.OVERVOTE]
@@ -322,7 +317,7 @@ def rank_usage_tables(ctx):
 
     n_ballots = len(ballot_set)
     mean_rankings = sum(len(b) for b in ballot_set)/n_ballots
-    median_rankings = median(len(b) for b in ballot_set)
+    median_rankings = statistics.median(len(b) for b in ballot_set)
 
     df.loc[all_ballots_label, n_ballots_label] = n_ballots
     df.loc[all_ballots_label, mean_label] = mean_rankings
@@ -337,7 +332,7 @@ def rank_usage_tables(ctx):
         df.loc[cand, n_ballots_label] = len(first_choices[cand])
         if first_choices[cand]:
             df.loc[cand, mean_label] = sum(len(b) for b in first_choices[cand])/len(first_choices[cand])
-            df.loc[cand, median_label] = median(len(b) for b in first_choices[cand])
+            df.loc[cand, median_label] = statistics.median(len(b) for b in first_choices[cand])
         else:
             df.loc[cand, mean_label] = 0
             df.loc[cand, median_label] = 0
@@ -349,7 +344,7 @@ def crossover_table(ctx):
 
     candidate_set = sorted(ballots.candidates(ctx, exclude_writeins=False))
 
-    ballot_dict = ballots(ctx)
+    ballot_dict = ballots.input_ballots(ctx)
     ballot_weights = deepcopy(ballot_dict['weight'])
     ranks = [util.remove(util.BallotMarks.SKIPPEDRANK, b) for b in ballot_dict['ranks']]
     ballot_set = [{'ranks': ranks, 'weight': weight}

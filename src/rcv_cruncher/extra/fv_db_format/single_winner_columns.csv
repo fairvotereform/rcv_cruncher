@@ -1,0 +1,62 @@
+cruncher_col,masterDB_col
+jurisdiction,Jurisdiction
+state,State
+year,Year
+date,Election Date
+office,Office
+winner,Winner
+special_election,Special Election?
+incumbent,Incumbent
+number_of_candidates,Number of candidates
+number_of_rounds,Number of rounds
+total_ballots,Total ballots cast
+first_round_active_votes,First round active votes
+final_round_active_votes,Final round active votes
+first_round_winner_vote,First round vote for winner
+first_round_winner_percent,First round percent for winner
+first_round_winner_place,First round place for winner
+final_round_winner_vote,Final round votes for winner
+final_round_winner_percent,Final round percent for winner
+winners_consensus_value,Winner's consensus value
+final_round_winner_votes_over_first_round_valid,Winner's Final Round Votes as Percent of First Round Valid Votes
+total_fully_ranked,Fully ranked ballots
+ranked_multiple,Ballots with 2+ Rankings
+ranked_winner,Ballots Ranking the Winner
+total_undervote,First Round Undervote
+first_round_overvote,First Round Overvotes
+total_ballots_with_overvote,Total Ballots with Overvotes
+total_posttally_exhausted_by_overvote,Exhausted by Overvote
+total_posttally_exhausted_by_skipped_rankings,Exhausted by Skipped Rankings
+total_posttally_exhausted_by_abstention,Exhausted by Abstention
+total_posttally_exhausted_by_rank_limit,Exhausted by ranking limit
+total_posttally_exhausted,Total Exhausted
+percent_exhausted,% Exhausted
+includes_duplicate_ranking,Includes duplicate rankings
+includes_skipped_ranking,Includes skipped rankings
+turnout_percent,Turnout Percent (percent of registered)
+registered_voters,Registered Voters in Jurisdiction
+condorcet,Condorcet winner?
+come_from_behind,Come From Behind Winner?
+contest_rank_limit,Number of Rankings Permitted
+ballot_style,Ballot Style
+ballot_marking_style,Ballot Marking Style
+voting_equipment_used,Voting Equipment Used
+link_to_results,Link to full results
+cvr_available,CVR Available?
+notes,Notes
+sort_for_cruncher_export,Sort for Cruncher Export
+unique_id,RaceID
+rcv_type,
+exhaust_on_overvote,
+exhaust_on_repeated_skipped_rankings,
+exhaust_on_duplicate_rankings,
+combine_writeins,
+skip_writeins,
+treat_combined_writeins_as_duplicates,
+number_of_winners,
+total_pretally_exhausted,
+total_irregular,
+ranked_3_or_more,
+effective_ballot_length,
+tabulation_num,
+total_posttally_exhausted_by_duplicate_rankings,

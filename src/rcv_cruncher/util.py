@@ -1,7 +1,9 @@
 import decimal
-import enum
 import functools
 import os
+import pathlib
+
+import pandas as pd
 
 ###############################################################
 # constants
@@ -9,21 +11,21 @@ import os
 NAN = decimal.Decimal('NaN')
 
 
-class BallotMarks(enum.Enum):
-    SKIPPEDRANK = enum.auto()
-    OVERVOTE = enum.auto()
-    WRITEIN = enum.auto()
+class BallotMarks():
+    SKIPPEDRANK = "skipped"
+    OVERVOTE = "overvote"
+    WRITEIN = "writein"
 
 
-class InactiveType(enum.Enum):
-    UNDERVOTE = enum.auto()
-    PRETALLY_EXHAUST = enum.auto()
-    NOT_EXHAUSTED = enum.auto()
-    POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = enum.auto()
-    POSTTALLY_EXHAUSTED_BY_ABSTENTION = enum.auto()
-    POSTTALLY_EXHAUSTED_BY_OVERVOTE = enum.auto()
-    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE = enum.auto()
-    POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = enum.auto()
+class InactiveType():
+    UNDERVOTE = "undervote"
+    PRETALLY_EXHAUST = "pretally_exhaust"
+    NOT_EXHAUSTED = "not_exhausted"
+    POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = "posttally_exhausted_by_rank_limit"
+    POSTTALLY_EXHAUSTED_BY_ABSTENTION = "posttally_exhausted_by_abstention"
+    POSTTALLY_EXHAUSTED_BY_OVERVOTE = "posttally_exhausted_by_overvote"
+    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE = "posttally_exhausted_by_repeated_skipvote"
+    POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = "posttally_exhausted_by_duplicate_ranking"
 
 ########################
 # helper funcs
@@ -74,8 +76,7 @@ def replace(target, replacement, lst):
 
 
 def merge_writeIns(b):
-    return [BallotMarks.WRITEIN if isinstance(i, str) and ('write' in i.lower() or 'uwi' in i.lower())
-            else i for i in b]
+    return [BallotMarks.WRITEIN if 'write' in i.lower() or 'uwi' in i.lower() else i for i in b]
 
 
 def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing folder'):
@@ -89,7 +90,7 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
     """
     if os.path.isdir(dir_path) is False:
         if make_if_missing:
-            os.mkdir(dir_path)
+            os.mkdir(longname(dir_path))
         else:
             print(dir_path + ' ' + error_msg_tail)
             raise RuntimeError
@@ -112,7 +113,7 @@ def remove_dup(lst):
     x = []
     for i in lst:
         if i not in x:
-            x.append(lst)
+            x.append(i)
     return x
 
 
@@ -144,3 +145,18 @@ def tmpsave(f):
         return ctx.setdefault(f.__name__, f(ctx))
 
     return fun
+
+
+def DL2LD(dl):
+    return [dict(zip(dl, t)) for t in zip(*dl.values())]
+    #return pd.DataFrame(dl).to_dict('records')
+
+
+def LD2DL(ld):
+    # assumes all dicts have same keys, which they should in these use cases
+    return {k: [dic[k] for dic in ld] for k in ld[0]}
+    #return pd.DataFrame(ld).to_dict('list')
+
+
+def longname(path):
+    return pathlib.Path('\\\\?\\' + os.fspath(path.resolve()))
