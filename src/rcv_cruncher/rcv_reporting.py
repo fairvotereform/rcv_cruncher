@@ -338,21 +338,21 @@ class RCV_Reporting:
         """
         String describing which field and value the cvr ballots were filtered on. If no filtering done, it is empty.
         """
-        return self.ctx['split_id']
+        return self._split_id
 
     def split_field(self):
-        return self.ctx['split_field']
+        return self._split_field
 
     def split_value(self):
-        return self.ctx['split_value']
+        return self._split_value
 
     def file_stub(self, *, tabulation_num=None):
 
         stub = ""
-        if not self.ctx['split_id']:
-            stub += self.ctx['uid']
+        if not self._split_id():
+            stub += self.unique_id()
         else:
-            stub += self.ctx['split_id']
+            stub += self.split_id()
 
         if tabulation_num:
             stub += '_tab-' + str(tabulation_num)
@@ -1107,7 +1107,6 @@ class RCV_Reporting:
         return self.conditional_weighted_sum(anded)
 
     def split_mean_rankings_used(self):
-
         # remove duplicate rankings
         ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
         weights = ballots.input_ballots(self.ctx)['weight']
@@ -1118,9 +1117,6 @@ class RCV_Reporting:
         return float(numer)/self.split_total_ballots()
 
     def split_median_rankings_used(self):
-        """
-        Median number of validly used rankings across all non-undervote ballots. (weighted)
-        """
         # remove duplicate rankings
         ballot_set = [util.remove_dup(b) for b in ballots.input_ballots(self.ctx)['ranks']]
         weights = ballots.input_ballots(self.ctx)['weight']

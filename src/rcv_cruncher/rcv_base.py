@@ -184,6 +184,12 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._round_winners = []
         self._round_loser = None
 
+        # ballot filtering info
+        self._split_id = None
+        self._split_field = None
+        self._split_value = None
+        self._split_filter = None
+
         # CONTEST INPUTS
         self._n_winners = ctx['num_winners']
         self._multi_winner_rounds = ctx['multi_winner_rounds']
@@ -192,13 +198,22 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
                     for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
         self.cache_dict = {}
-        self._ballot_filter = [True] * len(self._bs)
 
         # RUN
         self._run_contest()
 
         self._init_complete = True
         self._accounting_check()
+
+    def update_split_info(self, split_info_dict):
+
+        if len(split_info_dict['split_filter']) != len(self._bs):
+            raise RuntimeError('rcv_base.update_split_info: ballot split filter length != length of ballots')
+
+        self._split_id = split_info_dict['split_id']
+        self._split_field = split_info_dict['split_field']
+        self._split_value = split_info_dict['split_value']
+        self._split_filter = split_info_dict['split_filter']
 
     def _pre_check(self):
         """
@@ -642,10 +657,5 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
     def tabulation_complete(self):
         return self._init_complete
 
-    def set_ballot_filter(self, ballot_filter):
-        if len(ballot_filter) != len(self._bs):
-            raise RuntimeError('rcv_base.set_ballot_filter: ballot filter length != length of ballots')
-        self._ballot_filter = ballot_filter
-
-    def get_ballot_filter(self):
-        return self._ballot_filter
+    def split_filter(self):
+        return self._split_filter
