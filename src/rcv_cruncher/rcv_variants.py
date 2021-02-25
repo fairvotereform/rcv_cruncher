@@ -39,14 +39,14 @@ class rcv_single_winner(rcv_base.RCV):
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.single_winner_stats()
+        return self.single_winner_stats
 
     def _tabulation_stats(self):
         """
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.single_winner_stats()
+        return self.single_winner_stats
 
     #
     def _set_round_winners(self):
@@ -116,14 +116,14 @@ class sequential_rcv(rcv_single_winner):
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.multi_winner_stats()
+        return self.multi_winner_stats
 
     def _tabulation_stats(self):
         """
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.single_winner_stats()
+        return self.single_winner_stats
 
     # overwrite _run_contest to run multiple single winner elections
     def _run_contest(self):
@@ -170,14 +170,14 @@ class until2rcv(rcv_single_winner):
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.single_winner_stats()
+        return self.single_winner_stats
 
     def _tabulation_stats(self):
         """
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.single_winner_stats()
+        return self.single_winner_stats
 
     #
     def _set_round_winners(self):
@@ -262,14 +262,14 @@ class stv(rcv_base.RCV, abc.ABC):
         return int((first_round_active_votes / (self._n_winners + 1)) + 1)
 
     def _tabulation_stats(self):
-        return self.multi_winner_stats()
+        return self.multi_winner_stats
 
     @staticmethod
     def variant_group():
         return rcv_base.RCV.multi_winner_group
 
     def _contest_stats(self):
-        return self.multi_winner_stats()
+        return self.multi_winner_stats
 
 
 class stv_whole_ballot(stv):
@@ -576,14 +576,14 @@ class rcv_multiWinner_thresh15(rcv_base.RCV):
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.multi_winner_stats()
+        return self.multi_winner_stats
 
     def _tabulation_stats(self):
         """
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
-        return self.multi_winner_stats()
+        return self.multi_winner_stats
 
     #
     def _set_round_winners(self):

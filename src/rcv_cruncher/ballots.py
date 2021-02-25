@@ -13,7 +13,7 @@ def cvr(ctx):
     """
     If cvr is already stored in ctx use it, else if existing common csv exists, use it. Otherwise run parser.
     """
-    converted_path = f"{ctx['contest_set_path']}/converted_cvr/{ctx['uid']}.csv"
+    converted_path = ctx['contest_set_path'] / f"converted_cvr/{ctx['uid']}.csv"
 
     if os.path.isfile(converted_path):
         ctx['converted_path'] = converted_path

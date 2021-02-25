@@ -87,6 +87,8 @@ def unique_id(ctx):
 
 def read_contest_set(contest_set_path, override_cvr_root_dir=None):
 
+    contest_set_path = pathlib.Path(contest_set_path)
+
     # assemble typecast funcs
     cast_dict = {'str': cast_str, 'int': cast_int,
                  'bool': cast_bool, 'func': cast_func, 'list': cast_list}
@@ -107,7 +109,7 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
         run_config_settings = json.load(run_config_settings_file)
 
     # read run_config.txt
-    run_config_fpath = f'{contest_set_path}/run_config.txt'
+    run_config_fpath = contest_set_path / 'run_config.txt'
     if os.path.isfile(run_config_fpath) is False:
         raise RuntimeError(f'not a valid file path: {run_config_fpath}')
 
@@ -147,7 +149,7 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
     #     raise RuntimeError('No "cvr_path_root" provided in run_config.txt. This is required.')
 
     # read contest_set.csv
-    contest_set_fpath = f'{contest_set_path}/contest_set.csv'
+    contest_set_fpath = contest_set_path / 'contest_set.csv'
     if os.path.isfile(contest_set_fpath) is False:
         raise RuntimeError(f'not a valid file path: {contest_set_fpath}')
 
@@ -323,7 +325,7 @@ def split_contest(contest):
 
 class CrunchSteps:
 
-    def __init__(self, contest, output_config, converted_cvr_dir, results_dir, pbar_desc, *, step_list='complete'):
+    def __init__(self, contest, output_config, converted_cvr_dir, results_dir, pbar_desc):
 
         self.contest = contest
         self.output_config = output_config
@@ -331,27 +333,7 @@ class CrunchSteps:
         self.results_dir = results_dir
         self.pbar_desc = pbar_desc
         self.error_log_writers = []
-
-        self.step_list = [
-            'convert_cvr',
-            'tabulate',
-            'per_rcv_type_stats',
-            'rcv_variant',
-            'per_rcv_group_stats',
-            'rcv_group',
-            'candidate_details',
-            'round_by_round',
-            'ballot_stats_debug',
-            'cvr_ballot_allocation',
-            'first_choice_to_finalist',
-            'condorcet',
-            'first_second_choices',
-            'cumulative_ranking',
-            'rank_usage',
-            'crossover_support'
-        ]
-        if step_list == 'split_stats':
-            self.use_split_stats_list()
+        self.step_list = 'complete'
 
         self.state_data = {
             'n_errors': 0,
@@ -360,18 +342,16 @@ class CrunchSteps:
         self.steps = {}
 
     def update_state(self, dct):
-        self.state_date.update(dct)
+        self.state_data.update(dct)
+
+    def update_pbar_desc(self, desc):
+        self.pbar_desc = desc
 
     def update_error_log_writers(self, writers_list):
         self.error_log_writers = writers_list if isinstance(writers_list, list) else [writers_list]
 
     def use_split_stats_list(self):
-        self.step_list = [
-                'per_rcv_type_stats',
-                'rcv_variant',
-                'per_rcv_group_stats',
-                'rcv_group'
-            ]
+        self.step_list = 'split_stats'
 
     def refresh_steps(self):
 
@@ -382,136 +362,174 @@ class CrunchSteps:
                 if k2 in self.steps[k1]:
                     cache[k1].update({k2: self.steps[k1][k2]})
 
-        self.steps = collections.OrderedDict([
-            ('convert_cvr', {
-                'f': write_out.write_converted_cvr,
-                'args': [self.contest, self.converted_cvr_dir],
-                'condition': self.output_config.get('convert_cvr') and 'convert_cvr' in self.step_list,
-                'fail_with': [],
-                'depends_on': [],
-                'return_key': None
-            }),
-            ('tabulate', {
-                'f': rcv_base.RCV.run_rcv,
-                'args': [self.contest],
-                'condition': 'tabulate' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': 'rcv_obj'
-            }),
-            ('tabulation_stats', {
-                'f': rcv_base.RCV.tabulation_stats_df,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('per_rcv_type_stats') and 'per_rcv_type_stats' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'tabulation_stats_df'
-            }),
-            ('rcv_variant', {
-                'f': rcv_base.RCV.get_variant_name,
-                'args': [self.state_data['rcv_obj']],
-                'condition': 'rcv_variant' not in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'variant'
-            }),
-            ('contest_stats', {
-                'f': rcv_base.RCV.contest_stats_df,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('per_rcv_group_stats') and 'per_rcv_group_stats' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'contest_stats_df'
-            }),
-            ('rcv_group', {
-                'f': rcv_base.RCV.get_variant_group,
-                'args': [self.state_data['rcv_obj']],
-                'condition': 'rcv_group' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'variant_group'
-            }),
-            ('candidate_details', {
-                'f': write_out.prepare_candidate_details,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('candidate_details') and 'candidate_details' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'candidate_details'
-            }),
-            ('round_by_round', {
-                'f': write_out.write_rcv_rounds,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('round_by_round') and 'round_by_round' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('ballot_stats_debug', {
-                'f': write_out.write_ballot_debug_info,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('ballot_stats_debug') and 'ballot_stats_debug' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('cvr_ballot_allocation', {
-                'f': write_out.write_converted_cvr_annotated,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('cvr_ballot_allocation') and 'cvr_ballot_allocation' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('first_choice_to_finalist', {
-                'f': write_out.write_first_to_finalist_tables,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('first_choice_to_finalist') and 'first_choice_to_finalist' in self.step_list,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('condorcet', {
-                'f': write_out.write_condorcet_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('condorcet') and 'condorcet' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('first_second_choices', {
-                'f': write_out.write_first_second_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('first_second_choices') and 'first_second_choices' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('cumulative_rankings', {
-                'f': write_out.write_cumulative_ranking_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('cumulative_rankings') and 'cumulative_rankings' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('rank_usage', {
-                'f': write_out.write_rank_usage_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('rank_usage') and 'rank_usage' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('crossover_support', {
-                'f': write_out.write_opponent_crossover_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('crossover_support') and 'crossover_support' in self.step_list,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-        ])
+        if self.step_list == 'complete':
+
+            self.steps = collections.OrderedDict([
+                ('convert_cvr', {
+                    'f': write_out.write_converted_cvr,
+                    'args': [self.contest, self.converted_cvr_dir],
+                    'condition': self.output_config.get('convert_cvr'),
+                    'fail_with': [],
+                    'depends_on': [],
+                    'return_key': None
+                }),
+                ('tabulate', {
+                    'f': rcv_base.RCV.run_rcv,
+                    'args': [self.contest],
+                    'condition': True,
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': 'rcv_obj'
+                }),
+                ('tabulation_stats', {
+                    'f': rcv_base.RCV.tabulation_stats_df,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': self.output_config.get('per_rcv_type_stats'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': 'tabulation_stats_df'
+                }),
+                ('rcv_variant', {
+                    'f': rcv_base.RCV.get_variant_name,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': True,
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': 'variant'
+                }),
+                ('contest_stats', {
+                    'f': rcv_base.RCV.contest_stats_df,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': self.output_config.get('per_rcv_group_stats'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': 'contest_stats_df'
+                }),
+                ('rcv_group', {
+                    'f': rcv_base.RCV.get_variant_group,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': True,
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': 'variant_group'
+                }),
+                ('candidate_details', {
+                    'f': write_out.prepare_candidate_details,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': self.output_config.get('candidate_details'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': 'candidate_details'
+                }),
+                ('round_by_round', {
+                    'f': write_out.write_rcv_rounds,
+                    'args': [self.state_data['rcv_obj'], self.results_dir],
+                    'condition': self.output_config.get('round_by_round'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': None
+                }),
+                ('ballot_stats_debug', {
+                    'f': write_out.write_ballot_debug_info,
+                    'args': [self.state_data['rcv_obj'], self.results_dir],
+                    'condition': self.output_config.get('ballot_stats_debug'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': None
+                }),
+                ('cvr_ballot_allocation', {
+                    'f': write_out.write_converted_cvr_annotated,
+                    'args': [self.state_data['rcv_obj'], self.results_dir],
+                    'condition': self.output_config.get('cvr_ballot_allocation'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': None
+                }),
+                ('first_choice_to_finalist', {
+                    'f': write_out.write_first_to_finalist_tables,
+                    'args': [self.state_data['rcv_obj'], self.results_dir],
+                    'condition': self.output_config.get('first_choice_to_finalist'),
+                    'depends_on': ['tabulate'],
+                    'fail_with': [],
+                    'return_key': None
+                }),
+                ('condorcet', {
+                    'f': write_out.write_condorcet_tables,
+                    'args': [self.contest, self.results_dir],
+                    'condition': self.output_config.get('condorcet'),
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': None
+                }),
+                ('first_second_choices', {
+                    'f': write_out.write_first_second_tables,
+                    'args': [self.contest, self.results_dir],
+                    'condition': self.output_config.get('first_second_choices'),
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': None
+                }),
+                ('cumulative_rankings', {
+                    'f': write_out.write_cumulative_ranking_tables,
+                    'args': [self.contest, self.results_dir],
+                    'condition': self.output_config.get('cumulative_rankings'),
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': None
+                }),
+                ('rank_usage', {
+                    'f': write_out.write_rank_usage_tables,
+                    'args': [self.contest, self.results_dir],
+                    'condition': self.output_config.get('rank_usage'),
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': None
+                }),
+                ('crossover_support', {
+                    'f': write_out.write_opponent_crossover_tables,
+                    'args': [self.contest, self.results_dir],
+                    'condition': self.output_config.get('crossover_support'),
+                    'depends_on': [],
+                    'fail_with': ['convert_cvr'],
+                    'return_key': None
+                }),
+            ])
+        elif self.step_list == 'split_stats':
+
+            self.steps = collections.OrderedDict([
+                ('tabulation_stats', {
+                    'f': rcv_base.RCV.tabulation_stats_df,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': self.output_config.get('per_rcv_type_stats'),
+                    'depends_on': [],
+                    'fail_with': [],
+                    'return_key': 'tabulation_stats_df'
+                }),
+                ('rcv_variant', {
+                    'f': rcv_base.RCV.get_variant_name,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': True,
+                    'depends_on': [],
+                    'fail_with': [],
+                    'return_key': 'variant'
+                }),
+                ('contest_stats', {
+                    'f': rcv_base.RCV.contest_stats_df,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': self.output_config.get('per_rcv_group_stats'),
+                    'depends_on': [],
+                    'fail_with': [],
+                    'return_key': 'contest_stats_df'
+                }),
+                ('rcv_group', {
+                    'f': rcv_base.RCV.get_variant_group,
+                    'args': [self.state_data['rcv_obj']],
+                    'condition': True,
+                    'depends_on': [],
+                    'fail_with': [],
+                    'return_key': 'variant_group'
+                })
+            ])
 
         for k in self.steps:
             for cache_key in cache_keys:
@@ -699,6 +717,9 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
                     split_error_log_writer = csv.writer(split_error_log_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
                     split_error_log_writer.writerow(['contest', 'split_id', 'cruncher_step', 'message'])
 
+                    step_obj.update_error_log_writers([error_log_writer, split_error_log_writer])
+                    rcv_obj = crunch_returns['rcv_obj']
+
                     # LOOP SPLITS
                     n_splits = len(split_infos)
                     splits_completed = 0
@@ -714,13 +735,11 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
                             pbar_desc += f' {contest["uid"]} {split_info["split_id"]}'
 
                         # add split info
-                        rcv_obj = crunch_returns['rcv_obj']
                         rcv_obj.update_split_info(split_info)
 
+                        step_obj.update_pbar_desc(pbar_desc)
                         step_obj.update_state({'rcv_obj': rcv_obj})
                         step_obj.use_split_stats_list()
-                        step_obj.update_error_log_writers([error_log_writer, split_error_log_writer])
-
                         step_obj.run_steps()
                         split_crunch_returns = step_obj.return_results()
 

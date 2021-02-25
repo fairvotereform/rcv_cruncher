@@ -160,3 +160,4 @@ def LD2DL(ld):
 
 def longname(path):
     return pathlib.Path('\\\\?\\' + os.fspath(path.resolve()))
+

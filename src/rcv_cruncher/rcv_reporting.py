@@ -1,21 +1,16 @@
 import os
-from threading import stack_size
 import time
 import statistics
 import collections
 import copy
 import csv
 import functools
-import inspect
-from numpy.random import weibull
-
-import pandas as pd
 
 import rcv_cruncher.ballots as ballots
 import rcv_cruncher.util as util
 
 global RECORD_FUNCTION_TIMES, USE_TEMP_DICT
-RECORD_FUNCTION_TIMES = True
+RECORD_FUNCTION_TIMES = False
 USE_TEMP_DICT = True
 
 
@@ -74,7 +69,9 @@ def check_temp_dict(f):
 
         cache_key = fname + '_' + str(tabulation_num)
 
-        if cache_key in self.cache_dict:
+        if 'split' in fname:
+            res = f(self, *args, **kwargs)
+        elif cache_key in self.cache_dict:
             res = self.cache_dict[cache_key]
         else:
             res = f(self, *args, **kwargs)
@@ -128,166 +125,7 @@ class RCV_Reporting:
     """
 
     ####################
-    # STATS LISTS
-
-    def base_stats(self):
-        return [
-            self.notes,
-            self.jurisdiction,
-            self.state,
-            self.year,
-            self.date,
-            self.office,
-            self.rcv_type,
-            self.exhaust_on_overvote,
-            self.exhaust_on_repeated_skipped_rankings,
-            self.exhaust_on_duplicate_rankings,
-            self.combine_writeins,
-            self.treat_combined_writeins_as_duplicates,
-            self.skip_writeins,
-            self.contest_rank_limit,
-            self.number_of_winners,
-            self.tabulation_num,
-            self.unique_id,
-            self.winner,
-            self.number_of_candidates,
-            self.number_of_rounds,
-            self.winners_consensus_value,
-            self.first_round_active_votes,
-            self.final_round_active_votes,
-        ]
-
-    def ballot_stats(self):
-        return [
-            self.first_round_overvote,
-            self.ranked_single,
-            self.ranked_multiple,
-            self.ranked_3_or_more,
-            self.mean_rankings_used,
-            self.median_rankings_used,
-            self.total_fully_ranked,
-            self.includes_duplicate_ranking,
-            self.includes_skipped_ranking,
-            self.total_irregular,
-            self.total_ballots,
-            self.total_ballots_with_overvote,
-            self.total_undervote,
-            self.total_pretally_exhausted,
-            self.total_posttally_exhausted,
-            self.total_posttally_exhausted_by_overvote,
-            self.total_posttally_exhausted_by_skipped_rankings,
-            self.total_posttally_exhausted_by_abstention,
-            self.total_posttally_exhausted_by_rank_limit,
-            self.total_posttally_exhausted_by_duplicate_rankings
-        ]
-
-    def split_stats(self):
-        return [
-            self.split_id,
-            self.split_field,
-            self.split_value,
-            self.split_first_round_overvote,
-            self.split_ranked_single,
-            self.split_ranked_multiple,
-            self.split_ranked_3_or_more,
-            self.split_mean_rankings_used,
-            self.split_median_rankings_used,
-            self.split_total_fully_ranked,
-            self.split_includes_duplicate_ranking,
-            self.split_includes_skipped_ranking,
-            self.split_total_irregular,
-            self.split_total_ballots,
-            self.split_total_ballots_with_overvote,
-            self.split_total_undervote,
-            self.split_total_pretally_exhausted,
-            self.split_total_posttally_exhausted,
-            self.split_total_posttally_exhausted_by_overvote,
-            self.split_total_posttally_exhausted_by_skipped_rankings,
-            self.split_total_posttally_exhausted_by_abstention,
-            self.split_total_posttally_exhausted_by_rank_limit,
-            self.split_total_posttally_exhausted_by_duplicate_rankings
-        ]
-
-    def single_winner_stats(self):
-        stat_list = [
-            self.first_round_winner_vote,
-            self.final_round_winner_vote,
-            self.first_round_winner_percent,
-            self.final_round_winner_percent,
-            self.first_round_winner_place,
-            self.final_round_winner_votes_over_first_round_valid,
-            self.condorcet,
-            self.come_from_behind,
-            self.effective_ballot_length,
-            self.ranked_winner
-        ]
-
-        if self.split_id():
-            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
-        else:
-            return self.base_stats() + stat_list + self.ballot_stats()
-
-    def multi_winner_stats(self):
-        stat_list = [self.win_threshold]
-
-        if self.split_id():
-            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
-        else:
-            return self.base_stats() + stat_list + self.ballot_stats()
-
-    def ballot_debug_df(self, *, tabulation_num=1):
-        """
-        Return pandas data frame with ranks as well stats on exhaustion, ranked_multiple ...
-        """
-
-        # compute ballot stats
-        func_list = [self.duplicates,
-                     self.pretally_exhausted,
-                     self.posttally_exhausted,
-                     self.posttally_exhausted_by_abstention,
-                     self.posttally_exhausted_by_overvote,
-                     self.posttally_exhausted_by_rank_limit,
-                     self.posttally_exhausted_by_skipvote,
-                     self.posttally_exhausted_by_duplicate_rankings,
-                     self.first_round_overvote_bool,
-                     self.fully_ranked,
-                     self.used_last_rank,
-                     self.overvote,
-                     self.ranked_multiple_bool,
-                     self.ranked_single_bool,
-                     self.skipped,
-                     self.undervote,
-                     self.irregular_bool]
-
-        dct = {f.__name__: f(tabulation_num=tabulation_num) if 'tabulation_num' in inspect.signature(f).parameters else f()
-               for f in func_list}
-
-        # get ballot info
-        ballot_dict = copy.deepcopy(ballots.input_ballots(self.ctx, combine_writeins=False))
-        bs = ballot_dict['ranks']
-
-        # how many ranks?
-        num_ranks = max(len(i) for i in bs)
-
-        # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
-        bs = [b + ([util.BallotMarks.SKIPPEDRANK] * (num_ranks - len(b))) for b in bs]
-
-        # add in rank columns
-        ranks = {}
-        for i in range(1, num_ranks + 1):
-            ranks['rank' + str(i)] = [b[i - 1] for b in bs]
-
-        # assemble output_table, start with extras
-        return pd.DataFrame.from_dict({**ranks, **dct})
-
-    ####################
     # CONTEST INFO
-
-    def conditional_weighted_sum(self, condition, *, weights=None):
-        if weights:
-            return sum(weight for weight, cond in zip(weights, condition) if cond)
-        else:
-            return sum(weight for weight, cond in zip(self._cleaned_dict['weight'], condition) if cond)
 
     def notes(self):
         return self.ctx['notes']
@@ -349,7 +187,7 @@ class RCV_Reporting:
     def file_stub(self, *, tabulation_num=None):
 
         stub = ""
-        if not self._split_id():
+        if not self.split_id():
             stub += self.unique_id()
         else:
             stub += self.split_id()
@@ -926,7 +764,7 @@ class RCV_Reporting:
 
         numer = sum(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
                     for b, w, under in zip(ballot_set, weights, self.undervote()) if not under)
-        return float(numer)/self.total_ballots()
+        return numer/self.total_ballots()
 
     def median_rankings_used(self):
         """
@@ -1114,7 +952,7 @@ class RCV_Reporting:
         numer = sum(w * len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
                     for b, w, under, cond in zip(ballot_set, weights, self.undervote(), self.split_filter())
                     if not under and cond)
-        return float(numer)/self.split_total_ballots()
+        return numer/self.split_total_ballots()
 
     def split_median_rankings_used(self):
         # remove duplicate rankings
