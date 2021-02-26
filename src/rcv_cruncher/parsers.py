@@ -87,7 +87,8 @@ def cruncher_csv(ctx):
                            'skipped': util.BallotMarks.SKIPPEDRANK,
                            'undervote': util.BallotMarks.SKIPPEDRANK,
                            'over': util.BallotMarks.OVERVOTE,
-                           'overvote': util.BallotMarks.OVERVOTE}
+                           'overvote': util.BallotMarks.OVERVOTE,
+                           'UWI': util.BallotMarks.WRITEIN}
                     for col in rank_col})
 
     df = df.fillna(util.BallotMarks.SKIPPEDRANK)
@@ -1241,6 +1242,8 @@ def utah(ctx):
     return ballots
 
 def ep(ctx):
+
+    df = pd.read_csv(ctx['cvr_path'])
     ballots = []
     with open(ctx['cvr_path'], encoding='utf8') as f:
         next(f)

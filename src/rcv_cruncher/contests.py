@@ -4,11 +4,11 @@ import os
 import pathlib
 import re
 import shutil
-import copy
 import pkg_resources
 import collections
 import datetime
 import csv
+import sys
 
 import pandas as pd
 import tqdm
@@ -293,34 +293,24 @@ def split_contest(contest):
                       filter_bool_dict(all_ballots, field_name_lower_dict[k.lower()])
                       for k in split_fields if k.lower() in field_name_lower_dict}
 
-        split_set_str = ",".join(list(split_sets.keys()))
-        split_fields_str = ",".join(split_fields)
+        split_set_actual = ",".join(list(split_sets.keys()))
+        split_set_input = ",".join(split_fields)
 
-        n_split_contest = sum(len(split_sets[k].keys()) for k in split_sets)
-        with tqdm.tqdm(total=n_split_contest, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour="#C297DB") as pbar:
+        for k in split_sets:
+            ky_clean = str(k).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
 
-            pbar.set_description(f'splitting: split on fields [{split_set_str}] out of input [{split_fields_str}]')
+            for split_val in split_sets[k]:
+                val_clean = str(split_val).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
+                split_id = ky_clean + "-" + val_clean
 
-            for k in split_sets:
-                ky_clean = str(k).replace(":", "").replace("/", "").replace("\\", "").replace(" ", "")
+                split_infos.append({
+                    'split_field': k,
+                    'split_value': split_val,
+                    'split_id': split_id,
+                    'split_filter': split_sets[k][split_val]
+                })
 
-                for split_val in split_sets[k]:
-                    val_clean = str(split_val).replace(":", "").replace("/", "").replace("\\", "").replace(" ", "")
-                    split_id = ky_clean + "-" + val_clean
-
-                    pbar.set_postfix_str(split_id)
-                    pbar.update(1)
-
-                    split_infos.append({
-                        'split_field': k,
-                        'split_value': split_val,
-                        'split_id': split_id,
-                        'split_filter': split_sets[k][split_val]
-                    })
-
-            pbar.set_postfix_str("completed")
-
-    return split_infos
+    return split_set_actual, split_set_input, split_infos
 
 
 class CrunchSteps:
@@ -556,6 +546,8 @@ class CrunchSteps:
 
     def run_steps(self):
 
+        self.state_data['n_errors'] = 0
+
         # init
         self.refresh_steps()
         for step_num, k in enumerate(self.steps, start=1):
@@ -563,46 +555,56 @@ class CrunchSteps:
             self.steps[k]['order'] = step_num
 
         step_reached = 0
-        with tqdm.tqdm(total=self.n_steps(), bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN') as pbar:
 
+        if self.step_list == 'complete':
+            #sys.stdout.flush()
+            pbar = tqdm.tqdm(total=self.n_steps(), bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN')
+        else:
+            pbar = None
+
+        if pbar:
             pbar.set_description(self.pbar_desc)
 
-            next_step = self.next_step()
-            while next_step:
+        next_step = self.next_step()
+        while next_step:
 
-                step_name, step_details = next_step
+            step_name, step_details = next_step
 
-                try:
+            try:
 
+                if pbar:
                     pbar.set_postfix_str(step_name)
 
-                    if step_details['return_key']:
-                        self.state_data.update({
-                            step_details['return_key']:
-                            step_details['f'](*step_details['args'])
-                            })
-                    else:
+                if step_details['return_key']:
+                    self.state_data.update({
+                        step_details['return_key']:
                         step_details['f'](*step_details['args'])
-
-                except Exception as e:
-
-                    self.steps[step_name]['success'] = False
-
-                    for writer in self.error_log_writers:
-                        writer.writerow([self.contest['uid'], self.contest['split_id'], step_name, repr(e)])
-                    self.state_data['n_error'] += 1
-
+                        })
                 else:
-                    self.steps[step_name]['success'] = True
+                    step_details['f'](*step_details['args'])
 
-                finally:
+            except Exception as e:
+
+                self.steps[step_name]['success'] = False
+
+                for writer in self.error_log_writers:
+                    writer.writerow([self.contest['uid'], self.contest['split_id'], step_name, repr(e)])
+                self.state_data['n_errors'] += 1
+
+            else:
+                self.steps[step_name]['success'] = True
+
+            finally:
+                if pbar:
                     pbar.update(step_details['order']-step_reached)
-                    step_reached = step_details['order']
+                step_reached = step_details['order']
 
-                self.refresh_steps()
-                next_step = self.next_step()
+            self.refresh_steps()
+            next_step = self.next_step()
 
+        if pbar:
             pbar.set_postfix_str('complete')
+            pbar.close()
 
     def return_results(self):
         return self.state_data
@@ -672,9 +674,13 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
             step_obj = CrunchSteps(contest, output_config, converted_cvr_dir, results_dir, pbar_desc)
             step_obj.update_error_log_writers([error_log_writer])
             step_obj.run_steps()
-            crunch_returns = step_obj.return_results()
 
+            crunch_returns = step_obj.return_results()
             n_errors += crunch_returns['n_errors']
+            rcv_obj = crunch_returns['rcv_obj']
+
+            if not rcv_obj:
+                continue
 
             # STORE RESULTS
             if output_config.get('candidate_details') and 'candidate_details' in crunch_returns:
@@ -689,7 +695,7 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
                 rcv_group_stats_df_dict[variant_group].append(crunch_returns['contest_stats_df'])
 
             # CHECK FOR SPLITS
-            split_infos = split_contest(contest)
+            split_set_actual, split_set_input, split_infos = split_contest(contest)
 
             if split_infos:
 
@@ -718,51 +724,54 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
                     split_error_log_writer.writerow(['contest', 'split_id', 'cruncher_step', 'message'])
 
                     step_obj.update_error_log_writers([error_log_writer, split_error_log_writer])
-                    rcv_obj = crunch_returns['rcv_obj']
 
                     # LOOP SPLITS
                     n_splits = len(split_infos)
                     splits_completed = 0
-                    for split_idx, split_info in enumerate(split_infos):
 
-                        if n_errors:
-                            pbar_desc = f'[{n_errors} ERRORS SO FAR] {idx+1} of {len(contest_set)} contests,'
-                            pbar_desc += f' {split_idx+1} of {n_splits} splits:'
-                            pbar_desc += f' {contest["uid"]} {split_info["split_id"]}'
-                        else:
-                            pbar_desc = f'{idx+1} of {len(contest_set)} contests,'
-                            pbar_desc += f' {split_idx+1} of {n_splits} splits:'
-                            pbar_desc += f' {contest["uid"]} {split_info["split_id"]}'
+                    pbar_desc = f'split stats: split on fields [{split_set_actual}] out of input [{split_set_input}]'
+                    #sys.stdout.flush()
+                    cm = tqdm.tqdm(total=n_splits, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN')
+                    with cm as pbar:
 
-                        # add split info
-                        rcv_obj.update_split_info(split_info)
+                        pbar.set_description(pbar_desc)
 
-                        step_obj.update_pbar_desc(pbar_desc)
-                        step_obj.update_state({'rcv_obj': rcv_obj})
-                        step_obj.use_split_stats_list()
-                        step_obj.run_steps()
-                        split_crunch_returns = step_obj.return_results()
+                        for split_info in split_infos:
 
-                        n_errors += split_crunch_returns['n_errors']
+                            pbar.set_postfix_str(split_info['split_id'])
+                            pbar.update(1)
 
-                        # store crunch output for aggregation
-                        if output_config.get('per_rcv_type_stats') and 'tabulation_stats_df' in split_crunch_returns:
-                            variant = split_crunch_returns['variant']
-                            # split-specfic aggregation
-                            split_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
-                            # all split aggregation
-                            allsplit_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
+                            # add split info
+                            rcv_obj.update_split_info(split_info)
+                            step_obj.update_state({'rcv_obj': rcv_obj})
 
-                        if output_config.get('per_rcv_group_stats') and 'contest_stats_df' in split_crunch_returns:
-                            variant_group = split_crunch_returns['variant_group']
-                            # split-specfic aggregation
-                            split_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
-                            # all split aggregation
-                            allsplit_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
+                            step_obj.use_split_stats_list()
+                            step_obj.run_steps()
+                            split_crunch_returns = step_obj.return_results()
 
-                        splits_completed += 1
-                        error_log_file.flush()
-                        split_error_log_file.flush()
+                            n_errors += split_crunch_returns['n_errors']
+
+                            # store crunch output for aggregation
+                            if output_config.get('per_rcv_type_stats') and 'tabulation_stats_df' in split_crunch_returns:
+                                variant = split_crunch_returns['variant']
+                                # split-specfic aggregation
+                                split_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
+                                # all split aggregation
+                                allsplit_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
+
+                            if output_config.get('per_rcv_group_stats') and 'contest_stats_df' in split_crunch_returns:
+                                variant_group = split_crunch_returns['variant_group']
+                                # split-specfic aggregation
+                                split_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
+                                # all split aggregation
+                                allsplit_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
+
+                            splits_completed += 1
+                            error_log_file.flush()
+                            split_error_log_file.flush()
+
+                        pbar.set_postfix_str("completed")
+                        pbar.close()
 
                     write_aggregated_stats(split_contest_path,
                                            output_config,
@@ -827,7 +836,7 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
         with open(result_log_dir / 'pkg_info.txt', 'w') as pkg_info:
             pkg_info.write(f'version: {pkg_version}\n')
             pkg_info.write(f'github: {pkg_url}\n')
-            pkg_info.write(f'start_time: {start_time.strftime("%Y-%m-%d %H:%M:%S")}')
+            pkg_info.write(f'start_time: {start_time.strftime("%Y-%m-%d %H:%M:%S")}\n')
             pkg_info.write(f'end_time: {end_time.strftime("%Y-%m-%d %H:%M:%S")}')
 
         log_output_config = result_log_dir / 'output_config.csv'

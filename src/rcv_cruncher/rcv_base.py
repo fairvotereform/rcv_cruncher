@@ -2,7 +2,6 @@ import abc
 import collections
 import inspect
 import math
-import copy
 
 import pandas as pd
 
@@ -202,10 +201,101 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         # RUN
         self._run_contest()
 
-        #self._precompute_some_stats()
-        self._accounting_check()
+        # stats precompute
+        self._stat_table = None
+        self._split_stat_table = None
+        self._precompute_some_stats()
 
+        self._accounting_check()
         self._init_complete = True
+
+    def _precompute_some_stats(self):
+
+        df = pd.DataFrame()
+        input_ranks = ballots.input_ballots(self.ctx)['ranks']
+
+        # ADD WEIGHTS
+        df['weight'] = self._cleaned_dict['weight']
+        for iTab in range(1, self._tab_num+1):
+            df[f'final_weight{iTab}'] = self.get_final_weights(tabulation_num=iTab)
+
+        # INTERMEDIATE STATS
+        valid_ranks_used = [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) for b in input_ranks]
+        df['valid_ranks_used'] = valid_ranks_used
+        df['ranks_used_times_weight'] = df['valid_ranks_used'] * df['weight']
+
+        for iTab in range(1, self._tab_num+1):
+            exhaust_type = self.exhaustion_check(tabulation_num=iTab)
+            df[f'exhaust_type{iTab}'] = pd.Series(exhaust_type, dtype='category')
+
+        first_round = [next((c for c in b if c != util.BallotMarks.SKIPPEDRANK), None) for b in input_ranks]
+        df['first_round'] = pd.Series(first_round, dtype='category')
+
+        # RANK NUM USAGE STATS
+        df['undervote'] = [set(x) == {util.BallotMarks.SKIPPEDRANK} for x in input_ranks]
+        df['ranked_single'] = df['valid_ranks_used'] == 1
+        df['ranked_multiple'] = df['valid_ranks_used'] > 1
+        df['ranked_3_or_more'] = df['valid_ranks_used'] > 2
+
+        # EXHAUSTION STATS
+        for iTab in range(1, self._tab_num+1):
+            exhaust_type_str = f'exhaust_type{iTab}'
+            df[f'pretally_exhausted{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.PRETALLY_EXHAUST)
+            df[f'posttally_exhausted_by_overvote{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.POSTTALLY_EXHAUSTED_BY_OVERVOTE)
+            df[f'posttally_exhausted_by_skipped_rankings{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE)
+            df[f'posttally_exhausted_by_abstention{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.POSTTALLY_EXHAUSTED_BY_ABSTENTION)
+            df[f'posttally_exhausted_by_rank_limit{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT)
+            df[f'posttally_exhausted_by_duplicate_rankings{iTab}'] = df[exhaust_type_str].eq(
+                util.InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING)
+
+            all_posttally_conditions = [
+                f'posttally_exhausted_by_overvote{iTab}',
+                f'posttally_exhausted_by_skipped_rankings{iTab}',
+                f'posttally_exhausted_by_abstention{iTab}',
+                f'posttally_exhausted_by_rank_limit{iTab}',
+                f'posttally_exhausted_by_duplicate_rankings{iTab}'
+            ]
+            df['posttally_exhausted'+str(iTab)] = df[all_posttally_conditions].any(axis='columns')
+
+        df['first_round_overvote'] = df['first_round'].eq(util.BallotMarks.OVERVOTE)
+        df['contains_overvote'] = [util.BallotMarks.OVERVOTE in b for b in input_ranks]
+
+        # contains_skipped
+        # {SKIPVOTE} & {x} - {y}
+        # this checks that x == SKIPVOTE and that y then != SKIPVOTE
+        # (the y check is important to know whether or not the ballot contains marks
+        # following the skipped rank)
+        df['contains_skip'] = [any({util.BallotMarks.SKIPPEDRANK} & {x} - {y} for x, y in zip(b, b[1:])) for b in input_ranks]
+
+        # contains_duplicate
+        # remove overvotes and undervotes
+        dup_check = [util.remove(util.BallotMarks.SKIPPEDRANK, b)
+                     for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
+        dup_check = [util.remove(util.BallotMarks.OVERVOTE, b) for b in dup_check]
+        # count all ranks for candidates
+        counters = [collections.Counter(b) for b in dup_check]
+        # check if any candidates were ranked more than once
+        df['contains_duplicate'] = [max(counter.values()) > 1 if counter else False for counter in counters]
+
+        irregular_condtions = ['contains_overvote', 'contains_skip', 'contains_duplicate']
+        df['irregular'] = df[irregular_condtions].any(axis='columns')
+
+        # fully_ranked
+        candidate_set = ballots.candidates(self.ctx, exclude_writeins=True)
+        cleaned_ranks = ballots.cleaned_ballots(self.ctx, exclude_writeins=False, combine_writeins=False)['ranks']
+        fully_ranked = [(set(b) & candidate_set) == candidate_set or
+                        # voters ranked every possible candidate
+                        len(a) == len(b)
+                        # or did not, had no skipped ranks, overvotes, or duplicates
+                        for a, b in zip(input_ranks, cleaned_ranks)]
+        df['fully_ranked'] = fully_ranked
+
+        self._stat_table = df
 
     def update_split_info(self, split_info_dict):
 
@@ -217,6 +307,7 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._split_value = split_info_dict['split_value']
         self._split_filter = split_info_dict['split_filter']
 
+        self._split_stat_table = self._stat_table[self._split_filter]
         self._include_split_stats = True
 
     def _pre_check(self):
@@ -654,165 +745,3 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
 
     def tabulation_complete(self):
         return self._init_complete
-
-    def split_filter(self):
-        return self._split_filter
-
-    def conditional_weighted_sum(self, condition, *, weights=None):
-        if weights:
-            return sum(weight for weight, cond in zip(weights, condition) if cond)
-        else:
-            return sum(weight for weight, cond in zip(self._cleaned_dict['weight'], condition) if cond)
-
-    ####################
-    # STATS LISTS
-
-    def base_stats(self):
-        return [
-            self.notes,
-            self.jurisdiction,
-            self.state,
-            self.year,
-            self.date,
-            self.office,
-            self.rcv_type,
-            self.exhaust_on_overvote,
-            self.exhaust_on_repeated_skipped_rankings,
-            self.exhaust_on_duplicate_rankings,
-            self.combine_writeins,
-            self.treat_combined_writeins_as_duplicates,
-            self.skip_writeins,
-            self.contest_rank_limit,
-            self.number_of_winners,
-            self.tabulation_num,
-            self.unique_id,
-            self.winner,
-            self.number_of_candidates,
-            self.number_of_rounds,
-            self.winners_consensus_value,
-            self.first_round_active_votes,
-            self.final_round_active_votes,
-        ]
-
-    def ballot_stats(self):
-        return [
-            self.first_round_overvote,
-            self.ranked_single,
-            self.ranked_multiple,
-            self.ranked_3_or_more,
-            self.mean_rankings_used,
-            self.median_rankings_used,
-            self.total_fully_ranked,
-            self.includes_duplicate_ranking,
-            self.includes_skipped_ranking,
-            self.total_irregular,
-            self.total_ballots,
-            self.total_ballots_with_overvote,
-            self.total_undervote,
-            self.total_pretally_exhausted,
-            self.total_posttally_exhausted,
-            self.total_posttally_exhausted_by_overvote,
-            self.total_posttally_exhausted_by_skipped_rankings,
-            self.total_posttally_exhausted_by_abstention,
-            self.total_posttally_exhausted_by_rank_limit,
-            self.total_posttally_exhausted_by_duplicate_rankings
-        ]
-
-    def split_stats(self):
-        return [
-            self.split_id,
-            self.split_field,
-            self.split_value,
-            self.split_first_round_overvote,
-            self.split_ranked_single,
-            self.split_ranked_multiple,
-            self.split_ranked_3_or_more,
-            self.split_mean_rankings_used,
-            self.split_median_rankings_used,
-            self.split_total_fully_ranked,
-            self.split_includes_duplicate_ranking,
-            self.split_includes_skipped_ranking,
-            self.split_total_irregular,
-            self.split_total_ballots,
-            self.split_total_ballots_with_overvote,
-            self.split_total_undervote,
-            self.split_total_pretally_exhausted,
-            self.split_total_posttally_exhausted,
-            self.split_total_posttally_exhausted_by_overvote,
-            self.split_total_posttally_exhausted_by_skipped_rankings,
-            self.split_total_posttally_exhausted_by_abstention,
-            self.split_total_posttally_exhausted_by_rank_limit,
-            self.split_total_posttally_exhausted_by_duplicate_rankings
-        ]
-
-    def single_winner_stats(self):
-        stat_list = [
-            self.first_round_winner_vote,
-            self.final_round_winner_vote,
-            self.first_round_winner_percent,
-            self.final_round_winner_percent,
-            self.first_round_winner_place,
-            self.final_round_winner_votes_over_first_round_valid,
-            self.condorcet,
-            self.come_from_behind,
-            self.effective_ballot_length,
-            self.ranked_winner
-        ]
-
-        if self._include_split_stats:
-            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
-        else:
-            return self.base_stats() + stat_list + self.ballot_stats()
-
-    def multi_winner_stats(self):
-        stat_list = [self.win_threshold]
-
-        if self._include_split_stats:
-            return self.base_stats() + stat_list + self.ballot_stats() + self.split_stats()
-        else:
-            return self.base_stats() + stat_list + self.ballot_stats()
-
-    def ballot_debug_df(self, *, tabulation_num=1):
-        """
-        Return pandas data frame with ranks as well stats on exhaustion, ranked_multiple ...
-        """
-
-        # compute ballot stats
-        func_list = [self.duplicates,
-                     self.pretally_exhausted,
-                     self.posttally_exhausted,
-                     self.posttally_exhausted_by_abstention,
-                     self.posttally_exhausted_by_overvote,
-                     self.posttally_exhausted_by_rank_limit,
-                     self.posttally_exhausted_by_skipvote,
-                     self.posttally_exhausted_by_duplicate_rankings,
-                     self.first_round_overvote_bool,
-                     self.fully_ranked,
-                     self.used_last_rank,
-                     self.overvote,
-                     self.ranked_multiple_bool,
-                     self.ranked_single_bool,
-                     self.skipped,
-                     self.undervote,
-                     self.irregular_bool]
-
-        dct = {f.__name__: f(tabulation_num=tabulation_num) if 'tabulation_num' in inspect.signature(f).parameters else f()
-               for f in func_list}
-
-        # get ballot info
-        ballot_dict = copy.deepcopy(ballots.input_ballots(self.ctx, combine_writeins=False))
-        bs = ballot_dict['ranks']
-
-        # how many ranks?
-        num_ranks = max(len(i) for i in bs)
-
-        # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
-        bs = [b + ([util.BallotMarks.SKIPPEDRANK] * (num_ranks - len(b))) for b in bs]
-
-        # add in rank columns
-        ranks = {}
-        for i in range(1, num_ranks + 1):
-            ranks['rank' + str(i)] = [b[i - 1] for b in bs]
-
-        # assemble output_table, start with extras
-        return pd.DataFrame.from_dict({**ranks, **dct})
