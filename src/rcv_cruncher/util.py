@@ -2,6 +2,7 @@ import decimal
 import functools
 import os
 import pathlib
+import csv
 
 import pandas as pd
 
@@ -29,6 +30,28 @@ class InactiveType():
 
 ########################
 # helper funcs
+
+
+class CSVLogger:
+
+    def __init__(self, path, header_list):
+        self.row_length = len(header_list)
+        self.path = path
+        self.file = open(path, 'w', newline='')
+        self.writer = csv.writer(self.file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        self.write(header_list)
+
+    def write(self, row_list):
+        if len(row_list) != self.row_length:
+            msg = f"CSVLogger.write ({self.path.name}) row list has length {len(row_list)}, "
+            msg += f"doesn't match header list length ({self.row_length})"
+            raise RuntimeError(msg)
+        self.writer.writerow(row_list)
+        self.file.flush()
+
+    def close(self):
+        self.file.flush()
+        self.file.close()
 
 
 def before(victor, loser, ballot):
@@ -161,3 +184,6 @@ def LD2DL(ld):
 def longname(path):
     return pathlib.Path('\\\\?\\' + os.fspath(path.resolve()))
 
+def filter_bool_dict(ballots, field_name):
+    val_list = ballots[field_name]
+    return {split_val: [split_val == i for i in val_list] for split_val in set(val_list)}

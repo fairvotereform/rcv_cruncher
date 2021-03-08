@@ -25,6 +25,34 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         return ctx['rcv_type'](ctx)
 
     @staticmethod
+    def get_split_stats(rcv_obj):
+
+        split_info_list = rcv_obj.get_split_info_list()
+        n_splits = len(split_info_list)
+
+        splits = []
+        error_splits = []
+        for split_info in split_info_list:
+
+            try:
+                rcv_obj.update_split_info(split_info)
+                splits.append({
+                    'variant': rcv_obj.get_variant_name(),
+                    'variant_group': rcv_obj.get_variant_group(),
+                    'contest_stats_df': rcv_obj.get_contest_stats_df(),
+                    'tabulation_stats_df': rcv_obj.get_tabulation_stats_df()
+                })
+            except Exception:
+                error_splits.append(split_info['split_id'])
+
+        if error_splits:
+            error_str = ",".join(error_splits)
+            raise RuntimeError(f'rcv_base.get_split_stats: {len(error_splits)} of {n_splits} splits errored. {error_str}')
+
+        rcv_obj.update_split_info()
+        return splits
+
+    @staticmethod
     @abc.abstractmethod
     def variant_group():
         """
@@ -71,7 +99,7 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         pass
 
     @staticmethod
-    def contest_stats_df(rcv_obj):
+    def get_contest_stats_df(rcv_obj):
         """
         Return a pandas data frame with a single row. Any functions that take
         'tabulation_num' as parameter return a concatenating string with the function results for each
@@ -81,10 +109,6 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         dct = {f.__name__: [f(**RCV._f_args(f, tabulation_num=tabulation_list))] for f in rcv_obj._contest_stats()()}
         dct = {k: [util.decimal2float(i) for i in v] for k, v in dct.items()}
         return pd.DataFrame.from_dict(dct)
-
-    # def contest_stats_comments_df(self):
-    #     return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
-    #                                    for fun in self._contest_stats()})
 
     # override me
     @abc.abstractmethod
@@ -96,7 +120,7 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         pass
 
     @staticmethod
-    def tabulation_stats_df(rcv_obj):
+    def get_tabulation_stats_df(rcv_obj):
         """
         Return a pandas data frame with one row per tabulation. Any functions that take
         'tabulation_num' as parameter return the value for each tabulation on that tabulation's row.
@@ -107,10 +131,6 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
                for f in rcv_obj._tabulation_stats()()}
         dct = {k: [util.decimal2float(i) for i in v] for k, v in dct.items()}
         return pd.DataFrame.from_dict(dct)
-
-    # def tabulation_stats_comments_df(self):
-    #     return pd.DataFrame.from_dict({fun.__name__: [' '.join((fun.__doc__ or '').split())]
-    #                                    for fun in self._tabulation_stats()})
 
     # override me
     @abc.abstractmethod
@@ -166,7 +186,7 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         # STORE CONTEST INFO
         self.ctx = ctx
 
-        # STATE INFO
+        # INIT STATE INFO
 
         # contest-level
         self._tab_num = 0
@@ -182,13 +202,6 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._round_winners = []
         self._round_loser = None
 
-        # ballot filtering info
-        self._include_split_stats = False
-        self._split_id = None
-        self._split_field = None
-        self._split_value = None
-        self._split_filter = None
-
         # CONTEST INPUTS
         self._n_winners = ctx['num_winners']
         self._multi_winner_rounds = ctx['multi_winner_rounds']
@@ -197,6 +210,18 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
         self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
                     for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
         self.cache_dict = {}
+
+        # INIT BALLOT FILTER INFO
+        self._include_split_stats = False
+        self._split_id = None
+        self._split_field = None
+        self._split_value = None
+        self._split_filter = None
+
+        self._split_info_list = []
+        self._split_set_input = None
+        self._split_set_actual = None
+        self._make_split_info_list(ctx)
 
         # RUN
         self._run_contest()
@@ -208,6 +233,46 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
 
         self._accounting_check()
         self._init_complete = True
+
+    def get_split_info_list(self):
+        return self._split_info_list
+
+    def _make_split_info_list(self):
+
+        split_infos = []
+        split_fields = self.ctx.get('split_fields')
+
+        if split_fields:
+
+            all_ballots = ballots.input_ballots(self.ctx)
+
+            all_fields = list(all_ballots.keys())
+            field_name_lower_dict = {k.lower(): k for k in all_fields}
+
+            split_sets = {field_name_lower_dict[k.lower()]:
+                          util.filter_bool_dict(all_ballots, field_name_lower_dict[k.lower()])
+                          for k in split_fields if k.lower() in field_name_lower_dict}
+
+            split_set_actual = ",".join(list(split_sets.keys()))
+            split_set_input = ",".join(split_fields)
+
+            for k in split_sets:
+                ky_clean = str(k).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
+
+                for split_val in split_sets[k]:
+                    val_clean = str(split_val).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
+                    split_id = ky_clean + "-" + val_clean
+
+                    split_infos.append({
+                        'split_field': k,
+                        'split_value': split_val,
+                        'split_id': split_id,
+                        'split_filter': split_sets[k][split_val]
+                    })
+
+            self._split_info_list = split_infos
+            self._split_set_input = split_set_input
+            self._split_set_actual = split_set_actual
 
     def _precompute_some_stats(self):
 
@@ -297,18 +362,27 @@ class RCV(rcv_reporting.RCV_Reporting, abc.ABC):
 
         self._stat_table = df
 
-    def update_split_info(self, split_info_dict):
+    def update_split_info(self, split_info_dict=None):
 
-        if len(split_info_dict['split_filter']) != len(self._bs):
-            raise RuntimeError('rcv_base.update_split_info: ballot split filter length != length of ballots')
+        if split_info_dict:
+            if len(split_info_dict['split_filter']) != len(self._bs):
+                raise RuntimeError('rcv_base.update_split_info: ballot split filter length != length of ballots')
 
-        self._split_id = split_info_dict['split_id']
-        self._split_field = split_info_dict['split_field']
-        self._split_value = split_info_dict['split_value']
-        self._split_filter = split_info_dict['split_filter']
+            self._split_id = split_info_dict['split_id']
+            self._split_field = split_info_dict['split_field']
+            self._split_value = split_info_dict['split_value']
+            self._split_filter = split_info_dict['split_filter']
 
-        self._split_stat_table = self._stat_table[self._split_filter]
-        self._include_split_stats = True
+            self._split_stat_table = self._stat_table[self._split_filter]
+            self._include_split_stats = True
+
+        else:
+            self._split_id = None
+            self._split_field = None
+            self._split_value = None
+            self._split_filter = None
+            self._split_stat_table = None
+            self._include_split_stats = False
 
     def _pre_check(self):
         """

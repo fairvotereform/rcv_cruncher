@@ -171,8 +171,6 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
 
     # add dop, uid, cvr_path_root
     for d in competitions:
-        # d['contest_set_line_df'] = pd.DataFrame([[d[col].__name__ if callable(d[col]) else d[col] for col in cols_in_order]],
-        #                                         columns=cols_in_order)
 
         if override_cvr_root_dir:
             d['cvr_path'] = pathlib.Path(override_cvr_root_dir) / d['cvr_path']
@@ -183,9 +181,6 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
             d['candidate_map'] = run_config['cvr_path_root'] / d['candidate_map']
 
         d['uid'] = unique_id(d)
-        # d['split_id'] = ""
-        # d['split_field'] = ""
-        # d['split_value'] = ""
 
         # add in defaults if needed
         for setting in contest_set_settings:
@@ -271,48 +266,6 @@ def write_aggregated_stats(results_dir,
         df.to_csv(util.longname(results_dir / 'candidate_details.csv'), index=False)
 
 
-def filter_bool_dict(ballots, field_name):
-    val_list = ballots[field_name]
-    return {split_val: [split_val == i for i in val_list] for split_val in set(val_list)}
-
-
-def split_contest(contest):
-
-    split_infos = []
-    split_fields = contest.get('split_fields')
-
-    if split_fields:
-
-        all_ballots = ballots.input_ballots(contest)
-
-        all_fields = list(all_ballots.keys())
-        field_name_lower_dict = {k.lower(): k for k in all_fields}
-
-        # {split_field: {split_val: [ballot]}}
-        split_sets = {field_name_lower_dict[k.lower()]:
-                      filter_bool_dict(all_ballots, field_name_lower_dict[k.lower()])
-                      for k in split_fields if k.lower() in field_name_lower_dict}
-
-        split_set_actual = ",".join(list(split_sets.keys()))
-        split_set_input = ",".join(split_fields)
-
-        for k in split_sets:
-            ky_clean = str(k).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
-
-            for split_val in split_sets[k]:
-                val_clean = str(split_val).replace(":", "_").replace("/", "_").replace("\\", "_").replace(" ", "_").replace("-", "_")
-                split_id = ky_clean + "-" + val_clean
-
-                split_infos.append({
-                    'split_field': k,
-                    'split_value': split_val,
-                    'split_id': split_id,
-                    'split_filter': split_sets[k][split_val]
-                })
-
-    return split_set_actual, split_set_input, split_infos
-
-
 class CrunchSteps:
 
     def __init__(self, contest, output_config, converted_cvr_dir, results_dir, pbar_desc):
@@ -323,7 +276,6 @@ class CrunchSteps:
         self.results_dir = results_dir
         self.pbar_desc = pbar_desc
         self.error_log_writers = []
-        self.step_list = 'complete'
 
         self.state_data = {
             'n_errors': 0,
@@ -340,9 +292,6 @@ class CrunchSteps:
     def update_error_log_writers(self, writers_list):
         self.error_log_writers = writers_list if isinstance(writers_list, list) else [writers_list]
 
-    def use_split_stats_list(self):
-        self.step_list = 'split_stats'
-
     def refresh_steps(self):
 
         cache_keys = ['success', 'order']
@@ -352,174 +301,144 @@ class CrunchSteps:
                 if k2 in self.steps[k1]:
                     cache[k1].update({k2: self.steps[k1][k2]})
 
-        if self.step_list == 'complete':
-
-            self.steps = collections.OrderedDict([
-                ('convert_cvr', {
-                    'f': write_out.write_converted_cvr,
-                    'args': [self.contest, self.converted_cvr_dir],
-                    'condition': self.output_config.get('convert_cvr'),
-                    'fail_with': [],
-                    'depends_on': [],
-                    'return_key': None
-                }),
-                ('tabulate', {
-                    'f': rcv_base.RCV.run_rcv,
-                    'args': [self.contest],
-                    'condition': True,
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': 'rcv_obj'
-                }),
-                ('tabulation_stats', {
-                    'f': rcv_base.RCV.tabulation_stats_df,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': self.output_config.get('per_rcv_type_stats'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': 'tabulation_stats_df'
-                }),
-                ('rcv_variant', {
-                    'f': rcv_base.RCV.get_variant_name,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': True,
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': 'variant'
-                }),
-                ('contest_stats', {
-                    'f': rcv_base.RCV.contest_stats_df,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': self.output_config.get('per_rcv_group_stats'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': 'contest_stats_df'
-                }),
-                ('rcv_group', {
-                    'f': rcv_base.RCV.get_variant_group,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': True,
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': 'variant_group'
-                }),
-                ('candidate_details', {
-                    'f': write_out.prepare_candidate_details,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': self.output_config.get('candidate_details'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': 'candidate_details'
-                }),
-                ('round_by_round', {
-                    'f': write_out.write_rcv_rounds,
-                    'args': [self.state_data['rcv_obj'], self.results_dir],
-                    'condition': self.output_config.get('round_by_round'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': None
-                }),
-                ('ballot_stats_debug', {
-                    'f': write_out.write_ballot_debug_info,
-                    'args': [self.state_data['rcv_obj'], self.results_dir],
-                    'condition': self.output_config.get('ballot_stats_debug'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': None
-                }),
-                ('cvr_ballot_allocation', {
-                    'f': write_out.write_converted_cvr_annotated,
-                    'args': [self.state_data['rcv_obj'], self.results_dir],
-                    'condition': self.output_config.get('cvr_ballot_allocation'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': None
-                }),
-                ('first_choice_to_finalist', {
-                    'f': write_out.write_first_to_finalist_tables,
-                    'args': [self.state_data['rcv_obj'], self.results_dir],
-                    'condition': self.output_config.get('first_choice_to_finalist'),
-                    'depends_on': ['tabulate'],
-                    'fail_with': [],
-                    'return_key': None
-                }),
-                ('condorcet', {
-                    'f': write_out.write_condorcet_tables,
-                    'args': [self.contest, self.results_dir],
-                    'condition': self.output_config.get('condorcet'),
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': None
-                }),
-                ('first_second_choices', {
-                    'f': write_out.write_first_second_tables,
-                    'args': [self.contest, self.results_dir],
-                    'condition': self.output_config.get('first_second_choices'),
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': None
-                }),
-                ('cumulative_rankings', {
-                    'f': write_out.write_cumulative_ranking_tables,
-                    'args': [self.contest, self.results_dir],
-                    'condition': self.output_config.get('cumulative_rankings'),
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': None
-                }),
-                ('rank_usage', {
-                    'f': write_out.write_rank_usage_tables,
-                    'args': [self.contest, self.results_dir],
-                    'condition': self.output_config.get('rank_usage'),
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': None
-                }),
-                ('crossover_support', {
-                    'f': write_out.write_opponent_crossover_tables,
-                    'args': [self.contest, self.results_dir],
-                    'condition': self.output_config.get('crossover_support'),
-                    'depends_on': [],
-                    'fail_with': ['convert_cvr'],
-                    'return_key': None
-                }),
-            ])
-        elif self.step_list == 'split_stats':
-
-            self.steps = collections.OrderedDict([
-                ('tabulation_stats', {
-                    'f': rcv_base.RCV.tabulation_stats_df,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': self.output_config.get('per_rcv_type_stats'),
-                    'depends_on': [],
-                    'fail_with': [],
-                    'return_key': 'tabulation_stats_df'
-                }),
-                ('rcv_variant', {
-                    'f': rcv_base.RCV.get_variant_name,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': True,
-                    'depends_on': [],
-                    'fail_with': [],
-                    'return_key': 'variant'
-                }),
-                ('contest_stats', {
-                    'f': rcv_base.RCV.contest_stats_df,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': self.output_config.get('per_rcv_group_stats'),
-                    'depends_on': [],
-                    'fail_with': [],
-                    'return_key': 'contest_stats_df'
-                }),
-                ('rcv_group', {
-                    'f': rcv_base.RCV.get_variant_group,
-                    'args': [self.state_data['rcv_obj']],
-                    'condition': True,
-                    'depends_on': [],
-                    'fail_with': [],
-                    'return_key': 'variant_group'
-                })
-            ])
+        self.steps = collections.OrderedDict([
+            ('convert_cvr', {
+                'f': write_out.write_converted_cvr,
+                'args': [self.contest, self.converted_cvr_dir],
+                'condition': self.output_config.get('convert_cvr'),
+                'fail_with': [],
+                'depends_on': [],
+                'return_key': None
+            }),
+            ('tabulate', {
+                'f': rcv_base.RCV.run_rcv,
+                'args': [self.contest],
+                'condition': True,
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': 'rcv_obj'
+            }),
+            ('tabulation_stats', {
+                'f': rcv_base.RCV.get_tabulation_stats_df,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('per_rcv_type_stats'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'tabulation_stats_df'
+            }),
+            ('rcv_variant', {
+                'f': rcv_base.RCV.get_variant_name,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'variant'
+            }),
+            ('contest_stats', {
+                'f': rcv_base.RCV.get_contest_stats_df,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('per_rcv_group_stats'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'contest_stats_df'
+            }),
+            ('rcv_group', {
+                'f': rcv_base.RCV.get_variant_group,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'variant_group'
+            }),
+            ('candidate_details', {
+                'f': write_out.prepare_candidate_details,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('candidate_details'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'candidate_details'
+            }),
+            ('round_by_round', {
+                'f': write_out.write_rcv_rounds,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('round_by_round'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('ballot_stats_debug', {
+                'f': write_out.write_ballot_debug_info,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('ballot_stats_debug'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('cvr_ballot_allocation', {
+                'f': write_out.write_converted_cvr_annotated,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('cvr_ballot_allocation'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('first_choice_to_finalist', {
+                'f': write_out.write_first_to_finalist_tables,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('first_choice_to_finalist'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('condorcet', {
+                'f': write_out.write_condorcet_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('condorcet'),
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': None
+            }),
+            ('first_second_choices', {
+                'f': write_out.write_first_second_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('first_second_choices'),
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': None
+            }),
+            ('cumulative_rankings', {
+                'f': write_out.write_cumulative_ranking_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('cumulative_rankings'),
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': None
+            }),
+            ('rank_usage', {
+                'f': write_out.write_rank_usage_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('rank_usage'),
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': None
+            }),
+            ('crossover_support', {
+                'f': write_out.write_opponent_crossover_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('crossover_support'),
+                'depends_on': [],
+                'fail_with': ['convert_cvr'],
+                'return_key': None
+            }),
+            ('split_stats', {
+                'f': rcv_base.RCV.get_split_stats,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'split_stats'
+            })
+        ])
 
         for k in self.steps:
             for cache_key in cache_keys:
@@ -556,14 +475,8 @@ class CrunchSteps:
 
         step_reached = 0
 
-        if self.step_list == 'complete':
-            #sys.stdout.flush()
-            pbar = tqdm.tqdm(total=self.n_steps(), bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN')
-        else:
-            pbar = None
-
-        if pbar:
-            pbar.set_description(self.pbar_desc)
+        pbar = tqdm.tqdm(total=self.n_steps(), bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN')
+        pbar.set_description(self.pbar_desc)
 
         next_step = self.next_step()
         while next_step:
@@ -572,8 +485,7 @@ class CrunchSteps:
 
             try:
 
-                if pbar:
-                    pbar.set_postfix_str(step_name)
+                pbar.set_postfix_str(step_name)
 
                 if step_details['return_key']:
                     self.state_data.update({
@@ -588,26 +500,51 @@ class CrunchSteps:
                 self.steps[step_name]['success'] = False
 
                 for writer in self.error_log_writers:
-                    writer.writerow([self.contest['uid'], self.contest['split_id'], step_name, repr(e)])
+                    writer.write([self.contest['uid'], self.contest['split_id'], step_name, repr(e)])
                 self.state_data['n_errors'] += 1
 
             else:
                 self.steps[step_name]['success'] = True
 
             finally:
-                if pbar:
-                    pbar.update(step_details['order']-step_reached)
+                pbar.update(step_details['order']-step_reached)
                 step_reached = step_details['order']
 
             self.refresh_steps()
             next_step = self.next_step()
 
-        if pbar:
-            pbar.set_postfix_str('complete')
-            pbar.close()
+        pbar.set_postfix_str('complete')
+        pbar.close()
 
     def return_results(self):
         return self.state_data
+
+
+def init_error_logger(results_dir):
+    header_list = ['contest', 'split_id', 'cruncher_step', 'message']
+    error_log_path = results_dir / 'error_log.csv'
+    return util.CSVLogger(error_log_path, header_list)
+
+
+def write_input_dir(results_dir, output_config, start_time, end_time):
+
+    # copy input files
+    result_log_dir = results_dir / 'inputs'
+    util.verifyDir(result_log_dir)
+
+    pkg_version = pkg_resources.require("rcv_cruncher")[0].version
+    pkg_url = "https://github.com/fairvotereform/rcv_cruncher"
+    with open(result_log_dir / 'pkg_info.txt', 'w') as pkg_info:
+        pkg_info.write(f'version: {pkg_version}\n')
+        pkg_info.write(f'github: {pkg_url}\n')
+        pkg_info.write(f'start_time: {start_time.strftime("%Y-%m-%d %H:%M:%S")}\n')
+        pkg_info.write(f'end_time: {end_time.strftime("%Y-%m-%d %H:%M:%S")}')
+
+    log_output_config = result_log_dir / 'output_config.csv'
+    shutil.copy2(output_config['run_config_file_path'], log_output_config)
+
+    log_contest_set_fname = result_log_dir / 'contest_set.csv'
+    shutil.copy2(output_config['contest_set_file_path'], log_contest_set_fname)
 
 
 def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=False):
@@ -644,207 +581,102 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
     allsplit_rcv_group_stats_df_dict = {variant_group: [] for variant_group in
                                         set(g.variant_group() for g in rcv_variants.get_rcv_dict().values())}
 
-    # init output files
-    split_details_path = results_dir / 'split_details.csv'
-    any_splits = any(contest.get('split_fields') for contest in contest_set)
-    if any_splits:
-        split_log_file = open(split_details_path, 'w', newline='')
-        split_log_writer = csv.writer(split_log_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-        split_log_writer.writerow(['uid', 'jurisdiction', 'office', 'year', 'date', 'total_splits', 'error_splits', 'write_dir'])
-        split_log_file.flush()
+    # init loggers
+    error_logger = init_error_logger(results_dir)
 
     n_errors = 0
-    error_log_path = results_dir / 'error_log.csv'
-    with open(error_log_path, 'w', newline='') as error_log_file:
+    #########################
+    # LOOP TROUGH CONTESTS
 
-        error_log_writer = csv.writer(error_log_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-        error_log_writer.writerow(['contest', 'split_id', 'cruncher_step', 'message'])
-        error_log_file.flush()
+    for idx, contest in enumerate(contest_set):
 
-        #########################
-        # LOOP TROUGH CONTESTS
+        # RUN OPERATIONS
+        pbar_desc = f'{idx+1} of {len(contest_set)} contests: {contest["uid"]}'
+        if n_errors:
+            pbar_desc = f'[{n_errors} ERRORS SO FAR] ' + pbar_desc
 
-        for idx, contest in enumerate(contest_set):
+        step_obj = CrunchSteps(contest, output_config, converted_cvr_dir, results_dir, pbar_desc)
+        step_obj.update_error_log_writers([error_logger])
+        step_obj.run_steps()
 
-            # RUN OPERATIONS
-            pbar_desc = f'{idx+1} of {len(contest_set)} contests: {contest["uid"]}'
-            if n_errors:
-                pbar_desc = f'[{n_errors} ERRORS SO FAR] ' + pbar_desc
+        crunch_returns = step_obj.return_results()
+        n_errors += crunch_returns['n_errors']
 
-            step_obj = CrunchSteps(contest, output_config, converted_cvr_dir, results_dir, pbar_desc)
-            step_obj.update_error_log_writers([error_log_writer])
-            step_obj.run_steps()
+        # STORE RESULTS
+        if output_config.get('candidate_details') and crunch_returns.get('candidate_details'):
+            candidate_details_dfs.append(crunch_returns['candidate_details'])
 
-            crunch_returns = step_obj.return_results()
-            n_errors += crunch_returns['n_errors']
-            rcv_obj = crunch_returns['rcv_obj']
+        if output_config.get('per_rcv_type_stats') and crunch_returns.get('tabulation_stats_df'):
+            variant = crunch_returns['variant']
+            rcv_variant_stats_df_dict[variant].append(crunch_returns['tabulation_stats_df'])
 
-            if not rcv_obj:
-                continue
+        if output_config.get('per_rcv_group_stats') and crunch_returns.get('contest_stats_df'):
+            variant_group = crunch_returns['variant_group']
+            rcv_group_stats_df_dict[variant_group].append(crunch_returns['contest_stats_df'])
 
-            # STORE RESULTS
-            if output_config.get('candidate_details') and 'candidate_details' in crunch_returns:
-                candidate_details_dfs.append(crunch_returns['candidate_details'])
+        if crunch_returns.get('split_stats'):
 
-            if output_config.get('per_rcv_type_stats') and 'tabulation_stats_df' in crunch_returns:
-                variant = crunch_returns['variant']
-                rcv_variant_stats_df_dict[variant].append(crunch_returns['tabulation_stats_df'])
+            split_stats = crunch_returns['split_stats']
 
-            if output_config.get('per_rcv_group_stats') and 'contest_stats_df' in crunch_returns:
-                variant_group = crunch_returns['variant_group']
-                rcv_group_stats_df_dict[variant_group].append(crunch_returns['contest_stats_df'])
+            # SPLIT PATHS
+            split_path = results_dir / 'split_stats'
+            util.verifyDir(split_path)
 
-            # CHECK FOR SPLITS
-            split_set_actual, split_set_input, split_infos = split_contest(contest)
+            split_contest_path = split_path / contest["uid"]
+            util.verifyDir(split_contest_path)
 
-            if split_infos:
+            # SPLIT RESULTS CONTAINERS
+            split_rcv_variant_stats_df_dict = {variant_name: [] for variant_name in rcv_variants.get_rcv_dict().keys()}
+            split_rcv_group_stats_df_dict = {variant_group: [] for variant_group in
+                                             set(g.variant_group() for g in rcv_variants.get_rcv_dict().values())}
 
-                # SPLIT PATHS
-                split_path = results_dir / 'split_stats'
-                util.verifyDir(split_path)
+            for split_stat in split_stats:
 
-                split_contest_path = split_path / contest["uid"]
-                util.verifyDir(split_contest_path)
+                if output_config.get('per_rcv_type_stats') and split_stat.get('tabulation_stats_df'):
+                    variant = split_stat['variant']
+                    split_rcv_variant_stats_df_dict[variant].append(split_stat['tabulation_stats_df'])
+                    allsplit_rcv_variant_stats_df_dict[variant].append(split_stat['tabulation_stats_df'])
 
-                # split_results_path = split_contest_path / "results"
-                # util.verifyDir(split_results_path)
+                if output_config.get('per_rcv_group_stats') and split_stat.get('contest_stats_df'):
+                    variant_group = split_stat['variant_group']
+                    split_rcv_group_stats_df_dict[variant_group].append(split_stat['contest_stats_df'])
+                    allsplit_rcv_group_stats_df_dict[variant_group].append(split_stat['contest_stats_df'])
 
-                # split_converted_cvr_path = split_contest_path / "converted_cvr"
-                # util.verifyDir(split_converted_cvr_path)
-
-                # SPLIT RESULTS CONTAINERS
-                split_rcv_variant_stats_df_dict = {variant_name: [] for variant_name in rcv_variants.get_rcv_dict().keys()}
-                split_rcv_group_stats_df_dict = {variant_group: [] for variant_group in
-                                                 set(g.variant_group() for g in rcv_variants.get_rcv_dict().values())}
-
-                split_error_log_path = split_contest_path / 'error_log.csv'
-                with open(split_error_log_path, 'w', newline='') as split_error_log_file:
-
-                    split_error_log_writer = csv.writer(split_error_log_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
-                    split_error_log_writer.writerow(['contest', 'split_id', 'cruncher_step', 'message'])
-
-                    step_obj.update_error_log_writers([error_log_writer, split_error_log_writer])
-
-                    # LOOP SPLITS
-                    n_splits = len(split_infos)
-                    splits_completed = 0
-
-                    pbar_desc = f'split stats: split on fields [{split_set_actual}] out of input [{split_set_input}]'
-                    #sys.stdout.flush()
-                    cm = tqdm.tqdm(total=n_splits, bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}', colour='GREEN')
-                    with cm as pbar:
-
-                        pbar.set_description(pbar_desc)
-
-                        for split_info in split_infos:
-
-                            pbar.set_postfix_str(split_info['split_id'])
-                            pbar.update(1)
-
-                            # add split info
-                            rcv_obj.update_split_info(split_info)
-                            step_obj.update_state({'rcv_obj': rcv_obj})
-
-                            step_obj.use_split_stats_list()
-                            step_obj.run_steps()
-                            split_crunch_returns = step_obj.return_results()
-
-                            n_errors += split_crunch_returns['n_errors']
-
-                            # store crunch output for aggregation
-                            if output_config.get('per_rcv_type_stats') and 'tabulation_stats_df' in split_crunch_returns:
-                                variant = split_crunch_returns['variant']
-                                # split-specfic aggregation
-                                split_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
-                                # all split aggregation
-                                allsplit_rcv_variant_stats_df_dict[variant].append(split_crunch_returns['tabulation_stats_df'])
-
-                            if output_config.get('per_rcv_group_stats') and 'contest_stats_df' in split_crunch_returns:
-                                variant_group = split_crunch_returns['variant_group']
-                                # split-specfic aggregation
-                                split_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
-                                # all split aggregation
-                                allsplit_rcv_group_stats_df_dict[variant_group].append(split_crunch_returns['contest_stats_df'])
-
-                            splits_completed += 1
-                            error_log_file.flush()
-                            split_error_log_file.flush()
-
-                        pbar.set_postfix_str("completed")
-                        pbar.close()
-
-                    write_aggregated_stats(split_contest_path,
-                                           output_config,
-                                           split_rcv_group_stats_df_dict,
-                                           split_rcv_variant_stats_df_dict,
-                                           [],
-                                           quiet=True)
-
-                split_log_writer.writerow([contest['uid'],
-                                           contest['jurisdiction'],
-                                           contest['office'],
-                                           contest['year'],
-                                           contest['date'],
-                                           n_splits,
-                                           n_splits-splits_completed,
-                                           split_contest_path])
-                split_log_file.flush()
-            else:
-                split_log_writer.writerow([contest['uid'],
-                                           contest['jurisdiction'],
-                                           contest['office'],
-                                           contest['year'],
-                                           contest['date'],
-                                           "NA", "NA", "NA"])
-                split_log_file.flush()
-
-            # remove cvr from mem
-            if 'cvr' in contest:
-                del contest['cvr']
-
-            # flush error log
-            error_log_file.flush()
-
-        # WRITE OUT AGGREGATED STATS FOR CONTESTS
-        write_aggregated_stats(results_dir,
-                               output_config,
-                               rcv_group_stats_df_dict,
-                               rcv_variant_stats_df_dict,
-                               candidate_details_dfs,
-                               quiet=False)
-
-        # WRITE OUT AGGREGATED STATS FOR ALL SPLITS
-        if os.path.isdir(results_dir / 'split_stats'):
-
-            allsplit_agg_path = results_dir / 'split_stats' / 'all_contest_splits'
-            util.verifyDir(allsplit_agg_path)
-
-            write_aggregated_stats(allsplit_agg_path,
-                                   output_config,
-                                   allsplit_rcv_group_stats_df_dict,
-                                   allsplit_rcv_variant_stats_df_dict,
+            write_aggregated_stats(split_contest_path, output_config,
+                                   split_rcv_group_stats_df_dict, split_rcv_variant_stats_df_dict,
                                    [], quiet=True)
 
-        end_time = datetime.datetime.now()
+        # remove cvr from mem
+        if 'cvr' in contest:
+            del contest['cvr']
 
-        # copy input files
-        result_log_dir = results_dir / 'inputs'
-        util.verifyDir(result_log_dir)
+    # close logs
+    error_logger.close()
 
-        pkg_version = pkg_resources.require("rcv_cruncher")[0].version
-        pkg_url = "https://github.com/fairvotereform/rcv_cruncher"
-        with open(result_log_dir / 'pkg_info.txt', 'w') as pkg_info:
-            pkg_info.write(f'version: {pkg_version}\n')
-            pkg_info.write(f'github: {pkg_url}\n')
-            pkg_info.write(f'start_time: {start_time.strftime("%Y-%m-%d %H:%M:%S")}\n')
-            pkg_info.write(f'end_time: {end_time.strftime("%Y-%m-%d %H:%M:%S")}')
+    # WRITE OUT AGGREGATED STATS FOR CONTESTS
+    write_aggregated_stats(results_dir,
+                           output_config,
+                           rcv_group_stats_df_dict,
+                           rcv_variant_stats_df_dict,
+                           candidate_details_dfs,
+                           quiet=False)
 
-        log_output_config = result_log_dir / 'output_config.csv'
-        shutil.copy2(output_config['run_config_file_path'], log_output_config)
+    # WRITE OUT AGGREGATED STATS FOR ALL SPLITS
+    if os.path.isdir(results_dir / 'split_stats'):
 
-        log_contest_set_fname = result_log_dir / 'contest_set.csv'
-        shutil.copy2(output_config['contest_set_file_path'], log_contest_set_fname)
+        allsplit_agg_path = results_dir / 'split_stats' / 'all_contest_splits'
+        util.verifyDir(allsplit_agg_path)
 
-        duration = end_time - start_time
-        print(f"runtime duration: {str(duration)}")
-        print("DONE!")
+        write_aggregated_stats(allsplit_agg_path,
+                               output_config,
+                               allsplit_rcv_group_stats_df_dict,
+                               allsplit_rcv_variant_stats_df_dict,
+                               [], quiet=True)
+
+    end_time = datetime.datetime.now()
+
+    write_input_dir(results_dir, output_config, start_time, end_time)
+
+    duration = end_time - start_time
+    print(f"runtime duration: {str(duration)}")
+    print("DONE!")

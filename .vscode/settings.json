@@ -1,6 +1,6 @@
 {
     "restructuredtext.confPath": "${workspaceFolder}\\docs",
-    "python.pythonPath": "C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\python.exe",
+    "python.pythonPath": "~\\Documents\\fairvote\\projects\\rcv_cruncher\\conda-env",
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestEnabled": true,
