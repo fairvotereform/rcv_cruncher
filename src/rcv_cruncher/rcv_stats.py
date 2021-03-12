@@ -1,28 +1,12 @@
-import os
-import time
 import collections
 import copy
-import csv
 import functools
+import inspect
 
 import pandas as pd
 
 import rcv_cruncher.ballots as ballots
 import rcv_cruncher.util as util
-
-global RECORD_FUNCTION_TIMES, USE_TEMP_DICT
-RECORD_FUNCTION_TIMES = False
-USE_TEMP_DICT = True
-
-
-def use_timekeeping():
-    global RECORD_FUNCTION_TIMES
-    return RECORD_FUNCTION_TIMES
-
-
-def use_temp_dict():
-    global USE_TEMP_DICT
-    return USE_TEMP_DICT
 
 
 def allow_list_args(f):
@@ -83,55 +67,13 @@ def check_temp_dict(f):
     return wrapper
 
 
-def write_func_time(id, fname, t):
-    time_fpath = "contest_sets/reporting_time.csv"
-    with open(time_fpath, 'a+', newline='') as write_obj:
-        csv_writer = csv.writer(write_obj)
-        if os.path.exists(time_fpath) and os.stat(time_fpath).st_size == 0:
-            csv_writer.writerow(['id', 'function', 'time'])
-        csv_writer.writerow([id, fname, t])
-
-
-def timer(f):
-    if use_timekeeping():
-        @functools.wraps(f)
-        def timed(self, *args, **kwargs):
-
-            ts = time.time()
-            result = f(self, *args, **kwargs)
-            te = time.time()
-
-            write_func_time(self.ctx['uid'], f.__name__, te - ts)
-            return result
-
-        return timed
-    else:
-        return f
-
-
-def class_decorators(cls):
-    for attr in cls.__dict__:  # there's probably a better way to do this
-        if callable(getattr(cls, attr)):
-            if use_temp_dict():
-                setattr(cls, attr, check_temp_dict(getattr(cls, attr)))
-            # if use_timekeeping():  # add timer decorator
-            #    setattr(cls, attr, timer(getattr(cls, attr)))
-    return cls
-
-
-class RCV_Reporting:
+class RCVStats:
     """
     Mixin containing all reporting stats. Can be overriden by any rcv variant.
     """
 
-    def conditional_weighted_sum(self, condition, *, weights=None):
-        if weights:
-            return sum(weight for weight, cond in zip(weights, condition) if cond)
-        else:
-            return sum(weight for weight, cond in zip(self._cleaned_dict['weight'], condition) if cond)
-
     ####################
-    # STATS LISTS
+    # COLLECTIONS OF STATS
 
     def base_stats(self):
         return [
@@ -281,6 +223,256 @@ class RCV_Reporting:
 
         # assemble output_table, start with extras
         return pd.DataFrame.from_dict({**ranks, **dct})
+
+    # STATICS
+
+    @staticmethod
+    def stat_args(func, *, tabulation_num=None, ballot_filter=None):
+        """
+        Pack arguments for rcv_reporting calls.
+        """
+        arg_pack = {}
+        func_params = inspect.signature(func).parameters
+
+        if 'tabulation_num' in func_params and tabulation_num:
+            arg_pack.update({'tabulation_num': tabulation_num})
+        if 'ballot_filter' in func_params and ballot_filter:
+            arg_pack.update({'ballot_filter': ballot_filter})
+
+        return arg_pack
+
+    @staticmethod
+    def get_tabulation_stats_df(rcv_obj):
+        """
+        Return a pandas data frame with one row per tabulation. Any functions that take
+        'tabulation_num' as parameter return the value for each tabulation on that tabulation's row.
+        Any functions that do not take 'tabulation_num' just return their single value, repeated on each row.
+        """
+        tabulation_list = list(range(1, rcv_obj._tab_num+1))
+        dct = {f.__name__: [f(**RCVStats.stat_args(f, tabulation_num=i)) for i in tabulation_list]
+               for f in rcv_obj._tabulation_stats()()}
+        dct = {k: [util.decimal2float(i) for i in v] for k, v in dct.items()}
+        return pd.DataFrame.from_dict(dct)
+
+    @staticmethod
+    def get_contest_stats_df(rcv_obj):
+        """
+        Return a pandas data frame with a single row. Any functions that take
+        'tabulation_num' as parameter return a concatenating string with the function results for each
+        tabulation joined together. Any functions that do not take 'tabulation_num' just return their single value.
+        """
+        tabulation_list = list(range(1, rcv_obj._tab_num+1))
+        dct = {f.__name__: [f(**RCVStats.stat_args(f, tabulation_num=tabulation_list))] for f in rcv_obj._contest_stats()()}
+        dct = {k: [util.decimal2float(i) for i in v] for k, v in dct.items()}
+        return pd.DataFrame.from_dict(dct)
+
+    @staticmethod
+    def get_split_stats(rcv_obj):
+
+        split_info_list = rcv_obj.get_split_info_list()
+        n_splits = len(split_info_list)
+
+        splits = []
+        error_splits = []
+        for split_info in split_info_list:
+
+            try:
+                rcv_obj.update_split_info(split_info)
+                splits.append({
+                    'variant': rcv_obj.get_variant_name(),
+                    'variant_group': rcv_obj.get_variant_group(),
+                    'contest_stats_df': rcv_obj.get_contest_stats_df(),
+                    'tabulation_stats_df': rcv_obj.get_tabulation_stats_df()
+                })
+            except Exception:
+                error_splits.append(split_info['split_id'])
+
+        if error_splits:
+            error_str = ",".join(error_splits)
+            raise RuntimeError(f'rcv_base.get_split_stats: {len(error_splits)} of {n_splits} splits errored. {error_str}')
+
+        rcv_obj.update_split_info()
+        return splits
+
+    ###################
+    # USEFUL FUNCTIONS
+
+    def conditional_weighted_sum(self, condition, *, weights=None):
+        if weights:
+            return sum(weight for weight, cond in zip(weights, condition) if cond)
+        else:
+            return sum(weight for weight, cond in zip(self._cleaned_dict['weight'], condition) if cond)
+
+    @check_temp_dict
+    def repeated_skipvote_ind(self):
+        """
+            return list with index from each ballot where the skipvotes start repeating,
+            if no repeated skipvotes, set list element to inf
+
+            note:
+            repeated skipvotes are only counted if non-skipvotes occur after them. this
+            prevents incompletely ranked ballots from being counted as having repeated skipvotes
+        """
+
+        rs = []
+
+        for b in ballots.input_ballots(self.ctx)['ranks']:
+
+            rs.append(float('inf'))
+
+            # pair up successive rankings on ballot
+            z = list(zip(b, b[1:]))
+            uu = (util.BallotMarks.SKIPPEDRANK, util.BallotMarks.SKIPPEDRANK)
+
+            # if repeated skipvote on the ballot
+            if uu in z:
+                occurance = z.index(uu)
+
+                # start at second skipvote in the pair
+                # and loop until a non-skipvote is found
+                # only then record this ballot as having a
+                # repeated skipvote
+                for c in b[occurance + 1:]:
+                    if c != util.BallotMarks.SKIPPEDRANK:
+                        rs[-1] = occurance
+                        break
+        return rs
+
+    @check_temp_dict
+    def duplicate_ranking_ind(self):
+        """
+        Returns the index of the first repeated candidate on the ballot, if that exists, otherwise Inf.
+        This function is only used for exhaustion cause determination and so writeins should be treated as
+        duplicates only if that option was set in the contest set file.
+        """
+        res = []
+
+        for b in ballots.input_ballots(self.ctx,
+                                       combine_writeins=self.ctx['combine_writeins'] and
+                                       self.ctx['treat_combined_writeins_as_duplicates'])['ranks']:
+
+            seen = []
+            rep_idx = float('inf')
+
+            for idx, m in enumerate(b):
+
+                if m == util.BallotMarks.OVERVOTE or m == util.BallotMarks.SKIPPEDRANK:
+                    continue
+
+                if m in seen:
+                    rep_idx = idx
+                    break
+
+                seen.append(m)
+
+            res.append(rep_idx)
+
+        return res
+
+    @check_temp_dict
+    def exhaustion_check(self, *, tabulation_num=1):
+        """
+        Returns a list with constants indicating why each ballot
+        was exhausted in a single-winner rcv contest.
+
+        Possible list values are:
+
+        - UNDERVOTE : if the ballot was undervote, and therefore neither active nor exhaustable.
+
+        - NOT_EXHAUSTED: if finalist was present on the ballot and was ranked higher than an exhaust condition
+        (overvote or repeated_skipvotes)
+
+        - PRETALLY_EXHAUST: if the ballot was exahusted by overvote or skipped rankings prior to being counted in the first round.
+
+        - POSTTALLY_EXHAUSTED_BY_OVERVOTE: overvote rules apply to contest, and an overvote is encountered prior to a
+        final round candidate or another exhaust condition.
+
+        - POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE: skipped rankings rules apply to contest, and two or more repeated skipped
+         rankings are encountered prior to a final round candidate or another exhaust condition. The skipped rankings
+          must be followed by a non-skipped ranking for this condition to apply.
+
+        - POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING: repeated rankings rules apply to contest, and a candidate that had already appeared
+         on the ballot is encountered again prior to a final round candidate or another exhaust condition.
+
+        - POSTTALLY_EXHAUSTED_BY_ABSTENTION: if the ballot is rank restricted, then a ballot receives this label if the final
+        rank was skipped. If the ballot is not rank restricted, then all ballots that do not reach another exhaust
+        condition and do not rank a final round candidate receive this label.
+
+        - POSTTALLY_EXHAUSTED_BY_RANK_LIMIT: if the ballot is rank restricted, then a ballot recieves this label if the final
+        rank was marked. If the ballot is not rank restricted, then no ballots recieve this label.
+
+        rank restricted ballot: less than or equal to n-2 ranks, where n is number of candidates (not counting writeins).
+        """
+
+        restrictive_rank_limit = self.restrictive_rank_limit()
+
+        # gather ballot info
+        ziplist = zip(self.used_last_rank(),
+                      self.pretally_exhausted(tabulation_num=tabulation_num),  # True if exhausted or undervote
+                      self.overvote_ind(),  # Inf if no overvote
+                      self.repeated_skipvote_ind(),  # Inf if no repeated skipvotes
+                      self.duplicate_ranking_ind(),  # Inf if no repeats
+                      self.get_final_ranks(tabulation_num=tabulation_num),
+                      self.undervote(),  # True if ballot is undervote
+                      ballots.input_ballots(self.ctx, combine_writeins=False)['ranks'])  # sanity check)
+
+        why_exhaust = []
+
+        # loop through each ballot
+        for last_rank_used, pretally_exhaust, over_idx, repskip_idx, rep_idx, final_ranks, is_under, b in ziplist:
+
+            # if the ballot is an undervote,
+            # nothing else to check
+            if is_under:
+                why_exhaust.append(util.InactiveType.UNDERVOTE)
+                continue
+
+            # if not undervote and the ballot was exhausted before the first round
+            # no further categorization needed
+            if pretally_exhaust:
+                why_exhaust.append(util.InactiveType.PRETALLY_EXHAUST)
+                continue
+
+            # if the ballot still had some ranks at the end of tabulation
+            # then it wasnt exhausted
+            if final_ranks:
+                why_exhaust.append(util.InactiveType.NOT_EXHAUSTED)
+                continue
+
+            # determine exhaustion cause
+            idx_dictlist = []
+            # check if overvote can cause exhaust
+            if self.ctx['exhaust_on_overvote'] and not util.isInf(over_idx):
+                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_OVERVOTE,
+                                     'idx': over_idx})
+
+            # check if skipvotes can cause exhaustion
+            if self.ctx['exhaust_on_repeated_skipped_rankings'] and not util.isInf(repskip_idx):
+                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE,
+                                     'idx': repskip_idx})
+
+            if self.ctx['exhaust_on_duplicate_rankings'] and not util.isInf(rep_idx):
+                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING,
+                                     'idx': rep_idx})
+
+            if idx_dictlist:
+
+                # what comes first on ballot: overvote, skipvotes
+                min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
+                exhaust_cause = min_dict['exhaust_cause']
+
+            else:
+
+                # means this ballot contained neither skipped ranks or overvote, it will be exhausted
+                # either for rank limit or abstention
+                if restrictive_rank_limit and last_rank_used:
+                    exhaust_cause = util.InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT
+                else:
+                    exhaust_cause = util.InactiveType.POSTTALLY_EXHAUSTED_BY_ABSTENTION
+
+            why_exhaust.append(exhaust_cause)
+
+        return why_exhaust
 
     ####################
     # CONTEST INFO
@@ -614,51 +806,6 @@ class RCV_Reporting:
             counts[len(ranks)] += weight
         return '; '.join('{}: {}'.format(a, b) for a, b in sorted(counts.items()))
 
-    # def posttally_exhausted(self, *, tabulation_num=1):
-    #     """
-    #     Returns a boolean list indicating which ballots were exhausted.
-    #     """
-    #     return [True if
-    #             x != util.InactiveType.NOT_EXHAUSTED and
-    #             x != util.InactiveType.UNDERVOTE and
-    #             x != util.InactiveType.PRETALLY_EXHAUST
-    #             else False for x in self.exhaustion_check(tabulation_num=tabulation_num)]
-
-    # def posttally_exhausted_by_abstention(self, *, tabulation_num=1):
-    #     """
-    #     Returns bool list with elements corresponding to ballots.
-    #     """
-    #     return [True if i == util.InactiveType.POSTTALLY_EXHAUSTED_BY_ABSTENTION else False
-    #             for i in self.exhaustion_check(tabulation_num=tabulation_num)]
-
-    # def posttally_exhausted_by_overvote(self, *, tabulation_num=1):
-    #     """
-    #     Returns bool list with elements corresponding to ballots.
-    #     """
-    #     return [True if i == util.InactiveType.POSTTALLY_EXHAUSTED_BY_OVERVOTE else False
-    #             for i in self.exhaustion_check(tabulation_num=tabulation_num)]
-
-    # def posttally_exhausted_by_rank_limit(self, *, tabulation_num=1):
-    #     """
-    #     Returns bool list with elements corresponding to ballots.
-    #     """
-    #     return [True if i == util.InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT else False
-    #             for i in self.exhaustion_check(tabulation_num=tabulation_num)]
-
-    # def posttally_exhausted_by_skipvote(self, *, tabulation_num=1):
-    #     """
-    #     Returns bool list with elements corresponding to ballots.
-    #     """
-    #     return [True if i == util.InactiveType.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE else False
-    #             for i in self.exhaustion_check(tabulation_num=tabulation_num)]
-
-    # def posttally_exhausted_by_duplicate_rankings(self, *, tabulation_num=1):
-    #     """
-    #     Returns bool list with elements corresponding to ballots.
-    #     """
-    #     return [True if i == util.InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING else False
-    #             for i in self.exhaustion_check(tabulation_num=tabulation_num)]
-
     @check_temp_dict
     def pretally_exhausted(self, *, tabulation_num=1):
         """
@@ -689,152 +836,6 @@ class RCV_Reporting:
             return False
 
     @check_temp_dict
-    def duplicate_ranking_ind(self):
-        """
-        Returns the index of the first repeated candidate on the ballot, if that exists, otherwise Inf.
-        This function is only used for exhaustion cause determination and so writeins should be treated as
-        duplicates only if that option was set in the contest set file.
-        """
-        res = []
-
-        for b in ballots.input_ballots(self.ctx,
-                                       combine_writeins=self.ctx['combine_writeins'] and
-                                       self.ctx['treat_combined_writeins_as_duplicates'])['ranks']:
-
-            seen = []
-            rep_idx = float('inf')
-
-            for idx, m in enumerate(b):
-
-                if m == util.BallotMarks.OVERVOTE or m == util.BallotMarks.SKIPPEDRANK:
-                    continue
-
-                if m in seen:
-                    rep_idx = idx
-                    break
-
-                seen.append(m)
-
-            res.append(rep_idx)
-
-        return res
-
-    @check_temp_dict
-    def exhaustion_check(self, *, tabulation_num=1):
-        """
-        Returns a list with constants indicating why each ballot
-        was exhausted in a single-winner rcv contest.
-
-        Possible list values are:
-
-        - UNDERVOTE : if the ballot was undervote, and therefore neither active nor exhaustable.
-
-        - NOT_EXHAUSTED: if finalist was present on the ballot and was ranked higher than an exhaust condition
-        (overvote or repeated_skipvotes)
-
-        - PRETALLY_EXHAUST: if the ballot was exahusted by overvote or skipped rankings prior to being counted in the first round.
-
-        - POSTTALLY_EXHAUSTED_BY_OVERVOTE: overvote rules apply to contest, and an overvote is encountered prior to a
-        final round candidate or another exhaust condition.
-
-        - POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE: skipped rankings rules apply to contest, and two or more repeated skipped
-         rankings are encountered prior to a final round candidate or another exhaust condition. The skipped rankings
-          must be followed by a non-skipped ranking for this condition to apply.
-
-        - POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING: repeated rankings rules apply to contest, and a candidate that had already appeared
-         on the ballot is encountered again prior to a final round candidate or another exhaust condition.
-
-        - POSTTALLY_EXHAUSTED_BY_ABSTENTION: if the ballot is rank restricted, then a ballot receives this label if the final
-        rank was skipped. If the ballot is not rank restricted, then all ballots that do not reach another exhaust
-        condition and do not rank a final round candidate receive this label.
-
-        - POSTTALLY_EXHAUSTED_BY_RANK_LIMIT: if the ballot is rank restricted, then a ballot recieves this label if the final
-        rank was marked. If the ballot is not rank restricted, then no ballots recieve this label.
-
-        rank restricted ballot: less than or equal to n-2 ranks, where n is number of candidates (not counting writeins).
-        """
-
-        restrictive_rank_limit = self.restrictive_rank_limit()
-
-        # gather ballot info
-        ziplist = zip(self.used_last_rank(),
-                      self.pretally_exhausted(tabulation_num=tabulation_num),  # True if exhausted or undervote
-                      self.overvote_ind(),  # Inf if no overvote
-                      self.repeated_skipvote_ind(),  # Inf if no repeated skipvotes
-                      self.duplicate_ranking_ind(),  # Inf if no repeats
-                      self.get_final_ranks(tabulation_num=tabulation_num),
-                      self.undervote(),  # True if ballot is undervote
-                      ballots.input_ballots(self.ctx, combine_writeins=False)['ranks'])  # sanity check)
-
-        why_exhaust = []
-
-        # loop through each ballot
-        for last_rank_used, pretally_exhaust, over_idx, repskip_idx, rep_idx, final_ranks, is_under, b in ziplist:
-
-            # if the ballot is an undervote,
-            # nothing else to check
-            if is_under:
-                why_exhaust.append(util.InactiveType.UNDERVOTE)
-                continue
-
-            # if not undervote and the ballot was exhausted before the first round
-            # no further categorization needed
-            if pretally_exhaust:
-                why_exhaust.append(util.InactiveType.PRETALLY_EXHAUST)
-                continue
-
-            # if the ballot still had some ranks at the end of tabulation
-            # then it wasnt exhausted
-            if final_ranks:
-                why_exhaust.append(util.InactiveType.NOT_EXHAUSTED)
-                continue
-
-            # determine exhaustion cause
-            idx_dictlist = []
-            # check if overvote can cause exhaust
-            if self.ctx['exhaust_on_overvote'] and not util.isInf(over_idx):
-                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_OVERVOTE,
-                                     'idx': over_idx})
-
-            # check if skipvotes can cause exhaustion
-            if self.ctx['exhaust_on_repeated_skipped_rankings'] and not util.isInf(repskip_idx):
-                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE,
-                                     'idx': repskip_idx})
-
-            if self.ctx['exhaust_on_duplicate_rankings'] and not util.isInf(rep_idx):
-                idx_dictlist.append({'exhaust_cause': util.InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING,
-                                     'idx': rep_idx})
-
-            if idx_dictlist:
-
-                # what comes first on ballot: overvote, skipvotes
-                min_dict = sorted(idx_dictlist, key=lambda x: x['idx'])[0]
-                exhaust_cause = min_dict['exhaust_cause']
-
-            else:
-
-                # means this ballot contained neither skipped ranks or overvote, it will be exhausted
-                # either for rank limit or abstention
-                if restrictive_rank_limit and last_rank_used:
-                    exhaust_cause = util.InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT
-                else:
-                    exhaust_cause = util.InactiveType.POSTTALLY_EXHAUSTED_BY_ABSTENTION
-
-            why_exhaust.append(exhaust_cause)
-
-        return why_exhaust
-
-    # def first_round(self):
-    #     """
-    #     Returns a list of first non-skipvote for each ballot OR
-    #     if the ballot is empty, can also return None
-    #     """
-    #     return [next((c for c in b if c != util.BallotMarks.SKIPPEDRANK), None) for b in ballots.input_ballots(self.ctx)['ranks']]
-
-    # def first_round_overvote_bool(self):
-    #     return [c == util.BallotMarks.OVERVOTE for c in self.first_round()]
-
-    @check_temp_dict
     def first_round_overvote(self):
         '''
         The number of ballots with an overvote before any valid ranking. (weighted)
@@ -856,21 +857,6 @@ class RCV_Reporting:
         """
         return [b[-1] != util.BallotMarks.SKIPPEDRANK for b in ballots.input_ballots(self.ctx)['ranks']]
 
-    # def fully_ranked(self):
-    #     """
-    #         Returns a list of bools with each item corresponding to a ballot.
-    #         True indicates a fully ranked ballot.
-
-    #         Fully ranked here means all the candidates were ranked or all the rankings were used validly
-    #     """
-    #     candidate_set = ballots.candidates(self.ctx, exclude_writeins=True)
-    #     return [(set(b) & candidate_set) == candidate_set or
-    #             # voters ranked every possible candidate
-    #             len(a) == len(b)
-    #             # or did not, had no skipped ranks, overvotes, or duplicates
-    #             for a, b in zip(ballots.input_ballots(self.ctx)['ranks'],
-    #                             ballots.cleaned_ballots(self.ctx, exclude_writeins=False, combine_writeins=False)['ranks'])]
-
     @check_temp_dict
     def includes_duplicate_ranking(self):
         '''
@@ -885,9 +871,6 @@ class RCV_Reporting:
         """
         return self._stat_table.loc[self._stat_table['contains_skip'], 'weight'].sum()
 
-    # def overvote(self):
-    #     return [util.BallotMarks.OVERVOTE in b for b in ballots.input_ballots(self.ctx)['ranks']]
-
     @check_temp_dict
     def overvote_ind(self):
         """
@@ -897,20 +880,12 @@ class RCV_Reporting:
         return [b.index(util.BallotMarks.OVERVOTE) if util.BallotMarks.OVERVOTE in b else float('inf')
                 for b in ballots.input_ballots(self.ctx)['ranks']]
 
-    # def ranked_single_bool(self):
-    #     return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) == 1 for b in
-    #             ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
-
     @check_temp_dict
     def ranked_single(self):
         """
         The number of voters that validly used only a single ranking. (weighted)
         """
         return self._stat_table.loc[self._stat_table['ranked_single'], 'weight'].sum()
-
-    # def ranked_3_or_more_bool(self):
-    #     return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) >= 3
-    #             for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
 
     @check_temp_dict
     def ranked_3_or_more(self):
@@ -919,20 +894,12 @@ class RCV_Reporting:
         """
         return self._stat_table.loc[self._stat_table['ranked_3_or_more'], 'weight'].sum()
 
-    # def ranked_multiple_bool(self):
-    #     return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK}) > 1
-    #             for b in ballots.input_ballots(self.ctx, combine_writeins=False)['ranks']]
-
     @check_temp_dict
     def ranked_multiple(self):
         """
         The number of voters that validly use more than one ranking. (weighted)
         """
         return self._stat_table.loc[self._stat_table['ranked_multiple'], 'weight'].sum()
-
-    # def ranks_used(self):
-    #     return [len(set(b) - {util.BallotMarks.OVERVOTE, util.BallotMarks.SKIPPEDRANK})
-    #             for b in ballots.input_ballots(self.ctx)['ranks']]
 
     @check_temp_dict
     def mean_rankings_used(self):
@@ -947,54 +914,6 @@ class RCV_Reporting:
         Median number of validly used rankings across all non-undervote ballots. (weighted)
         """
         return self._stat_table.loc[~self._stat_table['undervote'], 'ranks_used_times_weight'].median()
-
-    @check_temp_dict
-    def repeated_skipvote_ind(self):
-        """
-            return list with index from each ballot where the skipvotes start repeating,
-            if no repeated skipvotes, set list element to inf
-
-            note:
-            repeated skipvotes are only counted if non-skipvotes occur after them. this
-            prevents incompletely ranked ballots from being counted as having repeated skipvotes
-        """
-
-        rs = []
-
-        for b in ballots.input_ballots(self.ctx)['ranks']:
-
-            rs.append(float('inf'))
-
-            # pair up successive rankings on ballot
-            z = list(zip(b, b[1:]))
-            uu = (util.BallotMarks.SKIPPEDRANK, util.BallotMarks.SKIPPEDRANK)
-
-            # if repeated skipvote on the ballot
-            if uu in z:
-                occurance = z.index(uu)
-
-                # start at second skipvote in the pair
-                # and loop until a non-skipvote is found
-                # only then record this ballot as having a
-                # repeated skipvote
-                for c in b[occurance + 1:]:
-                    if c != util.BallotMarks.SKIPPEDRANK:
-                        rs[-1] = occurance
-                        break
-        return rs
-
-    # def skipped(self):
-    #     """
-    #     Returns boolean list. True if skipped rank (followed by other marks) is present.
-    #     Otherwise False.
-
-    #     {SKIPVOTE} & {x} - {y}
-    #     this checks that x == SKIPVOTE and that y then != SKIPVOTE
-    #     (the y check is important to know whether or not the ballot contains marks
-    #     following the skipped rank)
-    #     """
-    #     return [any({util.BallotMarks.SKIPPEDRANK} & {x} - {y} for x, y in zip(b, b[1:]))
-    #             for b in ballots.input_ballots(self.ctx)['ranks']]
 
     @check_temp_dict
     def total_ballots(self):
@@ -1085,10 +1004,6 @@ class RCV_Reporting:
         ballot, or that have validly ranked all non-write-in candidates. (weighted)
         """
         return self._stat_table.loc[self._stat_table['fully_ranked'], 'weight'].sum()
-
-    # @check_temp_dict
-    # def irregular_bool(self):
-    #     return [True if a or b or c else False for a, b, c in zip(self.duplicates(), self.overvote(), self.skipped())]
 
     @check_temp_dict
     def total_irregular(self):

@@ -1,45 +1,11 @@
-from copy import deepcopy
-from itertools import combinations
+import copy
+import itertools
 import statistics
 
 import pandas as pd
 
 import rcv_cruncher.ballots as ballots
 import rcv_cruncher.util as util
-
-
-def convert_cvr(ctx):
-    """
-    convert ballots read in with parser into common csv format.
-    One ballot per row, columns: ID, extra_info, rank1, rank2 ...
-    """
-    ballot_dict = deepcopy(ballots.input_ballots(ctx, combine_writeins=False))
-    bs = ballot_dict['ranks']
-    weight = ballot_dict['weight']
-    del ballot_dict['ranks']
-    del ballot_dict['weight']
-
-    # how many ranks?
-    num_ranks = max(len(i) for i in bs)
-
-    # make sure all ballots are lists of equal length, adding trailing 'skipped' if necessary
-    bs = [b + ([util.BallotMarks.SKIPPEDRANK] * (num_ranks - len(b))) for b in bs]
-
-    # assemble output_table, start with extras
-    output_df = pd.DataFrame.from_dict(ballot_dict)
-
-    # are weights all one, then dont add to output
-    if not all([i == 1 for i in weight]):
-        output_df['weight'] = [float(w) for w in weight]
-
-    # add in rank columns
-    for i in range(1, num_ranks + 1):
-        output_df['rank' + str(i)] = [b[i-1] for b in bs]
-
-    return output_df
-
-##########################
-# MISC TABULATION
 
 
 def cumulative_ranking_tables(ctx):
@@ -57,7 +23,7 @@ def cumulative_ranking_tables(ctx):
     ballot_length = len(ballots.input_ballots(ctx)['ranks'][0])
 
     # get cleaned ballots
-    cleaned_dict = deepcopy(ballots.cleaned_ballots(ctx))
+    cleaned_dict = copy.deepcopy(ballots.cleaned_ballots(ctx))
     ballot_set = [{'ranks': ranks + (['NA'] * (ballot_length - len(ranks))), 'weight': weight}
                   for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
@@ -112,7 +78,7 @@ def condorcet_tables(ctx):
     Symmetric cells about the diagonal should sum to 100 (for the percent table).
     """
     candidate_set = sorted(ballots.candidates(ctx))
-    cleaned_dict = deepcopy(ballots.cleaned_ballots(ctx))
+    cleaned_dict = copy.deepcopy(ballots.cleaned_ballots(ctx))
     ballot_set = [{'ranks': ranks, 'weight': weight}
                   for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
@@ -131,7 +97,7 @@ def condorcet_tables(ctx):
                         for cand in candidate_set}
 
     # all candidate pairs
-    cand_pairs = combinations(candidate_set, 2)
+    cand_pairs = itertools.combinations(candidate_set, 2)
 
     for pair in cand_pairs:
         cand1 = pair[0]
@@ -207,7 +173,7 @@ def first_second_tables(ctx):
     """
 
     candidate_set = sorted(ballots.candidates(ctx))
-    cleaned_dict = deepcopy(ballots.cleaned_ballots(ctx))
+    cleaned_dict = copy.deepcopy(ballots.cleaned_ballots(ctx))
     ballot_set = [{'ranks': ranks, 'weight': weight}
                   for ranks, weight in zip(cleaned_dict['ranks'], cleaned_dict['weight'])]
 
@@ -345,7 +311,7 @@ def crossover_table(ctx):
     candidate_set = sorted(ballots.candidates(ctx, exclude_writeins=False))
 
     ballot_dict = ballots.input_ballots(ctx)
-    ballot_weights = deepcopy(ballot_dict['weight'])
+    ballot_weights = copy.deepcopy(ballot_dict['weight'])
     ranks = [util.remove(util.BallotMarks.SKIPPEDRANK, b) for b in ballot_dict['ranks']]
     ballot_set = [{'ranks': ranks, 'weight': weight}
                   for ranks, weight in zip(ranks, ballot_weights)]

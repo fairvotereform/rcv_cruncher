@@ -4,8 +4,6 @@ import os
 import pathlib
 import csv
 
-import pandas as pd
-
 ###############################################################
 # constants
 
@@ -75,11 +73,6 @@ def remove(x, lst):
     return [i for i in lst if i != x]
 
 
-def keep(x, lst):
-    # keeps only all x in list l
-    return [i for i in lst if i in x]
-
-
 def isInf(x):
     # checks if x is inf
     return x == float('inf')
@@ -92,13 +85,7 @@ def index_inf(lst, el):
     else:
         return float('inf')
 
-
-def replace(target, replacement, lst):
-    # return a list with all instances of 'target' set to 'replacement'
-    return [replacement if i == target else i for i in lst]
-
-
-def merge_writeIns(b):
+def combine_writeins(b):
     return [BallotMarks.WRITEIN if 'write' in i.lower() or 'uwi' in i.lower() else i for i in b]
 
 
@@ -121,15 +108,6 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
 
 def flatten_list(lst):
     return [i for sublist in lst for i in sublist]
-
-
-def project_root():
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    if '/' in dname:
-        return "/".join(dname.split("/")[:-1])
-    if '\\' in dname:
-        return "\\".join(dname.split("\\")[:-1])
 
 
 def remove_dup(lst):
@@ -156,33 +134,18 @@ def decimal2float(stat, round_places=3):
         return stat
 
 
-def tmpsave(f):
-    """
-        decorator used to stash function results in the ctx object. Future calls
-        retrieve the stashed value instead of recomputing the actual function
-    """
-    @functools.wraps(f)
-    def fun(ctx):
-        if f.__name__ in ctx:
-            return ctx[f.__name__]
-        return ctx.setdefault(f.__name__, f(ctx))
-
-    return fun
-
-
 def DL2LD(dl):
     return [dict(zip(dl, t)) for t in zip(*dl.values())]
-    #return pd.DataFrame(dl).to_dict('records')
 
 
 def LD2DL(ld):
     # assumes all dicts have same keys, which they should in these use cases
     return {k: [dic[k] for dic in ld] for k in ld[0]}
-    #return pd.DataFrame(ld).to_dict('list')
 
 
 def longname(path):
     return pathlib.Path('\\\\?\\' + os.fspath(path.resolve()))
+
 
 def filter_bool_dict(ballots, field_name):
     val_list = ballots[field_name]

@@ -1,99 +1,118 @@
 {
     "notes": {
+        "group": "contest_info",
         "type":	"str",
         "default": ""
     },
     "state": {
+        "group": "contest_info",
         "type":	"str",
         "default": ""
     },
     "jurisdiction": {
+        "group": "contest_info",
         "type": "str",
         "default": ""
     },
     "year": {
+        "group": "contest_info",
         "type":	"str",
         "default": ""
     },
     "date": {
+        "group": "contest_info",
         "type":	"str",
         "default": ""
     },
     "office": {
+        "group": "contest_info",
         "type":	"str",
         "default": ""
+    },
+    "ignore_contest": {
+        "group": "contest_info",
+        "type":	"bool",
+        "default": false
     },
 
 
     "exhaust_on_overvote": {
-        "type":	"bool",
-        "default": false
-    },
-    "multi_winner_rounds": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
     "exhaust_on_repeated_skipped_rankings": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
     "exhaust_on_duplicate_rankings": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
-    "skip_writeins": {
+    "exclude_writeins": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
     "combine_writeins": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
     "treat_combined_writeins_as_duplicates": {
-        "type":	"bool",
-        "default": false
-    },
-    "ignore_contest": {
+        "group": "cvr_info",
         "type":	"bool",
         "default": false
     },
 
 
-    "candidate_map": {
-        "type":	"str",
-        "default": "None"
-    },
-    "parser": {
-        "type":	"func",
-        "default": "None"
-    },
-    "idparser": {
-        "type":	"func",
-        "default": "None"
+    "multi_winner_rounds": {
+        "group": "rcv_info",
+        "type":	"bool",
+        "default": false
     },
     "num_winners": {
+        "group": "rcv_info",
         "type":	"int",
         "default": "1"
     },
-    "cvr_path": {
-        "type":	"str",
-        "default": "None"
-    },
     "rcv_type": {
+        "group": "rcv_info",
         "type":	"func",
         "default": "None"
     },
     "split_fields":{
+        "group": "rcv_info",
         "type": "list",
         "default": ""
     },
 
-    "uid":{
-        "type": "str",
-        "default": ""
+
+    "parser": {
+        "group": "parser_info",
+        "type":	"func",
+        "default": "None"
     },
-    "split_id":{
-        "type": "str",
+    "candidate_map": {
+        "group": "parser_info",
+        "type":	"str",
+        "default": "None"
+    },
+    "idparser": {
+        "group": "parser_info",
+        "type":	"func",
+        "default": "None"
+    },
+    "cvr_path": {
+        "group": "parser_info",
+        "type":	"str",
+        "default": "None"
+    },
+    "extra_parser_args":{
+        "group": "parser_info",
+        "type": "dict",
         "default": ""
     }
 }

@@ -1,69 +1,61 @@
 # flake8: noqa
 
 import csv
-import glob
+import pathlib
 import json
 import math
 import os
 import re
 import collections
 import decimal
-from rcv_cruncher.ballots import cvr
 import xmltodict
 
 import pandas as pd
 
 import rcv_cruncher.util as util
+import rcv_cruncher.package_types as types
 
 decimal.getcontext().prec = 30
 
+global parser_dict
 
-def get_parser_dict():
-    """Return dictionary of parsers defined in parsers.py
+def add_parser(parser_dict: types.ParserDict) -> None:
+    """Add custom parser functions to the module parser dictionary.
 
-    Returns:
-        dictionary: {parser name: parser function object}
+    :param parser_dict: A dictionary containing parser functions, with their names as keys.
+    :type parser_dict: :data:`types.ParserDict`
     """
-    return {
-        "burlington2006": burlington2006,
-        "cruncher_csv": cruncher_csv,
-        "dominion5_2": dominion5_2,
-        "dominion5_4": dominion5_4,
-        "dominion5_10": dominion5_10,
-        "ep": ep,
-        "maine": maine,
-        "minneapolis": minneapolis,
-        "old": old,
-        "prm": prm,
-        "santafe": santafe,
-        "santafe_id": santafe_id,
-        "optech": optech,
-        #"sf": sf,
-        "sf2005": sf2005,
-        #"sfnoid": sfnoid,
-        "surveyUSA": surveyUSA,
-        "unisyn": unisyn,
-        "utah": utah
-    }
+    parser_dict.update(parser_dict)
 
 
-def cruncher_csv(ctx):
+def get_parser_dict() -> types.ParserDict:
+    """Returns the parser dictionary. Including both package parsers and
+    custom parsers added with :func:`add_parser`.
+
+    :return: A dictionary of parser functions. Keys are parser name strings.
+    :rtype: ParserDict
+    """
+    return parser_dict
+
+
+def cruncher_csv(cvr_path: types.Path) -> types.BallotDictOfLists:
     """Reads ballot ranking information stored in csv format.
+    One ballot per row, with ranking columns appearing in order and named with the word "rank"
+    (e.x. "rank1", "rank2", etc)
 
-    Args:
-        ctx (dictionary): A dictionary containing key "cvr_path" which points to the cvr file containing ranking information of each ballot. Alternatively, if a key "converted_path" is present in the dictionary, it will be preferred to the "cvr_path" key. Ranking data must be in columns that follow a "rank#" pattern ("rank1", "rank2", etc). Ranking column must appear in order in the csv file.
-
-        If a file called "candidate_codes.csv" exists in the same directory, it will be read and values from the "code" column that are
-        found in the cvr file ranks will be replaced values in the "candidate" columns.
-
-    Raises:
-        RuntimeError: Error raised if not all parsed rank lists are the same length.
-
-    Returns:
-        dictionary: Dictionary containing, at least, two keys, "ranks" containing ballot ranks as list of lists and "weight" containing weight values in the input csv or all 1s if weight column was not present in csv file. Any other columns in csv file will also be included in returned dictionary.
+    :param cvr_path: The path to the CVR file. If a file called "candidate_codes.csv" exists in the
+    same directory, it will be read and columns named "code" and "candidate" will be used to replace
+    candidate codes with candidate names in the CVR file during readin.
+    :type cvr_path: :data:`types.Path`
+    :raises RuntimeError: Error raised if not all parsed rank lists are the same length.
+    :return: A dictionary of lists containing all columns in the CVR file.
+        Rank columns are combined into per-ballot lists and stored with the key 'ranks'.
+        A 'weight' key and list of 1's is added to the dictionary if no 'weight' column exists.
+        All weights are of type :class:`decimal.Decimal`.
+    :rtype: :data:`types.BallotDictOfLists`
     """
 
-    cvr_path = ctx['converted_path'] if 'converted_path' in ctx else ctx['cvr_path']
+    cvr_path = pathlib.Path(cvr_path)
     df = pd.read_csv(cvr_path, encoding="utf8")
 
     # find rank columns
@@ -117,14 +109,26 @@ def cruncher_csv(ctx):
 
     return dct
 
-def dominion5_4(ctx):
+def dominion5_4(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+    """Reads ballot data from Dominion V5.4 CVRs for a single contest.
 
-    path = ctx['cvr_path']
+    :param cvr_path: [description]
+    :type cvr_path: :data:`types.Path`
+    :param office: Names which contest's ballots should be read.
+        Must match a contest name in ContestManifest.json.
+    :type office: str
+    :raises RuntimeError: If ballotIDs pulled from ImageMask field are not unique.
+        Or if regex used to pull ballotID from ImageMask field malfunctions.
+    :return:
+    :rtype: :data:`types.BallotDictOfLists`
+    """
+
+    path = pathlib.Path(cvr_path)
 
     # load manifests, with ids as keys
     with open(path / 'ContestManifest.json', encoding="utf8") as f:
         for i in json.load(f)['List']:
-            if i['Description'] == ctx['office']:
+            if i['Description'] == office:
                 current_contest_id = i['Id']
                 current_contest_rank_limit = i['NumOfRanks']
 
@@ -178,8 +182,7 @@ def dominion5_4(ctx):
             if ballotID_search:
                 ballotID = ballotID_search.group(1)
             else:
-                print('regex is not working correctly. debug')
-                exit(1)
+                raise RuntimeError('regex is not working correctly. debug')
 
             countingGroup = countingGroup_manifest[contests['CountingGroupId']]
 
@@ -223,17 +226,12 @@ def dominion5_4(ctx):
                 currentRank_marks = [i for i in ballot_contest_marks
                                      if i['Rank'] == currentRank and i['IsAmbiguous'] is False]
 
-                currentCandidate = '**error**'
-
                 if len(currentRank_marks) == 0:
                     currentCandidate = util.BallotMarks.SKIPPEDRANK
                 elif len(currentRank_marks) > 1:
                     currentCandidate = util.BallotMarks.OVERVOTE
                 else:
                     currentCandidate = candidate_manifest[currentRank_marks[0]['CandidateId']]
-
-                if currentCandidate == '**error**':
-                    raise RuntimeError('error in filtering marks. debug')
 
                 current_ballot_ranks.append(currentCandidate)
                 currentRank += 1
@@ -258,19 +256,19 @@ def dominion5_4(ctx):
 
     # check ballotIDs are unique
     if len(set(ballot_dict['ballotID'])) != len(ballot_dict['ballotID']):
-        print("some non-unique ballot IDs")
-        exit(1)
+        raise RuntimeError("some non-unique ballot IDs")
 
     return ballot_dict
 
-def dominion5_10(ctx):
 
-    path = ctx['cvr_path']
+def dominion5_10(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+
+    path = pathlib.Path(cvr_path)
 
     # load manifests, with ids as keys
     with open(path / 'ContestManifest.json', encoding="utf8") as f:
         for i in json.load(f)['List']:
-            if i['Description'] == ctx['office']:
+            if i['Description'] == office:
                 current_contest_id = i['Id']
                 current_contest_rank_limit = i['NumOfRanks']
 
@@ -508,7 +506,7 @@ def prm(ctx):
 
     return {'ranks': ballots, 'weight': [decimal.Decimal('1')] * len(ballots)}
 
-def burlington2006(ctx):
+def burlington2006(cvr_path: types.Path) -> types.BallotDictOfLists:
     """Function to parse file format used in 2006 Burlington Mayoral Election.
 
     Args:
@@ -517,7 +515,7 @@ def burlington2006(ctx):
     Returns:
         dictionary: Dictionary with a single key, "ranks", containing parsed ballots as a list of lists. Overvotes and skipped rankings are represented by constants.
     """
-    path = ctx['cvr_path']
+    path = pathlib.Path(cvr_path)
 
     # read in lines
     ballots = []
@@ -544,9 +542,10 @@ def burlington2006(ctx):
 
     return {'ranks': new_ballots}
 
-def optech(ctx):
 
-    cvr_path = ctx['cvr_path']
+def optech(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+
+    cvr_path = pathlib.Path(cvr_path)
 
     # FIND THE FILES
     ballot_image_files = [f for f in cvr_path.glob('*allot*.txt')]
@@ -585,9 +584,9 @@ def optech(ctx):
 
     # find contest id
     contest_reverse_map = {v: k for k, v in master_lookup['Contest'].items()}
-    if ctx['office'] not in contest_reverse_map:
-        raise RuntimeError(f'contest set office value ({ctx["office"]}) not present in master lookup file {master_lookup_path}')
-    contest_id = contest_reverse_map[ctx['office']]
+    if office not in contest_reverse_map:
+        raise RuntimeError(f'contest set office value ({office}) not present in master lookup file {master_lookup_path}')
+    contest_id = contest_reverse_map[office]
 
     # remove candidates from master lookup if they are from another contest
     master_lookup['Candidate'] = {candidate_id: candidate_val for candidate_id, candidate_val
@@ -701,276 +700,6 @@ def optech(ctx):
     # add weights
     dct.update({'weight': [decimal.Decimal('1')] * len(dct['ranks'])})
     return dct
-
-
-# def sf_precinct_map(ctx):
-#     path = ctx['path']
-#     master_lookup_path = ctx.get('master_lookup')
-#     if master_lookup_path is None:
-#         master_lookup_path = path.replace('ballot_image', 'master_lookup') \
-#                                  .replace('BallotImage', 'MasterLookup') \
-#                                  .replace('ballotimage', 'masterlookup') \
-#                                  .replace('Ballot Image', 'Master Lookup')
-
-#     precinct_map = {}
-#     with open(master_lookup_path, encoding='utf8') as f:
-#         for i in f:
-#             if i.startswith('Precinct'):
-#                 kv = i.split()[1]
-#                 precinct_map[kv[:7]] = kv[7:]
-#                 if ctx['place'] == 'San Francisco':
-#                     precinct_map[kv[:7]] = i.split()[2]
-#     return precinct_map
-
-# def parse_master_lookup(ctx):
-#     path = ctx['path']
-#     master_lookup_path = ctx.get('master_lookup')
-#     if master_lookup_path is None:
-#         master_lookup_path = path.replace('ballot_image', 'master_lookup') \
-#                                  .replace('BallotImage', 'MasterLookup') \
-#                                  .replace('ballotimage', 'masterlookup') \
-#                                  .replace('Ballot Image', 'Master Lookup')
-
-#     master_lookup = defaultdict(dict)
-#     with open(master_lookup_path, encoding='utf8') as f:
-#         for i in f:
-#             mapping = i[:10].strip()
-#             key = i[10:17].strip()
-#             value = i[17:67].strip()
-#             master_lookup[mapping][key] = value
-#     return dict(master_lookup)
-
-# def sf_name_map(ctx):
-#     return dict((k, {'WRITEIN': util.BallotMarks.WRITEIN}.get(v.upper().replace('-', ''), v))
-#                 for k, v in parse_master_lookup(ctx)['Candidate'].items())
-
-# def sf_tally_type_map(ctx):
-#     path = ctx['path']
-#     master_lookup_path = ctx.get('master_lookup')
-#     if master_lookup_path is None:
-#         master_lookup_path = path.replace('ballot_image', 'master_lookup') \
-#             .replace('BallotImage', 'MasterLookup') \
-#             .replace('ballotimage', 'masterlookup') \
-#             .replace('Ballot Image', 'Master Lookup')
-
-#     tally_type_map = {}
-#     with open(master_lookup_path, encoding='utf8') as f:
-#         for i in f:
-#             if i.startswith('Tally Type'):
-#                 splited = i.split("  ")[0].split("Type")[1]
-#                 k = splited[4:7]
-#                 v = splited[7:]
-#                 tally_type_map[k] = v
-
-#     return tally_type_map
-
-# def sf(contest_id, ctx):
-
-#     path = ctx['path']
-
-#     # parse "config" file
-#     precinct_map = sf_precinct_map(ctx)
-#     name_map = sf_name_map(ctx)
-#     tally_type_map = sf_tally_type_map(ctx)
-
-#     # read ballot info into lists
-#     ballots = []
-#     precincts = []
-#     tally_types = []
-#     voterID = []
-#     with open(path, "r", encoding='utf8') as f:
-
-#         b = []
-#         ballot_precincts = []
-#         ballot_tally_types = []
-#         voter_id = None
-
-#         for line in f:
-
-#             # skip line if not for contest
-#             if line[:7] != contest_id:
-#                 continue
-
-#             # when reach new ballot, store the accumulated previous one
-#             if line[7:16] != voter_id:
-
-#                 if len(set(ballot_precincts)) > 1:
-#                     print("this ballot contains several precincts. weird")
-#                     raise RuntimeError
-#                 if ballot_precincts:
-#                     precincts.append(ballot_precincts[0])
-#                 else:
-#                     precincts.append([])
-
-#                 if len(set(ballot_tally_types)) > 1:
-#                     print("this ballot contains several tally types. weird")
-#                     raise RuntimeError
-#                 if ballot_tally_types:
-#                     tally_types.append(ballot_tally_types[0])
-#                 else:
-#                     tally_types.append([])
-
-#                 ballots.append(b)
-#                 voterID.append(voter_id)
-
-#                 voter_id = line[7:16]
-#                 b = []
-#                 ballot_precincts = []
-#                 ballot_tally_types = []
-
-#             # read current line
-
-#             # precinct
-#             precinct_id = line[26:33]
-#             ballot_precincts.append(precinct_map[precinct_id])
-
-#             # tally type - vote by mail
-#             tally_type = line[23:26]
-#             ballot_tally_types.append(tally_type_map[tally_type])
-
-#             # candidate and rank
-#             candidate_id = int(line[36:43]) and name_map[line[36:43]]
-#             undervote = util.BallotMarks.SKIPPEDRANK if int(line[44]) else 0
-#             overvote = util.BallotMarks.OVERVOTE if int(line[43]) else 0
-#             b.append(candidate_id or undervote or overvote)
-#             if b[-1] == 0 or len(b) != int(line[33:36]):
-#                 raise Exception("Invalid Choice or Rank")
-
-#         # store last ballot
-#         if b:
-
-#             if len(set(ballot_precincts)) > 1:
-#                 print("this ballot contains several precincts. weird")
-#                 raise RuntimeError
-#             precincts.append(ballot_precincts[0])
-
-#             if len(set(ballot_tally_types)) > 1:
-#                 print("this ballot contains several tally types. weird")
-#                 raise RuntimeError
-#             tally_types.append(ballot_tally_types[0])
-
-#             ballots.append(b)
-#             voterID.append(voter_id)
-
-#     if len(set(voterID[1:])) != len(voterID[1:]):
-#         raise Exception("non-unique voter IDs")
-
-#     d = {
-#         'ranks': ballots[1:],
-#         'weight': [Fraction('1') for b in ballots[1:]],
-#         'precincts': precincts[1:],
-#         'tally_type': tally_types[1:],
-#         'ballotID': voterID[1:]
-#     }
-
-#     return d
-
-# def sfnoid(ctx):
-
-#     path = ctx['path']
-
-#     # parse "config" file
-#     precinct_map = sf_precinct_map(ctx)
-#     name_map = sf_name_map(ctx)
-#     tally_type_map = sf_tally_type_map(ctx)
-
-#     # read ballot info into lists
-#     ballots = []
-#     precincts = []
-#     tally_types = []
-#     voterID = []
-#     with open(path, "r", encoding='utf8') as f:
-
-#         b = []
-#         ballot_precincts = []
-#         ballot_tally_types = []
-#         voter_id = None
-
-#         for line in f:
-
-#             # when reach new ballot, store the accumulated previous one
-#             if line[7:16] != voter_id:
-
-#                 if len(set(ballot_precincts)) > 1:
-#                     print("this ballot contains several precincts. weird")
-#                     raise RuntimeError
-#                 if ballot_precincts:
-#                     precincts.append(ballot_precincts[0])
-#                 else:
-#                     precincts.append([])
-
-#                 if len(set(ballot_tally_types)) > 1:
-#                     print("this ballot contains several tally types. weird")
-#                     raise RuntimeError
-#                 if ballot_tally_types:
-#                     tally_types.append(ballot_tally_types[0])
-#                 else:
-#                     tally_types.append([])
-
-#                 ballots.append(b)
-#                 voterID.append(voter_id)
-
-#                 voter_id = line[7:16]
-#                 b = []
-#                 ballot_precincts = []
-#                 ballot_tally_types = []
-
-#             # read current line
-
-#             # precinct
-#             precinct_id = line[26:33]
-#             ballot_precincts.append(precinct_map[precinct_id])
-
-#             # tally type - vote by mail
-#             tally_type = line[23:26]
-#             ballot_tally_types.append(tally_type_map[tally_type])
-
-#             # candidate and rank
-#             candidate_id = int(line[36:43]) and name_map[line[36:43]]
-#             undervote = util.BallotMarks.SKIPPEDRANK if int(line[44]) else 0
-#             overvote = util.BallotMarks.OVERVOTE if int(line[43]) else 0
-
-#             #Alameda County incorrectly reported 0 for write in candidates for
-#             #races in 2012 and treated write-ins as undervotes in their reports
-#             #for city attorney, the undervote ID was 92. This snippit was used to validate rcv results
-#             #with the counties official report here:
-#             #https://www.acvote.org/acvote-assets/pdf/elections/2012/11062012/results/rcv/oakland/city_attorney/nov-6-2012-pass-report-oakland-city-attorney.pdf
-#             #if candidate_id == 92:
-#             #    b.append(UNDERVOTE)
-#             #    continue
-
-#             b.append(candidate_id or undervote or overvote)
-#             if b[-1] == 0 or len(b) != int(line[33:36]):
-#                 raise Exception("Invalid Choice or Rank")
-
-#         # store last ballot
-#         if b:
-
-#             if len(set(ballot_precincts)) > 1:
-#                 print("this ballot contains several precincts. weird")
-#                 raise RuntimeError
-#             precincts.append(ballot_precincts[0])
-
-#             if len(set(ballot_tally_types)) > 1:
-#                 print("this ballot contains several tally types. weird")
-#                 raise RuntimeError
-#             tally_types.append(ballot_tally_types[0])
-
-#             ballots.append(b)
-#             voterID.append(voter_id)
-
-#     if len(set(voterID[1:])) != len(voterID[1:]):
-#         raise Exception("non-unique voter IDs")
-
-#     d = {
-#         'ranks': ballots[1:],
-#         'weight': [Fraction('1') for b in ballots[1:]],
-#         'precincts': precincts[1:],
-#         'tally_type': tally_types[1:],
-#         'ballotID': voterID[1:]
-#     }
-
-#     return d
 
 def old(ctx):
     path = ctx['cvr_path']
@@ -1137,39 +866,41 @@ def sf2005(contest_ids, over, under, sep, ctx):
                                 for i in raw])
     return ballots
 
-def dominion5_2(ctx):
+def dominion5_2(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
 
-    with open(ctx['cvr_path'] / 'ContestManifest.json', encoding='utf8') as f:
+    path = pathlib.Path(cvr_path)
+
+    with open(path / 'ContestManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
-            if i['Description'] == ctx['office'].upper():
+            if i['Description'] == office.upper():
                 contest_id = i['Id']
                 ranks = i['NumOfRanks']
                 if ranks == 0:
                     ranks = 1
 
     candidates = {}
-    with open(ctx['cvr_path'] / 'CandidateManifest.json', encoding='utf8') as f:
+    with open(path / 'CandidateManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             if i['ContestId'] == contest_id:
                 candidates[i['Id']] = i['Description']
 
     precincts = {}
-    with open(ctx['cvr_path'] / 'PrecinctPortionManifest.json', encoding='utf8') as f:
+    with open(path / 'PrecinctPortionManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             precincts[i['Id']] = i['Description'].split()[1]
 
     ballotType_manifest = {}
-    with open(ctx['cvr_path'] / 'BallotTypeManifest.json', encoding='utf8') as f:
+    with open(path / 'BallotTypeManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             ballotType_manifest[i['Id']] = i['Description']
 
     countingGroup_manifest = {}
-    with open(ctx['cvr_path'] / 'CountingGroupManifest.json', encoding='utf8') as f:
+    with open(path / 'CountingGroupManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
             countingGroup_manifest[i['Id']] = i['Description']
 
     ballots = {'ranks': [], 'ballotID': [], 'precinct': [], 'ballotType': [], 'countingGroup': [], 'weight': []}
-    with open(ctx['cvr_path'] / 'CvrExport.json', encoding='utf8') as f:
+    with open(path / 'CvrExport.json', encoding='utf8') as f:
 
         for contests in json.load(f)['Sessions']:
 
@@ -1228,9 +959,12 @@ def dominion5_2(ctx):
 
     return ballots
 
-def utah(ctx):
+def utah(cvr_path: types.Path):
+
+    path = pathlib.Path(cvr_path)
+
     ballots = []
-    with open(ctx['cvr_path'], encoding='utf8') as f:
+    with open(path, encoding='utf8') as f:
         next(f)
         for b in f:
             ballots.append(
@@ -1241,11 +975,11 @@ def utah(ctx):
             )
     return ballots
 
-def ep(ctx):
+def ep(cvr_path: types.Path):
 
-    df = pd.read_csv(ctx['cvr_path'])
+    path = pathlib.Path(cvr_path)
     ballots = []
-    with open(ctx['cvr_path'], encoding='utf8') as f:
+    with open(path, encoding='utf8') as f:
         next(f)
         for b in csv.reader(f):
             ballots.append(
@@ -1257,7 +991,7 @@ def ep(ctx):
 
     return ballots
 
-def unisyn(ctx):
+def unisyn(cvr_path: types.Path) -> types.BallotDictOfLists:
     """
     This parser was developed for the unisyn 2020 Hawaii Dem Primary CVR which only contained the
     ranked choice votes for a single election. Unisyn uses the common data format in xml, however the
@@ -1268,7 +1002,7 @@ def unisyn(ctx):
     https://github.com/hiltonroscoe/cdfprototype
     """
 
-    glob_str = ctx['cvr_path'].glob('/*.xml')
+    glob_str = pathlib.Path(cvr_path).glob('/*.xml')
 
     contestIDdicts = {}
     for f in glob_str:
@@ -1323,7 +1057,7 @@ def unisyn(ctx):
 
     return dct
 
-def surveyUSA(ctx):
+def surveyUSA(cvr_path: types.Path) -> types.BallotDictOfLists:
     """
     Survey USA files usually include all respondents and should be pre-filtered for any columns
     prior to cruncher use (such as filtering likely democratic voters). Rank columns and ballotID columns
@@ -1336,8 +1070,10 @@ def surveyUSA(ctx):
     candidate_codes.csv - contains two columns ("code" and "candidate") that map cvr code numbers to candidate names.
     """
 
-    csv_df = pd.read_csv(ctx['cvr_path'] / 'cvr.csv')
-    candidate_codes_df = pd.read_csv(ctx['cvr_path'] / 'candidate_codes.csv')
+    path = pathlib.Path(cvr_path)
+
+    csv_df = pd.read_csv(path / 'cvr.csv')
+    candidate_codes_df = pd.read_csv(path / 'candidate_codes.csv')
 
     # candidate code dict
     candidate_map = {row['code']: row['candidate'] for index, row in candidate_codes_df.iterrows()}
@@ -1377,3 +1113,23 @@ def surveyUSA(ctx):
 
     ballot_dict = {'ranks': ballots, 'weight': csv_df['weight'], 'ballotID': csv_df['ballotID']}
     return ballot_dict
+
+parser_dict = {
+    "burlington2006": burlington2006,
+    "cruncher_csv": cruncher_csv,
+    "dominion5_2": dominion5_2,
+    "dominion5_4": dominion5_4,
+    "dominion5_10": dominion5_10,
+    "ep": ep,
+    "maine": maine,
+    "minneapolis": minneapolis,
+    "old": old,
+    "prm": prm,
+    "santafe": santafe,
+    "santafe_id": santafe_id,
+    "optech": optech,
+    "sf2005": sf2005,
+    "surveyUSA": surveyUSA,
+    "unisyn": unisyn,
+    "utah": utah
+}

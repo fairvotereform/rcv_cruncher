@@ -7,8 +7,7 @@ import shutil
 import pkg_resources
 import collections
 import datetime
-import csv
-import sys
+import abc
 
 import pandas as pd
 import tqdm
@@ -18,7 +17,7 @@ import rcv_cruncher.rcv_base as rcv_base
 import rcv_cruncher.rcv_variants as rcv_variants
 import rcv_cruncher.util as util
 import rcv_cruncher.write_out as write_out
-import rcv_cruncher.ballots as ballots
+
 
 # read functions in parsers and rcv_variants
 rcv_dict = rcv_variants.get_rcv_dict()
@@ -62,6 +61,17 @@ def cast_list(lst):
     return lst.strip('\n').split(",")
 
 
+def cast_dict(dct):
+    dct_return = {}
+    if dct == "":
+        return dct_return
+    comma_split = dct.strip("\n").split(",")
+    for i in comma_split:
+        equal_split = i.split("=")
+        dct_return.update({equal_split[0]: "=".join(equal_split[1:])})
+    return dct_return
+
+
 def cast_func(s):
 
     if s in rcv_dict and s in parser_dict:
@@ -90,20 +100,20 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
     contest_set_path = pathlib.Path(contest_set_path)
 
     # assemble typecast funcs
-    cast_dict = {'str': cast_str, 'int': cast_int,
+    cast_dict = {'str': cast_str, 'int': cast_int, 'dict': cast_dict,
                  'bool': cast_bool, 'func': cast_func, 'list': cast_list}
 
     # settings/defaults
     contest_set_settings_fpath = f'{os.path.dirname(__file__)}/contest_set_settings.json'
     if os.path.isfile(contest_set_settings_fpath) is False:
-        raise RuntimeError(f'(developer error) not a valid file path: {contest_set_settings_fpath}')
+        raise RuntimeError(f'(developer error) Looking for contest_set_settings.json. Not a valid file path: {contest_set_settings_fpath}')
 
     with open(contest_set_settings_fpath) as contest_set_settings_file:
         contest_set_settings = json.load(contest_set_settings_file)
 
     run_config_settings_fpath = f'{os.path.dirname(__file__)}/run_config_settings.json'
     if os.path.isfile(run_config_settings_fpath) is False:
-        raise RuntimeError(f'(developer error) not a valid file path: {run_config_settings_fpath}')
+        raise RuntimeError(f'(developer error) Looking for run_config_settings.json. Not a valid file path: {run_config_settings_fpath}')
 
     with open(run_config_settings_fpath) as run_config_settings_file:
         run_config_settings = json.load(run_config_settings_file)
@@ -144,16 +154,17 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
 
     run_config['cvr_path_root'] = pathlib.Path(run_config['cvr_path_root'])
 
-    # make sure cvr path is provided
-    # if not run_config['cvr_path_root']:
-    #     raise RuntimeError('No "cvr_path_root" provided in run_config.txt. This is required.')
-
     # read contest_set.csv
     contest_set_fpath = contest_set_path / 'contest_set.csv'
     if os.path.isfile(contest_set_fpath) is False:
         raise RuntimeError(f'not a valid file path: {contest_set_fpath}')
 
     contest_set_df = pd.read_csv(contest_set_fpath, dtype=object)
+
+    # add in default values for missing columns
+    for setting in contest_set_settings:
+        if setting not in contest_set_df.columns:
+            contest_set_df[setting] = contest_set_settings[setting]['default']
 
     # fill in na values with defaults and evaluate column, if indicated
     for col in contest_set_df:
@@ -177,15 +188,13 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
         else:
             d['cvr_path'] = run_config['cvr_path_root'] / d['cvr_path']
 
+        d['parser_args'] = {'cvr_path': d['cvr_path']}
+        d['parser_args'].update(d['extra_parser_args'])
+
         if d['candidate_map']:
             d['candidate_map'] = run_config['cvr_path_root'] / d['candidate_map']
 
-        d['uid'] = unique_id(d)
-
-        # add in defaults if needed
-        for setting in contest_set_settings:
-            if setting not in d:
-                d[setting] = contest_set_settings[setting]['default']
+        d['uid'] = util.unique_id(d)
 
     # remove contest that should be ignored
     competitions = [comp for comp in competitions if not comp.get('ignore_contest', True)]
@@ -266,7 +275,7 @@ def write_aggregated_stats(results_dir,
         df.to_csv(util.longname(results_dir / 'candidate_details.csv'), index=False)
 
 
-class CrunchSteps:
+class Steps(abc.ABC):
 
     def __init__(self, contest, output_config, converted_cvr_dir, results_dir, pbar_desc):
 
@@ -301,149 +310,16 @@ class CrunchSteps:
                 if k2 in self.steps[k1]:
                     cache[k1].update({k2: self.steps[k1][k2]})
 
-        self.steps = collections.OrderedDict([
-            ('convert_cvr', {
-                'f': write_out.write_converted_cvr,
-                'args': [self.contest, self.converted_cvr_dir],
-                'condition': self.output_config.get('convert_cvr'),
-                'fail_with': [],
-                'depends_on': [],
-                'return_key': None
-            }),
-            ('tabulate', {
-                'f': rcv_base.RCV.run_rcv,
-                'args': [self.contest],
-                'condition': True,
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': 'rcv_obj'
-            }),
-            ('tabulation_stats', {
-                'f': rcv_base.RCV.get_tabulation_stats_df,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('per_rcv_type_stats'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'tabulation_stats_df'
-            }),
-            ('rcv_variant', {
-                'f': rcv_base.RCV.get_variant_name,
-                'args': [self.state_data['rcv_obj']],
-                'condition': True,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'variant'
-            }),
-            ('contest_stats', {
-                'f': rcv_base.RCV.get_contest_stats_df,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('per_rcv_group_stats'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'contest_stats_df'
-            }),
-            ('rcv_group', {
-                'f': rcv_base.RCV.get_variant_group,
-                'args': [self.state_data['rcv_obj']],
-                'condition': True,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'variant_group'
-            }),
-            ('candidate_details', {
-                'f': write_out.prepare_candidate_details,
-                'args': [self.state_data['rcv_obj']],
-                'condition': self.output_config.get('candidate_details'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'candidate_details'
-            }),
-            ('round_by_round', {
-                'f': write_out.write_rcv_rounds,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('round_by_round'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('ballot_stats_debug', {
-                'f': write_out.write_ballot_debug_info,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('ballot_stats_debug'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('cvr_ballot_allocation', {
-                'f': write_out.write_converted_cvr_annotated,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('cvr_ballot_allocation'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('first_choice_to_finalist', {
-                'f': write_out.write_first_to_finalist_tables,
-                'args': [self.state_data['rcv_obj'], self.results_dir],
-                'condition': self.output_config.get('first_choice_to_finalist'),
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': None
-            }),
-            ('condorcet', {
-                'f': write_out.write_condorcet_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('condorcet'),
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('first_second_choices', {
-                'f': write_out.write_first_second_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('first_second_choices'),
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('cumulative_rankings', {
-                'f': write_out.write_cumulative_ranking_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('cumulative_rankings'),
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('rank_usage', {
-                'f': write_out.write_rank_usage_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('rank_usage'),
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('crossover_support', {
-                'f': write_out.write_opponent_crossover_tables,
-                'args': [self.contest, self.results_dir],
-                'condition': self.output_config.get('crossover_support'),
-                'depends_on': [],
-                'fail_with': ['convert_cvr'],
-                'return_key': None
-            }),
-            ('split_stats', {
-                'f': rcv_base.RCV.get_split_stats,
-                'args': [self.state_data['rcv_obj']],
-                'condition': True,
-                'depends_on': ['tabulate'],
-                'fail_with': [],
-                'return_key': 'split_stats'
-            })
-        ])
+        self.steps = self.generate_steps()
 
         for k in self.steps:
             for cache_key in cache_keys:
                 if cache_key in cache[k]:
                     self.steps[k][cache_key] = cache[k][cache_key]
+
+    @abc.abstractmethod
+    def generate_steps(self):
+        pass
 
     def n_steps(self):
         return len(self.steps.keys())
@@ -520,6 +396,166 @@ class CrunchSteps:
         return self.state_data
 
 
+class CrunchSteps(Steps):
+
+    def generate_steps(self):
+
+        return collections.OrderedDict([
+            ('convert_cvr_rank', {
+                'f': write_out.write_converted_cvr,
+                'args': [self.contest, self.converted_cvr_dir, 'rank'],
+                'condition': self.output_config.get('convert_cvr_rank_format'),
+                'fail_with': [],
+                'depends_on': [],
+                'return_key': None
+            }),
+            ('convert_cvr_candidate', {
+                'f': write_out.write_converted_cvr,
+                'args': [self.contest, self.converted_cvr_dir, 'candidate'],
+                'condition': self.output_config.get('convert_cvr_candidate_format'),
+                'fail_with': [],
+                'depends_on': [],
+                'return_key': None
+            }),
+            ('tabulate', {
+                'f': rcv_base.RCV.run_rcv,
+                'args': [self.contest],
+                'condition': True,
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': 'rcv_obj'
+            }),
+            ('tabulation_stats', {
+                'f': rcv_base.RCV.get_tabulation_stats_df,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('per_rcv_type_stats'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'tabulation_stats_df'
+            }),
+            ('rcv_variant', {
+                'f': rcv_base.RCV.get_variant_name,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'variant'
+            }),
+            ('contest_stats', {
+                'f': rcv_base.RCV.get_contest_stats_df,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('per_rcv_group_stats'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'contest_stats_df'
+            }),
+            ('rcv_group', {
+                'f': rcv_base.RCV.get_variant_group,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'variant_group'
+            }),
+            ('candidate_details', {
+                'f': write_out.prepare_candidate_details,
+                'args': [self.state_data['rcv_obj']],
+                'condition': self.output_config.get('candidate_details'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'candidate_details'
+            }),
+            ('round_by_round', {
+                'f': write_out.write_rcv_rounds,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('round_by_round'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('ballot_stats_debug', {
+                'f': write_out.write_ballot_debug_info,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('ballot_stats_debug'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('cvr_ballot_allocation_rank', {
+                'f': write_out.write_converted_cvr_annotated,
+                'args': [self.state_data['rcv_obj'], self.results_dir, 'rank'],
+                'condition': self.output_config.get('cvr_ballot_allocation_rank_format'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('cvr_ballot_allocation_candidate', {
+                'f': write_out.write_converted_cvr_annotated,
+                'args': [self.state_data['rcv_obj'], self.results_dir, 'candidate'],
+                'condition': self.output_config.get('cvr_ballot_allocation_candidate_format'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('first_choice_to_finalist', {
+                'f': write_out.write_first_to_finalist_tables,
+                'args': [self.state_data['rcv_obj'], self.results_dir],
+                'condition': self.output_config.get('first_choice_to_finalist'),
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('condorcet', {
+                'f': write_out.write_condorcet_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('condorcet'),
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('first_second_choices', {
+                'f': write_out.write_first_second_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('first_second_choices'),
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('cumulative_rankings', {
+                'f': write_out.write_cumulative_ranking_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('cumulative_rankings'),
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('rank_usage', {
+                'f': write_out.write_rank_usage_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('rank_usage'),
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('crossover_support', {
+                'f': write_out.write_opponent_crossover_tables,
+                'args': [self.contest, self.results_dir],
+                'condition': self.output_config.get('crossover_support'),
+                'depends_on': [],
+                'fail_with': [],
+                'return_key': None
+            }),
+            ('split_stats', {
+                'f': rcv_base.RCV.get_split_stats,
+                'args': [self.state_data['rcv_obj']],
+                'condition': True,
+                'depends_on': ['tabulate'],
+                'fail_with': [],
+                'return_key': 'split_stats'
+            })
+        ])
+
+
 def init_error_logger(results_dir):
     header_list = ['contest', 'split_id', 'cruncher_step', 'message']
     error_log_path = results_dir / 'error_log.csv'
@@ -591,7 +627,8 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
     for idx, contest in enumerate(contest_set):
 
         # RUN OPERATIONS
-        pbar_desc = f'{idx+1} of {len(contest_set)} contests: {contest["uid"]}'
+        pbar_desc = f'{idx+1} of {len(contest_set)} contests: '
+        pbar_desc += f'{contest["jurisdiction"]} {contest["date"]} {contest["office"]}'
         if n_errors:
             pbar_desc = f'[{n_errors} ERRORS SO FAR] ' + pbar_desc
 
