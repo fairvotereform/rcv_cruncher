@@ -279,10 +279,10 @@ class RCVStats:
             try:
                 rcv_obj.update_split_info(split_info)
                 splits.append({
-                    'variant': rcv_obj.get_variant_name(),
-                    'variant_group': rcv_obj.get_variant_group(),
-                    'contest_stats_df': rcv_obj.get_contest_stats_df(),
-                    'tabulation_stats_df': rcv_obj.get_tabulation_stats_df()
+                    'variant': rcv_obj.get_variant_name(rcv_obj),
+                    'variant_group': rcv_obj.get_variant_group(rcv_obj),
+                    'contest_stats_df': rcv_obj.get_contest_stats_df(rcv_obj),
+                    'tabulation_stats_df': rcv_obj.get_tabulation_stats_df(rcv_obj)
                 })
             except Exception:
                 error_splits.append(split_info['split_id'])

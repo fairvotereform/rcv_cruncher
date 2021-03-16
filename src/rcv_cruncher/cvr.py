@@ -195,6 +195,12 @@ class CVR:
             self._make_candidate_set(rule_set_name)
 
         return self._candidate_sets[rule_set_name]
+    
+    # STATS
+    
+    
+    
+    # EXPORT
 
     def get_cvr_table(self, table_format: str = "rank"):
 

@@ -153,7 +153,7 @@ class RCV(rcv_reporting.RCVStats, abc.ABC):
         self._split_info_list = []
         self._split_set_input = None
         self._split_set_actual = None
-        self._make_split_info_list(ctx)
+        self._make_split_info_list()
 
         # RUN
         self._run_contest()
