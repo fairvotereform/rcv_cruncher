@@ -2,6 +2,8 @@
 
 ## Install
 
+Only tested on Python 3.9 so far.
+
 <br/>
 
 ```
