@@ -99,11 +99,11 @@ cvr = rcvc.SingleWinner(
 
 Other tabulation methods implemented but not yet fully tested:
 
-* STVFractionalBallot
-* STVWholeBallot
-* Until2
-* Sequential
-* BottomsUp15
+* STVFractionalBallot - multi-winner fractional ballot transfer (Gregory method).
+* STVWholeBallot - multi-winner whole ballot transfer (used in Cambridge).
+* Until2 - single winner election run until 2 candidates remain.
+* Sequential - multi-winner election that consists on sequential single winner elections (used in Utah).
+* BottomsUp15 - multi-winner election run until all candidates are above 15% (used in 2020 Dem Pres Primaries).
 
 def get_round_tally_tuple(self,
                               round_num: int,
@@ -149,6 +149,8 @@ def get_round_tally_tuple(self,
 ## Functions and Classes
 
 #### *class* **BallotMarks**
+
+This class is intended to hold individual lists of ballot marks and provide useful functions for manipulating them. Collections of BallotMarks are used with CastVoteRecord and RCV objects.
 
 #### Variables:
 
@@ -217,6 +219,14 @@ static function **new_rule_set**:
 <br/>
 <br/>
 
+instance **constructor**:
+
+  * Arguments:
+    * marks: a list of candidate marks and BallotMarks constants.
+
+<br/>
+<br/>
+
 instance function **update_marks**:
 
   Replace marks. Unique sets will also be updated.
@@ -249,6 +259,72 @@ instance function **apply_rules**:
 
 
 #### *class* CastVoteRecord
+
+This class provides a way to organize various version of a cast vote record with different rule sets applied. It also calculates various ballot statistics that do not depend on an election outcome.
+
+#### Variables:
+
+* Instance:
+
+  * **jurisdiction**: string
+  * **state**: string
+  * **date**: string
+  * **year**: string
+  * **office**: string
+  * **notes**: string
+  * **split_fields**: list of string indicating which columns of the cvr should be used to calculate split statistics.
+  * **unique_id**: combination of jurisdiction, date or year, and office.
+
+#### Methods:
+
+instance function **add_rule_set**:
+
+  Creates a version of the cvr with rules applied to all ballots.
+
+  * Arguments:
+    * rule_set_name: string naming rule for cvr.
+    * rule_set_dict: dictionary containing all or some of the outputs of BallotMarks.new_rule_set().
+
+  * Returns: None
+
+<br/>
+<br/>
+
+instance function **get_candidates**:
+
+  Returns the candidates present on all ballots (after rules have been applied).
+
+  * Arguments:
+    * rule_set_name: string naming rule set added using add_rule_set(). Defaults to the unmodified parsed CVR ballots.
+
+  * Returns: BallotMarks object contructed from list of unique candidates across all ballots.
+
+<br/>
+<br/>
+
+instance function **get_cvr_dict**:
+
+Returns a dictionary of lists. One list is called 'ballot_marks' and contains modified BallotMarks objects. All other lists correspond to all other columns in the parsed CVR. If no 'weight' column was present in CVR, a column of all 1's is added.
+
+  * Arguments:
+    * rule_set_name: string naming rule set added using add_rule_set(). Defaults to the unmodified parsed CVR ballots.
+
+  * Returns: Dict of Lists
+
+<br/>
+<br/>
+
+instance function **stats**:
+
+Returns a pandas DataFrame of CVR statistics. See statistics list for more information on which are included. These statistics do not depend on any rule sets added and use the unmodified parsed cvr data.
+
+  * Arguments:
+    * keep_decimal_type: (default: False) For internal calculations numbers are represented using python decimal libary. By default, the resulting statistics are converted into rounded floats when returned.
+    * add_split_stats: (default: False) Some statistics will be calculated per split value contained in the CVR columns specified with the 'split_fields' constructor  arguments.
+    * add_id_info: (default: True) Contest ID info (jurisdiction, state, date, office, etc) is added to the returned DataFrame.
+
+  * Returns: DataFrame.
+
 
 #### *class* all RCV classes (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
 
