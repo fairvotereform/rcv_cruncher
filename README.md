@@ -1,14 +1,19 @@
 # rcv_cruncher
 
 Table of Contents:
-* [Install](#install)
-* [Examples](#examples)
-  * [Cast Vote Record](#cvr-analysis)
-  * [Tabulate](#tabulate-election)
-* Classes and Functions
-  * BallotMarks
-  * CastVoteRecord
-  * All RCV Classes
+- [rcv_cruncher](#rcv_cruncher)
+  - [Install](#install)
+  - [Examples](#examples)
+    - [CVR analysis](#cvr-analysis)
+    - [Tabulate Election](#tabulate-election)
+  - [Functions and Classes](#functions-and-classes)
+      - [*class* **BallotMarks**](#class-ballotmarks)
+      - [Variables:](#variables)
+      - [Methods:](#methods)
+      - [*class* CastVoteRecord](#class-castvoterecord)
+      - [Variables:](#variables-1)
+      - [Methods:](#methods-1)
+      - [*class* all RCV classes](#class-all-rcv-classes)
 
 ## Install
 
@@ -336,7 +341,9 @@ Returns a pandas DataFrame of CVR statistics. See statistics list for more infor
   * Returns: DataFrame.
 
 
-#### *class* all RCV classes (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
+#### *class* all RCV classes
+
+(SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
 
 
 
