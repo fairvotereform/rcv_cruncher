@@ -74,15 +74,15 @@ def cruncher_csv(cvr_path):
         df = df.replace(replace_dict)
 
     # replace skipped ranks and overvotes with constants
-    df = df.replace({col: {'under': BallotMarks.SKIPPEDRANK,
-                           'skipped': BallotMarks.SKIPPEDRANK,
-                           'undervote': BallotMarks.SKIPPEDRANK,
+    df = df.replace({col: {'under': BallotMarks.SKIPPED,
+                           'skipped': BallotMarks.SKIPPED,
+                           'undervote': BallotMarks.SKIPPED,
                            'over': BallotMarks.OVERVOTE,
                            'overvote': BallotMarks.OVERVOTE,
                            'UWI': BallotMarks.WRITEIN}
                     for col in rank_col})
 
-    df = df.fillna(BallotMarks.SKIPPEDRANK)
+    df = df.fillna(BallotMarks.SKIPPED)
 
     # pull out rank lists
     rank_col_list = [df[col].tolist() for col in rank_col]
@@ -227,7 +227,7 @@ def dominion5_4(cvr_path, office):
                                      if i['Rank'] == currentRank and i['IsAmbiguous'] is False]
 
                 if len(currentRank_marks) == 0:
-                    currentCandidate = BallotMarks.SKIPPEDRANK
+                    currentCandidate = BallotMarks.SKIPPED
                 elif len(currentRank_marks) > 1:
                     currentCandidate = BallotMarks.OVERVOTE
                 else:
@@ -402,7 +402,7 @@ def dominion5_10(cvr_path, office):
                     currentCandidate = '**error**'
 
                     if len(currentRank_marks) == 0:
-                        currentCandidate = BallotMarks.SKIPPEDRANK
+                        currentCandidate = BallotMarks.SKIPPED
                     elif len(currentRank_marks) > 1:
                         currentCandidate = BallotMarks.OVERVOTE
                     else:
@@ -482,14 +482,14 @@ def choice_pro_plus(cvr_path):
                     choices = [] if len(s) == 1 else s[1].split(',')
                     for choice in filter(None, choices):
                         can, rank = choice.split(']')[0].split('[')
-                        b.extend([BallotMarks.SKIPPEDRANK] * (int(rank) - len(b) - 1))
+                        b.extend([BallotMarks.SKIPPED] * (int(rank) - len(b) - 1))
                         b.append(BallotMarks.OVERVOTE if '=' in choice else candidate_map[can])
                     ballots.append(b)
 
     # add in tail skipped ranks
     maxlen = max(map(len, ballots))
     for b in ballots:
-        b.extend([BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
+        b.extend([BallotMarks.SKIPPED] * (maxlen - len(b)))
 
     return {'ranks': ballots, 'weight': [decimal.Decimal('1')] * len(ballots)}
 
@@ -518,7 +518,7 @@ def burlington2006(cvr_path):
     # fill in skipped ranks with constant
     maxlen = max(map(len, ballots))
     for b in ballots:
-        b.extend([BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
+        b.extend([BallotMarks.SKIPPED] * (maxlen - len(b)))
 
     # read candidate codes
     candidate_codes_fname = path.parent / "candidate_codes.csv"
@@ -675,7 +675,7 @@ def optech1(cvr_path, office):
             if rank_candidate == 0 and rank_info['skipped'] and rank_info['overvote']:
                 raise RuntimeError('this shouldnt be reached')
             elif rank_candidate == 0 and rank_info['skipped']:
-                voter_ranks[rank-1] = BallotMarks.SKIPPEDRANK
+                voter_ranks[rank-1] = BallotMarks.SKIPPED
             elif rank_candidate == 0 and rank_info['overvote']:
                 voter_ranks[rank-1] = BallotMarks.OVERVOTE
             else:
@@ -715,7 +715,7 @@ def optech2(cvr_path):
             if line and line[0] == 'Candidate':
                 candidate_map[line[1]] = line[2]
 
-    candidate_map['--'] = BallotMarks.SKIPPEDRANK
+    candidate_map['--'] = BallotMarks.SKIPPED
     candidate_map['++'] = BallotMarks.OVERVOTE
 
     # read ballots
@@ -747,7 +747,7 @@ def minneapolis2009(cvr_path, office):
     if choice_map == {}:
         raise RuntimeError('No candidates found. Ensure "office" field in contest_set matches CVR.')
 
-    choice_map['XXX'] = BallotMarks.SKIPPEDRANK
+    choice_map['XXX'] = BallotMarks.SKIPPED
     default = BallotMarks.WRITEIN
 
     # read ballots
@@ -802,7 +802,7 @@ def minneapolis2009(cvr_path, office):
 #                 for i in range(len(rinds)):
 #                     c = ranks.count(i+1)
 #                     if c == 0:
-#                         choices.append(BallotMarks.SKIPPEDRANK)
+#                         choices.append(BallotMarks.SKIPPED)
 #                     elif c == 1:
 #                         next_candidate = line[next(candidates)]
 #                         choices.append(candidate_map[next_candidate])
@@ -839,7 +839,7 @@ def minneapolis2009(cvr_path, office):
 #                 for i in range(len(rinds)):
 #                     c = ranks.count(i+1)
 #                     if c == 0:
-#                         choices.append(BallotMarks.SKIPPEDRANK)
+#                         choices.append(BallotMarks.SKIPPED)
 #                     elif c == 1:
 #                         choices.append(line[next(candidates)])
 #                     else:
@@ -911,7 +911,7 @@ def dominion5_2(cvr_path, office):
                 if contest['Id'] == contest_id:
 
                     # make empty ballot
-                    ballot = [BallotMarks.SKIPPEDRANK] * ranks
+                    ballot = [BallotMarks.SKIPPED] * ranks
 
                     # look through marks
                     for mark in contest['Marks']:
@@ -923,7 +923,7 @@ def dominion5_2(cvr_path, office):
                             pass
                         elif ballot[rank] == BallotMarks.OVERVOTE:
                             pass
-                        elif ballot[rank] == BallotMarks.SKIPPEDRANK:
+                        elif ballot[rank] == BallotMarks.SKIPPED:
                             ballot[rank] = candidate
                         elif ballot[rank] != candidate:
                             ballot[rank] = BallotMarks.OVERVOTE
@@ -999,7 +999,7 @@ def unisyn(cvr_path):
                 else:
                     idx_candidates.append(candidatesIDs[contest_dict['SelectionPosition']['Position']])
             elif contest_dict['TotalNumberVotes'] == '0':
-                idx_candidates.append(BallotMarks.SKIPPEDRANK)
+                idx_candidates.append(BallotMarks.SKIPPED)
 
         ordered_ranks = sorted(zip(idx_candidates, idx_ranks), key=lambda x: x[1])
         ballot_lists.append([t[0] for t in ordered_ranks])
@@ -1038,7 +1038,7 @@ def surveyUSA(cvr_path):
     ballots = []
     for index, row in csv_df.iterrows():
 
-        b_ranks = [BallotMarks.SKIPPEDRANK] * len(rank_columns)
+        b_ranks = [BallotMarks.SKIPPED] * len(rank_columns)
 
         saw_undecided = False
         since_undecided = []
