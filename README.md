@@ -307,7 +307,7 @@ Returns a dictionary of lists. One list is called 'ballot_marks' and contains mo
 
 instance function **stats**:
 
-Returns a pandas DataFrame of CVR statistics (one DataFrame per contest tabulation). See statistics list for more information on which are included. These statistics do not depend on any rule sets added and use the unmodified parsed cvr data.
+Returns a pandas DataFrame of CVR statistics. See statistics list for more information on which are included. These statistics do not depend on any rule sets added and use the unmodified parsed cvr data.
 
   * Arguments:
     * keep_decimal_type: (default: False) For internal calculations numbers are represented using python decimal libary. By default, the resulting statistics are converted into rounded floats when returned.
@@ -337,6 +337,20 @@ instance **constructor**:
   * treat_combined_writeins_as_exhaustable_duplicates: (default True)
   * combine_writein_marks: (default True)
   * exclude_writein_marks: (default False)
+
+<br/>
+<br/>
+
+instance function **stats**:
+
+Returns a pandas DataFrame of both CVR and RCV statistics (one DataFrame per contest tabulation). See statistics list for more information on which are included.
+
+  * Arguments:
+    * keep_decimal_type: (default: False) For internal calculations numbers are represented using python decimal libary. By default, the resulting statistics are converted into rounded floats when returned.
+    * add_split_stats: (default: False) Some statistics will be calculated per split value contained in the CVR columns specified with the 'split_fields' constructor  arguments.
+    * add_id_info: (default: True) Contest ID info (jurisdiction, state, date, office, etc) is added to the returned DataFrame.
+
+  * Returns: List[DataFrame].
 
 <br/>
 <br/>
