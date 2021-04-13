@@ -1,10 +1,12 @@
 
+from typing import (List)
+
 import abc
 import copy
 import decimal
 
-import rcv_cruncher.rcv_base as rcv_base
-import rcv_cruncher.util as util
+from rcv_cruncher.marks import BallotMarks
+from rcv_cruncher.rcv.base import RCV
 
 
 def get_rcv_dict():
@@ -12,44 +14,32 @@ def get_rcv_dict():
     Return dictionary of rcv classes, class_name: class_obj (constructor function)
     """
     return {
-        'until2rcv': until2rcv,
-        'stv_whole_ballot': stv_whole_ballot,
-        'stv_fractional_ballot': stv_fractional_ballot,
-        'sequential_rcv': sequential_rcv,
-        'rcv_single_winner': rcv_single_winner,
-        'rcv_multiWinner_thresh15': rcv_multiWinner_thresh15
+        'Until2': Until2,
+        'STVWholeBallot': STVWholeBallot,
+        'STVFractionalBallot': STVFractionalBallot,
+        'Sequential': Sequential,
+        'SingleWinner': SingleWinner,
+        'BottomsUp15': BottomsUp15
     }
 
 
-class rcv_single_winner(rcv_base.RCV):
+class SingleWinner(RCV):
     """
     Single winner rcv contest.
     - Winner is candidate to first achieve more than half the active round votes.
     - Votes are transferred from losers each round.
     """
-    def __init__(self, ctx):
-        super().__init__(ctx)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def variant_group():
-        return rcv_base.RCV.single_winner_group
-
-    def _contest_stats(self):
+    def _contest_stats(self) -> List:
         """
         Every rcv variant must specify which stats list it uses.
         Available lists should be set as rcv base methods or reporting methods.
         """
         return self.single_winner_stats
 
-    def _tabulation_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.single_winner_stats
-
-    #
-    def _set_round_winners(self):
+    def _set_round_winners(self) -> None:
         """
         This function should set self._round_winners to the list of candidates that won the round
 
@@ -61,7 +51,7 @@ class rcv_single_winner(rcv_base.RCV):
         if round_tallies[0]*2 > sum(round_tallies):
             self._round_winners = [round_candidates[0]]
 
-    def _calc_round_transfer(self):
+    def _calc_round_transfer(self) -> None:
         """
         This function should append a dictionary to self.transfers containing:
         candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
@@ -71,19 +61,18 @@ class rcv_single_winner(rcv_base.RCV):
         - transfer votes from round loser
         """
         # calculate transfer
-        transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
-        for b in self._bs:
-            if len(b['ranks']) > 0 and b['ranks'][0] == self._round_loser:
-                if len(b['ranks']) > 1:
-                    transfer_dict[b['ranks'][1]] += b['weight']
+        transfer_dict = {cand: 0 for cand in self._contest_candidates.unique_candidates.union({'exhaust'})}
+        for b in self._contest_cvr_ld:
+            if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] == self._round_loser:
+                if len(b['ballot_marks'].marks) > 1:
+                    transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
                 else:
                     transfer_dict['exhaust'] += b['weight']
 
         transfer_dict[self._round_loser] = sum(transfer_dict.values()) * -1
         self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
 
-    #
-    def _contest_not_complete(self):
+    def _contest_not_complete(self) -> bool:
         """
         This function should return True if another round should be evaluated and False
         is the contest should complete.
@@ -99,53 +88,32 @@ class rcv_single_winner(rcv_base.RCV):
             return True
 
 
-class sequential_rcv(rcv_single_winner):
+class Sequential(SingleWinner):
     """
     Sequential RCV elections used to elect multiple winners. Winners are elected one-by-one in repeated single winner
     RCV elections, each time with the previous winners effectively treated as eliminated.
     """
-    def __init__(self, ctx):
-        super().__init__(ctx)
-
-    @staticmethod
-    def variant_group():
-        return rcv_single_winner.multi_winner_group
-
-    def _contest_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.multi_winner_stats
-
-    def _tabulation_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.single_winner_stats
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
     # overwrite _run_contest to run multiple single winner elections
-    def _run_contest(self):
+    def _run_contest(self) -> None:
 
         winners = []
         self._tab_num = 0
         self._tabulations = []
 
         # continue until the number of winners is reached OR until candidates run out
-        while len(winners) != self._n_winners and len(self._candidate_set - set(winners)) != 0:
+        while len(winners) != self._n_winners and len(self._contest_candidates - set(winners)) != 0:
 
             self._new_tabulation()
 
             # reset inputs
-            self._bs = [{'ranks': ranks, 'weight': weight, 'weight_distrib': []}
-                        for ranks, weight in zip(self._cleaned_dict['ranks'], self._cleaned_dict['weight'])]
+            self._reset_ballots()
 
-            # STATE
             # tabulation-level
             self._inactive_candidates = copy.copy(winners)  # mark previous iteration winners as inactive
             self._removed_candidates = []
-            self._extra_votes = {}
 
             # round-level
             self._round_num = 0
@@ -158,45 +126,30 @@ class sequential_rcv(rcv_single_winner):
             winners.append([d['name'] for d in tabulation_outcomes.values() if d['round_elected'] is not None][0])
 
 
-class until2rcv(rcv_single_winner):
+class Until2(SingleWinner):
     """
     Run single winner contest all the way down to final two canidates.
     """
-    def __init__(self, ctx):
-        super().__init__(ctx)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    def _contest_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.single_winner_stats
-
-    def _tabulation_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.single_winner_stats
-
-    #
-    def _set_round_winners(self):
+    def _set_round_winners(self) -> None:
         """
         This function should set self._round_winners to the list of candidates that won the round
 
         single winner rules:
         - winner is candidate with more votes when there are only two candidates left
         """
-        round_candidates, round_tallies = self.get_round_tally_tuple(self._round_num, self._tab_num,
-                                                                     only_round_active_candidates=True, desc_sort=True)
+        round_candidates, _ = self.get_round_tally_tuple(self._round_num, self._tab_num,
+                                                         only_round_active_candidates=True, desc_sort=True)
         if len(round_candidates) == 2:
             self._round_winners = [round_candidates[0]]
 
 
-class stv(rcv_base.RCV, abc.ABC):
+class STV(RCV, abc.ABC):
 
-    def __init__(self, ctx):
-        super().__init__(ctx)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
     def _set_round_winners(self):
         """
@@ -229,7 +182,7 @@ class stv(rcv_base.RCV, abc.ABC):
         elif all_winners:
             self._round_winners = [all_winners[0]]
 
-    def _contest_not_complete(self):
+    def _contest_not_complete(self) -> bool:
         """
         This function should return True if another round should be evaluated and False
         is the contest should complete.
@@ -244,11 +197,8 @@ class stv(rcv_base.RCV, abc.ABC):
         else:
             return True
 
-    def _win_threshold(self):
+    def _win_threshold(self) -> decimal.Decimal:
         """
-        This function should return the win threshold used in the contest
-        OR return 'dynamic' if threshold changes for each possible winner.
-
         rules:
         - # of votes in first round /(# to elect + 1)
         """
@@ -261,40 +211,32 @@ class stv(rcv_base.RCV, abc.ABC):
         first_round_active_votes = sum(first_round_dict.values())
         return int((first_round_active_votes / (self._n_winners + 1)) + 1)
 
-    def _tabulation_stats(self):
-        return self.multi_winner_stats
 
-    @staticmethod
-    def variant_group():
-        return rcv_base.RCV.multi_winner_group
+class STVWholeBallot(STV):
 
-    def _contest_stats(self):
-        return self.multi_winner_stats
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-
-class stv_whole_ballot(stv):
-
-    def __init__(self, ctx):
-        super().__init__(ctx)
-        if len(set(self._cleaned_dict['weight'])) != 1:
+        weights = set(b['weight'] for b in self._contest_cvr_ld)
+        if len(weights) != 1:
             # see _removal_ballots
-            raise RuntimeError('ballots with different weights will not work with current implementation')
+            raise RuntimeError('ballots with unequal weights will not work with current implementation')
 
-    def _removal_ballots(self, candidate, default_as_true=True):
+    def _removal_ballots(self, candidate, default_as_true=True) -> List[bool]:
 
         if default_as_true:
             # marks all ballots to be transferred
-            to_remove = [True for b in self._bs]
+            to_remove = [True] * len(self._contest_cvr_ld)
         else:
-            to_remove = [False for b in self._bs]
+            to_remove = [False] * len(self._contest_cvr_ld)
 
         # all ballots are transferred for non-winners
         if candidate not in self._round_winners:
             return to_remove
 
         thresh = self._win_threshold()
-        ballot_weight = self._bs[0]['weight']  # assuming equal weighted ballots
-        continuing_candidates = set(self._candidate_set) - set(self._inactive_candidates)
+        ballot_weight = self._contest_cvr_ld[0]['weight']  # assuming equal weighted ballots
+        continuing_candidates = set(self._contest_candidates) - set(self._inactive_candidates)
 
         # total and surplus
         cand_total = self.get_round_tally_dict(self._round_num, self._tab_num)[candidate]
@@ -304,7 +246,8 @@ class stv_whole_ballot(stv):
         surplus_factor = int(round(cand_total/surplus))
 
         # pull out ballots that counted towards this winning candidate
-        cand_ballots = [(idx, b) for idx, b in enumerate(self._bs) if b['ranks'] and b['ranks'][0] == candidate]
+        cand_ballots = [(idx, b) for idx, b in enumerate(self._contest_cvr_ld)
+                        if b['ballot_marks'].marks and b['ballot_mark'].marks[0] == candidate]
 
         # mark all ballot belonging to candidate as not-transfer
         for ballot in cand_ballots:
@@ -343,8 +286,8 @@ class stv_whole_ballot(stv):
 
         if cand_total > thresh:
 
-            unseen_idx = [idx for idx, b in enumerate(cand_ballots) if idx not in seen_idxs]
-            non_transfer_continuing = [bool(set(b[1]['ranks']).intersection(continuing_candidates))
+            unseen_idx = [idx for idx, _ in enumerate(cand_ballots) if idx not in seen_idxs]
+            non_transfer_continuing = [bool(set(b[1]['ballot_marks'].marks).intersection(continuing_candidates))
                                        for idx, b in enumerate(cand_ballots) if idx not in used_idxs]
             non_transfer_ballot_idx = [b[0] for idx, b in enumerate(cand_ballots) if idx not in used_idxs]
 
@@ -363,7 +306,7 @@ class stv_whole_ballot(stv):
 
         return to_remove
 
-    def _calc_round_transfer(self):
+    def _calc_round_transfer(self) -> None:
         """
         This function should append a dictionary to self.transfers containing:
         candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
@@ -381,20 +324,20 @@ class stv_whole_ballot(stv):
             for winner in self._round_winners:
                 all_removal_ballots.append(self._removal_ballots(winner, default_as_true=False))
 
-            combined_removal_ballots = [False for b in self._bs]
-            for idx in range(0, len(self._bs)):
+            combined_removal_ballots = [False] * len(self._contest_cvr_ld)
+            for idx in range(0, len(self._contest_cvr_ld)):
                 if any(flag_list[idx] for flag_list in all_removal_ballots):
                     combined_removal_ballots[idx] = True
 
-            for b, is_transfer in zip(self._bs, combined_removal_ballots):
+            for b, is_transfer in zip(self._contest_cvr_ld, combined_removal_ballots):
 
                 if is_transfer:
 
-                    if len(b['ranks']) == 0:
+                    if len(b['ballot_marks'].marks) == 0:
                         print('this shouldnt happen.')
                         raise RuntimeError
 
-                    remaining_candidates = [cand for cand in b['ranks'] if cand not in self._round_winners]
+                    remaining_candidates = [cand for cand in b['ballot_marks'].marks if cand not in self._round_winners]
                     if len(remaining_candidates) == 0:
                         # exhausted
                         transfer_dict['exhaust'] += b['weight']
@@ -403,27 +346,27 @@ class stv_whole_ballot(stv):
                         transfer_dict[remaining_candidates[0]] += b['weight']
 
                     # include outflow
-                    transfer_dict[b['ranks'][0]] += b['weight'] * -1
+                    transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
 
         else:
             transfer_candidates = [self._round_loser]
 
             # calculate transfer
             transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
-            for b in self._bs:
-                if len(b['ranks']) > 0 and b['ranks'][0] in transfer_candidates:
+            for b in self._contest_cvr_ld:
+                if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] in transfer_candidates:
 
-                    if len(b['ranks']) > 1:
-                        transfer_dict[b['ranks'][1]] += b['weight']
+                    if len(b['ballot_marks'].marks) > 1:
+                        transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
                     else:
                         transfer_dict['exhaust'] += b['weight']
 
                     # mark transfer outflow
-                    transfer_dict[b['ranks'][0]] += b['weight'] * -1
+                    transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
 
         self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
 
-    def _clean_round(self):
+    def _clean_round(self) -> None:
         """
         Remove any newly inactivated candidates from the ballot ranks. But only remove previous round winners
         from specified ballots
@@ -435,10 +378,13 @@ class stv_whole_ballot(stv):
                     winners.append(inactive_cand)
                     self._removed_candidates.append(inactive_cand)
                 else:
-                    self._bs = [{'ranks': util.remove(inactive_cand, b['ranks']),
-                                 'weight': b['weight'],
-                                 'weight_distrib': b['weight_distrib']}
-                                for b in self._bs]
+                    self._contest_cvr_ld = [
+                        {
+                            'ballot_marks': BallotMarks.remove_mark(b['ballot_marks'], [inactive_cand]),
+                            'weight': b['weight'],
+                            'weight_distrib': b['weight_distrib']
+                        }
+                        for b in self._contest_cvr_ld]
                     self._removed_candidates.append(inactive_cand)
 
         # remove all other candidates before winners. This mostly matters in the first round when all
@@ -449,30 +395,17 @@ class stv_whole_ballot(stv):
             remove_bool_lists.append(self._removal_ballots(winner, default_as_true=True))
 
         for winner, to_remove in zip(winners, remove_bool_lists):
-            self._bs = [{'ranks': util.remove(winner, b['ranks']),
-                         'weight': b['weight'],
-                         'weight_distrib': b['weight_distrib']}
-                        if is_remove else b
-                        for b, is_remove in zip(self._bs, to_remove)]
-
-        # all_removal_ballots = []
-        # for winner in winners:
-        #     all_removal_ballots.append(self._removal_ballots(winner, default_as_true=True))
-        #
-        # combined_removal_ballots = [False for b in self._bs]
-        # for idx in range(0, len(self._bs)):
-        #     if any(flag_list[idx] for flag_list in all_removal_ballots):
-        #         combined_removal_ballots[idx] = True
-        #
-        # for winner in winners:
-        #     self._bs = [{'ranks': remove(winner, b['ranks']),
-        #                  'weight': b['weight'],
-        #                  'weight_distrib': b['weight_distrib']}
-        #                 if is_remove else b
-        #                 for b, is_remove in zip(self._bs, combined_removal_ballots)]
+            self._contest_cvr_ld = [
+                {
+                    'ballot_marks': BallotMarks.remove_mark(b['ballot_marks'], [inactive_cand]),
+                    'weight': b['weight'],
+                    'weight_distrib': b['weight_distrib']
+                }
+                if is_remove else b
+                for b, is_remove in zip(self._contest_cvr_ld, to_remove)]
 
 
-class stv_fractional_ballot(stv):
+class STVFractionalBallot(STV):
     """
     Multi-winner elections with fractional ballot transfer.
     - Win threshold is set as the (# first round votes)/(# of seats + 1).
@@ -480,10 +413,10 @@ class stv_fractional_ballot(stv):
     ballot redistributed is equal to (# of votes winner has -- minus the threshold)/(# of votes winner has).
     - If no winners in round, candidate with least votes in a round is eliminated and has votes transferred.
     """
-    def __init__(self, ctx):
-        super().__init__(ctx)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    def _update_weights(self):
+    def _update_weights(self) -> None:
         """
         If surplus needs to be transferred, change weights on winner ballots to reflect remaining
         active ballot proportion.
@@ -506,8 +439,8 @@ class stv_fractional_ballot(stv):
                 # which ballots had the winner on top
                 # and need to be fractionally split
                 new = []
-                for b in self._bs:
-                    if b['ranks'] and b['ranks'][0] == winner:
+                for b in self._contest_cvr_ld:
+                    if b['ballot_marks'].marks and b['ballot_marks'].marks[0] == winner:
 
                         # record ballot weight allotted to winner
                         winner_weight = b['weight'] * (1 - surplus_percent)
@@ -517,18 +450,18 @@ class stv_fractional_ballot(stv):
                         remaining_weight = b['weight'] * surplus_percent
 
                         # adjust ballot's current weight
-                        new.append({'ranks': b['ranks'], 'weight': remaining_weight,
-                                    'weight_distrib': new_weight_distrib})
+                        new.append(
+                            {
+                                'ranks': b['ballot_marks'].marks,
+                                'weight': remaining_weight,
+                                'weight_distrib': new_weight_distrib
+                            })
                     else:
                         new.append(b)
-                self._bs = new
-
-            # record threshold level vote count in extra votes for winner
-            # to ensure they get added back into later round counts
-            self._extra_votes.update({winner: threshold})
+                self._contest_cvr_ld = new
 
     #
-    def _calc_round_transfer(self):
+    def _calc_round_transfer(self) -> None:
         """
         This function should append a dictionary to self.transfers containing:
         candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
@@ -545,48 +478,29 @@ class stv_fractional_ballot(stv):
         # calculate transfer
         transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
         for b in self._bs:
-            if len(b['ranks']) > 0 and b['ranks'][0] in transfer_candidates:
+            if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] in transfer_candidates:
 
-                remaining_candidates = [cand for cand in b['ranks'] if cand not in transfer_candidates]
+                remaining_candidates = [cand for cand in b['ballot_marks'].marks if cand not in transfer_candidates]
                 if remaining_candidates:
                     transfer_dict[remaining_candidates[0]] += b['weight']
                 else:
                     transfer_dict['exhaust'] += b['weight']
 
                 # mark transfer outflow
-                transfer_dict[b['ranks'][0]] += b['weight'] * -1
+                transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
 
         self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
 
 
-class rcv_multiWinner_thresh15(rcv_base.RCV):
+class BottomsUp15(RCV):
     """
     Multi winner contest. When all candidates in a round have more than 15% of the round votes, they are all winners.
     - In a no winner round, the candidate with least votes is eliminated and ballots transferred.
     """
-    def __init__(self, ctx):
-        super().__init__(ctx)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def variant_group():
-        return rcv_base.RCV.multi_winner_group
-
-    def _contest_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.multi_winner_stats
-
-    def _tabulation_stats(self):
-        """
-        Every rcv variant must specify which stats list it uses.
-        Available lists should be set as rcv base methods or reporting methods.
-        """
-        return self.multi_winner_stats
-
-    #
-    def _set_round_winners(self):
+    def _set_round_winners(self) -> None:
         """
         This function should set self._round_winners to the list of candidates that won the round
         """
@@ -596,7 +510,7 @@ class rcv_multiWinner_thresh15(rcv_base.RCV):
         if all(i > threshold for i in round_tallies):
             self._round_winners = list(round_candidates)
 
-    def _calc_round_transfer(self):
+    def _calc_round_transfer(self) -> None:
         """
         This function should append a dictionary to self.transfers containing:
         candidate names as keys, plus one key for 'exhaust' and any other keys for transfer categories
@@ -608,18 +522,17 @@ class rcv_multiWinner_thresh15(rcv_base.RCV):
 
         # calculate transfer
         transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
-        for b in self._bs:
-            if len(b['ranks']) > 0 and b['ranks'][0] == self._round_loser:
-                if len(b['ranks']) > 1:
-                    transfer_dict[b['ranks'][1]] += b['weight']
+        for b in self._contest_cvr_ld:
+            if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] == self._round_loser:
+                if len(b['ballot_marks'].marks) > 1:
+                    transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
                 else:
                     transfer_dict['exhaust'] += b['weight']
 
         transfer_dict[self._round_loser] = sum(transfer_dict.values()) * -1
         self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
 
-    #
-    def _contest_not_complete(self):
+    def _contest_not_complete(self) -> None:
         """
         This function should return True if another round should be evaluated and False
         is the contest should complete.
@@ -633,41 +546,3 @@ class rcv_multiWinner_thresh15(rcv_base.RCV):
             return False
         else:
             return True
-
-# class rcv_multiWinner_thresh15_keepUndeclared(rcv_multiWinner_thresh15):
-#     """
-#     Multi winner contest. When all candidates in a round have more than 15% of the round votes, they are all winners.
-#     - In a no winner round, the candidate with least votes is eliminated and ballots transferred.
-#     - If there is a candidate called "(undeclared)" it is treated as un-defeatable.
-#     """
-#     def __init__(self, ctx):
-#         super().__init__(ctx)
-
-#     def _set_round_loser(self):
-#         """
-#         Find candidate from round with least votes.
-#         If more than one, choose randomly
-
-#         rules:
-#         - '(undeclared)' candidate cannot lose
-#         """
-#         # split round results into two tuples (index-matched)
-#         round_candidates, round_tallies = self.get_round_tally_tuple(self._round_num, self._tab_num,
-#                                                                      only_round_active_candidates=True, desc_sort=True)
-
-#         round_candidates = list(round_candidates)
-#         round_tallies = list(round_tallies)
-
-#         # '(undeclared)' cannot be a loser
-#         if '(undeclared)' in round_candidates:
-#             undeclared_idx = round_candidates.index('(undeclared)')
-#             del round_candidates[undeclared_idx]
-#             del round_tallies[undeclared_idx]
-
-#         # find round loser
-#         loser_count = min(round_tallies)
-#         # in case of tied losers, 'randomly' choose one to eliminate (the last one in alpha order)
-#         round_losers = sorted([cand for cand, cand_tally
-#                                in zip(round_candidates, round_tallies)
-#                                if cand_tally == loser_count])
-#         self._round_loser = round_losers[-1]

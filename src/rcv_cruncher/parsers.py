@@ -1,4 +1,3 @@
-# flake8: noqa
 
 import csv
 import pathlib
@@ -12,14 +11,14 @@ import xmltodict
 
 import pandas as pd
 
-import rcv_cruncher.util as util
-import rcv_cruncher.package_types as types
+from rcv_cruncher.marks import BallotMarks
 
 decimal.getcontext().prec = 30
 
 global parser_dict
 
-def add_parser(parser_dict: types.ParserDict) -> None:
+
+def add_parser(parser_dict) -> None:
     """Add custom parser functions to the module parser dictionary.
 
     :param parser_dict: A dictionary containing parser functions, with their names as keys.
@@ -28,7 +27,7 @@ def add_parser(parser_dict: types.ParserDict) -> None:
     parser_dict.update(parser_dict)
 
 
-def get_parser_dict() -> types.ParserDict:
+def get_parser_dict():
     """Returns the parser dictionary. Including both package parsers and
     custom parsers added with :func:`add_parser`.
 
@@ -38,7 +37,7 @@ def get_parser_dict() -> types.ParserDict:
     return parser_dict
 
 
-def cruncher_csv(cvr_path: types.Path) -> types.BallotDictOfLists:
+def cruncher_csv(cvr_path):
     """Reads ballot ranking information stored in csv format.
     One ballot per row, with ranking columns appearing in order and named with the word "rank"
     (e.x. "rank1", "rank2", etc)
@@ -75,15 +74,15 @@ def cruncher_csv(cvr_path: types.Path) -> types.BallotDictOfLists:
         df = df.replace(replace_dict)
 
     # replace skipped ranks and overvotes with constants
-    df = df.replace({col: {'under': util.BallotMarks.SKIPPEDRANK,
-                           'skipped': util.BallotMarks.SKIPPEDRANK,
-                           'undervote': util.BallotMarks.SKIPPEDRANK,
-                           'over': util.BallotMarks.OVERVOTE,
-                           'overvote': util.BallotMarks.OVERVOTE,
-                           'UWI': util.BallotMarks.WRITEIN}
+    df = df.replace({col: {'under': BallotMarks.SKIPPEDRANK,
+                           'skipped': BallotMarks.SKIPPEDRANK,
+                           'undervote': BallotMarks.SKIPPEDRANK,
+                           'over': BallotMarks.OVERVOTE,
+                           'overvote': BallotMarks.OVERVOTE,
+                           'UWI': BallotMarks.WRITEIN}
                     for col in rank_col})
 
-    df = df.fillna(util.BallotMarks.SKIPPEDRANK)
+    df = df.fillna(BallotMarks.SKIPPEDRANK)
 
     # pull out rank lists
     rank_col_list = [df[col].tolist() for col in rank_col]
@@ -109,7 +108,8 @@ def cruncher_csv(cvr_path: types.Path) -> types.BallotDictOfLists:
 
     return dct
 
-def dominion5_4(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+
+def dominion5_4(cvr_path, office):
     """Reads ballot data from Dominion V5.4 CVRs for a single contest.
 
     :param cvr_path: [description]
@@ -227,9 +227,9 @@ def dominion5_4(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
                                      if i['Rank'] == currentRank and i['IsAmbiguous'] is False]
 
                 if len(currentRank_marks) == 0:
-                    currentCandidate = util.BallotMarks.SKIPPEDRANK
+                    currentCandidate = BallotMarks.SKIPPEDRANK
                 elif len(currentRank_marks) > 1:
-                    currentCandidate = util.BallotMarks.OVERVOTE
+                    currentCandidate = BallotMarks.OVERVOTE
                 else:
                     currentCandidate = candidate_manifest[currentRank_marks[0]['CandidateId']]
 
@@ -261,7 +261,7 @@ def dominion5_4(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
     return ballot_dict
 
 
-def dominion5_10(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+def dominion5_10(cvr_path, office):
 
     path = pathlib.Path(cvr_path)
 
@@ -402,9 +402,9 @@ def dominion5_10(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
                     currentCandidate = '**error**'
 
                     if len(currentRank_marks) == 0:
-                        currentCandidate = util.BallotMarks.SKIPPEDRANK
+                        currentCandidate = BallotMarks.SKIPPEDRANK
                     elif len(currentRank_marks) > 1:
-                        currentCandidate = util.BallotMarks.OVERVOTE
+                        currentCandidate = BallotMarks.OVERVOTE
                     else:
                         currentCandidate = candidate_manifest[currentRank_marks[0]['CandidateId']]
 
@@ -445,49 +445,36 @@ def dominion5_10(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
 
     return ballot_dict
 
-def chp_names(ctx):
-    """
-    Read chp file and return candidate code map
-    """
-    mapping = {}
-    with open(ctx['cvr_path'], encoding='utf8') as f:
+
+def choice_pro_plus(cvr_path):
+
+    cvr_path = pathlib.Path(cvr_path)
+
+    # read chp file
+    chp_glob = [f for f in cvr_path.glob('*.chp')]
+    if len(chp_glob) > 1:
+        raise RuntimeError(f'more than one .chp file found in directory {str(cvr_path)}')
+
+    candidate_map = {}
+    prm_files = []
+    with open(chp_glob[0], encoding='utf8') as f:
         for i in f:
-            split = i.split()
+
+            split = i.strip('\n').split()
+
             if len(split) >= 3 and split[0] == '.CANDIDATE':
-                mapping[split[1].strip(',')] = i.split('"')[1].split('"')[0]
-    return mapping
+                candidate_map[split[1].strip(',')] = i.split('"')[1].split('"')[0]
 
-def chp_order(ctx):
-    """
-    Read chp file and return prm file paths in order listed. Order is important for cambridge elections.
-    """
-    path_dir = ctx['cvr_path'].parent
-    prm_filepaths = []
-    with open(ctx['cvr_path'], encoding='utf8') as f:
-        for i in f:
-            split = i.split()
             if len(split) == 2 and split[0] == '.INCLUDE':
-                prm_filepaths.append(path_dir / split[1])
-    return prm_filepaths
+                prm_files.append(cvr_path / split[1])
 
-# TODO: add functionality to allow resolvalbe overvotes
-#       i.e. overvotes that are tabulated after all but
-#       one of the candidates in the overvote is eliminated
-#       burlington, and possibly cambridge will still count
-#       this vote
-def prm(ctx):
-    """
-    Parser based on CHP and PRM files. CHP file contains contest meta-info and candidate code maps.
-    PRM file contains ballot info. PRM files may appear separated out by precinct.
-    """
-    # get candidate code map
-    name_map = chp_names(ctx)
-    # get prm file list
-    prm_filepaths = chp_order(ctx)
+    # read prm files
+    if not prm_files:
+        raise RuntimeError(f'no .prm files listed in .chp file {chp_glob[0]}')
 
     ballots = []
-    for prm_filepath in prm_filepaths:
-        with open(prm_filepath, 'r', encoding='utf8') as f:
+    for prm_file in prm_files:
+        with open(prm_file, 'r', encoding='utf8') as f:
             for i in f:
                 if any(map(str.isalnum, i)) and i.strip()[0] != '#':
                     b = []
@@ -495,25 +482,30 @@ def prm(ctx):
                     choices = [] if len(s) == 1 else s[1].split(',')
                     for choice in filter(None, choices):
                         can, rank = choice.split(']')[0].split('[')
-                        b.extend([util.BallotMarks.SKIPPEDRANK] * (int(rank) - len(b) - 1))
-                        b.append(util.BallotMarks.OVERVOTE if '=' in choice else name_map[can])
+                        b.extend([BallotMarks.SKIPPEDRANK] * (int(rank) - len(b) - 1))
+                        b.append(BallotMarks.OVERVOTE if '=' in choice else candidate_map[can])
                     ballots.append(b)
 
     # add in tail skipped ranks
     maxlen = max(map(len, ballots))
     for b in ballots:
-        b.extend([util.BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
+        b.extend([BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
 
     return {'ranks': ballots, 'weight': [decimal.Decimal('1')] * len(ballots)}
 
-def burlington2006(cvr_path: types.Path) -> types.BallotDictOfLists:
+
+def burlington2006(cvr_path):
     """Function to parse file format used in 2006 Burlington Mayoral Election.
 
     Args:
-        ctx (dictionary): A dictionary containing key "path" which points to the cvr file containing ranking information of each ballot. If a file called "candidate_codes.csv" exists in the same directory, it will be read and values from the "code" column that are found in the cvr file ranks will be replaced values in the "candidate" columns.
+        ctx (dictionary): A dictionary containing key "path" which points to the cvr file
+        containing ranking information of each ballot. If a file called "candidate_codes.csv"
+        exists in the same directory, it will be read and values from the "code" column
+        that are found in the cvr file ranks will be replaced values in the "candidate" columns.
 
     Returns:
-        dictionary: Dictionary with a single key, "ranks", containing parsed ballots as a list of lists. Overvotes and skipped rankings are represented by constants.
+        dictionary: Dictionary with a single key, "ranks", containing parsed ballots as a list of lists.
+        Overvotes and skipped rankings are represented by constants.
     """
     path = pathlib.Path(cvr_path)
 
@@ -521,12 +513,12 @@ def burlington2006(cvr_path: types.Path) -> types.BallotDictOfLists:
     ballots = []
     with open(path, "r", encoding='utf8') as f:
         for line in f:
-            ballots.append([util.BallotMarks.OVERVOTE if '=' in i else i for i in line.split()[3:]])
+            ballots.append([BallotMarks.OVERVOTE if '=' in i else i for i in line.split()[3:]])
 
     # fill in skipped ranks with constant
     maxlen = max(map(len, ballots))
     for b in ballots:
-        b.extend([util.BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
+        b.extend([BallotMarks.SKIPPEDRANK] * (maxlen - len(b)))
 
     # read candidate codes
     candidate_codes_fname = path.parent / "candidate_codes.csv"
@@ -543,7 +535,7 @@ def burlington2006(cvr_path: types.Path) -> types.BallotDictOfLists:
     return {'ranks': new_ballots}
 
 
-def optech(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+def optech1(cvr_path, office):
 
     cvr_path = pathlib.Path(cvr_path)
 
@@ -599,7 +591,7 @@ def optech(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
 
     # separate out other maps
     precinct_map = master_lookup['Precinct']
-    name_map = {k: {'WRITEIN': util.BallotMarks.WRITEIN}.get(v.upper().replace('-', ''), v)
+    name_map = {k: {'WRITEIN': BallotMarks.WRITEIN}.get(v.upper().replace('-', ''), v)
                 for k, v in master_lookup['Candidate'].items()}
 
     # READ BALLOT FILE
@@ -683,9 +675,9 @@ def optech(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
             if rank_candidate == 0 and rank_info['skipped'] and rank_info['overvote']:
                 raise RuntimeError('this shouldnt be reached')
             elif rank_candidate == 0 and rank_info['skipped']:
-                voter_ranks[rank-1] = util.BallotMarks.SKIPPEDRANK
+                voter_ranks[rank-1] = BallotMarks.SKIPPEDRANK
             elif rank_candidate == 0 and rank_info['overvote']:
-                voter_ranks[rank-1] = util.BallotMarks.OVERVOTE
+                voter_ranks[rank-1] = BallotMarks.OVERVOTE
             else:
                 voter_ranks[rank-1] = rank_candidate
 
@@ -701,52 +693,72 @@ def optech(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
     dct.update({'weight': [decimal.Decimal('1')] * len(dct['ranks'])})
     return dct
 
-def old(ctx):
-    path = ctx['cvr_path']
+
+def optech2(cvr_path):
+
+    cvr_path = pathlib.Path(cvr_path)
+
+    ballot_glob = [f for f in cvr_path.glob('*allot*.txt')]
+    cntl_glob = [f for f in cvr_path.glob('*ntl*.txt')]
+
+    if len(ballot_glob) > 1:
+        raise RuntimeError(f'more than 1 file with pattern matching *allot*.txt found in directory {str(cvr_path)}')
+
+    if len(cntl_glob) > 1:
+        raise RuntimeError(f'more than 1 file with pattern matching *ntl*.txt found in directory {str(cvr_path)}')
+
+    # read in canadidate codes and names
     candidate_map = {}
-    with open(ctx['candidate_map'], encoding='utf8') as f:
+    with open(cntl_glob[0], encoding='utf8') as f:
         for i in f:
             line = [j.strip() for j in i.split(':')]
             if line and line[0] == 'Candidate':
                 candidate_map[line[1]] = line[2]
-    candidate_map['--'] = util.BallotMarks.SKIPPEDRANK
-    candidate_map['++'] = util.BallotMarks.OVERVOTE
+
+    candidate_map['--'] = BallotMarks.SKIPPEDRANK
+    candidate_map['++'] = BallotMarks.OVERVOTE
+
+    # read ballots
     ballots = []
-    with open(path, "r", encoding='utf8') as f:
+    with open(ballot_glob[0], "r", encoding='utf8') as f:
         line = f.readline()
         while line:
             ballots.append([candidate_map[i] for i in line.split()[-1].split('>')])
             line = f.readline()
+
     return ballots
 
-def minneapolis(ctx):
+
+def minneapolis2009(cvr_path, office):
+
+    cvr_path = pathlib.Path(cvr_path)
+
+    # read map file
+    map_file = cvr_path.parent / 'convert.csv'
+
     choice_map = {}
     default = None
-    if ctx['year'] == '2009':
-        with open(ctx['cvr_path'].parent / 'convert.csv', encoding='utf8') as f:
-            for i in f:
-                split = i.strip().split('\t')
-                if len(split) >= 3 and split[0] == ctx['office']:
-                    choice_map[split[2]] = split[1]
-        if choice_map == {}:
-            raise RuntimeError('No candidates found. Ensure "office" field in contest_set matches CVR.')
-        choice_map['XXX'] = util.BallotMarks.SKIPPEDRANK
-        default = util.BallotMarks.WRITEIN
-    else:
-        choice_map = {
-            'UWI': util.BallotMarks.WRITEIN,
-            'undervote': util.BallotMarks.SKIPPEDRANK,
-            'overvote': util.BallotMarks.OVERVOTE
-        }
-    path = ctx['cvr_path']
+    with open(map_file, encoding='utf8') as f:
+        for i in f:
+            split = i.strip().split('\t')
+            if len(split) >= 3 and split[0] == office:
+                choice_map[split[2]] = split[1]
+
+    if choice_map == {}:
+        raise RuntimeError('No candidates found. Ensure "office" field in contest_set matches CVR.')
+
+    choice_map['XXX'] = BallotMarks.SKIPPEDRANK
+    default = BallotMarks.WRITEIN
+
+    # read ballots
     precincts = []
     ballots = []
-    with open(path, "r", encoding='utf8') as f:
+    with open(cvr_path, "r", encoding='utf8') as f:
         f.readline()
         for line in csv.reader(f):
             choices = [choice_map.get(i.strip(), i if default is None else default)
-                          for i in line[1:-1]]
-            if choices != ['','','']:
+                       for i in line[1:-1]]
+            if choices != ['', '', '']:
                 ballots.extend([choices] * int(float(line[-1])))
                 for p in range(int(float(line[-1]))):
                     precincts.append(line[0])
@@ -757,116 +769,88 @@ def minneapolis(ctx):
 
     return bs
 
-def maine(n, ctx):
-    path = ctx['cvr_path']
-    ballots = []
-    with open(path, "r", encoding='utf8') as f:
-        f.readline()
-        for line in csv.reader(f):
-            choices = [{'undervote': util.BallotMarks.SKIPPEDRANK,
-                        'overvote': util.BallotMarks.OVERVOTE,
-                        'Write-in': util.BallotMarks.WRITEIN}.get(i,i)
-                         for i in line[3:3+n]]
-            if '' not in choices and choices:
-                ballots.append(choices)
-    return ballots
 
-def santafe(column_id, contest_id, ctx):
-    path = ctx['cvr_path']
-    candidate_map = {}
-    with open(ctx['cvr_path'].replace('CvrExport','CandidateManifest'), encoding='utf8') as f:
-        for i in f:
-            row = i.split(',')
-            if row:
-                candidate_map[row[1]] = row[0]
-    ballots = []
-    ballot_length = 0
-    with open(path, "r", encoding='utf8') as f:
-        reader = csv.reader(f)
-        header = next(reader)
-        s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
-        rinds = []
-        cinds = []
-        for i in range(len(header)):
-            try:
-                rinds.append(header.index(s.format(column_id, i, 'Rank')))
-            except ValueError:
-                break
-            cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
-        col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
-        for line in reader:
-            if line[col] == str(contest_id):
-                choices = []
-                ranks = [int(line[i]) for i in rinds if line[i] != '']
-                ballot_length = max(ranks + [ballot_length])
-                candidates = iter(cinds)
-                for i in range(len(rinds)):
-                    c = ranks.count(i+1)
-                    if c == 0:
-                        choices.append(util.BallotMarks.SKIPPEDRANK)
-                    elif c == 1:
-                        next_candidate = line[next(candidates)]
-                        choices.append(candidate_map[next_candidate])
-                    else:
-                        choices.append(util.BallotMarks.OVERVOTE)
-                ballots.append(choices)
-    return [b[:ballot_length] for b in ballots]
+# def santafe(column_id, contest_id, ctx):
+#     path = ctx['cvr_path']
+#     candidate_map = {}
+#     with open(ctx['cvr_path'].replace('CvrExport', 'CandidateManifest'), encoding='utf8') as f:
+#         for i in f:
+#             row = i.split(',')
+#             if row:
+#                 candidate_map[row[1]] = row[0]
+#     ballots = []
+#     ballot_length = 0
+#     with open(path, "r", encoding='utf8') as f:
+#         reader = csv.reader(f)
+#         header = next(reader)
+#         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
+#         rinds = []
+#         cinds = []
+#         for i in range(len(header)):
+#             try:
+#                 rinds.append(header.index(s.format(column_id, i, 'Rank')))
+#             except ValueError:
+#                 break
+#             cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
+#         col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
+#         for line in reader:
+#             if line[col] == str(contest_id):
+#                 choices = []
+#                 ranks = [int(line[i]) for i in rinds if line[i] != '']
+#                 ballot_length = max(ranks + [ballot_length])
+#                 candidates = iter(cinds)
+#                 for i in range(len(rinds)):
+#                     c = ranks.count(i+1)
+#                     if c == 0:
+#                         choices.append(BallotMarks.SKIPPEDRANK)
+#                     elif c == 1:
+#                         next_candidate = line[next(candidates)]
+#                         choices.append(candidate_map[next_candidate])
+#                     else:
+#                         choices.append(BallotMarks.OVERVOTE)
+#                 ballots.append(choices)
+#     return [b[:ballot_length] for b in ballots]
 
-def santafe_id(column_id, contest_id, ctx):
-    path = ctx['cvr_path']
-    ballots = []
-    ballot_length = 0
-    with open(path, "r", encoding='utf8') as f:
-        reader = csv.reader(f)
-        header = next(reader)
-        s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
-        rinds = []
-        cinds = []
-        for i in range(len(header)):
-            try:
-                rinds.append(header.index(s.format(column_id, i, 'Rank')))
-            except ValueError:
-                break
-            cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
-        col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
-        for i, line in enumerate(reader):
-            if line[col] == str(contest_id):
-                choices = collections.UserList([])
-                choices.voter_id = i
-                ranks = [int(line[i]) for i in rinds if line[i] != '']
-                ballot_length = max(ranks + [ballot_length])
-                candidates = iter(cinds)
-                for i in range(len(rinds)):
-                    c = ranks.count(i+1)
-                    if c == 0:
-                        choices.append(util.BallotMarks.SKIPPEDRANK)
-                    elif c == 1:
-                        choices.append(line[next(candidates)])
-                    else:
-                        choices.append(util.BallotMarks.OVERVOTE)
-                ballots.append(choices)
-    for b in ballots:
-        b.data = b.data[:ballot_length]
-    return ballots
 
-def sf2005(contest_ids, over, under, sep, ctx):
-    path = ctx['cvr_path']
-    ballots = []
-    with open(path, 'r', encoding='utf8') as f:
-        for i in f:
-            if sep is None:
-                s = [rc.split('-') for rc in i.split()[1:] if '-' in i.strip()]
-            else:
-                s = [rc.strip().split('-') for rc in i.split(sep)[1:] if '-' in i]
-            if s == [] or len(s[0]) != 2:
-                continue
-            raw = [c for r, c in s if r in contest_ids]
-            if raw:
-                ballots.append([{over: util.BallotMarks.OVERVOTE, under: util.BallotMarks.SKIPPEDRANK}.get(i, i)
-                                for i in raw])
-    return ballots
+# def santafe_id(column_id, contest_id, ctx):
+#     path = ctx['cvr_path']
+#     ballots = []
+#     ballot_length = 0
+#     with open(path, "r", encoding='utf8') as f:
+#         reader = csv.reader(f)
+#         header = next(reader)
+#         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
+#         rinds = []
+#         cinds = []
+#         for i in range(len(header)):
+#             try:
+#                 rinds.append(header.index(s.format(column_id, i, 'Rank')))
+#             except ValueError:
+#                 break
+#             cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
+#         col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
+#         for i, line in enumerate(reader):
+#             if line[col] == str(contest_id):
+#                 choices = collections.UserList([])
+#                 choices.voter_id = i
+#                 ranks = [int(line[i]) for i in rinds if line[i] != '']
+#                 ballot_length = max(ranks + [ballot_length])
+#                 candidates = iter(cinds)
+#                 for i in range(len(rinds)):
+#                     c = ranks.count(i+1)
+#                     if c == 0:
+#                         choices.append(BallotMarks.SKIPPEDRANK)
+#                     elif c == 1:
+#                         choices.append(line[next(candidates)])
+#                     else:
+#                         choices.append(BallotMarks.OVERVOTE)
+#                 ballots.append(choices)
+#     for b in ballots:
+#         b.data = b.data[:ballot_length]
+#     return ballots
 
-def dominion5_2(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
+
+def dominion5_2(cvr_path, office):
 
     path = pathlib.Path(cvr_path)
 
@@ -927,22 +911,22 @@ def dominion5_2(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
                 if contest['Id'] == contest_id:
 
                     # make empty ballot
-                    ballot = [util.BallotMarks.SKIPPEDRANK] * ranks
+                    ballot = [BallotMarks.SKIPPEDRANK] * ranks
 
                     # look through marks
                     for mark in contest['Marks']:
                         candidate = candidates[mark['CandidateId']]
                         if candidate == 'Write-in':
-                            candidate = util.BallotMarks.WRITEIN
+                            candidate = BallotMarks.WRITEIN
                         rank = mark['Rank']-1
                         if mark['IsAmbiguous']:
                             pass
-                        elif ballot[rank] == util.BallotMarks.OVERVOTE:
+                        elif ballot[rank] == BallotMarks.OVERVOTE:
                             pass
-                        elif ballot[rank] == util.BallotMarks.SKIPPEDRANK:
+                        elif ballot[rank] == BallotMarks.SKIPPEDRANK:
                             ballot[rank] = candidate
                         elif ballot[rank] != candidate:
-                            ballot[rank] = util.BallotMarks.OVERVOTE
+                            ballot[rank] = BallotMarks.OVERVOTE
 
                     ballots['countingGroup'].append(countingGroup)
                     ballots['ballotType'].append(ballotType)
@@ -959,39 +943,8 @@ def dominion5_2(cvr_path: types.Path, office: str) -> types.BallotDictOfLists:
 
     return ballots
 
-def utah(cvr_path: types.Path):
 
-    path = pathlib.Path(cvr_path)
-
-    ballots = []
-    with open(path, encoding='utf8') as f:
-        next(f)
-        for b in f:
-            ballots.append(
-                [{'overvote': util.BallotMarks.OVERVOTE,
-                  'undervote': util.BallotMarks.SKIPPEDRANK,
-                  '': util.BallotMarks.SKIPPEDRANK}.get(i, i)
-                for i in b.strip().split(',')[2:]]
-            )
-    return ballots
-
-def ep(cvr_path: types.Path):
-
-    path = pathlib.Path(cvr_path)
-    ballots = []
-    with open(path, encoding='utf8') as f:
-        next(f)
-        for b in csv.reader(f):
-            ballots.append(
-                [{'overvote': util.BallotMarks.OVERVOTE,
-                  'undervote': util.BallotMarks.SKIPPEDRANK,
-                  'UWI': util.BallotMarks.WRITEIN}.get(i, i)
-                for i in b[3:]]
-            )
-
-    return ballots
-
-def unisyn(cvr_path: types.Path) -> types.BallotDictOfLists:
+def unisyn(cvr_path):
     """
     This parser was developed for the unisyn 2020 Hawaii Dem Primary CVR which only contained the
     ranked choice votes for a single election. Unisyn uses the common data format in xml, however the
@@ -1042,11 +995,11 @@ def unisyn(cvr_path: types.Path) -> types.BallotDictOfLists:
             contest_dict = contestIDdicts[rank_key][idx]
             if 'SelectionPosition' in contest_dict:
                 if isinstance(contest_dict['SelectionPosition'], list):
-                    idx_candidates.append(util.BallotMarks.OVERVOTE)
+                    idx_candidates.append(BallotMarks.OVERVOTE)
                 else:
                     idx_candidates.append(candidatesIDs[contest_dict['SelectionPosition']['Position']])
             elif contest_dict['TotalNumberVotes'] == '0':
-                idx_candidates.append(util.BallotMarks.SKIPPEDRANK)
+                idx_candidates.append(BallotMarks.SKIPPEDRANK)
 
         ordered_ranks = sorted(zip(idx_candidates, idx_ranks), key=lambda x: x[1])
         ballot_lists.append([t[0] for t in ordered_ranks])
@@ -1057,7 +1010,8 @@ def unisyn(cvr_path: types.Path) -> types.BallotDictOfLists:
 
     return dct
 
-def surveyUSA(cvr_path: types.Path) -> types.BallotDictOfLists:
+
+def surveyUSA(cvr_path):
     """
     Survey USA files usually include all respondents and should be pre-filtered for any columns
     prior to cruncher use (such as filtering likely democratic voters). Rank columns and ballotID columns
@@ -1084,7 +1038,7 @@ def surveyUSA(cvr_path: types.Path) -> types.BallotDictOfLists:
     ballots = []
     for index, row in csv_df.iterrows():
 
-        b_ranks = [util.BallotMarks.SKIPPEDRANK] * len(rank_columns)
+        b_ranks = [BallotMarks.SKIPPEDRANK] * len(rank_columns)
 
         saw_undecided = False
         since_undecided = []
@@ -1114,22 +1068,17 @@ def surveyUSA(cvr_path: types.Path) -> types.BallotDictOfLists:
     ballot_dict = {'ranks': ballots, 'weight': csv_df['weight'], 'ballotID': csv_df['ballotID']}
     return ballot_dict
 
+
 parser_dict = {
     "burlington2006": burlington2006,
     "cruncher_csv": cruncher_csv,
     "dominion5_2": dominion5_2,
     "dominion5_4": dominion5_4,
     "dominion5_10": dominion5_10,
-    "ep": ep,
-    "maine": maine,
-    "minneapolis": minneapolis,
-    "old": old,
-    "prm": prm,
-    "santafe": santafe,
-    "santafe_id": santafe_id,
-    "optech": optech,
-    "sf2005": sf2005,
-    "surveyUSA": surveyUSA,
+    "optech": optech1,
     "unisyn": unisyn,
-    "utah": utah
+    "surveyUSA": surveyUSA,
+    "minneapolis2009": minneapolis2009
+    # "santafe": santafe, still need to figure out this parser
+    # "santafe_id": santafe_id,
 }

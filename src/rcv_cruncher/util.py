@@ -1,8 +1,9 @@
 import decimal
-import functools
 import os
 import pathlib
 import csv
+
+from rcv_cruncher.marks import BallotMarks
 
 ###############################################################
 # constants
@@ -10,25 +11,21 @@ import csv
 NAN = decimal.Decimal('NaN')
 
 
-class BallotMarks():
-    SKIPPEDRANK = "skipped"
-    OVERVOTE = "overvote"
-    WRITEIN = "writein"
+class InactiveType:
 
+    UNDERVOTE = BallotMarks.UNDERVOTE
+    PRETALLY_EXHAUST = BallotMarks.PRETALLY_EXHAUST
 
-class InactiveType():
-    UNDERVOTE = "undervote"
-    PRETALLY_EXHAUST = "pretally_exhaust"
     NOT_EXHAUSTED = "not_exhausted"
     POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = "posttally_exhausted_by_rank_limit"
     POSTTALLY_EXHAUSTED_BY_ABSTENTION = "posttally_exhausted_by_abstention"
     POSTTALLY_EXHAUSTED_BY_OVERVOTE = "posttally_exhausted_by_overvote"
-    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE = "posttally_exhausted_by_repeated_skipvote"
+    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING = "posttally_exhausted_by_repeated_skipped_ranking"
     POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = "posttally_exhausted_by_duplicate_ranking"
+
 
 ########################
 # helper funcs
-
 
 class CSVLogger:
 
@@ -85,9 +82,6 @@ def index_inf(lst, el):
     else:
         return float('inf')
 
-def combine_writeins(b):
-    return [BallotMarks.WRITEIN if 'write' in i.lower() or 'uwi' in i.lower() else i for i in b]
-
 
 def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing folder'):
     """
@@ -108,14 +102,6 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
 
 def flatten_list(lst):
     return [i for sublist in lst for i in sublist]
-
-
-def remove_dup(lst):
-    x = []
-    for i in lst:
-        if i not in x:
-            x.append(i)
-    return x
 
 
 def decimal2float(stat, round_places=3):
