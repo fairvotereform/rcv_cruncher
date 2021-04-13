@@ -1,10 +1,10 @@
 # rcv_cruncher
 
 Table of Contents:
-* [Install](##Install)
-* [Examples](##Examples)
-  * [Cast Vote Record](###CVRanalysis)
-  * [Tabulate](###TabulateElection)
+* [Install](##install)
+* [Examples](##examples)
+  * [Cast Vote Record](###cvr-analysis)
+  * [Tabulate](###tabulate-election)
 * Classes and Functions
   * BallotMarks
   * CastVoteRecord
