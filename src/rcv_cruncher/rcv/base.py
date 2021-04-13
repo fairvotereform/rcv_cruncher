@@ -405,7 +405,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                               round_num: int,
                               tabulation_num: int = 1,
                               only_round_active_candidates: bool = False,
-                              desc_sort: bool = False) -> List[Tuple[str], Tuple[decimal.Decimal]]:
+                              desc_sort: bool = True) -> List[Tuple[str], Tuple[decimal.Decimal]]:
         """
         Return a dictionary containing keys as candidates and values as their vote counts in the round.
         """
@@ -427,10 +427,9 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
             cands = [cand for cand in cands if cand in active_candidates]
 
         # sort
-        if desc_sort:
-            rounds = list(zip(*[(cand, tally) for cand, tally in sorted(zip(cands, tallies), key=lambda x: -x[1])]))
-        else:
-            rounds = [tuple(cands), tuple(tallies)]
+        rounds = list(zip(*[(cand, tally) for cand, tally in sorted(zip(cands, tallies), key=lambda x: -x[1])]))
+
+           # rounds = [tuple(cands), tuple(tallies)]
 
         return rounds
 
@@ -457,7 +456,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         transfers = self._tabulations[tabulation_num-1]['transfers']
         return transfers[round_num-1]
 
-    def get_candidate_outcomes(self, tabulation_num: int = 1) -> Dict[str, Optional[int]]:
+    def get_candidate_outcomes(self, tabulation_num: int = 1) -> List[Dict]:
         """
         Return a list of dictionaries {keys: name, round_elected, round_eliminated}
         """
@@ -471,7 +470,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         final_weights = self._tabulations[tabulation_num-1]['final_weights']
         return final_weights
 
-    def get_initial_ranks(self, tabulation_num: int = 1) -> List[List[str]]:
+    def get_initial_ranks(self, tabulation_num: int = 1) -> List[List[BallotMarks]]:
         """
         Return a list of ballot ranks prior to tabulation, but after an initial cleaning. Each set of ranks is a list.
         """
@@ -485,7 +484,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         initial_weights = self._tabulations[tabulation_num-1]['initial_weights']
         return initial_weights
 
-    def get_final_ranks(self, tabulation_num: int = 1) -> List[List[str]]:
+    def get_final_ranks(self, tabulation_num: int = 1) -> List[List[BallotMarks]]:
         """
         Return a list of ballot ranks after tabulation. Each set of ranks is a list.
         """
