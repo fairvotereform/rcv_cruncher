@@ -1,5 +1,15 @@
 # rcv_cruncher
 
+Table of Contents:
+* [Install](##Install)
+* [Examples](##Examples)
+  * [Cast Vote Record](###CVRanalysis)
+  * [Tabulate](###TabulateElection)
+* Classes and Functions
+  * BallotMarks
+  * CastVoteRecord
+  * All RCV Classes
+
 ## Install
 
 Only tested on Python 3.9 so far.
@@ -14,7 +24,7 @@ pip install rcv-cruncher
 
 Using 2017 Minneapolis Mayor [Cast Vote Record](https://github.com/fairvotereform/rcv_cruncher/tree/big_changes/src/rcv_cruncher/example/example_cvr/minneapolis2017/2017-mayor-cvr.csv).
 
-### CVR analysis only
+### CVR analysis
 
 ```python
 # reading CVR
