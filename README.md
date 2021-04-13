@@ -150,96 +150,102 @@ def get_round_tally_tuple(self,
 
 #### *class* **BallotMarks**
 
-* Variables:
+#### Variables:
 
-  * Constants
-    * SKIPPED
-    * OVERVOTE
-    * WRITEIN
-    * UNDERVOTE
-    * PRETALLY_EXHAUST
-    * MAYBE_EXHAUSTED
-    * MAYBE_EXHAUSTED_BY_OVERVOTE
-    * MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
-    * MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING
+* Constants
+  * SKIPPED
+  * OVERVOTE
+  * WRITEIN
+  * UNDERVOTE
+  * PRETALLY_EXHAUST
+  * MAYBE_EXHAUSTED
+  * MAYBE_EXHAUSTED_BY_OVERVOTE
+  * MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
+  * MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING
 
-  * Instance:
-    * **marks**: List of candidates in rank order
-    * **unique_marks**: Set of unique marks in self.marks
-    * **unique_candidates**: Set of unique candidates in self.marks. This excludes special marks BallotMarks.SKIPPED and BallotMarks.OVERVOTE
-    * **rules**: Dictionary of rules applied to marks. Only one rule set may be applied per object.
-    * **inactive_type**: After rules are applied, a string indicated the possible means by which this ballot will be exhausted in an election. They include:
-      * UNDERVOTE: All skipped rankings.
-      * PRETALLY_EXHAUST: Ballot is left empty after rules are applied and will therefore not even be active in the first round of tabulation.
-      * MAYBE_EXHAUSTED_BY_OVERVOTE: The ballot was trucated due the occurrence of an overvote, when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
-      * MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING: The ballot was trucated due the occurrence of two or more skipped marks (that were followed by at least 1 non-skipped mark), when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
-      * MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING: The ballot was trucated due the occurrence of repeated candidate mark, when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
-      * MAYBE_EXHAUSTED: All ballot not receiving one of the labels above. These ballots may still be exhausted during tabulation because they failed to rank a finalist candidate.
+* Instance:
+  * **marks**: List of candidates in rank order
+  * **unique_marks**: Set of unique marks in self.marks
+  * **unique_candidates**: Set of unique candidates in self.marks. This excludes special marks BallotMarks.SKIPPED and BallotMarks.OVERVOTE
+  * **rules**: Dictionary of rules applied to marks. Only one rule set may be applied per object.
+  * **inactive_type**: After rules are applied, a string indicated the possible means by which this ballot will be exhausted in an election. They include:
+    * UNDERVOTE: All skipped rankings.
+    * PRETALLY_EXHAUST: Ballot is left empty after rules are applied and will therefore not even be active in the first round of tabulation.
+    * MAYBE_EXHAUSTED_BY_OVERVOTE: The ballot was trucated due the occurrence of an overvote, when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
+    * MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING: The ballot was trucated due the occurrence of two or more skipped marks (that were followed by at least 1 non-skipped mark), when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
+    * MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING: The ballot was trucated due the occurrence of repeated candidate mark, when rules apply. Whether or not it will exhaust will be determined by how the remaining candidates marked on the ballot perform in the election.
+    * MAYBE_EXHAUSTED: All ballot not receiving one of the labels above. These ballots may still be exhausted during tabulation because they failed to rank a finalist candidate.
 
-* Methods:
-  * static function **new_rule_set**:
+#### Methods:
 
-    Dictionary factory.
+static function **new_rule_set**:
 
-    * Arguments:
-      * combine_writein_marks: bool (default: False)
-      * exclude_writein_marks: bool (default: False)
-      * exclude_duplicate_candidate_marks: bool (default: False)
-      * exclude_overvote_marks: bool (default: False)
-      * exclude_skipped_marks: bool (default: False)
-      * treat_combined_writeins_as_exhaustable_duplicates: bool (default: False)
-      * exhaust_on_duplicate_candidate_marks: bool (default: False)
-      * exhaust_on_overvote_marks: bool (default: False)
-      * exhaust_on_repeated_skipped_marks: bool (default: False)
+  Dictionary factory.
 
-    * Returns:
-      * Dictionary of argument names and values.
+  * Arguments:
+    * combine_writein_marks: bool (default: False)
+    * exclude_writein_marks: bool (default: False)
+    * exclude_duplicate_candidate_marks: bool (default: False)
+    * exclude_overvote_marks: bool (default: False)
+    * exclude_skipped_marks: bool (default: False)
+    * treat_combined_writeins_as_exhaustable_duplicates: bool (default: False)
+    * exhaust_on_duplicate_candidate_marks: bool (default: False)
+    * exhaust_on_overvote_marks: bool (default: False)
+    * exhaust_on_repeated_skipped_marks: bool (default: False)
 
-    **combine_writein_marks**: changes any candidate mark containing the anycase string 'write' or equalling the anycase string 'uwi' into the standardized BallotMarks.WRITEIN constant.
+  * Returns:
+    * Dictionary of argument names and values.
 
-    **exclude_writein_marks**: all WRITEIN marks are removed from ballot.
+  **combine_writein_marks**: changes any candidate mark containing the anycase string 'write' or equalling the anycase string 'uwi' into the standardized BallotMarks.WRITEIN constant.
 
-    **exclude_duplicate_candidate_marks**: remove repeated candidate marks from ballot.
+  **exclude_writein_marks**: all WRITEIN marks are removed from ballot.
 
-    **exclude_overvote_marks**: remove OVERVOTE marks from ballot.
+  **exclude_duplicate_candidate_marks**: remove repeated candidate marks from ballot.
 
-    **exclude_skipped_marks**: remove SKIPPED marks from ballot.
+  **exclude_overvote_marks**: remove OVERVOTE marks from ballot.
 
-    **treat_combined_writeins_as_exhaustable_duplicates**: treats combined writein marks as identical marks for the purposes of exhaust conditions.
+  **exclude_skipped_marks**: remove SKIPPED marks from ballot.
 
-    **exhaust_on_duplicate_candidate_marks**: truncate the ballot once a repeated candidate mark is reached.
+  **treat_combined_writeins_as_exhaustable_duplicates**: treats combined writein marks as identical marks for the purposes of exhaust conditions.
 
-    **exhaust_on_overvote_marks**: truncate the ballot once an OVERVOTE mark is reached.
+  **exhaust_on_duplicate_candidate_marks**: truncate the ballot once a repeated candidate mark is reached.
 
-    **exhaust_on_repeated_skipped_marks**: truncate the ballot once two or more succesive SKIPPED marks (but followed by at least 1 non-skipped mark) are reached.
+  **exhaust_on_overvote_marks**: truncate the ballot once an OVERVOTE mark is reached.
+
+  **exhaust_on_repeated_skipped_marks**: truncate the ballot once two or more succesive SKIPPED marks (but followed by at least 1 non-skipped mark) are reached.
+
+<br/>
+<br/>
+
+instance function **update_marks**:
+
+  Replace marks. Unique sets will also be updated.
+
+  * Arguments:
+    * new_marks: a new list or marks to replace current values.
+
+  * Return: None
+
+<br/>
+<br/>
 
 
+instance function **apply_rules**:
 
-  * instance function **update_marks**:
+  Marks and unique sets will be updated based on rules.
 
-    Replace marks. Unique sets will also be updated.
+  * Arguments:
+    * combine_writein_marks: bool (default: False)
+    * exclude_writein_marks: bool (default: False)
+    * exclude_duplicate_candidate_marks: bool (default: False)
+    * exclude_overvote_marks: bool (default: False)
+    * exclude_skipped_marks: bool (default: False)
+    * treat_combined_writeins_as_exhaustable_duplicates: bool (default: False)
+    * exhaust_on_duplicate_candidate_marks: bool (default: False)
+    * exhaust_on_overvote_marks: bool (default: False)
+    * exhaust_on_repeated_skipped_marks: bool (default: False)
 
-    * Arguments:
-      * new_marks: a new list or marks to replace current values.
-
-    * Return: None
-
-  * instance function **apply_rules**:
-
-    Marks and unique sets will be updated based on rules.
-
-    * Arguments:
-      * combine_writein_marks: bool (default: False)
-      * exclude_writein_marks: bool (default: False)
-      * exclude_duplicate_candidate_marks: bool (default: False)
-      * exclude_overvote_marks: bool (default: False)
-      * exclude_skipped_marks: bool (default: False)
-      * treat_combined_writeins_as_exhaustable_duplicates: bool (default: False)
-      * exhaust_on_duplicate_candidate_marks: bool (default: False)
-      * exhaust_on_overvote_marks: bool (default: False)
-      * exhaust_on_repeated_skipped_marks: bool (default: False)
-
-    * Returns: None
+  * Returns: None
 
 
 #### *class* CastVoteRecord
