@@ -115,7 +115,7 @@ import rcv_cruncher.parsers as parsers
 
 cvr_file = '2017-mayor-cvr.csv'
 
-cvr = rcvc.SingleWinner(
+rcv = rcvc.SingleWinner(
         jurisdiction='Minneapolis',
         state='MN',
         year='2017',
@@ -127,6 +127,8 @@ cvr = rcvc.SingleWinner(
         combine_writein_marks=True
         # ... other rules from BallotMarks.new_rule_set()
     )
+
+rcv.stats()
 ```
 
 Other tabulation methods implemented but not yet fully tested:
