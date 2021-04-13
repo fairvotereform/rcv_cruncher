@@ -177,7 +177,7 @@ def get_round_tally_tuple(self,
       * MAYBE_EXHAUSTED: All ballot not receiving one of the labels above. These ballots may still be exhausted during tabulation because they failed to rank a finalist candidate.
 
 * Methods:
-  * static **new_rule_set**:
+  * static function **new_rule_set**:
 
     Dictionary factory.
 
@@ -215,8 +215,8 @@ def get_round_tally_tuple(self,
 
 
 
-  * **update_marks**:
-  *
+  * instance function **update_marks**:
+
     Replace marks. Unique sets will also be updated.
 
     * Arguments:
@@ -224,7 +224,7 @@ def get_round_tally_tuple(self,
 
     * Return: None
 
-  * **apply_rules**:
+  * instance function **apply_rules**:
 
     Marks and unique sets will be updated based on rules.
 
