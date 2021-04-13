@@ -29,7 +29,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name='rcv_cruncher',
-    version='0.0.1',
+    version='0.0.2',
     description='Analyze RCV elections',
     # long_description='%s\n%s' % (
     #     re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
@@ -78,7 +78,7 @@ setup(
     install_requires=[
         'tqdm>=4.56.0',
         'pandas>=1.2.0',
-        'xmltodict>=0.12.0'
+        'xmltodict>=0.12.0',
         'weightedstats>=0.4.1'
     ],
     extras_require={},
