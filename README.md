@@ -268,6 +268,22 @@ This class provides a way to organize various version of a cast vote record with
 
 #### Methods
 
+instance **constructor**:
+
+* Arguments:
+  * jurisdiction: string
+  * year: string
+  * date: string
+  * office: string
+  * notes: string
+  * split_fields: (Optional[List[string]]) List of CVR field names to calculate split stats on.
+  * parser_func: A parser function that returns either list of ranks or, if including more ballot information, a dictionary of lists, one of which is named 'ranks'.
+  * parser_args: A dictionary of parser arguments. They will be ** unrolled into the parser function.
+  * parsed_cvr: A list of rankings or a dict of lists. If passed, the parser function and arguments will be ignored.
+
+<br/>
+<br/>
+
 instance function **add_rule_set**:
 
   Creates a version of the cvr with rules applied to all ballots.
