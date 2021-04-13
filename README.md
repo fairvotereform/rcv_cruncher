@@ -7,13 +7,14 @@ Table of Contents:
     - [CVR analysis](#cvr-analysis)
     - [Tabulate Election](#tabulate-election)
   - [Functions and Classes](#functions-and-classes)
-      - [*class* **BallotMarks**](#class-ballotmarks)
+    - [*class* **BallotMarks**](#class-ballotmarks)
       - [Variables:](#variables)
       - [Methods:](#methods)
-      - [*class* CastVoteRecord](#class-castvoterecord)
+    - [*class* **CastVoteRecord**](#class-castvoterecord)
       - [Variables:](#variables-1)
       - [Methods:](#methods-1)
-      - [*class* all RCV classes](#class-all-rcv-classes)
+    - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsup15)
+
 
 ## Install
 
@@ -162,8 +163,7 @@ def get_round_tally_tuple(self,
         return self._tab_num
 
 ## Functions and Classes
-
-#### *class* **BallotMarks**
+### *class* **BallotMarks**
 
 This class is intended to hold individual lists of ballot marks and provide useful functions for manipulating them. Collections of BallotMarks are used with CastVoteRecord and RCV objects.
 
@@ -273,7 +273,7 @@ instance function **apply_rules**:
   * Returns: None
 
 
-#### *class* CastVoteRecord
+### *class* **CastVoteRecord**
 
 This class provides a way to organize various version of a cast vote record with different rule sets applied. It also calculates various ballot statistics that do not depend on an election outcome.
 
@@ -341,9 +341,7 @@ Returns a pandas DataFrame of CVR statistics. See statistics list for more infor
   * Returns: DataFrame.
 
 
-#### *class* all RCV classes
-
-(SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
+### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
 
 
 
