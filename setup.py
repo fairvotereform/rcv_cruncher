@@ -2,6 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 import io
+import pathlib
 from glob import glob
 from os.path import basename
 from os.path import dirname
@@ -19,16 +20,24 @@ def read(*names, **kwargs):
     ) as fh:
         return fh.read()
 
+# The directory containing this file
+HERE = pathlib.Path(__file__).parent
+
+# The text of the README file
+README = (HERE / "README.md").read_text()
+
 
 setup(
     name='rcv_cruncher',
-    version='0.0.0',
+    version='0.0.1',
     description='Analyze RCV elections',
     # long_description='%s\n%s' % (
     #     re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
     #     re.sub(':[a-z]+:`~?(.*?)`', r'``\1``', read('CHANGELOG.rst'))
     # ),
-    long_description="",
+    long_description=README,
+    long_description_content_type="text/markdown",
+    #long_description="",
     author='Chris Zawora',
     author_email='christopher.zawora@gmail.com',
     url='https://github.com/fairvotereform/rcv_cruncher',
@@ -44,12 +53,12 @@ setup(
         'Operating System :: Unix',
         'Operating System :: POSIX',
         'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python',
+        # 'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
+        # 'Programming Language :: Python :: 3 :: Only',
+        # 'Programming Language :: Python :: 3.6',
+        # 'Programming Language :: Python :: 3.7',
+        # 'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         # uncomment if you test on these interpreters:
         # 'Programming Language :: Python :: Implementation :: IronPython',
@@ -70,15 +79,12 @@ setup(
         'tqdm>=4.56.0',
         'pandas>=1.2.0',
         'xmltodict>=0.12.0'
+        'weightedstats>=0.4.1'
     ],
-    extras_require={
-        # eg:
-        #   'rst': ['docutils>=0.11'],
-        #   ':python_version=="2.6"': ['argparse'],
-    },
+    extras_require={},
     entry_points={
-        'console_scripts': [
-            'rcv-cruncher = rcv_cruncher.cli:main',
-        ]
+        # 'console_scripts': [
+        #     'rcv-cruncher = rcv_cruncher.cli:main',
+        # ]
     },
 )
