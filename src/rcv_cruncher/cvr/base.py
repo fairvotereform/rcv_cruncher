@@ -53,7 +53,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
             'state': [self.state],
             'date': [self.date],
             'year': [self.year],
-            'office': [self.year],
+            'office': [self.office],
             'notes': [self.notes],
             'unique_id': [self.unique_id]
         })
@@ -132,6 +132,8 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
             padded_date = "".join(date_piece if len(date_piece) > 1 else "0" + date_piece
                                   for date_piece in self.date.split("/"))
             pieces.append(padded_date)
+        elif self.year:
+            pieces.append(self.year)
         if self.office:
             pieces.append(self.office)
         return "_".join(re.sub('[^0-9a-zA-Z_]+', '', piece) for piece in pieces)
