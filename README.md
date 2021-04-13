@@ -1,5 +1,17 @@
 # rcv_cruncher
 
+A python package for tabulating and analysing Ranked Choice Voting results.
+
+<br/>
+
+Features:
+* Many types of RCV tabulation implemented.
+* Allows weighted ballots.
+* Allows for statistics (not tabulation) to be calculated by group (e.g. by precinct).
+* Includes parers for most common RCV formats.
+
+<br/>
+
 Table of Contents:
 - [rcv_cruncher](#rcv_cruncher)
   - [Install](#install)
@@ -16,6 +28,8 @@ Table of Contents:
     - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsup15)
       - [Methods](#methods-2)
   - [Stat List](#stat-list)
+    - [CVR stats](#cvr-stats)
+    - [RCV stats](#rcv-stats)
 
 
 ## Install
@@ -293,14 +307,14 @@ Returns a dictionary of lists. One list is called 'ballot_marks' and contains mo
 
 instance function **stats**:
 
-Returns a pandas DataFrame of CVR statistics. See statistics list for more information on which are included. These statistics do not depend on any rule sets added and use the unmodified parsed cvr data.
+Returns a pandas DataFrame of CVR statistics (one DataFrame per contest tabulation). See statistics list for more information on which are included. These statistics do not depend on any rule sets added and use the unmodified parsed cvr data.
 
   * Arguments:
     * keep_decimal_type: (default: False) For internal calculations numbers are represented using python decimal libary. By default, the resulting statistics are converted into rounded floats when returned.
     * add_split_stats: (default: False) Some statistics will be calculated per split value contained in the CVR columns specified with the 'split_fields' constructor  arguments.
     * add_id_info: (default: True) Contest ID info (jurisdiction, state, date, office, etc) is added to the returned DataFrame.
 
-  * Returns: DataFrame.
+  * Returns: List[DataFrame].
 
 
 ### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
@@ -465,3 +479,111 @@ Returns number of tabulations in a contest.
 * Return: int
 
 ## Stat List
+
+### CVR stats
+
+**n_candidates** - number of candidates excluding WRITEIN marks
+
+
+**rank_limit** - number of rankings allowed on the CVR.
+
+
+**restrictive_rank_limit** - True if number of candidates - number of ranks is greater than 1.
+
+(All stats below are also able to calcualted by group (e.g. by precinct))
+
+**first_round_overvote** - number of ballots in which the first non-skipped mark is an overvote.
+
+
+**ranked_single** - number of ballot which only contained 1 valid rankings.
+
+
+**ranked_multiple** - number of ballot which only contained more than 1 valid rankings.
+
+
+**ranked_3_or_more** - number of ballot which only contained more than 2 valid rankings.
+
+**total_fully_ranked** - number of ballots that have EITHER validly used all rankings on the ballot OR validly ranked every non-writein candidate.
+
+**includes_overvote_ranking** - number of ballots with an overvote ranking.
+
+
+**includes_duplicate_ranking** - number of ballots with a duplicate ranking.
+
+
+**includes_skipped_ranking** - number of ballots with a skipped ranking (that is then followed by at least 1 non-skipped ranking).
+
+
+**total_irregular** - total number of ballots with EITHER a duplicate ranking OR skipped ranking OR overvote.
+
+
+**total_ballots** - total number of ballots
+
+
+**total_undervote** - total number of ballots that contain all skipped rankings.
+
+
+**mean_rankings_used** - mean number of non-undervote rankings used.
+
+
+**median_rankings_used** - mean number of non-undervote rankings used.
+
+### RCV stats
+
+**number_of_winners** - number of winners in the contest.
+
+
+**number_of_rounds** - number of rounds in the tabulation.
+
+
+**winner** - tabulation winners.
+
+**first_round_winner_vote** - If more than 1 winner in tabulation, then None. Else, the vote total for the tabulation winner in the first round.
+
+**first_round_winner_percent** - If more than 1 winner in tabulation, then None. Else, the vote percent for the tabulation winner in the first round.
+
+**first_round_winner_place** - If more than 1 winner in tabulation, then None. Else, the place the tabulation winner finished in the the first round.
+
+**final_round_winner_vote** - If more than 1 winner in tabulation, then None. Else, the vote total for the tabulation winner in the final round.
+
+**final_round_winner_percent** - If more than 1 winner in tabulation, then None. Else, the vote percent for the tabulation winner in the final round.
+
+**final_round_winner_votes_over_first_round_active** - If more than 1 winner in tabulation, then None. Else, the vote total for the tabulation winner in the final round divided by the number of active ballots in the first round.
+
+**condorcet** - If more than 1 winner in tabulation, then None. Else, True if the winner is the condorcet winner, else False.
+
+**come_from_behind** - If more than 1 winner in tabulation, then None. Else, True if the winner was not in first place in the first round, else False.
+
+**ranked_winner** - If more than 1 winner in tabulation, then None. Else, the number of ballots that ranked the winner.
+
+**win_threshold** - If less than 2 winner in tabulation, then None. Else, the static threshold needed to win.
+
+**ranked_winner** - If more than 1 winner in tabulation, then None. Else, the number of ballots that ranked the winner.
+
+**winners_consensus_value** - The number of ballots that rank any winner in their top 3 (after rules applied).
+
+**first_round_active_votes** - The number of votes active in the first round.
+
+**final_round_active_votes** - The number of votes active in the final round.
+
+(All stats below are also able to calcualted by group (e.g. by precinct))
+
+**total_pretally_exhausted** - The number of ballots that were not undervotes, yet were not active in the first round.
+
+**total_posttally_exhausted** - The number of ballots that exhausted after the first round.
+
+**total_posttally_exhausted_by_overvote** - The number of ballots that exhausted due to an overvote after the first round.
+
+**total_posttally_exhausted_by_skipped_rankings** - The number of ballots that exhausted due to repeated skipped rankings after the first round.
+
+**total_posttally_exhausted_by_duplicate_rankings** - The number of ballots that exhausted due to duplicate candidate rankings after the first round.
+
+**total_posttally_exhausted_by_rank_limit** - The number of ballots that exhausted after the first round. Only applied to contest with a restrictive rank limit. The count towards this category ballots must either use all ranks OR at least use the last ranking.
+
+**total_posttally_exhausted_by_abstention** - The number of ballots that exhausted after the first round which do not fall into the categories above.
+
+
+
+
+
+
