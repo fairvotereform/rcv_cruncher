@@ -17,7 +17,7 @@ Why does this file exist, and why not put this in __main__?
 import argparse
 import os
 
-import rcv_cruncher.contests as contests
+import rcv_cruncher.batch as batch
 
 
 def main():
@@ -50,9 +50,9 @@ def main():
     #     raise RuntimeError(f'invalid path [output_path]: {output_path}')
 
     # read in contest set info
-    contest_set, run_config = contests.read_contest_set(contest_set_path)
+    contest_set, run_config = batch.read_contest_set(contest_set_path)
 
     # analyze contests
-    contests.crunch_contest_set(contest_set, run_config, output_path, fresh_output=fresh)
+    batch.crunch_contest_set(contest_set, run_config, output_path, fresh_output=fresh)
 
     return(0)

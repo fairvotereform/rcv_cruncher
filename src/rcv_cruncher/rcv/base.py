@@ -25,6 +25,11 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
     def get_variant_name(rcv_obj: Type[RCV]) -> str:
         return rcv_obj.__class__.__name__
 
+    @staticmethod
+    def get_winner_choice_position_distribution_table(rcv_obj: Type[RCV],
+                                                      tabulation_num: int = 1) -> Optional[pd.DataFrame]:
+        return rcv_obj.winner_choice_position_distribution_table(tabulation_num=tabulation_num)
+
     # override me
     @abc.abstractmethod
     def _set_round_winners(self) -> None:

@@ -1,7 +1,52 @@
 
+from typing import (Optional)
+
+import pandas as pd
+
+
 class RCV_tables:
 
-    pass
+    def winner_choice_position_distribution_table(self, tabulation_num: int = 1) -> Optional[pd.DataFrame]:
+
+        winner = self._tabulation_winner(tabulation_num=tabulation_num)
+        contest_cvr_dl = self.get_cvr_dict(rule_set_name=self._contest_rule_set_name)
+
+        if len(winner) > 1:
+            return None
+
+        winner = winner[0]
+        rank_limit = self.stats()[0]['rank_limit'].item()
+        winner_final_round_count = self._final_round_winner_vote(tabulation_num=tabulation_num)
+        final_weight_distrib = self.get_final_weight_distrib(tabulation_num=tabulation_num)
+
+        winner_positions = {k: 0 for k in range(1, rank_limit+1)}
+        for b, weight, final_distrib in zip(contest_cvr_dl['ballot_marks'], contest_cvr_dl['weight'], final_weight_distrib):
+
+            if winner == final_distrib[-1][0]:
+                winner_position = b.marks.index(winner)
+                winner_positions[winner_position + 1] += weight
+
+        if sum(winner_positions.values()) != winner_final_round_count:
+            raise RuntimeError()
+
+        winner_positions = {k: 100 * v / winner_final_round_count for k, v in winner_positions.items()}
+
+        choice_position_df = self.stats()[0][[
+            'jurisdiction',
+            'state',
+            'date',
+            'year',
+            'office',
+            'unique_id',
+            'winner',
+            'rank_limit',
+            'n_candidates'
+            ]]
+
+        for position, percent in sorted(winner_positions.items()):
+            choice_position_df[f'choice{position}'] = float(round(percent, 2))
+
+        return choice_position_df
 
     # def ballot_debug_df(self, *, tabulation_num=1):
     #     """

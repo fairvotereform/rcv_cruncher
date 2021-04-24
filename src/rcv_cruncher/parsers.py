@@ -1075,7 +1075,9 @@ parser_dict = {
     "dominion5_2": dominion5_2,
     "dominion5_4": dominion5_4,
     "dominion5_10": dominion5_10,
-    "optech": optech1,
+    "optech1": optech1,
+    "optech2": optech2,
+    "choice_pro_plus": choice_pro_plus,
     "unisyn": unisyn,
     "surveyUSA": surveyUSA,
     "minneapolis2009": minneapolis2009

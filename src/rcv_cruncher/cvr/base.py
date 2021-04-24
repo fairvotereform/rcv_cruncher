@@ -1,10 +1,11 @@
 from __future__ import annotations
-from typing import (Callable, Dict, Optional, List, Type)
+from typing import (Callable, Dict, Optional, List, Type, Union)
 
 import copy
 import decimal
 import collections
 import re
+import pathlib
 
 import pandas as pd
 
@@ -25,6 +26,14 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         return cvr.stats(keep_decimal_type=keep_decimal_type,
                          add_split_stats=add_split_stats,
                          add_id_info=add_id_info)
+
+    @staticmethod
+    def write_cvr_table(cvr: Type[CastVoteRecord],
+                        table_format: str = "rank",
+                        save_dir: Union[str, pathlib.Path] = None) -> None:
+        uid = cvr.stats()['unique_id'].item()
+        save_path = pathlib.Path(save_dir) / f'{uid}.csv'
+        cvr.get_cvr_table(table_format=table_format).to_csv(save_path)
 
     def __init__(self,
                  jurisdiction: str = "",
