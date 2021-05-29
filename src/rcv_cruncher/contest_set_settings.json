@@ -73,7 +73,7 @@
     },
 
 
-    "parser": {
+    "parser_func": {
         "type":	"func",
         "default": "None"
     },

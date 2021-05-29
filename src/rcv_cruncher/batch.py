@@ -109,7 +109,7 @@ def cast_dict(dct):
     comma_split = [arg for arg in dct.strip("\n").split(";") if arg]
     for i in comma_split:
         equal_split = i.split("=")
-        dct_return.update({equal_split[0]: "=".join(equal_split[1:])})
+        dct_return.update({equal_split[0]: "=".join(equal_split[1:]).strip()})
     return dct_return
 
 
@@ -220,11 +220,11 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
     for comp in competitions:
 
         if comp.get('ignore_contest'):
-            print(f'ignoring contest: {comp["jurisdiction"]}_{comp["date"]}_{comp["state"]}')
+            print(f'ignoring contest: {comp["jurisdiction"]}_{comp["date"]}_{comp["office"]}')
             continue
 
-        if comp['parser'] == dummy:
-            print(f'invalid parser, ignoring contest: {comp["jurisdiction"]}_{comp["date"]}_{comp["state"]}')
+        if comp['parser_func'] == dummy:
+            print(f'invalid parser, ignoring contest: {comp["jurisdiction"]}_{comp["date"]}_{comp["office"]}')
             continue
 
         copy_comp = copy.copy(comp)
@@ -237,6 +237,7 @@ def read_contest_set(contest_set_path, override_cvr_root_dir=None):
         copy_comp['parser_args'] = {'cvr_path': copy_comp['cvr_path']}
         copy_comp['parser_args'].update(copy_comp['extra_parser_args'])
 
+        del copy_comp['cvr_path']
         del copy_comp['extra_parser_args']
         del copy_comp['ignore_contest']
 
@@ -295,7 +296,7 @@ def write_aggregated_stats(results_dir,
 
         for variant in rcv_variant_stats_df_dict:
             if rcv_variant_stats_df_dict[variant]:
-                df = pd.concat(rcv_variant_stats_df_dict[variant], axis=0, ignore_index=True, sort=False)
+                df = pd.concat(util.flatten_list(rcv_variant_stats_df_dict[variant]), axis=0, ignore_index=True, sort=False)
                 df.to_csv(util.longname(results_dir / f'{variant}.csv'), index=False)
 
     if output_config.get('candidate_details', False) and candidate_details_dfs:
@@ -306,12 +307,12 @@ def write_aggregated_stats(results_dir,
         df = pd.concat(util.flatten_list(candidate_details_dfs), axis=0, ignore_index=True, sort=False)
         df.to_csv(util.longname(results_dir / 'candidate_details.csv'), index=False)
 
-    if output_config.get('winner_choice_position_table', False) and winner_choice_position_dfs:
+    if output_config.get('winner_choice_position_distribution', False) and winner_choice_position_dfs:
 
         if not quiet:
             print("Write winnner choice position table ...")
 
-        df = pd.concat(winner_choice_position_dfs, ignore_index=True, sort=False)
+        df = pd.concat(winner_choice_position_dfs, axis=0, ignore_index=True, sort=False)
         df.to_csv(util.longname(results_dir / 'winner_choice_position.csv'), index=False)
 
 
@@ -680,19 +681,20 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
         n_errors += crunch_returns['n_errors']
 
         # STORE RESULTS
-        if output_config.get('candidate_details') and crunch_returns.get('candidate_details'):
+        if output_config.get('candidate_details') and crunch_returns.get('candidate_details') is not None:
             candidate_details_dfs.append(crunch_returns['candidate_details'])
 
-        if output_config.get('per_rcv_type_stats') and crunch_returns.get('tabulation_stats_df'):
+        if output_config.get('per_rcv_type_stats') and crunch_returns.get('tabulation_stats_df') is not None:
             variant = crunch_returns['variant']
             rcv_variant_stats_df_dict[variant].append(crunch_returns['tabulation_stats_df'])
 
-        if output_config.get('per_rcv_group_stats') and crunch_returns.get('contest_stats_df'):
+        if output_config.get('per_rcv_group_stats') and crunch_returns.get('contest_stats_df') is not None:
             variant_group = crunch_returns['variant_group']
             rcv_group_stats_df_dict[variant_group].append(crunch_returns['contest_stats_df'])
 
-        if output_config.get('winner_choice_position_distribution') and crunch_returns.get('winner_choice_position_distribution'):
-            winner_choice_position_dfs.append(crunch_returns['winner_choice_position_distribution'])
+        if output_config.get('winner_choice_position_distribution') and \
+           crunch_returns.get('winner_choice_position_df') is not None:
+            winner_choice_position_dfs.append(crunch_returns['winner_choice_position_df'])
 
         if crunch_returns.get('split_stats'):
 

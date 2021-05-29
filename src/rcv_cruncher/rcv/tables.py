@@ -40,7 +40,8 @@ class RCV_tables:
             'unique_id',
             'winner',
             'rank_limit',
-            'n_candidates'
+            'n_candidates',
+            'n_rounds'
             ]]
 
         for position, percent in sorted(winner_positions.items()):

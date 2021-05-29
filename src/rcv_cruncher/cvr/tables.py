@@ -1,6 +1,4 @@
 
-import copy
-
 import pandas as pd
 
 import rcv_cruncher.util as util
@@ -24,7 +22,7 @@ class CastVoteRecord_tables:
 
     def _rank_header_cvr(self) -> pd.DataFrame:
 
-        ballot_dict = copy.deepcopy(self.get_cvr_dict())
+        ballot_dict = {k: v for k, v in self.get_cvr_dict().items()}
         bs = [b.marks for b in ballot_dict['ballot_marks']]
         weight = ballot_dict['weight']
         del ballot_dict['ballot_marks']
@@ -52,8 +50,8 @@ class CastVoteRecord_tables:
     def _candidate_header_cvr(self) -> pd.DataFrame:
 
         # get ballots and candidates
-        ballot_dl = copy.deepcopy(self.get_cvr_dict())
-        candidates = copy.deepcopy(self.get_candidates()).unique_candidates
+        ballot_dl = {k: v for k, v in self.get_cvr_dict().items()}
+        candidates = self.get_candidates().unique_candidates.copy()
         candidates.update({BallotMarks.OVERVOTE})
 
         # remove weights if all equal to 1

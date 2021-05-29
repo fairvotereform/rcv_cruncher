@@ -1,8 +1,6 @@
 from __future__ import annotations
 from typing import (Dict, Iterable, Optional)
 
-import copy
-
 
 class BallotMarks:
 
@@ -66,7 +64,7 @@ class BallotMarks:
         if not isinstance(ballot_marks, BallotMarks):
             raise TypeError('ballot_marks must be BallotMarks object.')
 
-        copy_ballot_marks = copy.deepcopy(ballot_marks)
+        copy_ballot_marks = ballot_marks.copy()
         new_marks = [BallotMarks.WRITEIN if BallotMarks.check_writein_match(mark) else mark
                      for mark in copy_ballot_marks.marks]
         copy_ballot_marks.update_marks(new_marks)
@@ -81,7 +79,7 @@ class BallotMarks:
         if isinstance(remove_marks, str):
             raise TypeError('remove_marks must be Iterable, but cannot be string.')
 
-        copy_ballot_marks = copy.deepcopy(ballot_marks)
+        copy_ballot_marks = ballot_marks.copy()
         new_marks = copy_ballot_marks.marks
         for remove_mark in remove_marks:
             new_marks = [mark for mark in new_marks if mark != remove_mark]
@@ -94,7 +92,7 @@ class BallotMarks:
         if not isinstance(ballot_marks, BallotMarks):
             raise TypeError('ballot_marks must be BallotMarks object.')
 
-        copy_ballot_marks = copy.deepcopy(ballot_marks)
+        copy_ballot_marks = ballot_marks.copy()
         new_marks_list = []
         new_marks_set = set()
         for mark in copy_ballot_marks.marks:
@@ -105,6 +103,8 @@ class BallotMarks:
         return copy_ballot_marks
 
     def __init__(self, marks: Optional[Iterable] = None) -> None:
+
+        self.input_marks = marks
 
         self.marks = []
         self.unique_marks = {}
@@ -119,6 +119,16 @@ class BallotMarks:
         # in the future, add functionality to handle overvotes that can be conditionally resolved
         # if all but one of the overvoted candidates is eliminated before the overvote is reached
 
+    def copy(self):
+
+        copy_obj = BallotMarks(self.marks)
+
+        copy_obj.input_marks = self.input_marks
+        copy_obj.rules = self.rules
+        copy_obj.inactive_type = self.inactive_type
+
+        return copy_obj
+
     def update_marks(self, new_marks: Iterable) -> None:
 
         if isinstance(new_marks, str):
@@ -127,6 +137,11 @@ class BallotMarks:
         self.marks = list(new_marks)
         self.unique_marks = set(self.marks)
         self.unique_candidates = self.unique_marks - {BallotMarks.SKIPPED, BallotMarks.OVERVOTE}
+
+    def clear_rules(self):
+        self.rules = {}
+        self.inactive_type = None
+        self.update_marks(self.input_marks)
 
     def apply_rules(self,
                     combine_writein_marks: bool = False,

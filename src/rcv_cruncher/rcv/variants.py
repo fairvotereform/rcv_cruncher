@@ -104,7 +104,7 @@ class Sequential(SingleWinner):
         self._tabulations = []
 
         # continue until the number of winners is reached OR until candidates run out
-        while len(winners) != self._n_winners and len(self._contest_candidates - set(winners)) != 0:
+        while len(winners) != self._n_winners and len(self._contest_candidates.unique_candidates - set(winners)) != 0:
 
             self._new_tabulation()
 

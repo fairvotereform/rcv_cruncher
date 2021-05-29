@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import (Callable, Dict, Optional, List, Type, Union)
 
-import copy
 import decimal
 import collections
 import re
@@ -31,9 +30,9 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
     def write_cvr_table(cvr: Type[CastVoteRecord],
                         table_format: str = "rank",
                         save_dir: Union[str, pathlib.Path] = None) -> None:
-        uid = cvr.stats()['unique_id'].item()
+        uid = cvr.stats()[0]['unique_id'].item()
         save_path = pathlib.Path(save_dir) / f'{uid}.csv'
-        cvr.get_cvr_table(table_format=table_format).to_csv(save_path)
+        cvr.get_cvr_table(table_format=table_format).to_csv(save_path, index=False)
 
     def __init__(self,
                  jurisdiction: str = "",
@@ -152,9 +151,11 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._rule_sets:
             raise RuntimeError(f'rule set {rule_set_name} has not yet been added using add_rule_set().')
 
-        cvr = copy.deepcopy(self._parsed_cvr)
+        cvr = {k: v for k, v in self._parsed_cvr.items()}
+        cvr['ballot_marks'] = [b.copy() for b in cvr['ballot_marks']]
 
         for ballot in cvr['ballot_marks']:
+            #ballot.clear_rules()
             ballot.apply_rules(**self._rule_sets[rule_set_name])
 
         self._modified_cvrs.update({rule_set_name: cvr})
@@ -192,7 +193,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._modified_cvrs:
             self._make_modified_cvr(rule_set_name)
 
-        return copy.deepcopy(self._modified_cvrs[rule_set_name])
+        return self._modified_cvrs[rule_set_name]
 
     def get_candidates(self, rule_set_name: Optional[str] = None) -> BallotMarks:
 
@@ -202,4 +203,4 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._candidate_sets:
             self._make_candidate_set(rule_set_name)
 
-        return copy.deepcopy(self._candidate_sets[rule_set_name])
+        return self._candidate_sets[rule_set_name]
