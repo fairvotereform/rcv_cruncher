@@ -33,4 +33,4 @@ def test_get_cvr_table_errors():
     })
 
     with pytest.raises(RuntimeError):
-        cvr.get_cvr_table(table_format=None)
+        cvr.cvr_table(table_format=None)

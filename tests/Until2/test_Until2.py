@@ -1299,7 +1299,7 @@ params = [
             }
         },
         'expected': {
-            'stat': BallotMarks.WRITEIN.title()
+            'stat': BallotMarks.WRITEIN
         }
     }),
     ({
@@ -1320,7 +1320,7 @@ params = [
             'split_fields': ['precinct']
         },
         'expected': {
-            'stat': BallotMarks.WRITEIN.title()
+            'stat': BallotMarks.WRITEIN
         }
     }),
     ({

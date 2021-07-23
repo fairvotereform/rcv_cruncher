@@ -1,4 +1,6 @@
 
+from typing import (Union)
+
 import csv
 import pathlib
 import json
@@ -68,14 +70,20 @@ def cruncher_csv(cvr_path):
     if os.path.isfile(candidate_codes_fpath):
 
         cand_codes = pd.read_csv(candidate_codes_fpath, encoding="utf8")
+
         cand_codes_dict = {str(code): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
         replace_dict = {col: cand_codes_dict for col in rank_col}
-
         df = df.replace(replace_dict)
+
+        cand_codes_dict = {str(float(code)): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
+        replace_dict = {col: cand_codes_dict for col in rank_col}
+        df = df.replace(replace_dict)
+
 
     # replace skipped ranks and overvotes with constants
     df = df.replace({col: {'under': BallotMarks.SKIPPED,
                            'skipped': BallotMarks.SKIPPED,
+                           'nan': BallotMarks.SKIPPED,
                            'undervote': BallotMarks.SKIPPED,
                            'over': BallotMarks.OVERVOTE,
                            'overvote': BallotMarks.OVERVOTE,
@@ -1069,6 +1077,40 @@ def surveyUSA(cvr_path):
     return ballot_dict
 
 
+def candidate_column(cvr_path: Union[str, pathlib.Path]):
+
+    cvr_path = pathlib.Path(cvr_path)
+
+    cvr = pd.read_csv(cvr_path / 'cvr.csv', encoding="utf8")
+    candidate_codes = pd.read_csv(cvr_path / 'candidate_codes.csv', encoding="utf8")
+
+    candidate_dict = {str(code): cand for code, cand in
+                      zip(candidate_codes['code'], candidate_codes['candidate'])}
+
+    max_rank_num = int(cvr[candidate_dict.keys()].max().max())
+
+    ballots = []
+    for _, row in cvr.iterrows():
+        row_ranks = {int(row[code]): candidate_dict[code] for code, value in candidate_dict.items()
+                     if value and not pd.isna(row[code])}
+
+        ballot = []
+        for rank_num in range(1, max_rank_num + 1):
+            if rank_num in row_ranks:
+                ballot.append(row_ranks[rank_num])
+            else:
+                ballot.append(BallotMarks.SKIPPED)
+
+        ballots.append(ballot)
+
+    ballot_dict = {'ranks': ballots}
+    for col in cvr.columns:
+        if col not in candidate_dict:
+            ballot_dict[col] = cvr[col]
+
+    return ballot_dict
+
+
 parser_dict = {
     "burlington2006": burlington2006,
     "cruncher_csv": cruncher_csv,
@@ -1080,7 +1122,8 @@ parser_dict = {
     "choice_pro_plus": choice_pro_plus,
     "unisyn": unisyn,
     "surveyUSA": surveyUSA,
-    "minneapolis2009": minneapolis2009
+    "minneapolis2009": minneapolis2009,
+    'candidate_column': candidate_column
     # "santafe": santafe, still need to figure out this parser
     # "santafe_id": santafe_id,
 }

@@ -60,17 +60,38 @@ class SingleWinner(RCV):
         rules:
         - transfer votes from round loser
         """
+        candidates = self._contest_candidates.unique_candidates.union({'exhaust'})
+
         # calculate transfer
-        transfer_dict = {cand: 0 for cand in self._contest_candidates.unique_candidates.union({'exhaust'})}
+        by_candidate_transfer_dict = {
+            from_cand: {to_cand: 0 for to_cand in candidates if to_cand != from_cand}
+            for from_cand in candidates if from_cand != 'exhaust'
+            }
+        summary_transfer_dict = {cand: 0 for cand in candidates}
+
         for b in self._contest_cvr_ld:
             if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] == self._round_loser:
                 if len(b['ballot_marks'].marks) > 1:
-                    transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
+                    transfer_to_candidate = b['ballot_marks'].marks[1]
+                    summary_transfer_dict[transfer_to_candidate] += b['weight']
+                    by_candidate_transfer_dict[self._round_loser][transfer_to_candidate] += b['weight']
                 else:
-                    transfer_dict['exhaust'] += b['weight']
+                    summary_transfer_dict['exhaust'] += b['weight']
+                    by_candidate_transfer_dict[self._round_loser]['exhaust'] += b['weight']
 
-        transfer_dict[self._round_loser] = sum(transfer_dict.values()) * -1
-        self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
+        summary_transfer_dict[self._round_loser] = sum(summary_transfer_dict.values()) * -1
+        self._tabulations[self._tab_num-1]['summary_transfers'].append(summary_transfer_dict)
+
+        # remove candidates with no transfer
+        by_candidate_transfer_dict = {
+            from_cand: {
+                to_cand: transfer_count for to_cand, transfer_count in transfers.items()
+                if transfer_count != 0
+                }
+            for from_cand, transfers in by_candidate_transfer_dict.items()
+            if sum(transfers.values()) != 0
+        }
+        self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
 
     def _contest_not_complete(self) -> bool:
         """
@@ -176,7 +197,9 @@ class STV(RCV, abc.ABC):
 
         # any threshold winners?
         threshold = self._win_threshold()
-        all_winners = [cand for cand, tally in zip(round_candidates, round_tally) if tally > threshold]
+        all_winners = [(cand, tally) for cand, tally in zip(round_candidates, round_tally)
+                       if tally > threshold]
+        all_winners = [cand for cand, _ in sorted(all_winners, key=lambda x: (-x[1], x[0]))]
         if all_winners and self._multi_winner_rounds:
             self._round_winners = all_winners
         elif all_winners:
@@ -315,9 +338,17 @@ class STVWholeBallot(STV):
         rules:
         - transfer votes from round loser or winner
         """
-        if self._round_winners:
 
-            transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
+        candidates = self._contest_candidates.unique_candidates.union({'exhaust'})
+
+        # calculate transfer
+        by_candidate_transfer_dict = {
+            from_cand: {to_cand: 0 for to_cand in candidates if to_cand != from_cand}
+            for from_cand in candidates if from_cand != 'exhaust'
+            }
+        summary_transfer_dict = {cand: 0 for cand in candidates}
+
+        if self._round_winners:
 
             # collect flags indicating
             all_removal_ballots = []
@@ -333,40 +364,62 @@ class STVWholeBallot(STV):
 
                 if is_transfer:
 
+                    eliminated_candidate = b['ballot_marks'].marks[0]
+
                     if len(b['ballot_marks'].marks) == 0:
                         print('this shouldnt happen.')
                         raise RuntimeError
 
-                    remaining_candidates = [cand for cand in b['ballot_marks'].marks if cand not in self._round_winners]
+                    remaining_candidates = [cand for cand in b['ballot_marks'].marks
+                                            if cand not in self._round_winners]
                     if len(remaining_candidates) == 0:
                         # exhausted
-                        transfer_dict['exhaust'] += b['weight']
+                        summary_transfer_dict['exhaust'] += b['weight']
+                        by_candidate_transfer_dict[eliminated_candidate]['exhaust'] += b['weight']
                     elif len(remaining_candidates) > 0:
                         # transfer to another candidate
-                        transfer_dict[remaining_candidates[0]] += b['weight']
+                        transfer_to = remaining_candidates[0]
+                        summary_transfer_dict[transfer_to] += b['weight']
+                        by_candidate_transfer_dict[eliminated_candidate][transfer_to] += b['weight']
 
                     # include outflow
-                    transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
+                    summary_transfer_dict[eliminated_candidate] += b['weight'] * -1
 
         else:
             transfer_candidates = [self._round_loser]
 
             # calculate transfer
-            transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
             for b in self._contest_cvr_ld:
                 if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] in transfer_candidates:
 
+                    eliminated_candidate = b['ballot_marks'].marks[0]
+
                     if len(b['ballot_marks'].marks) > 1:
-                        transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
+                        transfer_to = b['ballot_marks'].marks[1]
+                        summary_transfer_dict[transfer_to] += b['weight']
+                        by_candidate_transfer_dict[eliminated_candidate][transfer_to] += b['weight']
                     else:
-                        transfer_dict['exhaust'] += b['weight']
+                        summary_transfer_dict['exhaust'] += b['weight']
+                        by_candidate_transfer_dict[eliminated_candidate]['exhaust'] += b['weight']
 
                     # mark transfer outflow
-                    transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
+                    summary_transfer_dict[eliminated_candidate] += b['weight'] * -1
 
-        self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
+        self._tabulations[self._tab_num-1]['summary_transfers'].append(summary_transfer_dict)
 
-    def _clean_round(self) -> None:
+        # remove candidates with no transfer
+        by_candidate_transfer_dict = {
+            from_cand: {
+                to_cand: transfer_count for to_cand, transfer_count in transfers.items()
+                if transfer_count != 0
+                }
+            for from_cand, transfers in by_candidate_transfer_dict.items()
+            if sum(transfers.values()) != 0
+        }
+        self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
+
+
+    def _clean_ballots(self) -> None:
         """
         Remove any newly inactivated candidates from the ballot ranks. But only remove previous round winners
         from specified ballots
@@ -452,7 +505,7 @@ class STVFractionalBallot(STV):
                         # adjust ballot's current weight
                         new.append(
                             {
-                                'ranks': b['ballot_marks'].marks,
+                                'ballot_marks': b['ballot_marks'],
                                 'weight': remaining_weight,
                                 'weight_distrib': new_weight_distrib
                             })
@@ -475,21 +528,45 @@ class STVFractionalBallot(STV):
         else:
             transfer_candidates = [self._round_loser]
 
+        candidates = self._contest_candidates.unique_candidates.union({'exhaust'})
+
         # calculate transfer
-        transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
-        for b in self._bs:
+        by_candidate_transfer_dict = {
+            from_cand: {to_cand: 0 for to_cand in candidates if to_cand != from_cand}
+            for from_cand in candidates if from_cand != 'exhaust'
+            }
+        summary_transfer_dict = {cand: 0 for cand in candidates}
+
+        for b in self._contest_cvr_ld:
             if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] in transfer_candidates:
 
-                remaining_candidates = [cand for cand in b['ballot_marks'].marks if cand not in transfer_candidates]
+                eliminated_candidate = b['ballot_marks'].marks[0]
+
+                remaining_candidates = [cand for cand in b['ballot_marks'].marks
+                                        if cand not in transfer_candidates]
                 if remaining_candidates:
-                    transfer_dict[remaining_candidates[0]] += b['weight']
+                    transfer_to = remaining_candidates[0]
+                    summary_transfer_dict[transfer_to] += b['weight']
+                    by_candidate_transfer_dict[eliminated_candidate][transfer_to] += b['weight']
                 else:
-                    transfer_dict['exhaust'] += b['weight']
+                    summary_transfer_dict['exhaust'] += b['weight']
+                    by_candidate_transfer_dict[eliminated_candidate]['exhaust'] += b['weight']
 
                 # mark transfer outflow
-                transfer_dict[b['ballot_marks'].marks[0]] += b['weight'] * -1
+                summary_transfer_dict[eliminated_candidate] += b['weight'] * -1
 
-        self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
+        self._tabulations[self._tab_num-1]['summary_transfers'].append(summary_transfer_dict)
+
+        # remove candidates with no transfer
+        by_candidate_transfer_dict = {
+            from_cand: {
+                to_cand: transfer_count for to_cand, transfer_count in transfers.items()
+                if transfer_count != 0
+                }
+            for from_cand, transfers in by_candidate_transfer_dict.items()
+            if sum(transfers.values()) != 0
+        }
+        self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
 
 
 class BottomsUp15(RCV):
@@ -520,17 +597,39 @@ class BottomsUp15(RCV):
         - transfer votes from round loser
         """
 
+        candidates = self._contest_candidates.unique_candidates.union({'exhaust'})
+
         # calculate transfer
+        by_candidate_transfer_dict = {
+            from_cand: {to_cand: 0 for to_cand in candidates if to_cand != from_cand}
+            for from_cand in candidates if from_cand != 'exhaust'
+            }
         transfer_dict = {cand: 0 for cand in self._candidate_set.union({'exhaust'})}
+
         for b in self._contest_cvr_ld:
             if len(b['ballot_marks'].marks) > 0 and b['ballot_marks'].marks[0] == self._round_loser:
                 if len(b['ballot_marks'].marks) > 1:
-                    transfer_dict[b['ballot_marks'].marks[1]] += b['weight']
+                    transfer_to = b['ballot_marks'].marks[1]
+                    transfer_dict[transfer_to] += b['weight']
+                    by_candidate_transfer_dict[self._round_loser][transfer_to] += b['weight']
                 else:
                     transfer_dict['exhaust'] += b['weight']
+                    by_candidate_transfer_dict[self._round_loser]['exhaust'] += b['weight']
 
         transfer_dict[self._round_loser] = sum(transfer_dict.values()) * -1
-        self._tabulations[self._tab_num-1]['transfers'].append(transfer_dict)
+        self._tabulations[self._tab_num-1]['summary_transfers'].append(transfer_dict)
+
+        # remove candidates with no transfer
+        by_candidate_transfer_dict = {
+            from_cand: {
+                to_cand: transfer_count for to_cand, transfer_count in transfers.items()
+                if transfer_count != 0
+                }
+            for from_cand, transfers in by_candidate_transfer_dict.items()
+            if sum(transfers.values()) != 0
+        }
+        self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
+
 
     def _contest_not_complete(self) -> None:
         """

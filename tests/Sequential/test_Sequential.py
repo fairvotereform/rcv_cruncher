@@ -1387,7 +1387,7 @@ params = [
             'n_winners': 2
         },
         'expected': {
-            'stat': [0, 0]
+            'stat': [0, 5]
         }
     }),
     ({
@@ -1406,7 +1406,7 @@ params = [
             'n_winners': 3
         },
         'expected': {
-            'stat': [0, 0, 0]
+            'stat': [0, 5, 5]
         }
     })
 ]
@@ -1813,7 +1813,7 @@ params = [
             'split_fields': ['precinct']
         },
         'expected': {
-            'stat': [[0, 0, 0]]
+            'stat': [[0, 0], [5, 0], [5, 0]]
         }
     })
 ]

@@ -125,7 +125,7 @@ class RCV_stats:
         '''
         The winner(s) of the election.
         '''
-        return ", ".join([str(w).title() for w in self._tabulation_winner(tabulation_num=tabulation_num)])
+        return ", ".join([str(w) for w in self._tabulation_winner(tabulation_num=tabulation_num)])
 
     def _all_winners(self):
         """
@@ -143,7 +143,10 @@ class RCV_stats:
         """
         elected_candidates = [d for d in self.get_candidate_outcomes(tabulation_num=tabulation_num)
                               if d['round_elected'] is not None]
-        return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
+        for candidate in elected_candidates:
+            round_dict = self.get_round_tally_dict(candidate['round_elected'], tabulation_num=tabulation_num)
+            candidate['elected_vote'] = round_dict[candidate['name']]
+        return [d['name'] for d in sorted(elected_candidates, key=lambda x: (x['round_elected'], -x['elected_vote'], x['name']))]
 
     def _condorcet(self, tabulation_num=1):
         '''
@@ -358,6 +361,10 @@ class RCV_stats:
             ]
             df['posttally_exhausted'+str(iTab)] = df[all_posttally_conditions].any(axis='columns')
 
+            exh_by_rank_limit_fully_ranked = self._cvr_stat_table['fully_ranked_incl_overvote'] & \
+                df[exhaust_type_str].eq(InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING)
+            df[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] = exh_by_rank_limit_fully_ranked
+
         self._contest_stat_table = df
 
     def _compute_summary_contest_stat_tables(self) -> None:
@@ -420,6 +427,12 @@ class RCV_stats:
 
             posttally_duplicate = sum(self._contest_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
             s['total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
+
+            posttally_rank_limit_full = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
+            s['total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
+
+            posttally_rank_limit_partial = sum(~self._contest_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
+            s['total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit_partial
 
             if len(self._tabulation_winner(tabulation_num=iTab)) == 1:
 
@@ -484,6 +497,12 @@ class RCV_stats:
 
             posttally_rank_limit = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_rank_limit'] = posttally_rank_limit
+
+            posttally_rank_limit_full = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
+            s['split_total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
+
+            posttally_rank_limit_partial = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit_partially_ranked{iTab}'] * weight)
+            s['split_total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit_partial
 
             posttally_duplicate = sum(filtered_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
