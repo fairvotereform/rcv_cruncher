@@ -373,7 +373,7 @@ class RCV_stats:
 
         for iTab in range(1, self._tab_num+1):
 
-            s = pd.Series()
+            s = pd.Series(dtype='float64')
 
             s['rcv_type'] = self.__class__.__name__
 
