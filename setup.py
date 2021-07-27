@@ -80,7 +80,8 @@ setup(
         'pandas>=1.2.0',
         'xmltodict>=0.12.0',
         'weightedstats>=0.4.1',
-        'pytest>=6.2.4'
+        'pytest>=6.2.4',
+        'rcvformats==0.0.22'
     ],
     extras_require={},
     entry_points={
