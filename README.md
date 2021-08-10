@@ -25,12 +25,12 @@ Table of Contents:
     - [*class* **CastVoteRecord**](#class-castvoterecord)
       - [Variables](#variables-1)
       - [Methods](#methods-1)
-    - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsup15)
+    - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUpThresh)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsupthresh)
       - [Methods](#methods-2)
   - [Stat List](#stat-list)
     - [CVR stats](#cvr-stats)
     - [RCV stats](#rcv-stats)
-    - [Parser Functions](#parser-functions)
+  - [Parser Functions](#parser-functions)
 
 
 ## Install
@@ -136,7 +136,7 @@ Other tabulation methods implemented but not yet fully tested:
 * STVWholeBallot - multi-winner whole ballot transfer (used in Cambridge).
 * Until2 - single winner election run until 2 candidates remain.
 * Sequential - multi-winner election that consists on sequential single winner elections (used in Utah).
-* BottomsUp15 - multi-winner election run until all candidates are above 15% (used in 2020 Dem Pres Primaries).
+* BottomsUpTresh - multi-winner election run until all candidates are above input threshold (15% threshold used in 2020 Dem Pres Primaries).
 
 
 ## Functions and Classes
@@ -334,7 +334,7 @@ Returns a pandas DataFrame of CVR statistics. See statistics list for more infor
   * Returns: List[DataFrame].
 
 
-### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
+### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUpThresh)
 
 These classes apply rules to a CVR and then tabulate the election rounds.
 
@@ -354,6 +354,7 @@ instance **constructor**:
   * treat_combined_writeins_as_exhaustable_duplicates: (default True)
   * combine_writein_marks: (default True)
   * exclude_writein_marks: (default False)
+  * bottoms_up_threshold: (optional float) between 0 and 1. Only applies to BottomsUpTresh elections. The percentage threshold which all candidates must exceed for tabulation to cease.
 
 <br/>
 <br/>
@@ -395,10 +396,11 @@ Same as get_round_tally_tuple() but the tuples are zipped into a dictionary.
 
 instance function **get_round_transfer_dict**:
 
-Get a dictionary with candidates as keys and transfer values as values. All value should sum to 0.
+Get a dictionary with candidates as keys and transfer values as values.
 
 * Arguments:
   * round_num (int): Which round tally to get results for.
+  * candidate_netted: (bool, default True)  If True, return a dictionary with keys as candidate names and values as netted transfer counts across all eliminated candidates in the given round or, if False, return a dictionary with transfer-from candidate names as keys and values as a second dictionary. The nested dictionary contains transfer-to candidate names as keys and counts of vote transfer between transfer-from and transfer-to candidates as values.
   * tabulation_num (int, default 1): Only applies to contest types which have multiple tabulations (e.x. Sequential).
 
 * Return: Dict
@@ -617,7 +619,7 @@ Returns number of tabulations in a contest.
 
 **total_posttally_exhausted_by_abstention** - The number of ballots that exhausted after the first round which do not fall into the categories above.
 
-### Parser Functions
+## Parser Functions
 
 **burlington2006** - parser specific to 2006 Burlington election. Tab-separated file, one ballot per row. Candidate coded rank information starts in the 4th column.
     * Arguments:
