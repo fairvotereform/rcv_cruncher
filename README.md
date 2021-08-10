@@ -711,11 +711,11 @@ Returns number of tabulations in a contest.
 
 **choice_pro_plus** - Choice Pro Plus format. Used in Cambridge elections.
 
-    * Expects:
-      * 1 .chp file
+  * Expects:
+    * 1 .chp file
 
-    * Arguments:
-      * cvr_path - Path to cvr directory.
+  * Arguments:
+    * cvr_path - Path to cvr directory.
 
 
 
