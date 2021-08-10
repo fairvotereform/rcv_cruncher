@@ -34,7 +34,9 @@ class CSVLogger:
         self.path = path
         self.file = open(path, 'w', newline='')
         self.writer = csv.writer(self.file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        self.lines_added = None
         self.write(header_list)
+        self.lines_added = False
 
     def write(self, row_list):
         if len(row_list) != self.row_length:
@@ -43,6 +45,8 @@ class CSVLogger:
             raise RuntimeError(msg)
         self.writer.writerow(row_list)
         self.file.flush()
+        if self.lines_added is not None and not self.lines_added:
+            self.lines_added = not self.lines_added
 
     def close(self):
         self.file.flush()

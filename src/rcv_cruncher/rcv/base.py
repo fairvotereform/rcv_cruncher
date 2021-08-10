@@ -123,6 +123,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                  exclude_writein_marks: bool = False,
                  n_winners: Optional[int] = None,
                  multi_winner_rounds: Optional[bool] = None,
+                 bottoms_up_threshold: Optional[float] = None,
                  *args, **kwargs) -> None:
 
         # INIT CVR
@@ -144,6 +145,9 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                           ))
 
         # CONTEST INPUTS
+        self._bottoms_up_threshold = None
+        if bottoms_up_threshold is not None:
+            self._bottoms_up_threshold = decimal.Decimal(str(bottoms_up_threshold))
         self._n_winners = n_winners
         self._multi_winner_rounds = multi_winner_rounds
         self._contest_candidates = self.get_candidates(self._contest_rule_set_name)
@@ -499,11 +503,15 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
 
     def get_round_transfer_dict(self,
                                 round_num: int,
+                                candidate_netted: bool = True,
                                 tabulation_num: int = 1) -> Dict[str, decimal.Decimal]:
         """
         Return a dictionary containing keys as candidates + 'exhaust' and values as their round net transfer
         """
-        transfers = self._tabulations[tabulation_num-1]['transfers']
+        if candidate_netted:
+            transfers = self._tabulations[tabulation_num-1]['summary_transfers']
+        else:
+            transfers = self._tabulations[tabulation_num-1]['by_candidate_transfers']
         return transfers[round_num-1]
 
     def get_candidate_outcomes(self, tabulation_num: int = 1) -> List[Dict]:

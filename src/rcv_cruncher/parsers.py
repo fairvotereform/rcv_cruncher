@@ -39,7 +39,7 @@ def get_parser_dict():
     return parser_dict
 
 
-def cruncher_csv(cvr_path):
+def rank_column(cvr_path):
     """Reads ballot ranking information stored in csv format.
     One ballot per row, with ranking columns appearing in order and named with the word "rank"
     (e.x. "rank1", "rank2", etc)
@@ -1113,7 +1113,7 @@ def candidate_column(cvr_path: Union[str, pathlib.Path]):
 
 parser_dict = {
     "burlington2006": burlington2006,
-    "cruncher_csv": cruncher_csv,
+    "rank_column": rank_column,
     "dominion5_2": dominion5_2,
     "dominion5_4": dominion5_4,
     "dominion5_10": dominion5_10,

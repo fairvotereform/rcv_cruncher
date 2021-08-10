@@ -361,8 +361,8 @@ class RCV_stats:
             ]
             df['posttally_exhausted'+str(iTab)] = df[all_posttally_conditions].any(axis='columns')
 
-            exh_by_rank_limit_fully_ranked = self._cvr_stat_table['fully_ranked_incl_overvote'] & \
-                df[exhaust_type_str].eq(InactiveType.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING)
+            exh_by_rank_limit_fully_ranked = self._cvr_stat_table['fully_ranked_incl_overvotes'] & \
+                df[exhaust_type_str].eq(InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT)
             df[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] = exh_by_rank_limit_fully_ranked
 
         self._contest_stat_table = df
@@ -384,11 +384,13 @@ class RCV_stats:
             exclude_writeins = self._rule_sets[self._contest_rule_set_name]['exclude_writein_marks']
             treat_writeins = self._rule_sets[self._contest_rule_set_name]['treat_combined_writeins_as_exhaustable_duplicates']
 
+            s['n_winners'] = self._n_winners
+            s['bottoms_up_threshold'] = self._bottoms_up_threshold
             s['exhaust_on_overvote_marks'] = exhaust_on_overvote
             s['exhaust_on_repeated_skipped_marks'] = exhaust_on_repeated_skipped
             s['exhaust_on_duplicate_candidate_marks'] = exhaust_on_duplicate
-            s['combine_writein_marks'] = combine_writeins,
-            s['exclude_writein_marks'] = exclude_writeins,
+            s['combine_writein_marks'] = combine_writeins
+            s['exclude_writein_marks'] = exclude_writeins
             s['treat_combined_writeins_as_exhaustable_duplicates'] = treat_writeins
 
             s['number_of_tabulation_winners'] = len(self._tabulation_winner(tabulation_num=iTab))
@@ -422,17 +424,15 @@ class RCV_stats:
             posttally_abstention = sum(self._contest_stat_table[f'posttally_exhausted_by_abstention{iTab}'] * weight)
             s['total_posttally_exhausted_by_abstention'] = posttally_abstention
 
-            posttally_rank_limit = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit{iTab}'] * weight)
-            s['total_posttally_exhausted_by_rank_limit'] = posttally_rank_limit
-
             posttally_duplicate = sum(self._contest_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
             s['total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
 
+            posttally_rank_limit = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit{iTab}'] * weight)
+            s['total_posttally_exhausted_by_rank_limit'] = posttally_rank_limit
+
             posttally_rank_limit_full = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
             s['total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
-
-            posttally_rank_limit_partial = sum(~self._contest_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
-            s['total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit_partial
+            s['total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit - posttally_rank_limit_full
 
             if len(self._tabulation_winner(tabulation_num=iTab)) == 1:
 
@@ -500,9 +500,7 @@ class RCV_stats:
 
             posttally_rank_limit_full = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
-
-            posttally_rank_limit_partial = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit_partially_ranked{iTab}'] * weight)
-            s['split_total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit_partial
+            s['split_total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit - posttally_rank_limit_full
 
             posttally_duplicate = sum(filtered_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate

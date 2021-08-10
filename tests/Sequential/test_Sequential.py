@@ -1747,6 +1747,140 @@ params = [
 
 
 @pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
+    rcv = Sequential(**param['input'])
+    assert [i['total_posttally_exhausted_by_rank_limit_fully_ranked'].item() for i in rcv.stats()] == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 1
+        },
+        'expected': {
+            'stat': [0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 2
+        },
+        'expected': {
+            'stat': [0, 0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': [0, 0, 0]
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
+    rcv = Sequential(**param['input'])
+    assert [i['total_posttally_exhausted_by_rank_limit_partially_ranked'].item() for i in rcv.stats()] == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 1
+        },
+        'expected': {
+            'stat': [0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 2
+        },
+        'expected': {
+            'stat': [0, 0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.SKIPPED],
+                    ['B', 'A', 'A', 'A'],
+                    ['C', 'A', 'B', 'B'],
+                    ['D', BallotMarks.OVERVOTE, 'A', 'C'],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+
+                ],
+                'weight': [5, 4, 3, 2, 1]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': [0, 0, 0]
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_duplicate_rankings(param):
     rcv = Sequential(**param['input'])
     assert [i['total_posttally_exhausted_by_duplicate_rankings'].item() for i in rcv.stats()] == param['expected']['stat']

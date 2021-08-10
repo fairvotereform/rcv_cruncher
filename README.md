@@ -30,6 +30,7 @@ Table of Contents:
   - [Stat List](#stat-list)
     - [CVR stats](#cvr-stats)
     - [RCV stats](#rcv-stats)
+    - [Parser Functions](#parser-functions)
 
 
 ## Install
@@ -610,8 +611,93 @@ Returns number of tabulations in a contest.
 
 **total_posttally_exhausted_by_rank_limit** - The number of ballots that exhausted after the first round. Only applied to contest with a restrictive rank limit. The count towards this category ballots must either use all ranks OR at least use the last ranking.
 
+**total_posttally_exhausted_by_rank_limit_fully_ranked** - Subset of **total_posttally_exhausted_by_rank_limit** which ranked all candidates or used all rankings validly.
+
+**total_posttally_exhausted_by_rank_limit_partially_ranked** - Subset of **total_posttally_exhausted_by_rank_limit** which used the final ranking on a rank restricted ballot.
+
 **total_posttally_exhausted_by_abstention** - The number of ballots that exhausted after the first round which do not fall into the categories above.
 
+### Parser Functions
+
+**burlington2006** - parser specific to 2006 Burlington election. Tab-separated file, one ballot per row. Candidate coded rank information starts in the 4th column.
+    * Arguments:
+      * cvr_path - Path to cvr file. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**rank_column** - Use for csv file. One ballot per row, with ranking columns appearing in order and named with the word "rank" (e.x. "rank1", "rank2", etc). All other columns are stored as additional ballot information. Include a column 'weight' for weighted ballots.
+    * Arguments:
+      * cvr_path - Path to cvr file. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**candidate_column** - Use for csv file. One ballot per row, with candidate names appearing as column headers. Integers fill cells under candidate headers indicating marked rank position of column candidate on row *i* ballot. All other columns are stored as additional ballot information. Include a column 'weight' for weighted ballots.
+    * Expected files:
+      * cvr.csv - record of all ballot marks.
+      * candidate_codes.csv - Two column file, one named 'candidate' and one named 'code'. If no candidate codes are used, then these two columns should be identical. Column names listed in this file are used to determine which columns in the csr.csv are candidate rank columns.
+    * Arguments:
+      * cvr_path - Path to cvr directory. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**dominion5_2** - Use for parsing the collection of files generated from a Dominion election system. Version 5.2.
+    * Expected files:
+      * ContestManifest.json
+      * CandidateManifest.json
+      * PrecinctPortionManifest.json
+      * BallotTypeManifest.json
+      * CountingGroupManifest.json
+      * CvrExport.json
+    * Arguments:
+      * cvr_path - Path to cvr directory.
+      * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**dominion5_4** - Use for parsing the collection of files generated from a Dominion election system. Version 5.4.
+    * Expected files:
+      * ContestManifest.json
+      * CandidateManifest.json
+      * PrecinctPortionManifest.json
+      * PrecinctManifest.json (optional)
+      * BallotTypeManifest.json
+      * CountingGroupManifest.json
+      * BallotTypeContestManifest.json
+      * CvrExport.json
+    * Arguments:
+      * cvr_path - Path to cvr directory.
+      * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**dominion5_10** - Use for parsing the collection of files generated from a Dominion election system. Version 5.10.
+    * Expected files:
+      * ContestManifest.json
+      * CandidateManifest.json
+      * PrecinctPortionManifest.json
+      * PrecinctManifest.json (optional)
+      * BallotTypeManifest.json
+      * CountingGroupManifest.json
+      * BallotTypeContestManifest.json
+      * TabulatorManifest.json
+      * DistrictManifest.json
+      * DistrictTypeManifest.json
+      * DistrictPrecinctPortionManifest.json
+      * CvrExport*.json (1 or more)
+    * Arguments:
+      * cvr_path - Path to cvr directory.
+      * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**optech1** - Format used in most Bay Area elections until switch over to Dominion systems.
+    * Expects:
+      * 1 ballot image file (pattern: '*allot*.txt')
+      * 1 master lookup file (pattern: '*aster*.txt')
+    * Arguments:
+      * cvr_path - Path to cvr directory.
+      * office - Name of the office listed in master lookup under CONTEST field for which ballots will be parsed.
+
+**optech2** - Format used in earlist San Francisco elections (~2004).
+    * Expects:
+      * 1 ballot image file (pattern: '*allot*.txt')
+      * 1 cntl file (pattern: '*ntl*.txt')
+    * Arguments:
+      * cvr_path - Path to cvr directory.
+
+**choice_pro_plus** - Choice Pro Plus format. Used in Cambridge elections.
+    * Expects:
+      * 1 .chp file
+    * Arguments:
+      * cvr_path - Path to cvr directory.
 
 
 

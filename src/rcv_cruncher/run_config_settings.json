@@ -17,5 +17,6 @@
     "rank_usage":                               {"type": "bool", "default": false},
     "crossover_support":                        {"type": "bool", "default": false},
     "winner_choice_position_distribution":      {"type": "bool", "default": false},
+    "candidate_rank_usage":                     {"type": "bool", "default": false},
     "cvr_path_root":                            {"type": "string", "default": ""}
 }

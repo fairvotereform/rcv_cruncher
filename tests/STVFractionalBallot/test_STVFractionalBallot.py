@@ -1715,6 +1715,145 @@ params = [
     ({
         'input': {
             'multi_winner_rounds': True,
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [2, 1, 2, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': 0
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
+    rcv = STVFractionalBallot(**param['input'])
+    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_fully_ranked'].item() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': 0
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', 'F', BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [2, 1, 2, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': round(float(
+                Decimal(1) / Decimal(3) * (((3 + Decimal(1) / Decimal(3)) - 2) / (3 + Decimal(1) / Decimal(3))) +
+                (((3 + Decimal(1) / Decimal(3)) - 2) / (3 + Decimal(1) / Decimal(3)))
+                ), 3)
+        }
+    }),
+    ({
+        'input': {
+            'multi_winner_rounds': True,
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [2, 1, 2, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': 0
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
+    rcv = STVFractionalBallot(**param['input'])
+    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_partially_ranked'].item() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': 0
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
+                    ['C', 'A', 'B', 'B'],
+                    ['E', 'F', BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [2, 1, 2, 1, 1, 0.5]
+            },
+            'n_winners': 3
+        },
+        'expected': {
+            'stat': 0
+        }
+    }),
+    ({
+        'input': {
+            'multi_winner_rounds': True,
             'exhaust_on_duplicate_candidate_marks': True,
             'parsed_cvr': {
                 'ranks': [
@@ -1757,10 +1896,11 @@ params = [
                 'weight': [1, 1, 1, 1, 1, 0.5],
                 'precinct': [1, 1, 1, 2, 2, 2]
             },
-            'n_winners': 3
+            'n_winners': 3,
+            'split_fields': ['precinct']
         },
         'expected': {
-            'stat': [0, 0]
+            'stat': [[0, 0]]
         }
     }),
     ({
@@ -1777,16 +1917,18 @@ params = [
                 'weight': [2, 1, 2, 1, 1, 0.5],
                 'precinct': [1, 1, 1, 2, 2, 2]
             },
-            'n_winners': 3
+            'n_winners': 3,
+            'split_fields': ['precinct']
         },
         'expected': {
-            'stat': [0, 0]
+            'stat': [[0, 0]]
         }
     }),
     ({
         'input': {
             'multi_winner_rounds': True,
             'exhaust_on_duplicate_candidate_marks': True,
+            'split_fields': ['precinct'],
             'parsed_cvr': {
                 'ranks': [
                     ['A', 'B', 'C', 'D'],
@@ -1802,7 +1944,7 @@ params = [
             'n_winners': 3
         },
         'expected': {
-            'stat': [0, 0.5]
+            'stat': [[0, 0.5]]
         }
     })
 ]
@@ -1811,7 +1953,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_total_pretally_exhausted(param):
     rcv = STVFractionalBallot(**param['input'])
-    assert [i['split_total_pretally_exhausted'].item() for i in rcv.stats(add_split_stats=True)] == param['expected']['stat']
+    assert [i['split_total_pretally_exhausted'].tolist() for i in rcv.stats(add_split_stats=True)] == param['expected']['stat']
 
 
 

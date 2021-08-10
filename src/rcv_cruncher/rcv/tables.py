@@ -578,3 +578,108 @@ class RCV_tables:
             outfile = open(save_path / f"{uid}_tab{iTab}.json", 'w')
             json.dump(json_dict, outfile)
             outfile.close()
+
+    def candidate_rank_usage_table(self):
+
+        # set up vars
+        contest_candidates = self._contest_candidates.unique_candidates
+        rank_limit = self._summary_cvr_stat_table['rank_limit'].item()
+        candidate_outcomes = {dikt['name']: dikt for dikt in self.get_candidate_outcomes(tabulation_num=1)}
+        first_round_dict = self.get_round_tally_dict(round_num=1, tabulation_num=1)
+        first_round_leader = sorted(first_round_dict.items(), key=lambda x: -x[1])[0][0]
+
+        contest_cvr_dl = self.get_cvr_dict(self._contest_rule_set_name)
+        contest_cvr_ld = [{'ballot_marks': bm, 'weight': weight}
+                          for bm, weight in zip(contest_cvr_dl['ballot_marks'], contest_cvr_dl['weight'])]
+
+        # set up dataframe
+        df_columns = [
+            'contestID',
+            'rank_limit',
+            'n_rounds',
+            'rcv_type',
+            'winner',
+            'first_round_percent',
+            'first_round_count',
+            'round_elected',
+            'round_eliminated'
+        ] + [
+            f'ranked_{i}' for i in range(1, rank_limit+1)
+        ] + [
+            'ranked_2_or_more',
+            'ranked_3_or_more',
+            'mean_ranked',
+            'all_candidate_mean_ranked',
+            'non_leader_mean_ranked',
+            'non_leader_no_writein_mean_ranked'
+        ]
+        df = pd.DataFrame(None, index=contest_candidates, columns=df_columns)
+
+        # fill precomputed columns
+        df['contestID'] = self._id_df['unique_id'].item()
+        df['rank_limit'] = rank_limit
+        df['n_rounds'] = self._summary_contest_stat_tables[0]['n_rounds'].item()
+        df['rcv_type'] = self._summary_contest_stat_tables[0]['rcv_type'].item()
+        df['winner'] = [True if candidate in self._tabulation_winner(tabulation_num=1) else False
+                        for candidate in df.index]
+        df['round_elected'] = [candidate_outcomes[candidate]['round_elected'] for candidate in df.index]
+        df['round_eliminated'] = [candidate_outcomes[candidate]['round_eliminated'] for candidate in df.index]
+        df['first_round_percent'] = [100 * first_round_dict[candidate] / sum(first_round_dict.values())
+                                     for candidate in df.index]
+        df['first_round_count'] = [first_round_dict[candidate] for candidate in df.index]
+
+        # count rank usage by candidate
+        rank_usage_count = {candidate: {i: 0 for i in range(1, rank_limit+1)} for candidate in contest_candidates}
+        for ballot in contest_cvr_ld:
+            if ballot['ballot_marks'].marks:
+                first_candidate = ballot['ballot_marks'].marks[0]
+                ranks_used = len(ballot['ballot_marks'].marks)
+                rank_usage_count[first_candidate][ranks_used] += ballot['weight']
+
+        # convert counts to percent and add to table
+        all_candidate_rank_usage = {i: 0 for i in range(1, rank_limit+1)}
+        non_leader_rank_usage = {i: 0 for i in range(1, rank_limit+1)}
+        non_leader_no_writein_rank_usage = {i: 0 for i in range(1, rank_limit+1)}
+        for candidate, candidate_rank_usage in rank_usage_count.items():
+
+            candidate_total_ballots = sum(candidate_rank_usage.values())
+            for ranks_used, ranks_used_count in candidate_rank_usage.items():
+
+                all_candidate_rank_usage[ranks_used] += ranks_used_count
+
+                if candidate != first_round_leader:
+                    non_leader_rank_usage[ranks_used] += ranks_used_count
+
+                if candidate != BallotMarks.WRITEIN:
+                    non_leader_no_writein_rank_usage[ranks_used] += ranks_used_count
+
+                df.loc[candidate, f'ranked_{ranks_used}'] = 0
+                if candidate_total_ballots:
+                    df.loc[candidate, f'ranked_{ranks_used}'] = 100 * ranks_used_count / candidate_total_ballots
+
+            df.loc[candidate, 'ranked_2_or_more'] = 0
+            df.loc[candidate, 'ranked_3_or_more'] = 0
+            if candidate_total_ballots:
+                ranked_2_or_more = sum(count for ranks_used, count in candidate_rank_usage.items() if ranks_used > 1)
+                ranked_3_or_more = sum(count for ranks_used, count in candidate_rank_usage.items() if ranks_used > 2)
+                df.loc[candidate, 'ranked_2_or_more'] = 100 * ranked_2_or_more / candidate_total_ballots
+                df.loc[candidate, 'ranked_3_or_more'] = 100 * ranked_3_or_more / candidate_total_ballots
+
+            df.loc[candidate, 'mean_ranked'] = 0
+            if candidate_total_ballots:
+                weighted_sum = sum(count * ranks_used for ranks_used, count in candidate_rank_usage.items())
+                df.loc[candidate, 'mean_ranked'] = weighted_sum / candidate_total_ballots
+
+        all_candidate_weighted_sum = sum(count * ranks_used for ranks_used, count in all_candidate_rank_usage.items())
+        non_leader_weighted_sum = sum(count * ranks_used for ranks_used, count in non_leader_rank_usage.items())
+        non_leader_no_writein_weighted_sum = sum(count * ranks_used
+                                                 for ranks_used, count in non_leader_no_writein_rank_usage.items())
+
+        if sum(all_candidate_rank_usage.values()):
+            df['all_candidate_mean_ranked'] = all_candidate_weighted_sum / sum(all_candidate_rank_usage.values())
+        if sum(non_leader_rank_usage.values()):
+            df['non_leader_mean_ranked'] = non_leader_weighted_sum / sum(non_leader_rank_usage.values())
+        if sum(non_leader_no_writein_rank_usage.values()):
+            df['non_leader_no_writein_mean_ranked'] = non_leader_no_writein_weighted_sum / sum(non_leader_no_writein_rank_usage.values())
+
+        return df

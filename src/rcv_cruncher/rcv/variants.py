@@ -19,7 +19,7 @@ def get_rcv_dict():
         'STVFractionalBallot': STVFractionalBallot,
         'Sequential': Sequential,
         'SingleWinner': SingleWinner,
-        'BottomsUp15': BottomsUp15
+        'BottomsUpThresh': BottomsUpThresh
     }
 
 
@@ -569,13 +569,15 @@ class STVFractionalBallot(STV):
         self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
 
 
-class BottomsUp15(RCV):
+class BottomsUpThresh(RCV):
     """
-    Multi winner contest. When all candidates in a round have more than 15% of the round votes, they are all winners.
+    Multi winner contest. When all candidates in a round have more than X% of the round votes, they are all winners.
     - In a no winner round, the candidate with least votes is eliminated and ballots transferred.
     """
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        if self._bottoms_up_threshold is None:
+            raise RuntimeError('BottomsUpThresh contest cannot have "bottoms_up_thresh" value "None"')
 
     def _set_round_winners(self) -> None:
         """
@@ -583,7 +585,7 @@ class BottomsUp15(RCV):
         """
         round_candidates, round_tallies = self.get_round_tally_tuple(self._round_num, self._tab_num,
                                                                      only_round_active_candidates=True)
-        threshold = sum(round_tallies) * decimal.Decimal('0.15')
+        threshold = sum(round_tallies) * self._bottoms_up_threshold
         if all(i > threshold for i in round_tallies):
             self._round_winners = list(round_candidates)
 
@@ -629,7 +631,6 @@ class BottomsUp15(RCV):
             if sum(transfers.values()) != 0
         }
         self._tabulations[self._tab_num-1]['by_candidate_transfers'].append(by_candidate_transfer_dict)
-
 
     def _contest_not_complete(self) -> None:
         """

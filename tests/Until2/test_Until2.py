@@ -2096,6 +2096,116 @@ params = [
             'exhaust_on_repeated_skipped_marks': True
         },
         'expected': {
+            'stat': 0
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
+                    ['C', 'D', 'D', 'B']
+                ],
+                'weight': [2, 2, 2, 2, 1, 1, 1]
+            },
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': 0
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
+    rcv = Until2(**param['input'])
+    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_fully_ranked'].item() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'C', 'C', 'D'],
+                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
+                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
+                    ['B', 'A', 'A', 'C'],
+                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
+                    ['C', 'A', 'B', 'E'],
+                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
+                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+            },
+            'split_fields': ['precinct'],
+            'exhaust_on_duplicate_candidate_marks': True,
+            'exhaust_on_overvote_marks': True,
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': 0
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
+                    ['C', 'D', 'D', 'B']
+                ],
+                'weight': [2, 2, 2, 2, 1, 1, 1]
+            },
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': 0
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
+    rcv = Until2(**param['input'])
+    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_partially_ranked'].item() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'C', 'C', 'D'],
+                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
+                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
+                    ['B', 'A', 'A', 'C'],
+                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
+                    ['C', 'A', 'B', 'E'],
+                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
+                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+            },
+            'split_fields': ['precinct'],
+            'exhaust_on_duplicate_candidate_marks': True,
+            'exhaust_on_overvote_marks': True,
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
             'stat': 2
         }
     }),
@@ -2580,6 +2690,120 @@ params = [
 def test_split_total_posttally_exhausted_by_rank_limit(param):
     rcv = Until2(**param['input'])
     assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit'].tolist() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'C', 'C', 'D'],
+                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
+                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
+                    ['B', 'A', 'A', 'C'],
+                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
+                    ['C', 'A', 'B', 'E'],
+                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
+                'split': [1, 1, 1, 1, 2, 2, 2, 3]
+            },
+            'split_fields': ['split'],
+            'exhaust_on_duplicate_candidate_marks': True,
+            'exhaust_on_overvote_marks': True,
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': [0, 0, 0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
+                    ['C', 'D', 'D', 'B']
+                ],
+                'weight': [2, 2, 2, 2, 1, 1, 1],
+                'split': [1, 1, 1, 1, 2, 2, 2]
+            },
+            'split_fields': ['split'],
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': [0, 0]
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_split_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
+    rcv = Until2(**param['input'])
+    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit_fully_ranked'].tolist() == param['expected']['stat']
+
+
+params = [
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'C', 'C', 'D'],
+                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
+                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
+                    ['B', 'A', 'A', 'C'],
+                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
+                    ['C', 'A', 'B', 'E'],
+                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+                ],
+                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
+                'split': [1, 1, 1, 1, 2, 2, 2, 3]
+            },
+            'split_fields': ['split'],
+            'exhaust_on_duplicate_candidate_marks': True,
+            'exhaust_on_overvote_marks': True,
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': [0, 0, 0]
+        }
+    }),
+    ({
+        'input': {
+            'parsed_cvr': {
+                'ranks': [
+                    ['A', 'B', 'C', 'D'],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
+                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
+                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
+                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
+                    ['C', 'D', 'D', 'B']
+                ],
+                'weight': [2, 2, 2, 2, 1, 1, 1],
+                'split': [1, 1, 1, 1, 2, 2, 2]
+            },
+            'split_fields': ['split'],
+            'exhaust_on_repeated_skipped_marks': True
+        },
+        'expected': {
+            'stat': [0, 0]
+        }
+    })
+]
+
+
+@pytest.mark.parametrize("param", params)
+def test_split_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
+    rcv = Until2(**param['input'])
+    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit_partially_ranked'].tolist() == param['expected']['stat']
 
 
 params = [

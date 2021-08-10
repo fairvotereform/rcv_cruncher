@@ -57,10 +57,11 @@ def flatten_rcv_stats(stats: List[pd.DataFrame]) -> pd.DataFrame:
     ]
 
     flat_df = stats[0]
-    for other_tabulations in stats[0:]:
-        for col in other_tabulations.columns:
-            if col not in no_duplicate_fields:
-                flat_df[col] = str(flat_df[col].item()) + ';' + str(other_tabulations[col].item())
+    if len(stats) > 1:
+        for other_tabulations in stats[1:]:
+            for col in other_tabulations.columns:
+                if col not in no_duplicate_fields:
+                    flat_df[col] = str(flat_df[col].item()) + ';' + str(other_tabulations[col].item())
 
     return flat_df
 
@@ -322,8 +323,9 @@ def write_aggregated_stats(results_dir,
             print("Write candidate rank usage table ...")
 
         sorted_candidate_rank_usage_dfs = sorted(candidate_rank_usage_dfs, key=lambda x: -x.shape[1])
-        df = pd.concat(sorted_candidate_rank_usage_dfs, axis=0, ignore_index=True, sort=False)
-        df.to_csv(util.longname(results_dir / 'candidate_rank_usage.csv'), index=False)
+        df = pd.concat(sorted_candidate_rank_usage_dfs, axis=0, sort=False)
+        df.index.name = 'candidate'
+        df.to_csv(util.longname(results_dir / 'candidate_rank_usage.csv'))
 
 
 class Steps(abc.ABC):
@@ -633,12 +635,6 @@ class CrunchSteps(Steps):
         ])
 
 
-def init_error_logger(results_dir):
-    header_list = ['contest', 'cruncher_step', 'message']
-    error_log_path = results_dir / 'error_log.csv'
-    return util.CSVLogger(error_log_path, header_list)
-
-
 def write_input_dir(results_dir, output_config, start_time, end_time):
 
     # copy input files
@@ -696,8 +692,10 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
     allsplit_rcv_variant_stats_df_dict = {variant_name: [] for variant_name in get_rcv_dict().keys()}
     allsplit_rcv_group_stats_df_dict = {variant_group: [] for variant_group in ['single_winner', 'multi_winner']}
 
-    # init loggers
-    error_logger = init_error_logger(results_dir)
+    # init logger
+    header_list = ['contest', 'cruncher_step', 'message']
+    error_log_path = results_dir / 'error_log.csv'
+    error_logger = util.CSVLogger(error_log_path, header_list)
 
     n_errors = 0
     #########################
@@ -775,6 +773,8 @@ def crunch_contest_set(contest_set, output_config, path_to_output, fresh_output=
 
     # close logs
     error_logger.close()
+    if not error_logger.lines_added:
+        os.rename(error_log_path, error_log_path.parent / (error_log_path.name + '_EMPTY.csv'))
 
     # WRITE OUT AGGREGATED STATS FOR CONTESTS
     write_aggregated_stats(results_dir,
