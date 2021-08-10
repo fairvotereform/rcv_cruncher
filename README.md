@@ -132,12 +132,15 @@ rcv = rcvc.SingleWinner(
 rcv.stats()
 ```
 
-Other tabulation methods implemented but not yet fully tested:
+Other tabulation methods:
 
 * STVFractionalBallot - multi-winner fractional ballot transfer (Gregory method).
-* STVWholeBallot - multi-winner whole ballot transfer (used in Cambridge).
 * Until2 - single winner election run until 2 candidates remain.
 * Sequential - multi-winner election that consists on sequential single winner elections (used in Utah).
+
+Other tabulation methods implemented but not yet fully tested:
+
+* STVWholeBallot - multi-winner whole ballot transfer (used in Cambridge).
 * BottomsUpTresh - multi-winner election run until all candidates are above input threshold (15% threshold used in 2020 Dem Pres Primaries).
 
 
