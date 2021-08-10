@@ -700,7 +700,7 @@ Returns number of tabulations in a contest.
     * cvr_path - Path to cvr directory.
     * office - Name of the office listed in master lookup under CONTEST field for which ballots will be parsed.
 
-**optech2** - Format used in earlist San Francisco elections (~2004).
+**optech2** - Format used in earliest San Francisco elections (~2004).
 
   * Expects:
     * 1 ballot image file (pattern: '*allot*.txt')
