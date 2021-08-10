@@ -83,8 +83,8 @@ setup(
     ],
     extras_require={},
     entry_points={
-        # 'console_scripts': [
-        #     'rcv-cruncher = rcv_cruncher.cli:main',
-        # ]
+        'console_scripts': [
+            'rcv-cruncher = rcv_cruncher.cli:main',
+        ]
     },
 )

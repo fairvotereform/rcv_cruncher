@@ -1,10 +1,10 @@
 from __future__ import annotations
-from typing import (Callable, Dict, Optional, List, Type)
+from typing import (Callable, Dict, Optional, List, Type, Union, Tuple)
 
-import copy
 import decimal
 import collections
 import re
+import pathlib
 
 import pandas as pd
 
@@ -25,6 +25,94 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         return cvr.stats(keep_decimal_type=keep_decimal_type,
                          add_split_stats=add_split_stats,
                          add_id_info=add_id_info)
+
+    @staticmethod
+    def write_cvr_table(cvr: Type[CastVoteRecord],
+                        table_format: str = "rank",
+                        save_dir: Union[str, pathlib.Path] = None) -> None:
+        uid = cvr.stats()[0]['unique_id'].item()
+        save_path = pathlib.Path(save_dir) / f'{uid}.csv'
+        cvr.cvr_table(table_format=table_format).to_csv(save_path, index=False)
+
+    @staticmethod
+    def get_cumulative_ranking_tables(cvr: Type[CastVoteRecord]) -> Tuple[pd.DataFrame]:
+        return cvr.cumulative_ranking_tables()
+
+    @staticmethod
+    def write_cumulative_ranking_tables(cvr: Type[CastVoteRecord],
+                                        save_dir: Union[str, pathlib.Path] = None) -> None:
+        count_df, percent_df = cvr.cumulative_ranking_tables()
+        uid = cvr.stats()[0]['unique_id'].item()
+
+        save_path = pathlib.Path(save_dir) / 'cumulative_ranking'
+        save_path.mkdir(exist_ok=True)
+
+        count_df.to_csv(save_path / f'{uid}_count.csv')
+        percent_df.to_csv(save_path / f'{uid}_percent.csv')
+
+    @staticmethod
+    def get_first_second_tables(cvr: Type[CastVoteRecord]) -> Tuple[pd.DataFrame]:
+        return cvr.first_second_tables()
+
+    @staticmethod
+    def write_first_second_tables(cvr: Type[CastVoteRecord],
+                                  save_dir: Union[str, pathlib.Path] = None) -> None:
+        count_df, percent_df, percent_no_exhaust_df = cvr.first_second_tables()
+        uid = cvr.stats()[0]['unique_id'].item()
+
+        save_path = pathlib.Path(save_dir) / 'first_second_choices'
+        save_path.mkdir(exist_ok=True)
+
+        count_df.to_csv(save_path / f'{uid}_count.csv')
+        percent_df.to_csv(save_path / f'{uid}_percent.csv')
+        percent_no_exhaust_df.to_csv(save_path / f'{uid}_percent_no_exhaust.csv')
+
+    @staticmethod
+    def get_rank_usage_table(cvr: Type[CastVoteRecord]) -> Tuple[pd.DataFrame]:
+        return cvr.rank_usage_table()
+
+    @staticmethod
+    def write_rank_usage_table(cvr: Type[CastVoteRecord],
+                               save_dir: Union[str, pathlib.Path] = None) -> None:
+        df = cvr.rank_usage_table()
+        uid = cvr.stats()[0]['unique_id'].item()
+
+        save_path = pathlib.Path(save_dir) / 'rank_usage'
+        save_path.mkdir(exist_ok=True)
+
+        df.to_csv(save_path / f'{uid}.csv')
+
+    @staticmethod
+    def get_crossover_table(cvr: Type[CastVoteRecord]) -> pd.DataFrame:
+        return cvr.crossover_table()
+
+    @staticmethod
+    def write_crossover_table(cvr: Type[CastVoteRecord],
+                              save_dir: Union[str, pathlib.Path] = None) -> None:
+        count_df, percent_df = cvr.crossover_tables()
+        uid = cvr.stats()[0]['unique_id'].item()
+
+        save_path = pathlib.Path(save_dir) / 'opponent_crossover'
+        save_path.mkdir(exist_ok=True)
+
+        count_df.to_csv(save_path / f'{uid}_count.csv')
+        percent_df.to_csv(save_path / f'{uid}_percent.csv')
+
+    @staticmethod
+    def get_condorcet_tables(cvr: Type[CastVoteRecord]) -> Tuple[pd.DataFrame]:
+        return cvr.condorcet_tables()
+
+    @staticmethod
+    def write_condorcet_tables(cvr: Type[CastVoteRecord],
+                               save_dir: Union[str, pathlib.Path] = None) -> None:
+        count_df, percent_df, condorcet_winner = cvr.condorcet_tables()
+        uid = cvr.stats()[0]['unique_id'].item()
+
+        save_path = pathlib.Path(save_dir) / 'condorcet'
+        save_path.mkdir(exist_ok=True)
+
+        count_df.to_csv(save_path / f'{uid}_count.csv', index_label=f'condorcet winner: {condorcet_winner}')
+        percent_df.to_csv(save_path / f'{uid}_percent.csv', index_label=f'condorcet winner: {condorcet_winner}')
 
     def __init__(self,
                  jurisdiction: str = "",
@@ -143,7 +231,8 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._rule_sets:
             raise RuntimeError(f'rule set {rule_set_name} has not yet been added using add_rule_set().')
 
-        cvr = copy.deepcopy(self._parsed_cvr)
+        cvr = {k: v for k, v in self._parsed_cvr.items()}
+        cvr['ballot_marks'] = [b.copy() for b in cvr['ballot_marks']]
 
         for ballot in cvr['ballot_marks']:
             ballot.apply_rules(**self._rule_sets[rule_set_name])
@@ -168,8 +257,13 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         self._candidate_sets.update({rule_set_name: candidate_ballot_marks})
 
     def add_rule_set(self, set_name: str, set_dict: Dict[str, Optional[bool]]) -> None:
-        # if the set name matches an already computed cvr, delete that cvr
-        if set_name in self._modified_cvrs:
+
+        # if rule set already created, do nothing
+        if set_name in self._rule_sets and set_dict == self._rule_sets[set_name]:
+            return
+
+        # if making a new rule set using the same name, delete old one
+        if set_name in self._rule_sets and set_dict != self._rule_sets[set_name]:
             del self._modified_cvrs[set_name]
             del self._candidate_sets[set_name]
 
@@ -183,7 +277,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._modified_cvrs:
             self._make_modified_cvr(rule_set_name)
 
-        return copy.deepcopy(self._modified_cvrs[rule_set_name])
+        return self._modified_cvrs[rule_set_name]
 
     def get_candidates(self, rule_set_name: Optional[str] = None) -> BallotMarks:
 
@@ -193,4 +287,4 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         if rule_set_name not in self._candidate_sets:
             self._make_candidate_set(rule_set_name)
 
-        return copy.deepcopy(self._candidate_sets[rule_set_name])
+        return self._candidate_sets[rule_set_name]

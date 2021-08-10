@@ -25,11 +25,12 @@ Table of Contents:
     - [*class* **CastVoteRecord**](#class-castvoterecord)
       - [Variables](#variables-1)
       - [Methods](#methods-1)
-    - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsup15)
+    - [*class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUpThresh)](#class-all-rcv-classes-singlewinner-stvfractionalballot-stvwholeballot-until2-sequential-bottomsupthresh)
       - [Methods](#methods-2)
   - [Stat List](#stat-list)
     - [CVR stats](#cvr-stats)
     - [RCV stats](#rcv-stats)
+  - [Parser Functions](#parser-functions)
 
 
 ## Install
@@ -137,7 +138,7 @@ Other tabulation methods implemented but not yet fully tested:
 * STVWholeBallot - multi-winner whole ballot transfer (used in Cambridge).
 * Until2 - single winner election run until 2 candidates remain.
 * Sequential - multi-winner election that consists on sequential single winner elections (used in Utah).
-* BottomsUp15 - multi-winner election run until all candidates are above 15% (used in 2020 Dem Pres Primaries).
+* BottomsUpTresh - multi-winner election run until all candidates are above input threshold (15% threshold used in 2020 Dem Pres Primaries).
 
 
 ## Functions and Classes
@@ -335,7 +336,7 @@ Returns a pandas DataFrame of CVR statistics. See statistics list for more infor
   * Returns: List[DataFrame].
 
 
-### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUp15)
+### *class* **all RCV classes** (SingleWinner, STVFractionalBallot, STVWholeBallot, Until2, Sequential, BottomsUpThresh)
 
 These classes apply rules to a CVR and then tabulate the election rounds.
 
@@ -355,6 +356,7 @@ instance **constructor**:
   * treat_combined_writeins_as_exhaustable_duplicates: (default True)
   * combine_writein_marks: (default True)
   * exclude_writein_marks: (default False)
+  * bottoms_up_threshold: (optional float) between 0 and 1. Only applies to BottomsUpTresh elections. The percentage threshold which all candidates must exceed for tabulation to cease.
 
 <br/>
 <br/>
@@ -396,10 +398,11 @@ Same as get_round_tally_tuple() but the tuples are zipped into a dictionary.
 
 instance function **get_round_transfer_dict**:
 
-Get a dictionary with candidates as keys and transfer values as values. All value should sum to 0.
+Get a dictionary with candidates as keys and transfer values as values.
 
 * Arguments:
   * round_num (int): Which round tally to get results for.
+  * candidate_netted: (bool, default True)  If True, return a dictionary with keys as candidate names and values as netted transfer counts across all eliminated candidates in the given round or, if False, return a dictionary with transfer-from candidate names as keys and values as a second dictionary. The nested dictionary contains transfer-to candidate names as keys and counts of vote transfer between transfer-from and transfer-to candidates as values.
   * tabulation_num (int, default 1): Only applies to contest types which have multiple tabulations (e.x. Sequential).
 
 * Return: Dict
@@ -612,8 +615,109 @@ Returns number of tabulations in a contest.
 
 **total_posttally_exhausted_by_rank_limit** - The number of ballots that exhausted after the first round. Only applied to contest with a restrictive rank limit. The count towards this category ballots must either use all ranks OR at least use the last ranking.
 
+**total_posttally_exhausted_by_rank_limit_fully_ranked** - Subset of **total_posttally_exhausted_by_rank_limit** which ranked all candidates or used all rankings validly.
+
+**total_posttally_exhausted_by_rank_limit_partially_ranked** - Subset of **total_posttally_exhausted_by_rank_limit** which used the final ranking on a rank restricted ballot.
+
 **total_posttally_exhausted_by_abstention** - The number of ballots that exhausted after the first round which do not fall into the categories above.
 
+## Parser Functions
+
+**burlington2006** - parser specific to 2006 Burlington election. Tab-separated file, one ballot per row. Candidate coded rank information starts in the 4th column.
+
+  * Arguments:
+    * cvr_path - Path to cvr file. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**rank_column** - Use for csv file. One ballot per row, with ranking columns appearing in order and named with the word "rank" (e.x. "rank1", "rank2", etc). All other columns are stored as additional ballot information. Include a column 'weight' for weighted ballots.
+
+* Arguments:
+    * cvr_path - Path to cvr file. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**candidate_column** - Use for csv file. One ballot per row, with candidate names appearing as column headers. Integers fill cells under candidate headers indicating marked rank position of column candidate on row *i* ballot. All other columns are stored as additional ballot information. Include a column 'weight' for weighted ballots.
+
+  * Expected files:
+    * cvr.csv - record of all ballot marks.
+    * candidate_codes.csv - Two column file, one named 'candidate' and one named 'code'. If no candidate codes are used, then these two columns should be identical. Column names listed in this file are used to determine which columns in the csr.csv are candidate rank columns.
+
+  * Arguments:
+    * cvr_path - Path to cvr directory. Function will look for a file called 'candidate_codes.csv' in the same directory with one column named 'code' and one named 'candidate'.
+
+**dominion5_2** - Use for parsing the collection of files generated from a Dominion election system. Version 5.2.
+
+  * Expected files:
+    * ContestManifest.json
+    * CandidateManifest.json
+    * PrecinctPortionManifest.json
+    * BallotTypeManifest.json
+    * CountingGroupManifest.json
+    * CvrExport.json
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
+    * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**dominion5_4** - Use for parsing the collection of files generated from a Dominion election system. Version 5.4.
+
+  * Expected files:
+    * ContestManifest.json
+    * CandidateManifest.json
+    * PrecinctPortionManifest.json
+    * PrecinctManifest.json (optional)
+    * BallotTypeManifest.json
+    * CountingGroupManifest.json
+    * BallotTypeContestManifest.json
+    * CvrExport.json
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
+    * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**dominion5_10** - Use for parsing the collection of files generated from a Dominion election system. Version 5.10.
+
+  * Expected files:
+    * ContestManifest.json
+    * CandidateManifest.json
+    * PrecinctPortionManifest.json
+    * PrecinctManifest.json (optional)
+    * BallotTypeManifest.json
+    * CountingGroupManifest.json
+    * BallotTypeContestManifest.json
+    * TabulatorManifest.json
+    * DistrictManifest.json
+    * DistrictTypeManifest.json
+    * DistrictPrecinctPortionManifest.json
+    * CvrExport*.json (1 or more)
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
+    * office - Name of the office listed in ContestManifest.json for which ballots will be parsed.
+
+**optech1** - Format used in most Bay Area elections until switch over to Dominion systems.
+
+  * Expects:
+    * 1 ballot image file (pattern: '*allot*.txt')
+    * 1 master lookup file (pattern: '*aster*.txt')
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
+    * office - Name of the office listed in master lookup under CONTEST field for which ballots will be parsed.
+
+**optech2** - Format used in earliest San Francisco elections (~2004).
+
+  * Expects:
+    * 1 ballot image file (pattern: '*allot*.txt')
+    * 1 cntl file (pattern: '*ntl*.txt')
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
+
+**choice_pro_plus** - Choice Pro Plus format. Used in Cambridge elections.
+
+  * Expects:
+    * 1 .chp file
+
+  * Arguments:
+    * cvr_path - Path to cvr directory.
 
 
 

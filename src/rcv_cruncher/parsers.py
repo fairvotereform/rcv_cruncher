@@ -1,4 +1,6 @@
 
+from typing import (Union)
+
 import csv
 import pathlib
 import json
@@ -37,7 +39,7 @@ def get_parser_dict():
     return parser_dict
 
 
-def cruncher_csv(cvr_path):
+def rank_column(cvr_path):
     """Reads ballot ranking information stored in csv format.
     One ballot per row, with ranking columns appearing in order and named with the word "rank"
     (e.x. "rank1", "rank2", etc)
@@ -68,14 +70,20 @@ def cruncher_csv(cvr_path):
     if os.path.isfile(candidate_codes_fpath):
 
         cand_codes = pd.read_csv(candidate_codes_fpath, encoding="utf8")
+
         cand_codes_dict = {str(code): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
         replace_dict = {col: cand_codes_dict for col in rank_col}
-
         df = df.replace(replace_dict)
+
+        cand_codes_dict = {str(float(code)): cand for code, cand in zip(cand_codes['code'], cand_codes['candidate'])}
+        replace_dict = {col: cand_codes_dict for col in rank_col}
+        df = df.replace(replace_dict)
+
 
     # replace skipped ranks and overvotes with constants
     df = df.replace({col: {'under': BallotMarks.SKIPPED,
                            'skipped': BallotMarks.SKIPPED,
+                           'nan': BallotMarks.SKIPPED,
                            'undervote': BallotMarks.SKIPPED,
                            'over': BallotMarks.OVERVOTE,
                            'overvote': BallotMarks.OVERVOTE,
@@ -128,7 +136,7 @@ def dominion5_4(cvr_path, office):
     # load manifests, with ids as keys
     with open(path / 'ContestManifest.json', encoding="utf8") as f:
         for i in json.load(f)['List']:
-            if i['Description'] == office:
+            if i['Description'].strip() == office:
                 current_contest_id = i['Id']
                 current_contest_rank_limit = i['NumOfRanks']
 
@@ -268,7 +276,7 @@ def dominion5_10(cvr_path, office):
     # load manifests, with ids as keys
     with open(path / 'ContestManifest.json', encoding="utf8") as f:
         for i in json.load(f)['List']:
-            if i['Description'] == office:
+            if i['Description'].strip() == office:
                 current_contest_id = i['Id']
                 current_contest_rank_limit = i['NumOfRanks']
 
@@ -575,7 +583,7 @@ def optech1(cvr_path, office):
                 candidate_contest_map.update({key: candidate_contest_id})
 
     # find contest id
-    contest_reverse_map = {v: k for k, v in master_lookup['Contest'].items()}
+    contest_reverse_map = {v.strip(): k for k, v in master_lookup['Contest'].items()}
     if office not in contest_reverse_map:
         raise RuntimeError(f'contest set office value ({office}) not present in master lookup file {master_lookup_path}')
     contest_id = contest_reverse_map[office]
@@ -741,7 +749,7 @@ def minneapolis2009(cvr_path, office):
     with open(map_file, encoding='utf8') as f:
         for i in f:
             split = i.strip().split('\t')
-            if len(split) >= 3 and split[0] == office:
+            if len(split) >= 3 and split[0].strip() == office:
                 choice_map[split[2]] = split[1]
 
     if choice_map == {}:
@@ -770,84 +778,84 @@ def minneapolis2009(cvr_path, office):
     return bs
 
 
-# def santafe(column_id, contest_id, ctx):
-#     path = ctx['cvr_path']
-#     candidate_map = {}
-#     with open(ctx['cvr_path'].replace('CvrExport', 'CandidateManifest'), encoding='utf8') as f:
-#         for i in f:
-#             row = i.split(',')
-#             if row:
-#                 candidate_map[row[1]] = row[0]
-#     ballots = []
-#     ballot_length = 0
-#     with open(path, "r", encoding='utf8') as f:
-#         reader = csv.reader(f)
-#         header = next(reader)
-#         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
-#         rinds = []
-#         cinds = []
-#         for i in range(len(header)):
-#             try:
-#                 rinds.append(header.index(s.format(column_id, i, 'Rank')))
-#             except ValueError:
-#                 break
-#             cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
-#         col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
-#         for line in reader:
-#             if line[col] == str(contest_id):
-#                 choices = []
-#                 ranks = [int(line[i]) for i in rinds if line[i] != '']
-#                 ballot_length = max(ranks + [ballot_length])
-#                 candidates = iter(cinds)
-#                 for i in range(len(rinds)):
-#                     c = ranks.count(i+1)
-#                     if c == 0:
-#                         choices.append(BallotMarks.SKIPPED)
-#                     elif c == 1:
-#                         next_candidate = line[next(candidates)]
-#                         choices.append(candidate_map[next_candidate])
-#                     else:
-#                         choices.append(BallotMarks.OVERVOTE)
-#                 ballots.append(choices)
-#     return [b[:ballot_length] for b in ballots]
+def santafe(column_id, contest_id, ctx):
+    path = ctx['cvr_path']
+    candidate_map = {}
+    with open(ctx['cvr_path'].replace('CvrExport', 'CandidateManifest'), encoding='utf8') as f:
+        for i in f:
+            row = i.split(',')
+            if row:
+                candidate_map[row[1]] = row[0]
+    ballots = []
+    ballot_length = 0
+    with open(path, "r", encoding='utf8') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
+        rinds = []
+        cinds = []
+        for i in range(len(header)):
+            try:
+                rinds.append(header.index(s.format(column_id, i, 'Rank')))
+            except ValueError:
+                break
+            cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
+        col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
+        for line in reader:
+            if line[col] == str(contest_id):
+                choices = []
+                ranks = [int(line[i]) for i in rinds if line[i] != '']
+                ballot_length = max(ranks + [ballot_length])
+                candidates = iter(cinds)
+                for i in range(len(rinds)):
+                    c = ranks.count(i+1)
+                    if c == 0:
+                        choices.append(BallotMarks.SKIPPED)
+                    elif c == 1:
+                        next_candidate = line[next(candidates)]
+                        choices.append(candidate_map[next_candidate])
+                    else:
+                        choices.append(BallotMarks.OVERVOTE)
+                ballots.append(choices)
+    return [b[:ballot_length] for b in ballots]
 
 
-# def santafe_id(column_id, contest_id, ctx):
-#     path = ctx['cvr_path']
-#     ballots = []
-#     ballot_length = 0
-#     with open(path, "r", encoding='utf8') as f:
-#         reader = csv.reader(f)
-#         header = next(reader)
-#         s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
-#         rinds = []
-#         cinds = []
-#         for i in range(len(header)):
-#             try:
-#                 rinds.append(header.index(s.format(column_id, i, 'Rank')))
-#             except ValueError:
-#                 break
-#             cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
-#         col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
-#         for i, line in enumerate(reader):
-#             if line[col] == str(contest_id):
-#                 choices = collections.UserList([])
-#                 choices.voter_id = i
-#                 ranks = [int(line[i]) for i in rinds if line[i] != '']
-#                 ballot_length = max(ranks + [ballot_length])
-#                 candidates = iter(cinds)
-#                 for i in range(len(rinds)):
-#                     c = ranks.count(i+1)
-#                     if c == 0:
-#                         choices.append(BallotMarks.SKIPPED)
-#                     elif c == 1:
-#                         choices.append(line[next(candidates)])
-#                     else:
-#                         choices.append(BallotMarks.OVERVOTE)
-#                 ballots.append(choices)
-#     for b in ballots:
-#         b.data = b.data[:ballot_length]
-#     return ballots
+def santafe_id(column_id, contest_id, ctx):
+    path = ctx['cvr_path']
+    ballots = []
+    ballot_length = 0
+    with open(path, "r", encoding='utf8') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        s = 'Original/Cards/0/Contests/{}/Marks/{}/{}'
+        rinds = []
+        cinds = []
+        for i in range(len(header)):
+            try:
+                rinds.append(header.index(s.format(column_id, i, 'Rank')))
+            except ValueError:
+                break
+            cinds.append(header.index(s.format(column_id, i, 'CandidateId')))
+        col = header.index('Original/Cards/0/Contests/{}/Id'.format(column_id))
+        for i, line in enumerate(reader):
+            if line[col] == str(contest_id):
+                choices = collections.UserList([])
+                choices.voter_id = i
+                ranks = [int(line[i]) for i in rinds if line[i] != '']
+                ballot_length = max(ranks + [ballot_length])
+                candidates = iter(cinds)
+                for i in range(len(rinds)):
+                    c = ranks.count(i+1)
+                    if c == 0:
+                        choices.append(BallotMarks.SKIPPED)
+                    elif c == 1:
+                        choices.append(line[next(candidates)])
+                    else:
+                        choices.append(BallotMarks.OVERVOTE)
+                ballots.append(choices)
+    for b in ballots:
+        b.data = b.data[:ballot_length]
+    return ballots
 
 
 def dominion5_2(cvr_path, office):
@@ -856,7 +864,7 @@ def dominion5_2(cvr_path, office):
 
     with open(path / 'ContestManifest.json', encoding='utf8') as f:
         for i in json.load(f)['List']:
-            if i['Description'] == office.upper():
+            if i['Description'].strip() == office.upper():
                 contest_id = i['Id']
                 ranks = i['NumOfRanks']
                 if ranks == 0:
@@ -1069,16 +1077,53 @@ def surveyUSA(cvr_path):
     return ballot_dict
 
 
+def candidate_column(cvr_path: Union[str, pathlib.Path]):
+
+    cvr_path = pathlib.Path(cvr_path)
+
+    cvr = pd.read_csv(cvr_path / 'cvr.csv', encoding="utf8")
+    candidate_codes = pd.read_csv(cvr_path / 'candidate_codes.csv', encoding="utf8")
+
+    candidate_dict = {str(code): cand for code, cand in
+                      zip(candidate_codes['code'], candidate_codes['candidate'])}
+
+    max_rank_num = int(cvr[candidate_dict.keys()].max().max())
+
+    ballots = []
+    for _, row in cvr.iterrows():
+        row_ranks = {int(row[code]): candidate_dict[code] for code, value in candidate_dict.items()
+                     if value and not pd.isna(row[code])}
+
+        ballot = []
+        for rank_num in range(1, max_rank_num + 1):
+            if rank_num in row_ranks:
+                ballot.append(row_ranks[rank_num])
+            else:
+                ballot.append(BallotMarks.SKIPPED)
+
+        ballots.append(ballot)
+
+    ballot_dict = {'ranks': ballots}
+    for col in cvr.columns:
+        if col not in candidate_dict:
+            ballot_dict[col] = cvr[col]
+
+    return ballot_dict
+
+
 parser_dict = {
     "burlington2006": burlington2006,
-    "cruncher_csv": cruncher_csv,
+    "rank_column": rank_column,
     "dominion5_2": dominion5_2,
     "dominion5_4": dominion5_4,
     "dominion5_10": dominion5_10,
-    "optech": optech1,
+    "optech1": optech1,
+    "optech2": optech2,
+    "choice_pro_plus": choice_pro_plus,
     "unisyn": unisyn,
     "surveyUSA": surveyUSA,
-    "minneapolis2009": minneapolis2009
+    "minneapolis2009": minneapolis2009,
+    'candidate_column': candidate_column
     # "santafe": santafe, still need to figure out this parser
     # "santafe_id": santafe_id,
 }

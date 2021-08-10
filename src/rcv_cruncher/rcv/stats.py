@@ -53,18 +53,20 @@ class RCV_stats:
         restrictive_rank_limit = self._summary_cvr_stat_table['restrictive_rank_limit'].item()
 
         used_last_rank_list = self._cvr_stat_table['used_last_rank']
+        initial_ranks_list = self.get_initial_ranks(tabulation_num=tabulation_num)
         final_ranks_list = self.get_final_ranks(tabulation_num=tabulation_num)
         ballot_marks_list = self.get_cvr_dict(self._contest_rule_set_name)['ballot_marks']
 
         why_exhaust = []
         # loop through each ballot
-        for used_last_rank, final_ranks, ballot_marks in zip(used_last_rank_list, final_ranks_list, ballot_marks_list):
+        for used_last_rank, inital_ranks, final_ranks, ballot_marks in zip(
+            used_last_rank_list, initial_ranks_list, final_ranks_list, ballot_marks_list):
 
             # if the exhaust status is already known
             if ballot_marks.inactive_type == BallotMarks.UNDERVOTE:
                 why_exhaust.append(InactiveType.UNDERVOTE)
 
-            elif ballot_marks.inactive_type == BallotMarks.PRETALLY_EXHAUST:
+            elif ballot_marks.inactive_type == BallotMarks.PRETALLY_EXHAUST or not inital_ranks:
                 why_exhaust.append(InactiveType.PRETALLY_EXHAUST)
 
             # if the ballot still had some ranks at the end of tabulation
@@ -123,7 +125,7 @@ class RCV_stats:
         '''
         The winner(s) of the election.
         '''
-        return ", ".join([str(w).title() for w in self._tabulation_winner(tabulation_num=tabulation_num)])
+        return ", ".join([str(w) for w in self._tabulation_winner(tabulation_num=tabulation_num)])
 
     def _all_winners(self):
         """
@@ -141,7 +143,10 @@ class RCV_stats:
         """
         elected_candidates = [d for d in self.get_candidate_outcomes(tabulation_num=tabulation_num)
                               if d['round_elected'] is not None]
-        return [d['name'] for d in sorted(elected_candidates, key=lambda x: x['round_elected'])]
+        for candidate in elected_candidates:
+            round_dict = self.get_round_tally_dict(candidate['round_elected'], tabulation_num=tabulation_num)
+            candidate['elected_vote'] = round_dict[candidate['name']]
+        return [d['name'] for d in sorted(elected_candidates, key=lambda x: (x['round_elected'], -x['elected_vote'], x['name']))]
 
     def _condorcet(self, tabulation_num=1):
         '''
@@ -153,6 +158,10 @@ class RCV_stats:
         In the case of multi-winner elections, this result will only pertain to the first candidate elected.
         '''
 
+        contest_cvr_dl = self.get_cvr_dict(self._contest_rule_set_name)
+        contest_cvr_ld = [{'ballot_marks': bm, 'weight': weight}
+                          for bm, weight in zip(contest_cvr_dl['ballot_marks'], contest_cvr_dl['weight'])]
+
         cands = self._contest_candidates
         if len(cands.unique_candidates) == 1:
             return True
@@ -161,17 +170,17 @@ class RCV_stats:
         losers = [cand for cand in cands.unique_candidates if cand != winner]
 
         net = collections.Counter()
-        for b in self._contest_cvr_ld:
+        for b in contest_cvr_ld:
             for loser in losers:
 
                 # does winner or loser appear first on this ballot?
                 ballot_contrib = 0
                 for mark in b['ballot_marks'].marks:
                     if mark == winner:
-                        ballot_contrib = 1
+                        ballot_contrib = b['weight']
                         break
                     if mark == loser:
-                        ballot_contrib = -1
+                        ballot_contrib = -1 * b['weight']
                         break
 
                 # accumulate
@@ -278,9 +287,13 @@ class RCV_stats:
         """
         Number of ballots with a non-overvote mark for the winner. (weighted) (filtered)
         """
+        contest_cvr_dl = self.get_cvr_dict(self._contest_rule_set_name)
+        contest_cvr_ld = [{'ballot_marks': bm, 'weight': weight}
+                          for bm, weight in zip(contest_cvr_dl['ballot_marks'], contest_cvr_dl['weight'])]
+
         winners = self._tabulation_winner(tabulation_num=tabulation_num)
-        winner_marked = [bool(set(winners).intersection(b['ballot_marks'].unique_marks)) for b in self._contest_cvr_ld]
-        return sum(b['weight'] for flag, b in zip(winner_marked, self._contest_cvr_ld) if flag)
+        winner_marked = [bool(set(winners).intersection(b['ballot_marks'].unique_marks)) for b in contest_cvr_ld]
+        return sum(b['weight'] for flag, b in zip(winner_marked, contest_cvr_ld) if flag)
 
     def _win_threshold(self, tabulation_num=1):
         """
@@ -299,10 +312,14 @@ class RCV_stats:
         """
         Number of ballots that ranked any winner in the top 3 ranks. (weighted)
         """
+        contest_cvr_dl = self.get_cvr_dict(self._contest_rule_set_name)
+        contest_cvr_ld = [{'ballot_marks': bm, 'weight': weight}
+                          for bm, weight in zip(contest_cvr_dl['ballot_marks'], contest_cvr_dl['weight'])]
+
         winner = self._tabulation_winner(tabulation_num=tabulation_num)
-        top3 = [b['ballot_marks'].marks[:min(3, len(b['ballot_marks'].marks))] for b in self._contest_cvr_ld]
+        top3 = [b['ballot_marks'].marks[:min(3, len(b['ballot_marks'].marks))] for b in contest_cvr_ld]
         top3_check = [bool(set(winner).intersection(b)) for b in top3]
-        return sum(b['weight'] for flag, b in zip(top3_check, self._contest_cvr_ld) if flag)
+        return sum(b['weight'] for flag, b in zip(top3_check, contest_cvr_ld) if flag)
 
     def _compute_contest_stat_table(self):
 
@@ -344,6 +361,10 @@ class RCV_stats:
             ]
             df['posttally_exhausted'+str(iTab)] = df[all_posttally_conditions].any(axis='columns')
 
+            exh_by_rank_limit_fully_ranked = self._cvr_stat_table['fully_ranked_incl_overvotes'] & \
+                df[exhaust_type_str].eq(InactiveType.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT)
+            df[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] = exh_by_rank_limit_fully_ranked
+
         self._contest_stat_table = df
 
     def _compute_summary_contest_stat_tables(self) -> None:
@@ -363,24 +384,27 @@ class RCV_stats:
             exclude_writeins = self._rule_sets[self._contest_rule_set_name]['exclude_writein_marks']
             treat_writeins = self._rule_sets[self._contest_rule_set_name]['treat_combined_writeins_as_exhaustable_duplicates']
 
+            s['n_winners'] = self._n_winners
+            s['bottoms_up_threshold'] = self._bottoms_up_threshold
             s['exhaust_on_overvote_marks'] = exhaust_on_overvote
             s['exhaust_on_repeated_skipped_marks'] = exhaust_on_repeated_skipped
             s['exhaust_on_duplicate_candidate_marks'] = exhaust_on_duplicate
-            s['combine_writein_marks'] = combine_writeins,
-            s['exclude_writein_marks'] = exclude_writeins,
+            s['combine_writein_marks'] = combine_writeins
+            s['exclude_writein_marks'] = exclude_writeins
             s['treat_combined_writeins_as_exhaustable_duplicates'] = treat_writeins
 
-            s['number_of_winners'] = self._number_of_winners()
+            s['number_of_tabulation_winners'] = len(self._tabulation_winner(tabulation_num=iTab))
+            s['number_of_contest_winners'] = len(self._all_winners())
 
             s['tabulation_num'] = iTab
             s['winner'] = self._winner(tabulation_num=iTab)
-            s['number_of_rounds'] = self.n_rounds(tabulation_num=iTab)
+            s['n_rounds'] = self.n_rounds(tabulation_num=iTab)
             s['winners_consensus_value'] = self._winners_consensus_value(tabulation_num=iTab)
 
             first_round_active_votes = sum(self.get_round_tally_dict(1, tabulation_num=iTab).values())
             s['first_round_active_votes'] = first_round_active_votes
 
-            final_round_active_votes = sum(self.get_round_tally_dict(s['number_of_rounds'], tabulation_num=iTab).values())
+            final_round_active_votes = sum(self.get_round_tally_dict(s['n_rounds'], tabulation_num=iTab).values())
             s['final_round_active_votes'] = final_round_active_votes
 
             weight = self._contest_stat_table[f'final_weight{iTab}']
@@ -400,11 +424,15 @@ class RCV_stats:
             posttally_abstention = sum(self._contest_stat_table[f'posttally_exhausted_by_abstention{iTab}'] * weight)
             s['total_posttally_exhausted_by_abstention'] = posttally_abstention
 
+            posttally_duplicate = sum(self._contest_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
+            s['total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
+
             posttally_rank_limit = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit{iTab}'] * weight)
             s['total_posttally_exhausted_by_rank_limit'] = posttally_rank_limit
 
-            posttally_duplicate = sum(self._contest_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
-            s['total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
+            posttally_rank_limit_full = sum(self._contest_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
+            s['total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
+            s['total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit - posttally_rank_limit_full
 
             if len(self._tabulation_winner(tabulation_num=iTab)) == 1:
 
@@ -420,7 +448,7 @@ class RCV_stats:
                 final_over_first = self._final_round_winner_votes_over_first_round_active(tabulation_num=iTab)
                 s['final_round_winner_votes_over_first_round_active'] = final_over_first
 
-                s['win_threshold'] = None
+                s['static_win_threshold'] = None
 
             else:
 
@@ -434,7 +462,7 @@ class RCV_stats:
                 s['come_from_behind'] = None
                 s['ranked_winner'] = None
 
-                s['win_threshold'] = self.get_win_threshold(tabulation_num=iTab)
+                s['static_win_threshold'] = self.get_win_threshold(tabulation_num=iTab)
 
             tabulation_stats.append(s.to_frame().transpose())
 
@@ -470,6 +498,10 @@ class RCV_stats:
             posttally_rank_limit = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_rank_limit'] = posttally_rank_limit
 
+            posttally_rank_limit_full = sum(filtered_stat_table[f'posttally_exhausted_by_rank_limit_fully_ranked{iTab}'] * weight)
+            s['split_total_posttally_exhausted_by_rank_limit_fully_ranked'] = posttally_rank_limit_full
+            s['split_total_posttally_exhausted_by_rank_limit_partially_ranked'] = posttally_rank_limit - posttally_rank_limit_full
+
             posttally_duplicate = sum(filtered_stat_table[f'posttally_exhausted_by_duplicate_rankings{iTab}'] * weight)
             s['split_total_posttally_exhausted_by_duplicate_rankings'] = posttally_duplicate
 
@@ -482,7 +514,7 @@ class RCV_stats:
         if not self._split_filter_dict:
             return
 
-        split_tabulation_stat_df_list = [[]] * self._tab_num
+        split_tabulation_stat_df_list = [[] for _ in range(self._tab_num)]
 
         for field in self._split_filter_dict:
             field_clean = self._clean_string(field)

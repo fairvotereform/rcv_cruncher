@@ -89,7 +89,7 @@ class CastVoteRecord_stats:
         irregular_condtions = ['contains_overvote', 'contains_skip', 'contains_duplicate']
         df['irregular'] = df[irregular_condtions].any(axis='columns')
 
-        # fully_ranked
+        # fully_ranked no overvotes
         candidates_combined_writeins = BallotMarks.combine_writein_marks(candidates)
         candidates_excluded_writeins = BallotMarks.remove_mark(candidates_combined_writeins, [BallotMarks.WRITEIN])
         candidate_set = candidates_excluded_writeins.unique_candidates
@@ -103,7 +103,23 @@ class CastVoteRecord_stats:
                         len(a.marks) == len(b.marks)
                         # or did not, had no skipped ranks, overvotes, or duplicates
                         for a, b in zip(cvr['ballot_marks'], ballot_marks_cleaned)]
-        df['fully_ranked'] = fully_ranked
+        df['fully_ranked_excl_overvotes'] = fully_ranked
+
+        # fully_ranked with overvotes
+        candidates_combined_writeins = BallotMarks.combine_writein_marks(candidates)
+        candidates_excluded_writeins = BallotMarks.remove_mark(candidates_combined_writeins, [BallotMarks.WRITEIN])
+        candidate_set = candidates_excluded_writeins.unique_candidates
+
+        ballot_marks_cleaned = [BallotMarks.remove_mark(b, [BallotMarks.SKIPPED])
+                                for b in cvr['ballot_marks']]
+        ballot_marks_cleaned = [BallotMarks.remove_duplicate_candidate_marks(b) for b in ballot_marks_cleaned]
+
+        fully_ranked = [(set(b.marks) & candidate_set) == candidate_set or
+                        # voters ranked every possible candidate
+                        len(a.marks) == len(b.marks)
+                        # or did not, had no skipped ranks, overvotes, or duplicates
+                        for a, b in zip(cvr['ballot_marks'], ballot_marks_cleaned)]
+        df['fully_ranked_incl_overvotes'] = fully_ranked
 
         self._cvr_stat_table = df
 
@@ -142,7 +158,7 @@ class CastVoteRecord_stats:
 
         # The number of voters that have validly used all available rankings on the
         # ballot, or that have validly ranked all non-write-in candidates. (weighted)
-        s['total_fully_ranked'] = self._cvr_stat_table.loc[self._cvr_stat_table['fully_ranked'], 'weight'].sum()
+        s['total_fully_ranked'] = self._cvr_stat_table.loc[self._cvr_stat_table['fully_ranked_excl_overvotes'], 'weight'].sum()
 
         # The number of ballots that rank the same candidate more than once. (weighted)
         s['includes_duplicate_ranking'] = self._cvr_stat_table.loc[self._cvr_stat_table['contains_duplicate'], 'weight'].sum()
@@ -204,7 +220,7 @@ class CastVoteRecord_stats:
         ranked_single = filtered_stat_table.loc[filtered_stat_table['ranked_single'], 'weight'].sum()
         ranked_multiple = filtered_stat_table.loc[filtered_stat_table['ranked_multiple'], 'weight'].sum()
         ranked_3_or_more = filtered_stat_table.loc[filtered_stat_table['ranked_3_or_more'], 'weight'].sum()
-        total_fully_ranked = filtered_stat_table.loc[filtered_stat_table['fully_ranked'], 'weight'].sum()
+        total_fully_ranked = filtered_stat_table.loc[filtered_stat_table['fully_ranked_excl_overvotes'], 'weight'].sum()
         includes_duplicate_ranking = filtered_stat_table.loc[filtered_stat_table['contains_duplicate'], 'weight'].sum()
         includes_skipped_ranking = filtered_stat_table.loc[filtered_stat_table['contains_skip'], 'weight'].sum()
         total_irregular = filtered_stat_table.loc[filtered_stat_table['irregular'], 'weight'].sum()

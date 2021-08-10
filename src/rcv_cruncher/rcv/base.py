@@ -4,6 +4,8 @@ from typing import (Dict, Tuple, Type, Union, List, Optional)
 import abc
 import collections
 import decimal
+import random
+import pathlib
 
 import pandas as pd
 
@@ -24,6 +26,47 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
     @staticmethod
     def get_variant_name(rcv_obj: Type[RCV]) -> str:
         return rcv_obj.__class__.__name__
+
+    @staticmethod
+    def get_winner_choice_position_distribution_table(rcv_obj: Type[RCV],
+                                                      tabulation_num: int = 1) -> Optional[pd.DataFrame]:
+        return rcv_obj.winner_choice_position_distribution_table(tabulation_num=tabulation_num)
+
+    @staticmethod
+    def get_first_choice_to_finalist_table(rcv_obj: Type[RCV], tabulation_num: int = 1) -> pd.DataFrame:
+        return rcv_obj.first_choice_to_finalist_table(tabulation_num=tabulation_num)
+
+    @staticmethod
+    def get_candidate_rank_usage_table(rcv_obj: Type[CastVoteRecord]) -> pd.DataFrame:
+        return rcv_obj.candidate_rank_usage_table()
+
+    @staticmethod
+    def write_first_choice_to_finalist_table(rcv_obj: Type[RCV],
+                                             save_dir: Union[str, pathlib.Path] = None) -> None:
+
+        save_path = pathlib.Path(save_dir) / 'first_choice_to_finalist'
+        save_path.mkdir(exist_ok=True)
+
+        uid = rcv_obj.stats()[0]['unique_id'].item()
+        for iTab in range(1, rcv_obj.n_tabulations() + 1):
+            df = rcv_obj.first_choice_to_finalist_table(tabulation_num=iTab)
+            df.to_csv(save_path / f'{uid}_tab{iTab}.csv')
+
+    @staticmethod
+    def get_round_by_round_table(rcv_obj: Type[RCV], tabulation_num: int = 1) -> pd.DataFrame:
+        return rcv_obj.round_by_round_table(tabulation_num=tabulation_num)
+
+    @staticmethod
+    def write_round_by_round_table(rcv_obj: Type[RCV],
+                                   save_dir: Union[str, pathlib.Path] = None) -> None:
+
+        save_path = pathlib.Path(save_dir) / 'round_by_round_table'
+        save_path.mkdir(exist_ok=True)
+
+        uid = rcv_obj.stats()[0]['unique_id'].item()
+        for iTab in range(1, rcv_obj.n_tabulations() + 1):
+            df = rcv_obj.round_by_round_table(tabulation_num=iTab)
+            df.to_csv(save_path / f'{uid}_tab{iTab}.csv', index=False)
 
     # override me
     @abc.abstractmethod
@@ -80,6 +123,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                  exclude_writein_marks: bool = False,
                  n_winners: Optional[int] = None,
                  multi_winner_rounds: Optional[bool] = None,
+                 bottoms_up_threshold: Optional[float] = None,
                  *args, **kwargs) -> None:
 
         # INIT CVR
@@ -101,6 +145,9 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                           ))
 
         # CONTEST INPUTS
+        self._bottoms_up_threshold = None
+        if bottoms_up_threshold is not None:
+            self._bottoms_up_threshold = decimal.Decimal(str(bottoms_up_threshold))
         self._n_winners = n_winners
         self._multi_winner_rounds = multi_winner_rounds
         self._contest_candidates = self.get_candidates(self._contest_rule_set_name)
@@ -137,7 +184,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
     def stats(self,
               keep_decimal_type: bool = False,
               add_split_stats: bool = False,
-              add_id_info: bool = True) -> pd.DataFrame:
+              add_id_info: bool = True) -> List[pd.DataFrame]:
 
         # start with cvr stats, 1 set per cvr
         cvr_stats = self._summary_cvr_stat_table.copy()
@@ -210,13 +257,14 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         self._tabulations.append(
             {
                 'rounds': [],
-                'transfers': [],
+                'summary_transfers': [],
+                'by_candidate_transfers': [],
                 'candidate_outcomes': new_outcomes,
-                'final_weights': [],
                 'final_weight_distrib': [],
                 'final_ranks': [],
                 'initial_ranks': [],
-                'initial_weights': [],
+                'ballot_round_allocation': [],
+                'ballot_round_weight': [],
                 'win_threshold': None
             }
         )
@@ -230,7 +278,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         first_elimination_round = None
 
         # remove inactive candidates
-        self._clean_round()
+        self._clean_ballots()
 
         # checks to make tabulation can proceed
         self._pre_check()
@@ -238,9 +286,6 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         # store initial values
         initial_ranks = [b['ballot_marks'].marks for b in self._contest_cvr_ld]
         self._tabulations[self._tab_num-1]['initial_ranks'] = initial_ranks
-
-        initial_weights = [b['weight'] for b in self._contest_cvr_ld]
-        self._tabulations[self._tab_num-1]['initial_weights'] = initial_weights
 
         not_complete = self._contest_not_complete()
         while not_complete:
@@ -270,6 +315,8 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                 self._inactive_candidates += novote_losers
                 first_elimination_round = False
 
+                self._clean_ballots()
+
             #############################################
             # IDENTIFY ROUND LOSER
             self._set_round_loser()
@@ -292,15 +339,16 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
             if not_complete:
                 self._calc_round_transfer()
             else:
-                self._tabulations[self._tab_num-1]['transfers'].append(
+                self._tabulations[self._tab_num-1]['summary_transfers'].append(
                     {cand: util.NAN for cand in self._contest_candidates.unique_candidates.union({'exhaust'})})
+                self._tabulations[self._tab_num-1]['by_candidate_transfers'].append({})
 
             #############################################
             # CLEAN ROUND BALLOTS
             # remove inactive candidates
             # don't clean if contest over
             if not_complete:
-                self._clean_round()
+                self._clean_ballots()
 
         # record final ballot weight distributions
         final_weight_distrib = [b['weight_distrib'] + [(b['ballot_marks'].marks[0], b['weight'])]
@@ -308,17 +356,13 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                                 for b in self._contest_cvr_ld]
         self._tabulations[self._tab_num-1]['final_weight_distrib'] = final_weight_distrib
 
-        # set final weight for each ballot
-        final_weights = [b['weight'] for b in self._contest_cvr_ld]
-        self._tabulations[self._tab_num-1]['final_weights'] = final_weights
-
         # set final ranks for each ballot
         final_ranks = [b['ballot_marks'].marks for b in self._contest_cvr_ld]
         self._tabulations[self._tab_num-1]['final_ranks'] = final_ranks
 
         self._tabulations[self._tab_num-1]['win_threshold'] = self._win_threshold()
 
-    def _clean_round(self) -> None:
+    def _clean_ballots(self) -> None:
         """
         Remove any newly inactivated candidates from the ballot ranks.
         """
@@ -336,17 +380,27 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
     def _tally_active_ballots(self) -> None:
 
         # tally current and distributed weights
+        ballot_alloc = []
+        ballot_alloc_weight = []
         vote_alloc = collections.Counter({cand: 0 for cand in self._contest_candidates.unique_candidates})
 
         for b in self._contest_cvr_ld:
-            if b['ballot_marks'].marks:
-                vote_alloc[b['ballot_marks'].marks[0]] += b['weight']
+
+            candidate = "exhaust" if len(b['ballot_marks'].marks) == 0 else b['ballot_marks'].marks[0]
+            ballot_alloc.append(candidate)
+            ballot_alloc_weight.append(b['weight'])
+
+            if candidate != "exhaust":
+                vote_alloc[candidate] += b['weight']
+
             if b['weight_distrib']:
                 for candidate, weight in b['weight_distrib']:
                     vote_alloc[candidate] += weight
 
         round_results = list(zip(*vote_alloc.most_common()))
         self._tabulations[self._tab_num-1]['rounds'].append(round_results)
+        self._tabulations[self._tab_num-1]['ballot_round_allocation'].append(ballot_alloc)
+        self._tabulations[self._tab_num-1]['ballot_round_weight'].append(ballot_alloc_weight)
 
     def _update_candidates(self) -> None:
         """
@@ -391,15 +445,15 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         loser_count = min(i for i in round_tallies if i)
 
         # haven't implemented any special rules for tied losers. Print a warning if one is reached
-        if len([cand for cand, cand_tally
-                in zip(active_candidates, round_tallies) if cand_tally == loser_count]) > 1:
-            raise RuntimeWarning("reached a round with tied losers....")
+        # if len([cand for cand, cand_tally
+        #         in zip(active_candidates, round_tallies) if cand_tally == loser_count]) > 1:
+        #     raise RuntimeWarning("reached a round with tied losers....")
 
         # in case of tied losers, choose one to eliminate (the last one in alpha order)
         round_losers = sorted([cand for cand, cand_tally
                                in zip(active_candidates, round_tallies)
                                if cand_tally == loser_count])
-        self._round_loser = round_losers[-1]
+        self._round_loser = random.sample(round_losers, 1)[0]
 
     def get_round_tally_tuple(self,
                               round_num: int,
@@ -449,11 +503,15 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
 
     def get_round_transfer_dict(self,
                                 round_num: int,
+                                candidate_netted: bool = True,
                                 tabulation_num: int = 1) -> Dict[str, decimal.Decimal]:
         """
         Return a dictionary containing keys as candidates + 'exhaust' and values as their round net transfer
         """
-        transfers = self._tabulations[tabulation_num-1]['transfers']
+        if candidate_netted:
+            transfers = self._tabulations[tabulation_num-1]['summary_transfers']
+        else:
+            transfers = self._tabulations[tabulation_num-1]['by_candidate_transfers']
         return transfers[round_num-1]
 
     def get_candidate_outcomes(self, tabulation_num: int = 1) -> List[Dict]:
@@ -467,10 +525,10 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         """
         Return a list of ballot weights after tabulation, index-matched with ballots
         """
-        final_weights = self._tabulations[tabulation_num-1]['final_weights']
+        final_weights = self._tabulations[tabulation_num-1]['ballot_round_weight'][-1]
         return final_weights
 
-    def get_initial_ranks(self, tabulation_num: int = 1) -> List[List[BallotMarks]]:
+    def get_initial_ranks(self, tabulation_num: int = 1) -> List[List]:
         """
         Return a list of ballot ranks prior to tabulation, but after an initial cleaning. Each set of ranks is a list.
         """
@@ -481,10 +539,10 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         """
         Return a list of ballot weights prior to tabulation, but after an initial cleaning. Each set of ranks is a list.
         """
-        initial_weights = self._tabulations[tabulation_num-1]['initial_weights']
+        initial_weights = self._tabulations[tabulation_num-1]['ballot_round_weight'][0]
         return initial_weights
 
-    def get_final_ranks(self, tabulation_num: int = 1) -> List[List[BallotMarks]]:
+    def get_final_ranks(self, tabulation_num: int = 1) -> List[List]:
         """
         Return a list of ballot ranks after tabulation. Each set of ranks is a list.
         """

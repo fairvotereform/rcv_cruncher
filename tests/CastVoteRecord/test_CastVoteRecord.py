@@ -564,7 +564,7 @@ params = [
 def test_get_cvr_table(param):
 
     cast_vote_record = CastVoteRecord(parsed_cvr=param['input']['cvr'])
-    table = cast_vote_record.get_cvr_table(table_format=param['input']['format'])
+    table = cast_vote_record.cvr_table(table_format=param['input']['format'])
 
     for col in table.columns:
         assert table[col].equals(param['expected']['table'][col])
