@@ -1,0 +1,3 @@
+[submodule "tests/contest_sets/urcvt-tests"]
+	path = tests/contest_sets/urcvt-tests
+	url = https://github.com/brightspots/rcvtests.git
