@@ -6,15 +6,33 @@
 Welcome to rcv-cruncher's documentation!
 ========================================
 
+The **rcv-cruncher** Python package contains tools for analyzing Ranked Choice Voting **cast vote record** election data. Some of its features include:
+
+- tools to read many of the current and historical cast vote record file formats used in US RCV elections and convert them into Excel-friendly csv files
+- tabulation methods for various RCV variants in use throughout the US (single winner IRV, multi winner STV, etc)
+- a variety of useful statistics calculated for each election including (e.g. number of ballots inactivated and the cause of inactivation, rank usage distribution by candidate, condorcet tables, ...)
+- the ability to analyze elections in batches
+
+To get started follow the installation instructions below, then check out the how-to guides to explore the package's features.
+
+Installation
+------------
+
+**rcv-cruncher** requires Python version >= 3.9
+
+Install using :code:`pip`:
+
+.. code-block:: python
+
+   pip install rcv-cruncher
+
+Further Documentation
+---------------------
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   how-tos/index
+   tabulation
+   statistics
+   api

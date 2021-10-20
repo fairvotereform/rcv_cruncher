@@ -1,4 +1,3 @@
-
 import pytest
 
 from rcv_cruncher.cvr.base import CastVoteRecord
@@ -12,10 +11,10 @@ from rcv_cruncher.cvr.base import CastVoteRecord
 
 params = [
     (ValueError, None),
-    (RuntimeError, {'ranks': []}),
-    (RuntimeError, {'RANKS': [['A', 'B', 'C']]}),
-    (RuntimeError, {'ranks': [['A'], ['A', 'B']]}),
-    (RuntimeError, {'ranks': [['A', 'B'], ['A', 'B']], 'weight': [1, 1, 1]})
+    (RuntimeError, {"ranks": []}),
+    (RuntimeError, {"RANKS": [["A", "B", "C"]]}),
+    (RuntimeError, {"ranks": [["A"], ["A", "B"]]}),
+    (RuntimeError, {"ranks": [["A", "B"], ["A", "B"]], "weight": [1, 1, 1]}),
 ]
 
 
@@ -28,9 +27,7 @@ def test_constructor_errors(error_type, inputs):
 
 def test_get_cvr_table_errors():
 
-    cvr = CastVoteRecord(parsed_cvr={
-        'ranks': [["A", "B", "C"]]
-    })
+    cvr = CastVoteRecord(parsed_cvr={"ranks": [["A", "B", "C"]]})
 
     with pytest.raises(RuntimeError):
-        cvr.cvr_table(table_format=None)
+        cvr.get_cvr_table(table_format=None)

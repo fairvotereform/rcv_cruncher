@@ -10,16 +10,19 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("."))
+# sys.path.insert(0, os.path.abspath("../../src"))
+sys.path.insert(0, os.path.abspath("../../src/rcv_cruncher"))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'rcv-cruncher'
-copyright = '2021, FairVote'
-author = 'FairVote'
+project = "rcv-cruncher"
+copyright = "2021, FairVote"
+author = "FairVote"
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,25 +31,47 @@ author = 'FairVote'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx_copybutton"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
 
+autosummary_mock_imports = [
+    'rcv_cruncher.util',
+    'rcv_cruncher.cli',
+    # 'rcv_cruncher.cvr.stats',
+    # 'rcv_cruncher.cvr.tables',
+    # 'rcv_cruncher.rcv.base',
+    # 'rcv_cruncher.rcv.stats',
+    # 'rcv_cruncher.rcv.tables'
+]
 
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "furo"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
+
+# html_sidebars = {
+#     '**': [
+#         'about.html',
+#         'navigation.html',
+#         'relations.html',
+#         'searchbox.html',
+#         'donate.html',
+#     ]
+# }

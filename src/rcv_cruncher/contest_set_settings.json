@@ -67,6 +67,10 @@
         "type":	"func",
         "default": "None"
     },
+    "bottoms_up_threshold": {
+        "type": "float",
+        "default": "np.NAN"
+    },
     "split_fields":{
         "type": "list",
         "default": ""

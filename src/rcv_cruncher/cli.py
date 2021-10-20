@@ -23,25 +23,33 @@ import rcv_cruncher.batch as batch
 def main():
 
     # argument parse and valid
-    p = argparse.ArgumentParser(description='Analyze RCV election data.'
-                                'For information on input file preparation, check the documentation at ***docs link here ****')
+    # p = argparse.ArgumentParser(
+    #     description="Analyze RCV election data."
+    #     "For information on input file preparation, check the documentation at ***docs link here ****"
+    # )
 
-    p.add_argument('contest_set_path', help="Path to directory containing contest_set.csv and run_config.json.")
-    p.add_argument('--fresh', action='store_true',
-                   help='Delete existing results/ and converted_cvr/ directories located in contest set directory')
+    # p.add_argument(
+    #     "contest_set_path",
+    #     help="Path to directory containing contest_set.csv and run_config.json.",
+    # )
+    # p.add_argument(
+    #     "--fresh",
+    #     action="store_true",
+    #     help="Delete existing results/ and converted_cvr/ directories located in contest set directory",
+    # )
     # p.add_argument('--output_path', help='By default all output will be written to contest_set_path,'
     #                                      'provide this argument to specify an alternative.')
 
-    args = p.parse_args()
-    contest_set_path = args.contest_set_path
-    fresh = args.fresh
-    output_path = contest_set_path  # args.output_path if args.output_path else args.contest_set_path
+    # args = p.parse_args()
+    # contest_set_path = args.contest_set_path
+    # fresh = args.fresh
+    # output_path = contest_set_path  # args.output_path if args.output_path else args.contest_set_path
 
-    if not os.path.isabs(contest_set_path):
-        contest_set_path = f'{os.getcwd()}/{contest_set_path}'
+    # if not os.path.isabs(contest_set_path):
+    #     contest_set_path = f"{os.getcwd()}/{contest_set_path}"
 
-    if not os.path.isdir(contest_set_path):
-        raise RuntimeError(f'invalid path [contest_set_path]: {contest_set_path}')
+    # if not os.path.isdir(contest_set_path):
+    #     raise RuntimeError(f"invalid path [contest_set_path]: {contest_set_path}")
 
     # if not os.path.isabs(output_path):
     #     output_path = f'{os.getcwd()}/{output_path}'
@@ -50,9 +58,9 @@ def main():
     #     raise RuntimeError(f'invalid path [output_path]: {output_path}')
 
     # read in contest set info
-    contest_set, run_config = batch.read_contest_set(contest_set_path)
+    # contest_set, run_config = batch.read_contest_set(contest_set_path)
 
-    # analyze contests
-    batch.crunch_contest_set(contest_set, run_config, output_path, fresh_output=fresh)
+    # # analyze contests
+    # batch.crunch_contest_set(contest_set, run_config, output_path, fresh_output=fresh)
 
-    return(0)
+    return 0

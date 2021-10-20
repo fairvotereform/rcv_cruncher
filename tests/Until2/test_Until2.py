@@ -1,4 +1,3 @@
-
 import pytest
 
 from rcv_cruncher.marks import BallotMarks
@@ -31,303 +30,255 @@ from rcv_cruncher.rcv.variants import Until2
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 2,
-            'rounds': [
-                {
-                    'A': 2,
-                    'B': 0,
-                    'C': 1,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 2
-
-                },
-                {
-                    'A': 3,
-                    'B': 0,
-                    'C': 0,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 2
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
                 }
-            ]
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 2,
-            'rounds': [
-                {
-                    'A': 2,
-                    'B': 0,
-                    'C': 1,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 2
-
-                },
-                {
-                    'A': 2,
-                    'B': 0,
-                    'C': 0,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 3
-                }
-            ]
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ]
-            }
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 3,
-            'rounds': [
-                {
-                    'A': 3,
-                    'B': 0,
-                    'C': 2,
-                    'D': 1,
-                    BallotMarks.WRITEIN: 2
-
-                },
-                {
-                    'A': 3,
-                    'B': 0,
-                    'C': 2,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 3
-                },
-                {
-                    'A': 3,
-                    'B': 0,
-                    'C': 0,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 4
-                }
-            ]
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1, 1]
-            }
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 3,
-            'rounds': [
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 2,
-                    'D': 1,
-                    BallotMarks.WRITEIN: 3
-
-                },
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 2,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 4
-                },
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 0,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 5
-                }
-            ]
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1, 1]
             },
-
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 3,
-            'rounds': [
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 2,
-                    'D': 1,
-                    BallotMarks.WRITEIN: 3
-
-                },
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 2,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 4
-                },
-                {
-                    'A': 6,
-                    'B': 0,
-                    'C': 0,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 5
-                }
-            ]
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 2,
+                "rounds": [
+                    {"A": 2, "B": 0, "C": 1, "D": 0, BallotMarks.WRITEIN: 2},
+                    {"A": 3, "B": 0, "C": 0, "D": 0, BallotMarks.WRITEIN: 2},
                 ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 4,
-            'rounds': [
-                {
-                    'A': 1,
-                    'B': 2,
-                    'C': 2,
-                    'D': 5,
-                    'E': 5
-                },
-                {
-                    'A': 0,
-                    'B': 2,
-                    'C': 3,
-                    'D': 5,
-                    'E': 5
-                },
-                {
-                    'A': 0,
-                    'B': 0,
-                    'C': 3,
-                    'D': 5,
-                    'E': 5
-                },
-                {
-                    'A': 0,
-                    'B': 0,
-                    'C': 0,
-                    'D': 5,
-                    'E': 6
-                }
-            ]
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 2,
+                "rounds": [
+                    {"A": 2, "B": 0, "C": 1, "D": 0, BallotMarks.WRITEIN: 2},
+                    {"A": 2, "B": 0, "C": 0, "D": 0, BallotMarks.WRITEIN: 3},
                 ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
             },
-
-        },
-        'expected': {
-            'n_tabulation': 1,
-            'n_round': 2,
-            'rounds': [
-                {
-                    'A': 8,
-                    'B': 0,
-                    'C': 2,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 1
-
-                },
-                {
-                    'A': 8,
-                    'B': 0,
-                    'C': 2,
-                    'D': 0,
-                    BallotMarks.WRITEIN: 0
-                }
-            ]
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ]
+                }
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 3,
+                "rounds": [
+                    {"A": 3, "B": 0, "C": 2, "D": 1, BallotMarks.WRITEIN: 2},
+                    {"A": 3, "B": 0, "C": 2, "D": 0, BallotMarks.WRITEIN: 3},
+                    {"A": 3, "B": 0, "C": 0, "D": 0, BallotMarks.WRITEIN: 4},
+                ],
+            },
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1, 1],
+                }
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 3,
+                "rounds": [
+                    {"A": 6, "B": 0, "C": 2, "D": 1, BallotMarks.WRITEIN: 3},
+                    {"A": 6, "B": 0, "C": 2, "D": 0, BallotMarks.WRITEIN: 4},
+                    {"A": 6, "B": 0, "C": 0, "D": 0, BallotMarks.WRITEIN: 5},
+                ],
+            },
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1, 1],
+                },
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 3,
+                "rounds": [
+                    {"A": 6, "B": 0, "C": 2, "D": 1, BallotMarks.WRITEIN: 3},
+                    {"A": 6, "B": 0, "C": 2, "D": 0, BallotMarks.WRITEIN: 4},
+                    {"A": 6, "B": 0, "C": 0, "D": 0, BallotMarks.WRITEIN: 5},
+                ],
+            },
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 4,
+                "rounds": [
+                    {"A": 1, "B": 2, "C": 2, "D": 5, "E": 5},
+                    {"A": 0, "B": 2, "C": 3, "D": 5, "E": 5},
+                    {"A": 0, "B": 0, "C": 3, "D": 5, "E": 5},
+                    {"A": 0, "B": 0, "C": 0, "D": 5, "E": 6},
+                ],
+            },
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {
+                "n_tabulation": 1,
+                "n_round": 2,
+                "rounds": [
+                    {"A": 8, "B": 0, "C": 2, "D": 0, BallotMarks.WRITEIN: 1},
+                    {"A": 8, "B": 0, "C": 2, "D": 0, BallotMarks.WRITEIN: 0},
+                ],
+            },
+        }
+    ),
 ]
 
 # 'exhaust_on_duplicate_candidate_marks': False,
@@ -340,2524 +291,3539 @@ params = [
 
 @pytest.mark.parametrize("param", params)
 def test_tabulation(param):
-    rcv = Until2(**param['input'])
+    rcv = Until2(**param["input"])
 
     # confirm tabulation num
     n_tabulations = rcv.n_tabulations()
-    assert n_tabulations == param['expected']['n_tabulation']
+    assert n_tabulations == param["expected"]["n_tabulation"]
 
     # confirm round num
     n_round = rcv.n_rounds(tabulation_num=1)
-    assert n_round == param['expected']['n_round']
+    assert n_round == param["expected"]["n_round"]
 
     # confirm round tallies
     tally_dict = [rcv.get_round_tally_dict(round_num=i) for i in range(1, n_round + 1)]
     tally_dict = [{k: float(v) for k, v in d.items()} for d in tally_dict]
-    assert tally_dict == param['expected']['rounds']
+    assert tally_dict == param["expected"]["rounds"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 2
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 2
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 2
+            "expected": {"stat": 2},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 8
+            "expected": {"stat": 2},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 2},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 8},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_first_round_winner_vote(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['first_round_winner_vote'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["first_round_winner_vote"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 3
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 3
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 4
+            "expected": {"stat": 3},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 9
+            "expected": {"stat": 3},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 4},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 9},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_final_round_winner_vote(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['final_round_winner_vote'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["final_round_winner_vote"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 40
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 40
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 25
+            "expected": {"stat": 40},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': round(100 * 8/11, 3)
+            "expected": {"stat": 40},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 25},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": round(100 * 8 / 11, 3)},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_first_round_winner_percent(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['first_round_winner_percent'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["first_round_winner_percent"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 60
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 60
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': round(100 * 4/7, 3)
+            "expected": {"stat": 60},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 80
+            "expected": {"stat": 60},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": round(100 * 4 / 7, 3)},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 80},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_final_round_winner_percent(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['final_round_winner_percent'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["final_round_winner_percent"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 2
+            "expected": {"stat": 1},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 2},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 1},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_first_round_winner_place(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['first_round_winner_place'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["first_round_winner_place"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': True
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': True
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': False
+            "expected": {"stat": True},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': True
+            "expected": {"stat": True},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": False},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": True},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_condorcet(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['condorcet'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["condorcet"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': False
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': False
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': True
+            "expected": {"stat": False},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': False
+            "expected": {"stat": False},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": True},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": False},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_come_from_behind(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['come_from_behind'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["come_from_behind"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 4
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 4
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 5
+            "expected": {"stat": 4},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 8
+            "expected": {"stat": 4},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 5},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 8},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_ranked_winner(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['ranked_winner'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["ranked_winner"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 100 * 3/5
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 60
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 50
+            "expected": {"stat": 100 * 3 / 5},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': round(100 * 9/11, 3)
+            "expected": {"stat": 60},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 50},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": round(100 * 9 / 11, 3)},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_final_round_winner_votes_over_first_round_active(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['final_round_winner_votes_over_first_round_active'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["final_round_winner_votes_over_first_round_active"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': None
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': None
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': None
+            "expected": {"stat": None},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': None
+            "expected": {"stat": None},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": None},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": None},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_static_win_threshold(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['static_win_threshold'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["static_win_threshold"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 1},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 1},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_number_of_tabulation_winners(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['number_of_tabulation_winners'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["number_of_tabulation_winners"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 'A'
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': BallotMarks.WRITEIN
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': BallotMarks.WRITEIN
+            "expected": {"stat": "A"},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 'A'
+            "expected": {"stat": BallotMarks.WRITEIN},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": BallotMarks.WRITEIN},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": "A"},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_winner(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['winner'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["winner"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 80
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 80
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 100 * 5/8
+            "expected": {"stat": 80},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': round(100 * 9/11, 3)
+            "expected": {"stat": 80},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 100 * 5 / 8},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": round(100 * 9 / 11, 3)},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_winners_consensus_value(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['winners_consensus_value'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["winners_consensus_value"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 5
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 5
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 8
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'weight': [1, 1, 1, 2, 2, 1, 1, 1],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 10
+            "expected": {"stat": 5},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 11
+            "expected": {"stat": 5},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ]
+                }
+            },
+            "expected": {"stat": 8},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "weight": [1, 1, 1, 2, 2, 1, 1, 1],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 10},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 11},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_first_round_active_votes(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['first_round_active_votes'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["first_round_active_votes"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 5
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 5
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 7
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D']
-                ],
-                'weight': [1, 1, 1, 2, 2, 1, 1, 1],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 9
+            "expected": {"stat": 5},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 10
+            "expected": {"stat": 5},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ]
+                }
+            },
+            "expected": {"stat": 7},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                    ],
+                    "weight": [1, 1, 1, 2, 2, 1, 1, 1],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 9},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 10},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_final_round_active_votes(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['final_round_active_votes'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["final_round_active_votes"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 0
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 0
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ],
-                'weight': [1, 1, 1, 2, 2, 1, 1, 1, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3, 4]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct']
-        },
-        'expected': {
-            'stat': 5
+            "expected": {"stat": 0},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'A', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ]
+                }
+            },
+            "expected": {"stat": 1},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 2, 2, 1, 1, 1, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3, 4],
+                },
+                "split_fields": ["precinct"],
+            },
+            "expected": {"stat": 5},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "A", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 0},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_pretally_exhausted(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_pretally_exhausted'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_pretally_exhausted"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 0
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ]
-            }
-        },
-        'expected': {
-            'stat': 0
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ]
-            }
-        },
-        'expected': {
-            'stat': 1
-        }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ]
+                }
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 4
+            "expected": {"stat": 0},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ]
+                }
             },
-
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 0},
         }
-    })
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ]
+                }
+            },
+            "expected": {"stat": 1},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
+            },
+            "expected": {"stat": 4},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+            },
+            "expected": {"stat": 1},
+        }
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_overvote_marks": True,
             },
-            'exhaust_on_overvote_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_overvote(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_overvote'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted_by_overvote"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_skipped_rankings(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_skipped_rankings'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted_by_skipped_rankings"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        [
+                            "B",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_abstention(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_abstention'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted_by_abstention"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_rank_limit(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted_by_rank_limit"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_fully_ranked'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats()[0]["total_posttally_exhausted_by_rank_limit_fully_ranked"].item() == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 0
+            "expected": {"stat": 0},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_rank_limit_partially_ranked'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats()[0]["total_posttally_exhausted_by_rank_limit_partially_ranked"].item()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'precinct': [1, 1, 1, 2, 2, 2, 3, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['precinct'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': 2
+            "expected": {"stat": 2},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.SKIPPED],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                },
+                "exhaust_on_duplicate_candidate_marks": True,
             },
-            'exhaust_on_duplicate_candidate_marks': True
-        },
-        'expected': {
-            'stat': 1
+            "expected": {"stat": 1},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_total_posttally_exhausted_by_duplicate_rankings(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats()[0]['total_posttally_exhausted_by_duplicate_rankings'].item() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert rcv.get_stats()[0]["total_posttally_exhausted_by_duplicate_rankings"].item() == param["expected"]["stat"]
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ],
-                'split': [1, 1, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ],
+                    "split": [1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ],
-                'split': [1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ],
+                    "split": [1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ],
-                'weight': [1, 1, 1, 2, 2, 1, 1, 1, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 2, 2, 1, 1, 1, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 5]
+            "expected": {"stat": [0, 5]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.SKIPPED],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_pretally_exhausted(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_pretally_exhausted'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_pretally_exhausted"].tolist() == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'A', 'B', 'B']
-                ],
-                'split': [1, 1, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "A", "B", "B"],
+                    ],
+                    "split": [1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B']
-                ],
-                'split': [1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                    ],
+                    "split": [1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['write-in', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B'],
-                    ['D', 'B', BallotMarks.WRITEIN, 'D'],
-                    [BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE, BallotMarks.OVERVOTE]
-                ],
-                'weight': [1, 1, 1, 2, 2, 1, 1, 1, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["write-in", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                        ["D", "B", BallotMarks.WRITEIN, "D"],
+                        [
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.OVERVOTE,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 2, 2, 1, 1, 1, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
             },
-            'split_fields': ['split']
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.SKIPPED],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted"].tolist() == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [1, 0]
+            "expected": {"stat": [1, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', BallotMarks.OVERVOTE],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", BallotMarks.OVERVOTE],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_overvote_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_overvote_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_overvote(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_overvote'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_overvote"].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_skipped_rankings(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_skipped_rankings'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_skipped_rankings"].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        [
+                            "B",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [1, 0]
+            "expected": {"stat": [1, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_abstention(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_abstention'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_abstention"].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 3],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0, 0]
+            "expected": {"stat": [0, 0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_rank_limit(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_rank_limit"].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 3],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0, 0]
+            "expected": {"stat": [0, 0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_rank_limit_fully_ranked(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit_fully_ranked'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_rank_limit_fully_ranked"].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 3]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 3],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0, 0]
+            "expected": {"stat": [0, 0, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        [
+                            "write-in",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [0, 0]
+            "expected": {"stat": [0, 0]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_rank_limit_partially_ranked(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_rank_limit_partially_ranked'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0][
+            "split_total_posttally_exhausted_by_rank_limit_partially_ranked"
+        ].tolist()
+        == param["expected"]["stat"]
+    )
 
 
 params = [
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'C', 'C', 'D'],
-                    [BallotMarks.OVERVOTE, 'A', 'B', 'C'],
-                    ['B', BallotMarks.OVERVOTE, 'A', 'B'],
-                    ['B', 'A', 'A', 'C'],
-                    ['C', BallotMarks.SKIPPED, BallotMarks.SKIPPED, 'A'],
-                    ['C', 'A', 'B', 'E'],
-                    ['D', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['E', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED]
-                ],
-                'weight': [1, 1, 1, 1, 1, 1, 5, 5],
-                'split': [1, 1, 1, 1, 2, 2, 2, 2]
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_repeated_skipped_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True,
-            'exhaust_on_overvote_marks': True,
-            'exhaust_on_repeated_skipped_marks': True
-        },
-        'expected': {
-            'stat': [2, 0]
+            "expected": {"stat": [2, 0]},
         }
-    }),
-    ({
-        'input': {
-            'parsed_cvr': {
-                'ranks': [
-                    ['A', 'B', 'C', 'D'],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.OVERVOTE, BallotMarks.WRITEIN],
-                    ['A', BallotMarks.SKIPPED, BallotMarks.SKIPPED, BallotMarks.SKIPPED],
-                    ['A', 'A', 'C', BallotMarks.OVERVOTE],
-                    ['write-in', 'B', 'B', 'B'],
-                    ['C', 'D', BallotMarks.WRITEIN, 'B'],
-                    ['C', 'D', 'D', 'B']
-                ],
-                'weight': [2, 2, 2, 2, 1, 1, 1],
-                'split': [1, 1, 1, 1, 2, 2, 2]
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "B", "C", "D"],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.OVERVOTE,
+                            BallotMarks.WRITEIN,
+                        ],
+                        [
+                            "A",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        ["A", "A", "C", BallotMarks.OVERVOTE],
+                        ["write-in", "B", "B", "B"],
+                        ["C", "D", BallotMarks.WRITEIN, "B"],
+                        ["C", "D", "D", "B"],
+                    ],
+                    "weight": [2, 2, 2, 2, 1, 1, 1],
+                    "split": [1, 1, 1, 1, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
             },
-            'split_fields': ['split'],
-            'exhaust_on_duplicate_candidate_marks': True
-        },
-        'expected': {
-            'stat': [0, 1]
+            "expected": {"stat": [0, 1]},
         }
-    })
+    ),
 ]
 
 
 @pytest.mark.parametrize("param", params)
 def test_split_total_posttally_exhausted_by_duplicate_rankings(param):
-    rcv = Until2(**param['input'])
-    assert rcv.stats(add_split_stats=True)[0]['split_total_posttally_exhausted_by_duplicate_rankings'].tolist() == param['expected']['stat']
+    rcv = Until2(**param["input"])
+    assert (
+        rcv.get_stats(add_split_stats=True)[0]["split_total_posttally_exhausted_by_duplicate_rankings"].tolist()
+        == param["expected"]["stat"]
+    )

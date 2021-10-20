@@ -3,37 +3,21 @@ import os
 import pathlib
 import csv
 
-from rcv_cruncher.marks import BallotMarks
-
 ###############################################################
 # constants
 
-NAN = decimal.Decimal('NaN')
-
-
-class InactiveType:
-
-    UNDERVOTE = BallotMarks.UNDERVOTE
-    PRETALLY_EXHAUST = BallotMarks.PRETALLY_EXHAUST
-
-    NOT_EXHAUSTED = "not_exhausted"
-    POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = "posttally_exhausted_by_rank_limit"
-    POSTTALLY_EXHAUSTED_BY_ABSTENTION = "posttally_exhausted_by_abstention"
-    POSTTALLY_EXHAUSTED_BY_OVERVOTE = "posttally_exhausted_by_overvote"
-    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING = "posttally_exhausted_by_repeated_skipped_ranking"
-    POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = "posttally_exhausted_by_duplicate_ranking"
-
+NAN = decimal.Decimal("NaN")
 
 ########################
 # helper funcs
 
-class CSVLogger:
 
+class CSVLogger:
     def __init__(self, path, header_list):
         self.row_length = len(header_list)
         self.path = path
-        self.file = open(path, 'w', newline='')
-        self.writer = csv.writer(self.file, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
+        self.file = open(path, "w", newline="")
+        self.writer = csv.writer(self.file, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
         self.lines_added = None
         self.write(header_list)
         self.lines_added = False
@@ -55,11 +39,11 @@ class CSVLogger:
 
 def before(victor, loser, ballot):
     """
-        Used to calculate condorcet stats. Each ballot passed through this
-        function gets mapped to either
-        1 (winner ranked before loser),
-        0 (neither appear on ballot),
-        or -1 (loser ranked before winner).
+    Used to calculate condorcet stats. Each ballot passed through this
+    function gets mapped to either
+    1 (winner ranked before loser),
+    0 (neither appear on ballot),
+    or -1 (loser ranked before winner).
     """
     for rank in ballot:
         if rank == victor:
@@ -76,7 +60,7 @@ def remove(x, lst):
 
 def isInf(x):
     # checks if x is inf
-    return x == float('inf')
+    return x == float("inf")
 
 
 def index_inf(lst, el):
@@ -84,10 +68,10 @@ def index_inf(lst, el):
     if el in lst:
         return lst.index(el)
     else:
-        return float('inf')
+        return float("inf")
 
 
-def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing folder'):
+def verifyDir(dir_path, make_if_missing=True, error_msg_tail="is not an existing folder"):
     """
     Check that a directory exists and if missing, either error or create it.
 
@@ -100,7 +84,7 @@ def verifyDir(dir_path, make_if_missing=True, error_msg_tail='is not an existing
         if make_if_missing:
             os.mkdir(longname(dir_path))
         else:
-            print(dir_path + ' ' + error_msg_tail)
+            print(dir_path + " " + error_msg_tail)
             raise RuntimeError
 
 
@@ -134,7 +118,7 @@ def LD2DL(ld):
 
 
 def longname(path):
-    return pathlib.Path('\\\\?\\' + os.fspath(path.resolve()))
+    return pathlib.Path("\\\\?\\" + os.fspath(path.resolve()))
 
 
 def filter_bool_dict(ballots, field_name):
