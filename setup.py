@@ -62,7 +62,7 @@ setup(
         # 'Programming Language :: Python :: Implementation :: IronPython',
         # 'Programming Language :: Python :: Implementation :: Jython',
         # 'Programming Language :: Python :: Implementation :: Stackless',
-        "Topic :: Utilities",
+        # "Topic :: Utilities",
     ],
     project_urls={
         "Documentation": "https://rcv_cruncher.readthedocs.io/",
@@ -73,7 +73,7 @@ setup(
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires=">=3.9",
-    install_requires=["tqdm>=4.56.0", "pandas>=1.2.0", "xmltodict>=0.12.0"],
+    install_requires=["tqdm>=4.56.0", "pandas>=1.2.0", "xmltodict>=0.12.0", "sphinx_copybutton"],
     extras_require={},
     entry_points={
         "console_scripts": [
