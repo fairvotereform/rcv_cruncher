@@ -1,6 +1,8 @@
 # rcv_cruncher
 
-A python package for tabulating and analysing Ranked Choice Voting results. For full documentation visit https://rcv-cruncher.readthedocs.io/en/latest/
+A python package for tabulating and analysing Ranked Choice Voting results.
+
+For full documentation visit https://rcv-cruncher.readthedocs.io/en/latest/
 
 ## Install
 
