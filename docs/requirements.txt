@@ -1,4 +1,6 @@
 sphinx
 furo
 sphinx_copybutton
-
+pandas
+tqdm
+xmltodict
