@@ -6,7 +6,7 @@ In the case where you have a set of elections, you can analyze them as a batch. 
 * ``contest_set.csv``: A **csv file** listing the elections, their parsers, tabulation methods, rules, and CVR file path locations.
 * ``run_config.json``: A **json file** listing which output statistics and tables to produce.
 
-Both files are explained further below. With both files in the same directory, the batch of elections can be analyzed using the function :meth:`batch.analyze_election_set`. Examples of both files can be downloaded here.
+Both files are explained further below. With both files in the same directory, the batch of elections can be analyzed using the function :meth:`batch.analyze_election_set`. Examples of both files can be downloaded `here <https://github.com/fairvotereform/rcv_cruncher/tree/master/src/rcv_cruncher/example/contest_sets/example>`_.
 
 Contest Set File
 ^^^^^^^^^^^^^^^^^^
