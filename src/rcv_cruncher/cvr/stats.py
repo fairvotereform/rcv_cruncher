@@ -2,7 +2,6 @@
 """
 
 import collections
-import weightedstats
 
 import pandas as pd
 
