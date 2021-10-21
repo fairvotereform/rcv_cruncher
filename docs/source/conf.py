@@ -43,6 +43,9 @@ exclude_patterns = []
 autosummary_mock_imports = [
     "rcv_cruncher.util",
     "rcv_cruncher.cli",
+    "pandas",
+    "tqdm",
+    "xmltodict"
     # 'rcv_cruncher.cvr.stats',
     # 'rcv_cruncher.cvr.tables',
     # 'rcv_cruncher.rcv.base',
