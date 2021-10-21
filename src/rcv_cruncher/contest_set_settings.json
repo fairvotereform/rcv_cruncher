@@ -55,7 +55,7 @@
     },
     "multi_winner_rounds": {
         "type":	"bool",
-        "default": false
+        "default": true
     },
 
 

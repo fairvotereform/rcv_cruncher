@@ -1,0 +1,17 @@
+{
+    "cvr_path_root":"C:/Users/User/Documents/fairvote/projects/Ballot_Images",
+    "convert_cvr_rank_format": true,
+    "convert_cvr_candidate_format": true,
+    "per_rcv_group_stats": true,
+    "per_rcv_group_stats_fvDBfmt": true,
+    "per_rcv_type_stats": true,
+    "condorcet": true,
+    "crossover_support": true,
+    "cumulative_rankings": true,
+    "first_choice_to_finalist": true,
+    "first_second_choices": true,
+    "rank_usage": true,
+    "round_by_round_table": true,
+    "round_by_round_json": true,
+    "split_stats": true
+}

@@ -94,7 +94,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type save_dir: Union[str, pathlib.Path]
         """
         count_df, percent_df = cvr.get_cumulative_ranking_tables()
-        uid = cvr.stats()[0]["unique_id"].item()
+        uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "cumulative_ranking"
         save_path.mkdir(exist_ok=True)
@@ -123,7 +123,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type save_dir: Union[str, pathlib.Path]
         """
         count_df, percent_df, percent_no_exhaust_df = cvr.get_first_second_tables()
-        uid = cvr.stats()[0]["unique_id"].item()
+        uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "first_second_choices"
         save_path.mkdir(exist_ok=True)
@@ -153,7 +153,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type save_dir: Union[str, pathlib.Path]
         """
         df = cvr.get_rank_usage_table()
-        uid = cvr.stats()[0]["unique_id"].item()
+        uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "rank_usage"
         save_path.mkdir(exist_ok=True)
@@ -181,7 +181,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type save_dir: Union[str, pathlib.Path]
         """
         count_df, percent_df = cvr.get_crossover_tables()
-        uid = cvr.stats()[0]["unique_id"].item()
+        uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "opponent_crossover"
         save_path.mkdir(exist_ok=True)
@@ -210,7 +210,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type save_dir: Union[str, pathlib.Path]
         """
         count_df, percent_df, condorcet_winner = cvr.get_condorcet_tables()
-        uid = cvr.stats()[0]["unique_id"].item()
+        uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "condorcet"
         save_path.mkdir(exist_ok=True)

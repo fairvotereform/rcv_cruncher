@@ -1,3 +1,5 @@
+.. _statistics_list:
+
 Statistics
 ==========
 
@@ -10,6 +12,7 @@ Function
 ^^^^^^^^
 
 .. autofunction:: cvr.base.CastVoteRecord_stats.get_stats
+   :noindex:
 
 Statistics
 ^^^^^^^^^^
@@ -54,6 +57,7 @@ Function
 ^^^^^^^^
 
 .. autofunction:: rcv.base.RCV.get_stats
+   :noindex:
 
 Statistics
 ^^^^^^^^^^

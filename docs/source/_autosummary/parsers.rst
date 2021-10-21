@@ -21,11 +21,11 @@
       dominion5_10
       dominion5_2
       dominion5_4
+      ess1
+      ess2
       get_parser_dict
       minneapolis2009
       nyc2021
-      optech1
-      optech2
       rank_column_csv
       unisyn
    

@@ -30,11 +30,7 @@ author = "FairVote"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
-    "sphinx_copybutton"
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.autosummary", "sphinx_copybutton"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -45,8 +41,8 @@ templates_path = ["_templates"]
 exclude_patterns = []
 
 autosummary_mock_imports = [
-    'rcv_cruncher.util',
-    'rcv_cruncher.cli',
+    "rcv_cruncher.util",
+    "rcv_cruncher.cli",
     # 'rcv_cruncher.cvr.stats',
     # 'rcv_cruncher.cvr.tables',
     # 'rcv_cruncher.rcv.base',

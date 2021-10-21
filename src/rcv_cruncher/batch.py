@@ -181,35 +181,39 @@ def _read_contest_set(contest_set_path, override_cvr_root_dir=None):
         run_config_settings = json.load(run_config_settings_file)
 
     # read run_config.txt
-    run_config_fpath = contest_set_path / "run_config.txt"
+    run_config_fpath = contest_set_path / "run_config.json"
     if os.path.isfile(run_config_fpath) is False:
         raise RuntimeError(f"not a valid file path: {run_config_fpath}")
 
     run_config = {}
     with open(run_config_fpath) as run_config_file:
-        for line_num, l in enumerate(run_config_file, start=1):
+        run_config = json.load(run_config_file)
 
-            l_splits = l.strip("\n").split("=")
-            l_splits = [s.strip() for s in l_splits]
+    # run_config = {}
+    # with open(run_config_fpath) as run_config_file:
+    #     for line_num, l in enumerate(run_config_file, start=1):
 
-            if len(l_splits) < 2:
-                continue
+    #         l_splits = l.strip("\n").split("=")
+    #         l_splits = [s.strip() for s in l_splits]
 
-            input_option = l_splits[0]
-            input_value = l_splits[1]
+    #         if len(l_splits) < 2:
+    #             continue
 
-            if input_option not in run_config_settings:
-                continue
+    #         input_option = l_splits[0]
+    #         input_value = l_splits[1]
 
-            if run_config_settings[input_option]["type"] == "bool":
-                if input_value.title() != "True" and input_value.title() != "False":
-                    raise RuntimeError(
-                        f"invalid value ({input_value}) provided in run_config.txt"
-                        f'on line {line_num} for option "{l_splits[0]}". Must be "true" or "false".'
-                    )
-                input_value = eval(input_value.title())
+    #         if input_option not in run_config_settings:
+    #             continue
 
-            run_config.update({input_option: input_value})
+    #         if run_config_settings[input_option]["type"] == "bool":
+    #             if input_value.title() != "True" and input_value.title() != "False":
+    #                 raise RuntimeError(
+    #                     f"invalid value ({input_value}) provided in run_config.txt"
+    #                     f'on line {line_num} for option "{l_splits[0]}". Must be "true" or "false".'
+    #                 )
+    #             input_value = eval(input_value.title())
+
+    #         run_config.update({input_option: input_value})
 
     # add in defaults for missing options
     for field in run_config_settings:
@@ -341,15 +345,21 @@ def _write_aggregated_stats(
 
         for variant in rcv_variant_stats_df_dict:
             if rcv_variant_stats_df_dict[variant]:
-                df = rcv_variant_stats_df_dict[variant][0]
-                if len(rcv_variant_stats_df_dict[variant]) > 1:
-                    df = pd.concat(
-                        util.flatten_list(rcv_variant_stats_df_dict[variant]),
-                        axis=0,
-                        ignore_index=True,
-                        sort=False,
-                    )
-                df.to_csv(util.longname(results_dir / f"{variant}.csv"), index=False)
+                pd.concat(
+                    rcv_variant_stats_df_dict[variant],
+                    axis=0,
+                    ignore_index=True,
+                    sort=False,
+                ).to_csv(util.longname(results_dir / f"variant_{variant}.csv"), index=False)
+                # df = rcv_variant_stats_df_dict[variant][0]
+                # if len(rcv_variant_stats_df_dict[variant]) > 1:
+                #     df = pd.concat(
+                #         util.flatten_list(rcv_variant_stats_df_dict[variant]),
+                #         axis=0,
+                #         ignore_index=True,
+                #         sort=False,
+                #     )
+                # df.to_csv(util.longname(results_dir / f"{variant}.csv"), index=False)
 
     if output_config.get("candidate_details", False) and candidate_details_dfs:
 
@@ -461,7 +471,7 @@ class _Steps(abc.ABC):
 
         pbar = tqdm.tqdm(
             total=self.n_steps(),
-            bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt}{postfix}",
+            bar_format="{l_bar}{bar}|{postfix}",
             colour="GREEN",
         )
         pbar.set_description(self.pbar_desc)
@@ -499,6 +509,7 @@ class _Steps(abc.ABC):
             self.refresh_steps()
             next_step = self.next_step()
 
+        pbar.update(self.n_steps() - step_reached)
         pbar.set_postfix_str("complete")
         pbar.close()
 
@@ -528,8 +539,8 @@ class _CrunchSteps(_Steps):
                         "f": CastVoteRecord.write_cvr_table,
                         "args": [
                             self.state_data["rcv_object"],
-                            "rank",
                             self.converted_cvr_rank_fmt_dir,
+                            "rank",
                         ],
                         "condition": self.output_config.get("convert_cvr_rank_format"),
                         "fail_with": ["init_rcv"],
@@ -543,8 +554,8 @@ class _CrunchSteps(_Steps):
                         "f": CastVoteRecord.write_cvr_table,
                         "args": [
                             self.state_data["rcv_object"],
-                            "candidate",
                             self.converted_cvr_cand_fmt_dir,
+                            "candidate",
                         ],
                         "condition": self.output_config.get("convert_cvr_candidate_format"),
                         "fail_with": ["init_rcv"],
@@ -555,7 +566,7 @@ class _CrunchSteps(_Steps):
                 (
                     "tabulation_stats",
                     {
-                        "f": RCV.get_stats,
+                        "f": RCV.calc_stats,
                         "args": [self.state_data["rcv_object"]],
                         "condition": self.output_config.get("per_rcv_type_stats"),
                         "depends_on": ["init_rcv"],
@@ -596,20 +607,20 @@ class _CrunchSteps(_Steps):
                         "return_key": "variant_group",
                     },
                 ),
-                (
-                    "winner_choice_position",
-                    {
-                        "f": RCV.get_winner_choice_position_distribution_table,
-                        "args": [
-                            self.state_data["rcv_object"],
-                            1,
-                        ],  # only intended for single winner elections right now
-                        "condition": self.output_config.get("winner_choice_position_distribution"),
-                        "depends_on": ["init_rcv"],
-                        "fail_with": [],
-                        "return_key": "winner_choice_position_df",
-                    },
-                ),
+                # (
+                #     "winner_choice_position",
+                #     {
+                #         "f": RCV.calc_winner_choice_position_distribution_table,
+                #         "args": [
+                #             self.state_data["rcv_object"],
+                #             1,
+                #         ],  # only intended for single winner elections right now
+                #         "condition": self.output_config.get("winner_choice_position_distribution"),
+                #         "depends_on": ["init_rcv"],
+                #         "fail_with": [],
+                #         "return_key": "winner_choice_position_df",
+                #     },
+                # ),
                 # ('candidate_details', {
                 #     'f': write_out.prepare_candidate_details,
                 #     'args': [self.state_data['rcv_obj']],
@@ -722,7 +733,7 @@ class _CrunchSteps(_Steps):
                 (
                     "crossover_support",
                     {
-                        "f": RCV.write_crossover_table,
+                        "f": RCV.write_crossover_tables,
                         "args": [self.state_data["rcv_object"], self.results_dir],
                         "condition": self.output_config.get("crossover_support"),
                         "depends_on": [],
@@ -730,21 +741,21 @@ class _CrunchSteps(_Steps):
                         "return_key": None,
                     },
                 ),
-                (
-                    "candidate_rank_usage",
-                    {
-                        "f": RCV.get_candidate_rank_usage_table,
-                        "args": [self.state_data["rcv_object"]],
-                        "condition": self.output_config.get("candidate_rank_usage"),
-                        "depends_on": [],
-                        "fail_with": [],
-                        "return_key": "candidate_rank_usage_df",
-                    },
-                ),
+                # (
+                #     "candidate_rank_usage",
+                #     {
+                #         "f": RCV.calc_candidate_rank_usage_table,
+                #         "args": [self.state_data["rcv_object"]],
+                #         "condition": self.output_config.get("candidate_rank_usage"),
+                #         "depends_on": [],
+                #         "fail_with": [],
+                #         "return_key": "candidate_rank_usage_df",
+                #     },
+                # ),
                 (
                     "split_stats",
                     {
-                        "f": RCV.get_stats,
+                        "f": RCV.calc_stats,
                         "args": [self.state_data["rcv_object"], False, True, True],
                         "condition": self.output_config.get("split_stats"),
                         "depends_on": ["init_rcv"],
@@ -846,7 +857,7 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
 
         if output_config.get("per_rcv_type_stats") and crunch_returns.get("tabulation_stats_df") is not None:
             variant = crunch_returns["variant"]
-            rcv_variant_stats_df_dict[variant].append(crunch_returns["tabulation_stats_df"])
+            rcv_variant_stats_df_dict[variant] += crunch_returns["tabulation_stats_df"]
 
         if output_config.get("per_rcv_group_stats") and crunch_returns.get("contest_stats_df") is not None:
             variant_group = crunch_returns["variant_group"]
@@ -897,6 +908,9 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
                 [],
                 quiet=True,
             )
+
+    if n_errors:
+        print("[{n_errors} TOTAL ERRORS]")
 
     # close logs
     error_logger.close()

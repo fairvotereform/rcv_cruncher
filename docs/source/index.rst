@@ -6,7 +6,7 @@
 Welcome to rcv-cruncher's documentation!
 ========================================
 
-The **rcv-cruncher** Python package contains tools for analyzing Ranked Choice Voting **cast vote record** election data. Some of its features include:
+The **rcv-cruncher** python package contains tools for analyzing ranked choice voting **cast vote record** election data. Some of its features include:
 
 - tools to read many of the current and historical cast vote record file formats used in US RCV elections and convert them into Excel-friendly csv files
 - tabulation methods for various RCV variants in use throughout the US (single winner IRV, multi winner STV, etc)
@@ -36,3 +36,5 @@ Further Documentation
    tabulation
    statistics
    api
+
+This package is a project of `FairVote <https://www.fairvote.org/>`_. The source code is available on `github <https://github.com/fairvotereform/rcv_cruncher>`_.

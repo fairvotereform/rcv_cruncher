@@ -768,10 +768,10 @@ def burlington2006(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     return {"ranks": new_ballots}
 
 
-def optech1(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str, List]:
-    """Parser for one format of optech CVR files.
+def ess1(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str, List]:
+    """Parser for one format of ES&S CVR files.
 
-    :param cvr_path: Directory containing "*allot*.txt" files and "*aster*.txt" files.
+    :param cvr_path: Directory containing "\*allot\*.txt" files and "\*aster\*.txt" files.
     :type cvr_path: Union[str, pathlib.Path]
     :param office: Name of election to parse, as written in master lookup file.
     :type office: str
@@ -939,10 +939,10 @@ def optech1(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str, List]:
     return dct
 
 
-def optech2(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
-    """Parser for another format of optech CVR files.
+def ess2(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
+    """Parser for another format of ES&S CVR files.
 
-    :param cvr_path: Directory containing "*allot*.txt" files and "*ntl*.txt" files.
+    :param cvr_path: Directory containing "\*allot\*.txt" files and "\*ntl\*.txt" files.
     :type cvr_path: Union[str, pathlib.Path]
     :return: A dictionary of lists containing informtion in the CVR file. Ranks are combined into per-ballot lists and stored with the key 'ranks'. A 'weight' key and list of 1's is added to the dictionary if no 'weight' column exists. All weights are of type :class:`decimal.Decimal`.
     :rtype: Dict[str, List]
@@ -1114,8 +1114,10 @@ def _santafe_id(column_id, contest_id, ctx):
     return ballots
 
 
-def unisyn(cvr_path):
+def unisyn(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     """
+    Parser for CVRs received from unisyn systems.
+
     Note: This parser was developed for the unisyn 2020 Hawaii Dem Primary CVR which only contained the
     ranked choice votes for a single election. Unisyn uses the common data format in xml, however the
     parser currently is not a complete common data format parser.
@@ -1123,6 +1125,11 @@ def unisyn(cvr_path):
     For more information on common data format, see:
     https://pages.nist.gov/CastVoteRecords/
     https://github.com/hiltonroscoe/cdfprototype
+
+    :param cvr_path: Directory containing .xml files
+    :type cvr_path: Union[str, pathlib.Path]
+    :return: A dictionary of lists containing informtion in the CVR file. Ranks are combined into per-ballot lists and stored with the key 'ranks'. A 'weight' key and list of 1's is added to the dictionary if no 'weight' column exists. All weights are of type :class:`decimal.Decimal`.
+    :rtype: Dict[str, List]
     """
 
     glob_str = pathlib.Path(cvr_path).glob("/*.xml")
@@ -1151,8 +1158,7 @@ def unisyn(cvr_path):
     first_rank = list(contestIDdicts.keys())[0]
     rank_length_equal = [len(contestIDdicts[k]) == len(contestIDdicts[first_rank]) for k in contestIDdicts]
     if not all(rank_length_equal):
-        print("not all rank lists are equal.")
-        raise RuntimeError
+        RuntimeError("not all rank lists are equal.")
 
     # combine ranks into lists
     ballot_lists = []
@@ -1360,8 +1366,8 @@ parser_dict = {
     "dominion5_2": dominion5_2,
     "dominion5_4": dominion5_4,
     "dominion5_10": dominion5_10,
-    "optech1": optech1,
-    "optech2": optech2,
+    "ess1": ess1,
+    "ess2": ess2,
     "choice_pro_plus": choice_pro_plus,
     "unisyn": unisyn,
     # "surveyUSA": surveyUSA,

@@ -369,7 +369,9 @@ class RCV_tables:
         df = None
 
         # who had any ballot weight allotted
-        finalist_candidates = list(self.finalist_candidates(tabulation_num=tabulation_num)) + ["exhaust"]
+        finalist_candidates = list(self.finalist_candidates(tabulation_num=tabulation_num))
+        if "exhaust" not in finalist_candidates:
+            finalist_candidates.append("exhaust")
         candidate_set = sorted(self._contest_candidates.unique_candidates)
 
         ballot_set = [
@@ -612,7 +614,11 @@ class RCV_tables:
                 "date": self.get_stats()[tabulation_num - 1]["date"].item(),
                 "jurisdiction": self.get_stats()[tabulation_num - 1]["jurisdiction"].item(),
                 "office": self.get_stats()[tabulation_num - 1]["office"].item(),
-                "threshold": "50%",
+                "threshold": (
+                    self._win_threshold()
+                    if not (self._win_threshold() or isinstance(self._win_threshold(), str))
+                    else 0
+                ),
             },
             "results": [],
         }

@@ -105,7 +105,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         save_path = pathlib.Path(save_dir) / "first_choice_to_finalist"
         save_path.mkdir(exist_ok=True)
 
-        uid = rcv_obj.stats()[0]["unique_id"].item()
+        uid = rcv_obj.get_stats()[0]["unique_id"].item()
         for iTab in range(1, rcv_obj.n_tabulations() + 1):
             df = rcv_obj.get_first_choice_to_finalist_table(tabulation_num=iTab)
             df.to_csv(save_path / f"{uid}_tab{iTab}.csv")
@@ -122,7 +122,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         save_path = pathlib.Path(save_dir) / "round_by_round_table"
         save_path.mkdir(exist_ok=True)
 
-        uid = rcv_obj.stats()[0]["unique_id"].item()
+        uid = rcv_obj.get_stats()[0]["unique_id"].item()
         for iTab in range(1, rcv_obj.n_tabulations() + 1):
             df = rcv_obj.get_round_by_round_table(tabulation_num=iTab)
             df.to_csv(save_path / f"{uid}_tab{iTab}.csv", index=False)
@@ -516,7 +516,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         final_weight_distrib = [
             b["weight_distrib"] + [(b["ballot_marks"].marks[0], b["weight"])]
             if b["ballot_marks"].marks
-            else b["weight_distrib"] + [("empty", b["weight"])]
+            else b["weight_distrib"] + [("exhaust", b["weight"])]
             for b in self._contest_cvr_ld
         ]
         self._tabulations[self._tab_num - 1]["final_weight_distrib"] = final_weight_distrib
