@@ -954,7 +954,7 @@ def analyze_election_set(contest_set_path: str, output_path: str, fresh_output=F
     """
     Analyze a set of elections. For details see documentation at https://rcv-cruncher.readthedocs.io/en/latest/how-tos/batch.html
 
-    :param contest_set_path: Directory containing two files: contest_set.csv, which lists election to analyze and their rules, and run_config.txt, which contains the settings specifying which analyses to perform and write out.
+    :param contest_set_path: Directory containing two files: contest_set.csv, which lists election to analyze and their rules, and run_config.json, which contains the settings specifying which analyses to perform and write out.
     :type contest_set_path: str
     :param output_path: Directory where output will be written to.
     :type output_path: str
