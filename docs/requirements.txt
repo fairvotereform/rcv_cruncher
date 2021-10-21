@@ -4,3 +4,4 @@ sphinx_copybutton
 pandas
 tqdm
 xmltodict
+rcv_cruncher
