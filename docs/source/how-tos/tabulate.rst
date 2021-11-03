@@ -18,7 +18,7 @@ This example uses the `2017 Minneapolis mayoral election <https://github.com/fai
    from rcv_cruncher import SingleWinner, rank_column_csv
 
    cvr_file = '2017-mayor-cvr.csv'
-   out_dir = 'output/minneapolis2017/round-by-round'
+   out_dir = 'output/minneapolis2017'
 
    # the constructor for the election class will run the tabulation
    election = SingleWinner(
@@ -50,7 +50,7 @@ This example uses the `2017 Minneapolis election for the Board of Estimates and 
    from rcv_cruncher import STVFractionalBallot, rank_column_csv
 
    cvr_file = '2017-boe-cvr.csv'
-   out_dir = 'output/minneapolis2017/round-by-round'
+   out_dir = 'output/minneapolis2017'
 
    # the constructor for the election class will run the tabulation
    election = STVFractionalBallot(
@@ -63,7 +63,7 @@ This example uses the `2017 Minneapolis election for the Board of Estimates and 
         exhaust_on_duplicate_candidate_marks=False,
         exhaust_on_overvote_marks=False,
         exhaust_on_repeated_skipped_marks=False,
-        n_winners=3
+        n_winners=2
     )
 
    # save a csv table of the results to out_dir
