@@ -614,11 +614,7 @@ class RCV_tables:
                 "date": self.get_stats()[tabulation_num - 1]["date"].item(),
                 "jurisdiction": self.get_stats()[tabulation_num - 1]["jurisdiction"].item(),
                 "office": self.get_stats()[tabulation_num - 1]["office"].item(),
-                "threshold": (
-                    self._win_threshold()
-                    if not (self._win_threshold() or isinstance(self._win_threshold(), str))
-                    else 0
-                ),
+                "threshold": self._win_threshold() if not None else 0,
             },
             "results": [],
         }

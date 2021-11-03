@@ -539,7 +539,7 @@ params = [
 def test_rank_limit(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
 
-    computed_stat = cast_vote_record.get_stats()["rank_limit"].item()
+    computed_stat = cast_vote_record.get_stats()[0][0]["rank_limit"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -581,7 +581,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_restrictive_rank_limit(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["restrictive_rank_limit"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["restrictive_rank_limit"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -649,7 +649,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_n_candidates(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["n_candidates"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["n_candidates"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -700,7 +700,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_first_round_overvote(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["first_round_overvote"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["first_round_overvote"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -820,7 +820,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_ranked_single(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["ranked_single"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["ranked_single"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -940,7 +940,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_ranked_multiple(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["ranked_multiple"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["ranked_multiple"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1031,7 +1031,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_ranked_3_or_more(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["ranked_3_or_more"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["ranked_3_or_more"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1149,7 +1149,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_total_fully_ranked(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["total_fully_ranked"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["total_fully_ranked"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1240,7 +1240,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_includes_duplicate_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["includes_duplicate_ranking"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["includes_duplicate_ranking"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1336,7 +1336,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_includes_skipped_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["includes_skipped_ranking"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["includes_skipped_ranking"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1418,7 +1418,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_includes_overvote_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["includes_overvote_ranking"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["includes_overvote_ranking"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1521,7 +1521,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_total_irregular(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["total_irregular"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["total_irregular"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1604,7 +1604,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_total_ballots(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["total_ballots"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["total_ballots"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1683,7 +1683,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_total_undervote(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["total_undervote"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["total_undervote"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1791,7 +1791,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_mean_rankings_used(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-    computed_stat = cast_vote_record.get_stats()["mean_rankings_used"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["mean_rankings_used"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1899,7 +1899,7 @@ def test_split_mean_rankings_used(param):
 # @pytest.mark.parametrize("param", params)
 # def test_median_rankings_used(param):
 #     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
-#     computed_stat = cast_vote_record.get_stats()["median_rankings_used"].item()
+#     computed_stat = cast_vote_record.get_stats()[0]["median_rankings_used"].item()
 #     assert param["expected"]["stat"] == computed_stat
 
 

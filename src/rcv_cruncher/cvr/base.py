@@ -32,7 +32,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         keep_decimal_type: bool = False,
         add_split_stats: bool = False,
         add_id_info: bool = True,
-    ) -> pd.DataFrame:
+    ) -> List[pd.DataFrame]:
         """Static method wrapper around `get_stats` object method.
 
         :param cvr: CastVoteRecord object.
@@ -43,8 +43,8 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type add_split_stats: bool, optional
         :param add_id_info: Include contest ID details to returned dataframe, defaults to True
         :type add_id_info: bool, optional
-        :return: A single row dataframe with statistics organized in multiple columns. If `split_fields` are passed, then extra rows are added for each category in the split columns.
-        :rtype: pd.DataFrame
+        :return: A list containing a single row dataframe with statistics organized in multiple columns. If `split_fields` are passed, then extra rows are added for each category in the split columns.
+        :rtype: List[pd.DataFrame]
         """
         return cvr.get_stats(
             keep_decimal_type=keep_decimal_type,
@@ -67,8 +67,11 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :param table_format: Format in which to write out CVR. Either "rank" or "candidate". One row per ballot. "rank" format has rank numbers as column names with candidate names in row cells. "candidate" format has candidate names as column names with rank numbers filling in row cells. Defaults to "rank".
         :type table_format: str, optional
         """
+        save_dir = pathlib.Path(save_dir)
+        save_dir.mkdir(exist_ok=True)
+
         uid = cvr.get_stats()[0]["unique_id"].item()
-        save_path = pathlib.Path(save_dir) / f"{uid}.csv"
+        save_path = save_dir / f"{uid}.csv"
         cvr.get_cvr_table(table_format=table_format).to_csv(save_path, index=False)
 
     @staticmethod

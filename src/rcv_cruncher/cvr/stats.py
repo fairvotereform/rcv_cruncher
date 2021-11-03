@@ -27,8 +27,8 @@ class CastVoteRecord_stats:
         :type add_split_stats: bool, optional
         :param add_id_info: Include contest ID details to returned dataframe, defaults to True
         :type add_id_info: bool, optional
-        :return: A single row dataframe with statistics organized in multiple columns. If `split_fields` are passed, then extra rows are added for each category in the split columns.
-        :rtype: pd.DataFrame
+        :return: A list containing a single row dataframe with statistics organized in multiple columns. If `split_fields` are passed, then extra rows are added for each category in the split columns.
+        :rtype: List[pd.DataFrame]
         """
 
         cvr_stats = self._summary_cvr_stat_table.copy()
@@ -57,7 +57,7 @@ class CastVoteRecord_stats:
         if not keep_decimal_type:
             cvr_stats = cvr_stats.applymap(util.decimal2float)
 
-        return cvr_stats
+        return [cvr_stats]
 
     def _compute_cvr_stat_table(self) -> None:
 
