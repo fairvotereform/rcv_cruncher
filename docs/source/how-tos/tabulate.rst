@@ -43,7 +43,7 @@ This example uses the `2017 Minneapolis mayoral election <https://github.com/fai
 Multi Winner
 -------------
 
-This example uses the `2017 Minneapolis election for the Board of Estimates and Taxation <https://github.com/fairvotereform/rcv_cruncher/tree/big_changes/src/rcv_cruncher/example/example_cvr/minneapolis2017/2017-boe-cvr.csv>`_. It is a three winner election using STV with fractional ballot transfer, the CVR is stored in rank column csv format, and, like the mayoral election above, does not have special ballot exhaustion rules (like exhaustion by overvote).
+This example uses the `2017 Minneapolis election for the Board of Estimates and Taxation <https://github.com/fairvotereform/rcv_cruncher/tree/big_changes/src/rcv_cruncher/example/example_cvr/minneapolis2017/2017-boe-cvr.csv>`_. It is a two winner election using STV with fractional ballot transfer, the CVR is stored in rank column csv format, and, like the mayoral election above, does not have special ballot exhaustion rules (like exhaustion by overvote).
 
 .. code-block:: py
 
