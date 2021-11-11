@@ -16,9 +16,11 @@ This example uses the `2017 Minneapolis mayoral election <https://github.com/fai
 .. code-block:: py
 
    from rcv_cruncher import SingleWinner, rank_column_csv
+   from pathlib import Path
 
-   cvr_file = '2017-mayor-cvr.csv'
-   out_dir = 'output/minneapolis2017'
+   # CVR file assumed to be downloaded and in current working directory
+   cvr_file = Path.cwd() / '2017-mayor-cvr.csv'
+   out_dir = Path.cwd() / 'output/minneapolis2017'
 
    # the constructor for the election class will run the tabulation
    election = SingleWinner(
@@ -48,9 +50,11 @@ This example uses the `2017 Minneapolis election for the Board of Estimates and 
 .. code-block:: py
 
    from rcv_cruncher import STVFractionalBallot, rank_column_csv
+   from pathlib import Path
 
-   cvr_file = '2017-boe-cvr.csv'
-   out_dir = 'output/minneapolis2017'
+   # CVR file assumed to be downloaded and in current working directory
+   cvr_file = Path.cwd() / '2017-boe-cvr.csv'
+   out_dir = Path.cwd() / 'output/minneapolis2017'
 
    # the constructor for the election class will run the tabulation
    election = STVFractionalBallot(

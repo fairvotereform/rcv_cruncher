@@ -11,8 +11,10 @@ This example uses the `2017 Minneapolis mayoral election <https://github.com/fai
 .. code-block:: py
 
    from rcv_cruncher import CastVoteRecord, rank_column_csv
+   from pathlib import Path
 
-   cvr_file = '2017-mayor-cvr.csv'
+   # CVR file assumed to be downloaded and in current working directory
+   cvr_file = Path.cwd() / '2017-mayor-cvr.csv'
 
    # the constructor for the election class will run the tabulation
    cvr = CastVoteRecord(
@@ -39,17 +41,23 @@ This example uses the `2017 Minneapolis election for the Board of Estimates and 
 .. code-block:: py
 
    from rcv_cruncher import STVFractionalBallot, rank_column_csv
+   from pathlib import Path
 
-   cvr_file = '2017-boe-cvr.csv'
+   # CVR file assumed to be downloaded and in current working directory
+   cvr_file = Path.cwd() / '2017-boe-cvr.csv'
 
    # the constructor for the election class will run the tabulation
    election = STVFractionalBallot(
         jurisdiction='Minneapolis',
         state='MN',
         year='2017',
-        office='Mayor',
+        office='Board of Estimates and Taxation',
         parser_func=rank_column_csv,
         parser_args={'cvr_path': cvr_file},
+        exhaust_on_duplicate_candidate_marks=False,
+        exhaust_on_overvote_marks=False,
+        exhaust_on_repeated_skipped_marks=False,
+        n_winners=2,
         split_fields=['Precinct'] # add split field column name
     )
 

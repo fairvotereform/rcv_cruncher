@@ -68,7 +68,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         :type table_format: str, optional
         """
         save_dir = pathlib.Path(save_dir)
-        save_dir.mkdir(exist_ok=True)
+        save_dir.mkdir(exist_ok=True, parents=True)
 
         uid = cvr.get_stats()[0]["unique_id"].item()
         save_path = save_dir / f"{uid}.csv"
@@ -100,7 +100,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "cumulative_ranking"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         count_df.to_csv(save_path / f"{uid}_count.csv")
         percent_df.to_csv(save_path / f"{uid}_percent.csv")
@@ -129,7 +129,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "first_second_choices"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         count_df.to_csv(save_path / f"{uid}_count.csv")
         percent_df.to_csv(save_path / f"{uid}_percent.csv")
@@ -159,7 +159,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "rank_usage"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         df.to_csv(save_path / f"{uid}.csv")
 
@@ -187,7 +187,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "opponent_crossover"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         count_df.to_csv(save_path / f"{uid}_count.csv")
         percent_df.to_csv(save_path / f"{uid}_percent.csv")
@@ -216,7 +216,7 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
         uid = cvr.get_stats()[0]["unique_id"].item()
 
         save_path = pathlib.Path(save_dir) / "condorcet"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         count_df.to_csv(
             save_path / f"{uid}_count.csv",

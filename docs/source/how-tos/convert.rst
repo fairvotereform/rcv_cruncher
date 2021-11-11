@@ -11,8 +11,10 @@ Once you've found the one that matches your CVR file(s), you can use it to creat
 .. code-block::
 
    from rcv_cruncher import CastVoteRecord, rank_column_csv
+   from pathlib import Path
 
-   cvr_file = '2017-mayor-cvr.csv'
+   # CVR file assumed to be downloaded and in current working directory
+   cvr_file = Path.cwd() / '2017-mayor-cvr.csv'
 
    # initialize the object with optional details about the election (state, date, office, ..)
    # along with the parser function and parser function arguments. As described in the
@@ -38,8 +40,8 @@ The rank column format has rank numbers as column names with candidate names app
 
 .. code-block::
 
-   # an output directory
-   out_dir = 'output/minneapolis2017/rank_format'
+   # an output directory, rooted in current working directory
+   out_dir = Path.cwd() / 'output/minneapolis2017/rank'
 
    # rank column format
    CastVoteRecord.write_cvr_table(cvr, out_dir, table_format='rank')
@@ -54,8 +56,8 @@ The candidate column format has candidate names as column names with candidate r
 
 .. code-block::
 
-   # an output directory
-   out_dir = 'output/minneapolis2017/candidate_format'
+   # an output directory, rooted in current working directory
+   out_dir = Path.cwd() / 'output/minneapolis2017/candidate'
 
    # candidate column format
    CastVoteRecord.write_cvr_table(cvr, out_dir, table_format='candidate')

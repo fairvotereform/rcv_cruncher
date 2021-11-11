@@ -103,7 +103,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type save_dir: Union[str, pathlib.Path], optional
         """
         save_path = pathlib.Path(save_dir) / "first_choice_to_finalist"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         uid = rcv_obj.get_stats()[0]["unique_id"].item()
         for iTab in range(1, rcv_obj.n_tabulations() + 1):
@@ -120,7 +120,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type save_dir: Union[str, pathlib.Path], optional
         """
         save_path = pathlib.Path(save_dir) / "round_by_round_table"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         uid = rcv_obj.get_stats()[0]["unique_id"].item()
         for iTab in range(1, rcv_obj.n_tabulations() + 1):
@@ -138,7 +138,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type save_dir: Union[pathlib.Path, str]
         """
         save_path = pathlib.Path(save_dir) / "round_by_round_json"
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         uid = CastVoteRecord.calc_stats(rcv_obj)[0]["unique_id"].item()
 

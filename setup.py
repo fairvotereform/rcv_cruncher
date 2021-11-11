@@ -27,7 +27,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="rcv_cruncher",
-    version="0.0.10",
+    version="0.0.11",
     description="Analyze RCV elections",
     # long_description='%s\n%s' % (
     #     re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
