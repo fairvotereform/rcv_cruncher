@@ -1,4 +1,4 @@
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 
 from rcv_cruncher.cvr.base import CastVoteRecord
 from rcv_cruncher.marks import BallotMarks
