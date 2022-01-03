@@ -773,3 +773,63 @@ class RCV_tables:
             )
 
         return df
+
+    def get_candidate_details_table(self, tabulation_num: int = 1) -> Optional[pd.DataFrame]:
+        """Generate table of candidate round by round vote counts.
+
+        :param tabulation_num: tabulation num, defaults to 1
+        :type tabulation_num: int, optional
+        :rtype: Optional[pd.DataFrame]
+        """
+
+        n_rounds = self.n_rounds(tabulation_num=tabulation_num)
+
+        # get rcv results
+        rounds_full = [self.get_round_tally_tuple(i, tabulation_num=tabulation_num)
+                       for i in range(1, n_rounds + 1)]
+        cand_outcomes = self.get_candidate_outcomes(tabulation_num=tabulation_num)
+
+        # reformat contest outputs into useful dicts
+        cand_outcomes_dict = {d['name']: d for d in cand_outcomes}
+        rounds_full_dict = [{cand: float(count) for cand, count in zip(*rnd_count)}
+                            for rnd_count in rounds_full]
+
+        # reorder candidate names
+        # winners in ascending order of round won
+        # followed by losers in descending order of round lost
+        reorder_dicts = []
+        for d in cand_outcomes:
+
+            # don't add candidates if they received zero votes throughout the contest.
+            if sum(rounds_dict[d['name']] for rounds_dict in rounds_full_dict) == 0:
+                continue
+
+            if d['round_elected']:
+                d['order'] = -1 * (1/d['round_elected'])
+                d['final_vote_count'] = self.get_round_tally_dict(round_num=d['round_elected'],
+                                                                  tabulation_num=tabulation_num)[d['name']]
+            else:
+                d['order'] = 1/d['round_eliminated']
+                d['final_vote_count'] = self.get_round_tally_dict(round_num=d['round_eliminated'],
+                                                                  tabulation_num=tabulation_num)[d['name']]
+
+            reorder_dicts.append(d)
+
+        ordered_candidates_names = [d['name'] for d in sorted(reorder_dicts,
+                                                              key=lambda x: (x['order'], -x['final_vote_count'], x['name']))]
+
+        # create table
+        colnames = ['unique_id', 'candidate', 'round_elected', 'round_eliminated'] + \
+                   ['round_' + str(i) + '_vote' for i in range(1, n_rounds + 1)]
+
+        # assemble rows
+        cand_rows = []
+        for cand in ordered_candidates_names:
+            cand_rows.append([self.unique_id,
+                              cand,
+                              cand_outcomes_dict[cand]['round_elected'],
+                              cand_outcomes_dict[cand]['round_eliminated']] +
+                             [d[cand] for d in rounds_full_dict])
+
+        return pd.DataFrame(cand_rows, columns=colnames)
+

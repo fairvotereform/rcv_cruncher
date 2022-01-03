@@ -81,7 +81,7 @@ def _cast_str(s):
     If 'None', return None (since this string cannot be evaluated)
     else, return str() result
     """
-    if (s[0] == '"' and s[-1] == '"') or (s[0] == "'" and s[-1] == "'"):
+    if len(s) > 2 and ((s[0] == '"' and s[-1] == '"') or (s[0] == "'" and s[-1] == "'")):
         return eval(s)
     elif s == "None":
         return None
@@ -319,7 +319,7 @@ def _write_aggregated_stats(
             print("write group stats in fvDB order ...")
 
         for group in rcv_group_stats_df_dict:
-            format_fpath = f"extra/fv_db_format/{group}_columns.csv"
+            format_fpath = f"{os.path.dirname(__file__)}/extra/fv_db_format/{group}_columns.csv"
             if rcv_group_stats_df_dict[group] and os.path.isfile(format_fpath):
 
                 # read in column order
@@ -621,14 +621,17 @@ class _CrunchSteps(_Steps):
                 #         "return_key": "winner_choice_position_df",
                 #     },
                 # ),
-                # ('candidate_details', {
-                #     'f': write_out.prepare_candidate_details,
-                #     'args': [self.state_data['rcv_obj']],
-                #     'condition': self.output_config.get('candidate_details'),
-                #     'depends_on': ['init_rcv'],
-                #     'fail_with': [],
-                #     'return_key': 'candidate_details'
-                # }),
+                (
+                    'candidate_details',
+                    {
+                        'f': RCV.calc_candidate_details_tables,
+                        'args': [self.state_data['rcv_object']],
+                        'condition': self.output_config.get('candidate_details'),
+                        'depends_on': ['init_rcv'],
+                        'fail_with': [],
+                        'return_key': 'candidate_details'
+                    }
+                ),
                 (
                     "round_by_round_table",
                     {

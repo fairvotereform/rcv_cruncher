@@ -48,6 +48,17 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         return rcv_obj.__class__.__name__
 
     @staticmethod
+    def calc_candidate_details_tables(rcv_obj: Type[RCV]) -> List[pd.DataFrame]:
+        """Static wrapper for `RCV.get_candidate_details_table` that returns a list tables, one for each tabulation.
+
+        :param rcv_obj: RCV object or RCV subclass object
+        :type rcv_obj: Type[RCV]
+        :rtype: List[pd.DataFrame]
+        """
+        return [rcv_obj.get_candidate_details_table(tabulation_num=iTab)
+                for iTab in range(1, rcv_obj.n_tabulations()+1)]
+
+    @staticmethod
     def calc_winner_choice_position_distribution_table(
         rcv_obj: Type[RCV], tabulation_num: int = 1
     ) -> Optional[pd.DataFrame]:
@@ -57,7 +68,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type rcv_obj: Type[RCV]
         :param tabulation_num: The tabulation to produce the table for, defaults to 1
         :type tabulation_num: int, optional
-        :rtype: pd.DataFrame
+        :rtype: Optional[pd.DataFrame]
         """
         return rcv_obj.get_winner_choice_position_distribution_table(tabulation_num=tabulation_num)
 
