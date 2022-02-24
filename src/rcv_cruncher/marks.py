@@ -23,14 +23,14 @@ class BallotMarks:
 
     MAYBE_EXHAUSTED = "maybe_exhausted"
     MAYBE_EXHAUSTED_BY_OVERVOTE = "maybe_exhausted_by_overvote"
-    MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING = "maybe_exhausted_by_repeated_skipped_ranking"
+    MAYBE_EXHAUSTED_BY_SKIPPED_RANKING = "maybe_exhausted_by_skipped_ranking"
     MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING = "maybe_exhausted_by_duplicate_ranking"
 
     NOT_EXHAUSTED = "not_exhausted"
     POSTTALLY_EXHAUSTED_BY_RANK_LIMIT = "posttally_exhausted_by_rank_limit"
     POSTTALLY_EXHAUSTED_BY_ABSTENTION = "posttally_exhausted_by_abstention"
     POSTTALLY_EXHAUSTED_BY_OVERVOTE = "posttally_exhausted_by_overvote"
-    POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING = "posttally_exhausted_by_repeated_skipped_ranking"
+    POSTTALLY_EXHAUSTED_BY_SKIPPED_RANKING = "posttally_exhausted_by_skipped_ranking"
     POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING = "posttally_exhausted_by_duplicate_ranking"
 
     @staticmethod
@@ -43,7 +43,7 @@ class BallotMarks:
         treat_combined_writeins_as_exhaustable_duplicates: bool = False,
         exhaust_on_duplicate_candidate_marks: bool = False,
         exhaust_on_overvote_marks: bool = False,
-        exhaust_on_repeated_skipped_marks: bool = False,
+        exhaust_on_N_repeated_skipped_marks: int = 0,
     ) -> Dict:
         """A constructor of sorts. Returns passed and default parameters as a dictionary.
 
@@ -63,8 +63,8 @@ class BallotMarks:
         :type exhaust_on_duplicate_candidate_marks: bool, optional
         :param exhaust_on_overvote_marks: [description], defaults to False
         :type exhaust_on_overvote_marks: bool, optional
-        :param exhaust_on_repeated_skipped_marks: [description], defaults to False
-        :type exhaust_on_repeated_skipped_marks: bool, optional
+        :param exhaust_on_N_repeated_skipped_marks: Number of consecutive skip marks which cause exhaustion, defaults to 0
+        :type exhaust_on_N_repeated_skipped_marks: int, optional
         :return: [description]
         :rtype: Dict
         """
@@ -77,7 +77,7 @@ class BallotMarks:
             "treat_combined_writeins_as_exhaustable_duplicates": treat_combined_writeins_as_exhaustable_duplicates,
             "exhaust_on_duplicate_candidate_marks": exhaust_on_duplicate_candidate_marks,
             "exhaust_on_overvote_marks": exhaust_on_overvote_marks,
-            "exhaust_on_repeated_skipped_marks": exhaust_on_repeated_skipped_marks,
+            "exhaust_on_N_repeated_skipped_marks": exhaust_on_N_repeated_skipped_marks,
         }
 
     @staticmethod
@@ -246,7 +246,7 @@ class BallotMarks:
         treat_combined_writeins_as_exhaustable_duplicates: bool = False,
         exhaust_on_duplicate_candidate_marks: bool = False,
         exhaust_on_overvote_marks: bool = False,
-        exhaust_on_repeated_skipped_marks: bool = False,
+        exhaust_on_N_repeated_skipped_marks: int = 0,
     ) -> None:
         """
         Applies rules to ballot, modifying marks as necessary.
@@ -267,8 +267,8 @@ class BallotMarks:
         :type exhaust_on_duplicate_candidate_marks: bool, optional
         :param exhaust_on_overvote_marks: If True, ballot is truncated following a `BallotMarks.OVERVOTE` mark, defaults to False, defaults to False
         :type exhaust_on_overvote_marks: bool, optional
-        :param exhaust_on_repeated_skipped_marks: If True, ballot is truncated following at least 2 `BallotMarks.SKIPPED` marks which are followed by a non-skipped mark, defaults to False
-        :type exhaust_on_repeated_skipped_marks: bool, optional
+        :param exhaust_on_N_repeated_skipped_marks: If > 0, ballot is truncated following at least N `BallotMarks.SKIPPED` marks which are followed by a non-skipped mark, defaults to 0
+        :type exhaust_on_N_repeated_skipped_marks: bool, optional
         :raises RuntimeError: Raised if rules already applied to this object. To apply fresh rules, first execute the `clean_rules` method.
         """
 
@@ -284,7 +284,7 @@ class BallotMarks:
             "treat_combined_writeins_as_exhaustable_duplicates": treat_combined_writeins_as_exhaustable_duplicates,
             "exhaust_on_duplicate_candidate_marks": exhaust_on_duplicate_candidate_marks,
             "exhaust_on_overvote_marks": exhaust_on_overvote_marks,
-            "exhaust_on_repeated_skipped_marks": exhaust_on_repeated_skipped_marks,
+            "exhaust_on_N_repeated_skipped_marks": exhaust_on_N_repeated_skipped_marks,
         }
 
         all_skipped = None
@@ -304,13 +304,14 @@ class BallotMarks:
         for mark_idx, mark in enumerate(self.marks):
 
             repeated_skipped_marks_present = False
-            if mark_idx + 1 < len(self.marks):
+            look_ahead_n = exhaust_on_N_repeated_skipped_marks - 1
+            if exhaust_on_N_repeated_skipped_marks and mark_idx + look_ahead_n < len(self.marks):
 
-                remaining_marks = self.marks[mark_idx + 1 :]
-                next_mark = remaining_marks[0]
+                next_marks = self.marks[mark_idx: mark_idx + look_ahead_n + 1]
+                following_marks = self.marks[mark_idx + look_ahead_n + 1:]
 
                 # check for successive skips
-                if mark == BallotMarks.SKIPPED and next_mark == BallotMarks.SKIPPED:
+                if set(next_marks) == {BallotMarks.SKIPPED}:
                     repeated_skipped_marks_present = True
                 else:
                     repeated_skipped_marks_present = False
@@ -318,16 +319,16 @@ class BallotMarks:
                 # and check if any non-skip marks remain after skips
                 if (
                     repeated_skipped_marks_present
-                    and set(remaining_marks)
-                    and set(remaining_marks) != {BallotMarks.SKIPPED}
+                    and set(following_marks)
+                    and set(following_marks) != {BallotMarks.SKIPPED}
                 ):
                     repeated_skipped_marks_present = True
                 else:
                     repeated_skipped_marks_present = False
 
-            if exhaust_on_repeated_skipped_marks and repeated_skipped_marks_present:
+            if exhaust_on_N_repeated_skipped_marks and repeated_skipped_marks_present:
                 if not self.inactive_type:
-                    specific_exhaust = self.MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
+                    specific_exhaust = self.MAYBE_EXHAUSTED_BY_SKIPPED_RANKING
                 break
 
             overvote_mark_present = mark == BallotMarks.OVERVOTE

@@ -30,6 +30,6 @@ def test_candidate_column():
     ]
 
     test_cvr_path = dir_path / "parser_test_files/candidate_column/test1"
-    calc_ballot_dict = parsers.candidate_column(test_cvr_path)
+    calc_ballot_dict = parsers.candidate_column_csv(test_cvr_path)
 
     assert expected_ballots == calc_ballot_dict["ranks"]

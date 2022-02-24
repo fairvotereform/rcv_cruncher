@@ -229,7 +229,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {
                 "n_tabulation": 1,
@@ -2309,7 +2309,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 4},
         }
@@ -2383,7 +2383,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2458,7 +2458,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2493,7 +2493,7 @@ params = [
                     ],
                     "weight": [2, 2, 2, 2, 1, 1, 1],
                 },
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2543,7 +2543,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2578,7 +2578,7 @@ params = [
                     ],
                     "weight": [2, 2, 2, 2, 1, 1, 1],
                 },
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2623,7 +2623,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2658,7 +2658,7 @@ params = [
                     ],
                     "weight": [2, 2, 2, 2, 1, 1, 1],
                 },
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2703,7 +2703,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2738,7 +2738,7 @@ params = [
                     ],
                     "weight": [2, 2, 2, 2, 1, 1, 1],
                 },
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2785,7 +2785,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2820,7 +2820,7 @@ params = [
                     ],
                     "weight": [2, 2, 2, 2, 1, 1, 1],
                 },
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2868,7 +2868,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 2},
         }
@@ -3273,7 +3273,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [1, 0]},
         }
@@ -3353,7 +3353,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 1]},
         }
@@ -3385,7 +3385,7 @@ params = [
                     "split": [1, 1, 1, 1, 2, 2, 2],
                 },
                 "split_fields": ["split"],
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 1]},
         }
@@ -3438,7 +3438,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [1, 0]},
         }
@@ -3475,7 +3475,7 @@ params = [
                     "split": [1, 1, 1, 1, 2, 2, 2],
                 },
                 "split_fields": ["split"],
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 1]},
         }
@@ -3523,7 +3523,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -3560,7 +3560,7 @@ params = [
                     "split": [1, 1, 1, 1, 2, 2, 2],
                 },
                 "split_fields": ["split"],
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0]},
         }
@@ -3608,7 +3608,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -3645,7 +3645,7 @@ params = [
                     "split": [1, 1, 1, 1, 2, 2, 2],
                 },
                 "split_fields": ["split"],
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0]},
         }
@@ -3693,7 +3693,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -3730,7 +3730,7 @@ params = [
                     "split": [1, 1, 1, 1, 2, 2, 2],
                 },
                 "split_fields": ["split"],
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0]},
         }
@@ -3780,7 +3780,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [2, 0]},
         }

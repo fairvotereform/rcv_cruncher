@@ -33,9 +33,9 @@
         "type":	"bool",
         "default": false
     },
-    "exhaust_on_repeated_skipped_marks": {
-        "type":	"bool",
-        "default": false
+    "exhaust_on_N_repeated_skipped_marks": {
+        "type":	"int",
+        "default": 0
     },
     "exhaust_on_duplicate_candidate_marks": {
         "type":	"bool",

@@ -2,6 +2,7 @@ import decimal
 import os
 import pathlib
 import csv
+import platform
 
 ###############################################################
 # constants
@@ -118,7 +119,10 @@ def LD2DL(ld):
 
 
 def longname(path):
-    return pathlib.Path("\\\\?\\" + os.fspath(path.resolve()))
+    if platform.system() == "Windows":
+        return pathlib.Path("\\\\?\\" + os.fspath(path.resolve()))
+    else:
+        return pathlib.Path(os.fspath(path.resolve()))
 
 
 def filter_bool_dict(ballots, field_name):

@@ -32,7 +32,7 @@ class RCV_stats:
         - POSTTALLY_EXHAUSTED_BY_OVERVOTE: overvote rules apply to contest, and an overvote is encountered prior to a
         final round candidate or another exhaust condition.
 
-        - POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPVOTE: skipped rankings rules apply to contest, and two or more repeated skipped
+        - POSTTALLY_EXHAUSTED_BY_SKIPVOTE: skipped rankings rules apply to contest, and N repeated skipped
          rankings are encountered prior to a final round candidate or another exhaust condition. The skipped rankings
           must be followed by a non-skipped ranking for this condition to apply.
 
@@ -77,8 +77,8 @@ class RCV_stats:
             elif ballot_marks.inactive_type == BallotMarks.MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING:
                 why_exhaust.append(BallotMarks.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING)
 
-            elif ballot_marks.inactive_type == BallotMarks.MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING:
-                why_exhaust.append(BallotMarks.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING)
+            elif ballot_marks.inactive_type == BallotMarks.MAYBE_EXHAUSTED_BY_SKIPPED_RANKING:
+                why_exhaust.append(BallotMarks.POSTTALLY_EXHAUSTED_BY_SKIPPED_RANKING)
 
             elif ballot_marks.inactive_type == BallotMarks.MAYBE_EXHAUSTED_BY_OVERVOTE:
                 why_exhaust.append(BallotMarks.POSTTALLY_EXHAUSTED_BY_OVERVOTE)
@@ -355,8 +355,8 @@ class RCV_stats:
             df[f"posttally_exhausted_by_overvote{iTab}"] = df[exhaust_type_str].eq(
                 BallotMarks.POSTTALLY_EXHAUSTED_BY_OVERVOTE
             )
-            df[f"posttally_exhausted_by_repeated_skipped_rankings{iTab}"] = df[exhaust_type_str].eq(
-                BallotMarks.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
+            df[f"posttally_exhausted_by_skipped_rankings{iTab}"] = df[exhaust_type_str].eq(
+                BallotMarks.POSTTALLY_EXHAUSTED_BY_SKIPPED_RANKING
             )
             df[f"posttally_exhausted_by_abstention{iTab}"] = df[exhaust_type_str].eq(
                 BallotMarks.POSTTALLY_EXHAUSTED_BY_ABSTENTION
@@ -370,7 +370,7 @@ class RCV_stats:
 
             all_posttally_conditions = [
                 f"posttally_exhausted_by_overvote{iTab}",
-                f"posttally_exhausted_by_repeated_skipped_rankings{iTab}",
+                f"posttally_exhausted_by_skipped_rankings{iTab}",
                 f"posttally_exhausted_by_abstention{iTab}",
                 f"posttally_exhausted_by_rank_limit{iTab}",
                 f"posttally_exhausted_by_duplicate_rankings{iTab}",
@@ -395,8 +395,8 @@ class RCV_stats:
             s["rcv_type"] = self.__class__.__name__
 
             exhaust_on_overvote = self._rule_sets[self._contest_rule_set_name]["exhaust_on_overvote_marks"]
-            exhaust_on_repeated_skipped = self._rule_sets[self._contest_rule_set_name][
-                "exhaust_on_repeated_skipped_marks"
+            exhaust_on_N_repeated_skipped = self._rule_sets[self._contest_rule_set_name][
+                "exhaust_on_N_repeated_skipped_marks"
             ]
             exhaust_on_duplicate = self._rule_sets[self._contest_rule_set_name]["exhaust_on_duplicate_candidate_marks"]
             combine_writeins = self._rule_sets[self._contest_rule_set_name]["combine_writein_marks"]
@@ -408,7 +408,7 @@ class RCV_stats:
             s["n_winners"] = self._n_winners
             s["bottoms_up_threshold"] = self._bottoms_up_threshold
             s["exhaust_on_overvote_marks"] = exhaust_on_overvote
-            s["exhaust_on_repeated_skipped_marks"] = exhaust_on_repeated_skipped
+            s["exhaust_on_N_repeated_skipped_marks"] = exhaust_on_N_repeated_skipped
             s["exhaust_on_duplicate_candidate_marks"] = exhaust_on_duplicate
             s["combine_writein_marks"] = combine_writeins
             s["exclude_writein_marks"] = exclude_writeins
@@ -440,7 +440,7 @@ class RCV_stats:
             s["total_posttally_exhausted_by_overvote"] = posttally_overvote
 
             posttally_skipped = sum(
-                self._contest_stat_table[f"posttally_exhausted_by_repeated_skipped_rankings{iTab}"] * weight
+                self._contest_stat_table[f"posttally_exhausted_by_skipped_rankings{iTab}"] * weight
             )
             s["total_posttally_exhausted_by_skipped_rankings"] = posttally_skipped
 
@@ -519,7 +519,7 @@ class RCV_stats:
             s["split_total_posttally_exhausted_by_overvote"] = posttally_overvote
 
             posttally_skipped = sum(
-                filtered_stat_table[f"posttally_exhausted_by_repeated_skipped_rankings{iTab}"] * weight
+                filtered_stat_table[f"posttally_exhausted_by_skipped_rankings{iTab}"] * weight
             )
             s["split_total_posttally_exhausted_by_skipped_rankings"] = posttally_skipped
 

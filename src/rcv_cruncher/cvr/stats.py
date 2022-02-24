@@ -5,6 +5,8 @@ import collections
 
 import pandas as pd
 
+from typing import List
+
 import rcv_cruncher.util as util
 
 from rcv_cruncher.marks import BallotMarks
@@ -18,7 +20,7 @@ class CastVoteRecord_stats:
         keep_decimal_type: bool = False,
         add_split_stats: bool = False,
         add_id_info: bool = True,
-    ) -> pd.DataFrame:
+    ) -> List[pd.DataFrame]:
         """Obtain the default statistics calculated by the CastVoteRecord object. Statistics are returned in pandas dataframe object.
 
         :param keep_decimal_type: Return the decimal class objects used by internal calculations rather than converting them to floats, defaults to False

@@ -334,7 +334,7 @@ params = [
         {
             "input": {
                 "cvr": {"weight": [1, 1], "ranks": add_rule_set_ballots},
-                "rule_set": BallotMarks.new_rule_set(exhaust_on_repeated_skipped_marks=True),
+                "rule_set": BallotMarks.new_rule_set(exhaust_on_N_repeated_skipped_marks=2),
             },
             "expected": {
                 "cvr": {
@@ -539,7 +539,7 @@ params = [
 def test_rank_limit(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"])
 
-    computed_stat = cast_vote_record.get_stats()[0][0]["rank_limit"].item()
+    computed_stat = cast_vote_record.get_stats()[0]["rank_limit"].item()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -745,7 +745,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_first_round_overvote(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_first_round_overvote"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_first_round_overvote"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -865,7 +865,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_ranked_single(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_ranked_single"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_ranked_single"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -978,7 +978,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_ranked_multiple(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_ranked_multiple"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_ranked_multiple"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1069,7 +1069,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_ranked_3_or_more(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_ranked_3_or_more"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_ranked_3_or_more"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1198,7 +1198,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_total_fully_ranked(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_total_fully_ranked"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_total_fully_ranked"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1289,7 +1289,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_includes_duplicate_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_includes_duplicate_ranking"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_includes_duplicate_ranking"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1385,7 +1385,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_includes_skipped_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_includes_skipped_ranking"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_includes_skipped_ranking"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1467,7 +1467,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_includes_overvote_ranking(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_includes_overvote_ranking"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_includes_overvote_ranking"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1570,7 +1570,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_total_irregular(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_total_irregular"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_total_irregular"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1653,7 +1653,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_total_ballots(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_total_ballots"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_total_ballots"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1733,7 +1733,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_total_undervote(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_total_undervote"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_total_undervote"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 
@@ -1841,7 +1841,7 @@ params = [
 @pytest.mark.parametrize("param", params)
 def test_split_mean_rankings_used(param):
     cast_vote_record = CastVoteRecord(parsed_cvr=param["input"]["cvr"], split_fields=["split"])
-    computed_stat = cast_vote_record.get_stats(add_split_stats=True)["split_mean_rankings_used"].tolist()
+    computed_stat = cast_vote_record.get_stats(add_split_stats=True)[0]["split_mean_rankings_used"].tolist()
     assert param["expected"]["stat"] == computed_stat
 
 

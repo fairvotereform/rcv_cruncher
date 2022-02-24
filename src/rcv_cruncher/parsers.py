@@ -98,7 +98,7 @@ def rank_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
 
     # pull out rank lists
     rank_col_list = [df[col].tolist() for col in rank_col]
-    rank_lists = [list(rank_tuple) for rank_tuple in list(zip(*rank_col_list))]
+    rank_lists = [[c.strip() for c in rank_tuple] for rank_tuple in list(zip(*rank_col_list))]
 
     # double check all ballot ranks are equal length
     if not all([len(i) == len(rank_lists[0]) for i in rank_lists]):

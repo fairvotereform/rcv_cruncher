@@ -586,7 +586,7 @@ param_dicts = [
                     "uwi",
                     BallotMarks.OVERVOTE,
                 ],
-                "rules": BallotMarks.new_rule_set(exhaust_on_repeated_skipped_marks=True),
+                "rules": BallotMarks.new_rule_set(exhaust_on_N_repeated_skipped_marks=2),
             },
             "expected": {
                 "marks": [
@@ -620,7 +620,7 @@ param_dicts = [
                     "uwi",
                     BallotMarks.OVERVOTE,
                 ],
-                "rules": BallotMarks.new_rule_set(exhaust_on_repeated_skipped_marks=True),
+                "rules": BallotMarks.new_rule_set(exhaust_on_N_repeated_skipped_marks=2),
             },
             "expected": {
                 "marks": ["A"],
@@ -649,13 +649,103 @@ param_dicts = [
                     treat_combined_writeins_as_exhaustable_duplicates=True,
                     exhaust_on_duplicate_candidate_marks=True,
                     exhaust_on_overvote_marks=True,
-                    exhaust_on_repeated_skipped_marks=True,
+                    exhaust_on_N_repeated_skipped_marks=2,
                 ),
             },
             "expected": {
                 "marks": ["A"],
                 "unique_marks": {"A"},
                 "unique_candidates": {"A"},
+            },
+        }
+    ),
+(
+        {
+            "input": {
+                "marks": [
+                    "uwi",
+                    "A",
+                    BallotMarks.SKIPPED,
+                    BallotMarks.SKIPPED,
+                    "Tuwi",
+                    BallotMarks.OVERVOTE,
+                ],
+                "rules": BallotMarks.new_rule_set(
+                    exclude_duplicate_candidate_marks=True,
+                    exclude_overvote_marks=True,
+                    exclude_skipped_marks=True,
+                    exclude_writein_marks=True,
+                    combine_writein_marks=True,
+                    treat_combined_writeins_as_exhaustable_duplicates=True,
+                    exhaust_on_duplicate_candidate_marks=True,
+                    exhaust_on_overvote_marks=True,
+                    exhaust_on_N_repeated_skipped_marks=1,
+                ),
+            },
+            "expected": {
+                "marks": ["A"],
+                "unique_marks": {"A"},
+                "unique_candidates": {"A"},
+            },
+        }
+    ),
+(
+        {
+            "input": {
+                "marks": [
+                    "uwi",
+                    "A",
+                    BallotMarks.SKIPPED,
+                    BallotMarks.SKIPPED,
+                    "Tuwi",
+                    BallotMarks.OVERVOTE,
+                ],
+                "rules": BallotMarks.new_rule_set(
+                    exclude_duplicate_candidate_marks=True,
+                    exclude_overvote_marks=True,
+                    exclude_skipped_marks=True,
+                    exclude_writein_marks=True,
+                    combine_writein_marks=True,
+                    treat_combined_writeins_as_exhaustable_duplicates=True,
+                    exhaust_on_duplicate_candidate_marks=True,
+                    exhaust_on_overvote_marks=True,
+                    exhaust_on_N_repeated_skipped_marks=3,
+                ),
+            },
+            "expected": {
+                "marks": ["A", "Tuwi"],
+                "unique_marks": {"A", "Tuwi"},
+                "unique_candidates": {"A", "Tuwi"},
+            },
+        }
+    ),
+    (
+        {
+            "input": {
+                "marks": [
+                    "uwi",
+                    "A",
+                    BallotMarks.SKIPPED,
+                    BallotMarks.SKIPPED,
+                    "Tuwi",
+                    BallotMarks.OVERVOTE,
+                ],
+                "rules": BallotMarks.new_rule_set(
+                    exclude_duplicate_candidate_marks=True,
+                    exclude_overvote_marks=True,
+                    exclude_skipped_marks=True,
+                    exclude_writein_marks=True,
+                    combine_writein_marks=True,
+                    treat_combined_writeins_as_exhaustable_duplicates=True,
+                    exhaust_on_duplicate_candidate_marks=True,
+                    exhaust_on_overvote_marks=True,
+                    exhaust_on_N_repeated_skipped_marks=0,
+                ),
+            },
+            "expected": {
+                "marks": ["A", "Tuwi"],
+                "unique_marks": {"A", "Tuwi"},
+                "unique_candidates": {"A", "Tuwi"},
             },
         }
     ),

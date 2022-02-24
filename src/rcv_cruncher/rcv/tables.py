@@ -825,7 +825,7 @@ class RCV_tables:
         # assemble rows
         cand_rows = []
         for cand in ordered_candidates_names:
-            cand_rows.append([self.unique_id,
+            cand_rows.append([self.unique_id + f"_tab_{tabulation_num}",
                               cand,
                               cand_outcomes_dict[cand]['round_elected'],
                               cand_outcomes_dict[cand]['round_eliminated']] +

@@ -799,21 +799,22 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
     # OUTPUT PATHS
     path_to_output = pathlib.Path(path_to_output)
 
+
     # cvrs from path_to_cvr used in tabulation will be converted and output here
     converted_cvr_dir = path_to_output / "converted_cvr"
     if fresh_output and converted_cvr_dir.exists():
         print("deleting existing converted_cvr directory...")
         shutil.rmtree(util.longname(converted_cvr_dir))
-    util.verifyDir(util.longname(converted_cvr_dir))
-    util.verifyDir(util.longname(converted_cvr_dir / "candidate"))
-    util.verifyDir(util.longname(converted_cvr_dir / "rank"))
+    util.verifyDir(converted_cvr_dir)
+    util.verifyDir(converted_cvr_dir / "candidate")
+    util.verifyDir(converted_cvr_dir / "rank")
 
     # various tabulation stats will be output here
     results_dir = path_to_output / "results"
     if fresh_output and results_dir.exists():
         print("deleting existing results directory...")
         shutil.rmtree(util.longname(results_dir))
-    util.verifyDir(util.longname(results_dir))
+    util.verifyDir(results_dir)
 
     #########################
     # SOME RESULTS CONTAINERS

@@ -231,7 +231,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {
                 "n_tabulation": 1,
@@ -275,7 +275,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {
                 "n_tabulation": 1,
@@ -1850,7 +1850,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 4},
         }
@@ -1895,7 +1895,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -1940,9 +1940,79 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 1,
+            },
+            "expected": {"stat": 1},
+        }
+    ),
+    (
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "precinct": [1, 1, 1, 2, 2, 2, 3, 3],
+                },
+                "split_fields": ["precinct"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 3,
+            },
+            "expected": {"stat": 0},
         }
     )
 ]
@@ -1990,7 +2060,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 1},
         }
@@ -2035,7 +2105,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2080,7 +2150,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2127,7 +2197,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 0},
         }
@@ -2175,7 +2245,7 @@ params = [
                 "split_fields": ["precinct"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": 2},
         }
@@ -2486,7 +2556,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [1, 0]},
         }
@@ -2534,7 +2604,42 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
+            },
+            "expected": {"stat": [0, 1]},
+        }
+    ),
+(
+        {
+            "input": {
+                "parsed_cvr": {
+                    "ranks": [
+                        ["A", "C", "C", "D"],
+                        [BallotMarks.OVERVOTE, "A", "B", "C"],
+                        ["B", BallotMarks.OVERVOTE, "A", "B"],
+                        ["B", "A", "A", "C"],
+                        ["C", BallotMarks.SKIPPED, BallotMarks.SKIPPED, "A"],
+                        ["C", "A", "B", "E"],
+                        [
+                            "D",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                        [
+                            "E",
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                            BallotMarks.SKIPPED,
+                        ],
+                    ],
+                    "weight": [1, 1, 1, 1, 1, 1, 5, 5],
+                    "split": [1, 1, 1, 1, 2, 2, 2, 2],
+                },
+                "split_fields": ["split"],
+                "exhaust_on_duplicate_candidate_marks": True,
+                "exhaust_on_overvote_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 1,
             },
             "expected": {"stat": [0, 1]},
         }
@@ -2587,7 +2692,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [1, 0]},
         }
@@ -2635,7 +2740,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -2683,7 +2788,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -2731,7 +2836,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [0, 0, 0]},
         }
@@ -2781,7 +2886,7 @@ params = [
                 "split_fields": ["split"],
                 "exhaust_on_duplicate_candidate_marks": True,
                 "exhaust_on_overvote_marks": True,
-                "exhaust_on_repeated_skipped_marks": True,
+                "exhaust_on_N_repeated_skipped_marks": 2,
             },
             "expected": {"stat": [2, 0]},
         }

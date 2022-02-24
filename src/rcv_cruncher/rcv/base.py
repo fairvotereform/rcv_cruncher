@@ -234,7 +234,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         disable_aggregation: bool = False,
         exhaust_on_duplicate_candidate_marks: bool = False,
         exhaust_on_overvote_marks: bool = False,
-        exhaust_on_repeated_skipped_marks: bool = False,
+        exhaust_on_N_repeated_skipped_marks: int = 0,
         treat_combined_writeins_as_exhaustable_duplicates: bool = True,
         combine_writein_marks: bool = True,
         exclude_writein_marks: bool = False,
@@ -285,7 +285,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                 treat_combined_writeins_as_exhaustable_duplicates=treat_combined_writeins_as_exhaustable_duplicates,
                 exhaust_on_duplicate_candidate_marks=exhaust_on_duplicate_candidate_marks,
                 exhaust_on_overvote_marks=exhaust_on_overvote_marks,
-                exhaust_on_repeated_skipped_marks=exhaust_on_repeated_skipped_marks,
+                exhaust_on_N_repeated_skipped_marks=exhaust_on_N_repeated_skipped_marks,
             ),
         )
 
