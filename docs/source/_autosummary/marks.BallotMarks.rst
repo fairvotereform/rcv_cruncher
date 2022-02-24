@@ -1,4 +1,4 @@
-marks.BallotMarks
+﻿marks.BallotMarks
 =================
 
 .. currentmodule:: marks
@@ -41,14 +41,14 @@ marks.BallotMarks
       ~BallotMarks.MAYBE_EXHAUSTED
       ~BallotMarks.MAYBE_EXHAUSTED_BY_DUPLICATE_RANKING
       ~BallotMarks.MAYBE_EXHAUSTED_BY_OVERVOTE
-      ~BallotMarks.MAYBE_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
+      ~BallotMarks.MAYBE_EXHAUSTED_BY_SKIPPED_RANKING
       ~BallotMarks.NOT_EXHAUSTED
       ~BallotMarks.OVERVOTE
       ~BallotMarks.POSTTALLY_EXHAUSTED_BY_ABSTENTION
       ~BallotMarks.POSTTALLY_EXHAUSTED_BY_DUPLICATE_RANKING
       ~BallotMarks.POSTTALLY_EXHAUSTED_BY_OVERVOTE
       ~BallotMarks.POSTTALLY_EXHAUSTED_BY_RANK_LIMIT
-      ~BallotMarks.POSTTALLY_EXHAUSTED_BY_REPEATED_SKIPPED_RANKING
+      ~BallotMarks.POSTTALLY_EXHAUSTED_BY_SKIPPED_RANKING
       ~BallotMarks.PRETALLY_EXHAUST
       ~BallotMarks.SKIPPED
       ~BallotMarks.UNDERVOTE

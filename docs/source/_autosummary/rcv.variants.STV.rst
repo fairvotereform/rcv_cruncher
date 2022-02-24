@@ -1,4 +1,4 @@
-rcv.variants.STV
+﻿rcv.variants.STV
 ================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.STV
    
       ~STV.__init__
       ~STV.add_rule_set
+      ~STV.calc_candidate_details_tables
       ~STV.calc_candidate_rank_usage_table
       ~STV.calc_condorcet_tables
       ~STV.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.STV
       ~STV.calc_stats
       ~STV.calc_winner_choice_position_distribution_table
       ~STV.finalist_candidates
+      ~STV.get_candidate_details_table
       ~STV.get_candidate_outcomes
       ~STV.get_candidates
       ~STV.get_condorcet_tables

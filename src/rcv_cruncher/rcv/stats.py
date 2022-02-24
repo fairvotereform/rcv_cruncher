@@ -49,7 +49,7 @@ class RCV_stats:
         rank restricted ballot: less than or equal to n-2 ranks, where n is number of candidates (not counting writeins).
         """
 
-        restrictive_rank_limit = self._summary_cvr_stat_table["restrictive_rank_limit"].item()
+        restrictive_rank_limit = bool(self._summary_cvr_stat_table["restrictive_rank_limit"].item())
 
         used_last_rank_list = self._cvr_stat_table["used_last_rank"]
         initial_ranks_list = self.get_initial_ranks(tabulation_num=tabulation_num, disaggregate=False)
@@ -390,7 +390,7 @@ class RCV_stats:
 
         for iTab in range(1, self._tab_num + 1):
 
-            s = pd.Series()
+            s = pd.Series(dtype=object)
 
             s["rcv_type"] = self.__class__.__name__
 
@@ -505,7 +505,7 @@ class RCV_stats:
 
         for iTab in range(1, self._tab_num + 1):
 
-            s = pd.Series()
+            s = pd.Series(dtype=object)
 
             weight = filtered_stat_table[f"final_weight{iTab}"]
 

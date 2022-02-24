@@ -1,4 +1,4 @@
-rcv.tables.RCV\_tables
+﻿rcv.tables.RCV\_tables
 ======================
 
 .. currentmodule:: rcv.tables
@@ -17,6 +17,7 @@ rcv.tables.RCV\_tables
    .. autosummary::
    
       ~RCV_tables.__init__
+      ~RCV_tables.get_candidate_details_table
       ~RCV_tables.get_condorcet_tables
       ~RCV_tables.get_cumulative_ranking_tables
       ~RCV_tables.get_first_choice_to_finalist_table

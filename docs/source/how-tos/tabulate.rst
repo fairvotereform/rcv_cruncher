@@ -32,7 +32,7 @@ This example uses the `2017 Minneapolis mayoral election <https://github.com/fai
         parser_args={'cvr_path': cvr_file},
         exhaust_on_duplicate_candidate_marks=False,
         exhaust_on_overvote_marks=False,
-        exhaust_on_repeated_skipped_marks=False
+        exhaust_on_N_repeated_skipped_marks=0
     )
 
    # save a csv table of the results to out_dir
@@ -66,7 +66,7 @@ This example uses the `2017 Minneapolis election for the Board of Estimates and 
         parser_args={'cvr_path': cvr_file},
         exhaust_on_duplicate_candidate_marks=False,
         exhaust_on_overvote_marks=False,
-        exhaust_on_repeated_skipped_marks=False,
+        exhaust_on_N_repeated_skipped_marks=0,
         n_winners=2
     )
 

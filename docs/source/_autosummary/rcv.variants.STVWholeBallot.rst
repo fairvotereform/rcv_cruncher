@@ -1,4 +1,4 @@
-rcv.variants.STVWholeBallot
+﻿rcv.variants.STVWholeBallot
 ===========================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.STVWholeBallot
    
       ~STVWholeBallot.__init__
       ~STVWholeBallot.add_rule_set
+      ~STVWholeBallot.calc_candidate_details_tables
       ~STVWholeBallot.calc_candidate_rank_usage_table
       ~STVWholeBallot.calc_condorcet_tables
       ~STVWholeBallot.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.STVWholeBallot
       ~STVWholeBallot.calc_stats
       ~STVWholeBallot.calc_winner_choice_position_distribution_table
       ~STVWholeBallot.finalist_candidates
+      ~STVWholeBallot.get_candidate_details_table
       ~STVWholeBallot.get_candidate_outcomes
       ~STVWholeBallot.get_candidates
       ~STVWholeBallot.get_condorcet_tables

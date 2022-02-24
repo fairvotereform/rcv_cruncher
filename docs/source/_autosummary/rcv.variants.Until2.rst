@@ -1,4 +1,4 @@
-rcv.variants.Until2
+﻿rcv.variants.Until2
 ===================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.Until2
    
       ~Until2.__init__
       ~Until2.add_rule_set
+      ~Until2.calc_candidate_details_tables
       ~Until2.calc_candidate_rank_usage_table
       ~Until2.calc_condorcet_tables
       ~Until2.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.Until2
       ~Until2.calc_stats
       ~Until2.calc_winner_choice_position_distribution_table
       ~Until2.finalist_candidates
+      ~Until2.get_candidate_details_table
       ~Until2.get_candidate_outcomes
       ~Until2.get_candidates
       ~Until2.get_condorcet_tables

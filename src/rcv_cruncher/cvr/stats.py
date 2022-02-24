@@ -162,9 +162,11 @@ class CastVoteRecord_stats:
             BallotMarks.combine_writein_marks(candidates), [BallotMarks.WRITEIN]
         )
         s["n_candidates"] = len(candidates_no_writeins.marks)
-
         s["rank_limit"] = len(cvr["ballot_marks"][0].marks)
-        s["restrictive_rank_limit"] = True if s["rank_limit"] < (s["n_candidates"] - 1) else False
+
+        s["restrictive_rank_limit"] = 0
+        if s["rank_limit"] < (s["n_candidates"] - 1):
+            s["restrictive_rank_limit"] = 1
 
         # first_round_overvote
         # The number of ballots with an overvote before any valid ranking. (weighted)

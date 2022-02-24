@@ -228,6 +228,7 @@ def _read_contest_set(contest_set_path, override_cvr_root_dir=None):
         raise RuntimeError(f"not a valid file path: {contest_set_fpath}")
 
     contest_set_df = pd.read_csv(contest_set_fpath, dtype=object)
+    contest_set_df = contest_set_df.dropna(how="all")
 
     # add in default values for missing columns
     for setting in contest_set_settings:
@@ -914,7 +915,7 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
             )
 
     if n_errors:
-        print("[{n_errors} TOTAL ERRORS]")
+        print(f"[{n_errors} TOTAL ERRORS]")
 
     # close logs
     error_logger.close()
@@ -954,7 +955,7 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
     print("DONE!")
 
 
-def analyze_election_set(contest_set_path: str, output_path: str, fresh_output=False) -> None:
+def analyze_election_set(contest_set_path: str, output_path: str, fresh_output=False, print_parsed_contest_set=False) -> None:
     """
     Analyze a set of elections. For details see documentation at https://rcv-cruncher.readthedocs.io/en/latest/how-tos/batch.html
 
@@ -964,10 +965,26 @@ def analyze_election_set(contest_set_path: str, output_path: str, fresh_output=F
     :type output_path: str
     :param fresh_output: If True, output folders already present in `output_path` are deleted, defaults to False
     :type fresh_output: bool, optional
+    :param print_parsed_contest_set: If True, the parsed data from the contest set and run config files is printed. Useful for debugging.
+    :type print_parsed_contest_set: bool, optional
     """
 
     # read in contest set info
     contest_set, run_config = _read_contest_set(contest_set_path)
+
+    if print_parsed_contest_set:
+
+        print("## contest set")
+        for c in contest_set:
+            for k, v in c.items():
+                print(str(k) + " : " + str(v))
+            print("###")
+
+        print("## run_config")
+        for k, v in run_config.items():
+            print(str(k) + " : " + str(v))
+
+        print("###")
 
     # analyze contests
     _crunch_contest_set(contest_set, run_config, output_path, fresh_output=fresh_output)

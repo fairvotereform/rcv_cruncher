@@ -1,4 +1,4 @@
-rcv.variants.Sequential
+﻿rcv.variants.Sequential
 =======================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.Sequential
    
       ~Sequential.__init__
       ~Sequential.add_rule_set
+      ~Sequential.calc_candidate_details_tables
       ~Sequential.calc_candidate_rank_usage_table
       ~Sequential.calc_condorcet_tables
       ~Sequential.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.Sequential
       ~Sequential.calc_stats
       ~Sequential.calc_winner_choice_position_distribution_table
       ~Sequential.finalist_candidates
+      ~Sequential.get_candidate_details_table
       ~Sequential.get_candidate_outcomes
       ~Sequential.get_candidates
       ~Sequential.get_condorcet_tables

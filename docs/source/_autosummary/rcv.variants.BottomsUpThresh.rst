@@ -1,4 +1,4 @@
-rcv.variants.BottomsUpThresh
+﻿rcv.variants.BottomsUpThresh
 ============================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.BottomsUpThresh
    
       ~BottomsUpThresh.__init__
       ~BottomsUpThresh.add_rule_set
+      ~BottomsUpThresh.calc_candidate_details_tables
       ~BottomsUpThresh.calc_candidate_rank_usage_table
       ~BottomsUpThresh.calc_condorcet_tables
       ~BottomsUpThresh.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.BottomsUpThresh
       ~BottomsUpThresh.calc_stats
       ~BottomsUpThresh.calc_winner_choice_position_distribution_table
       ~BottomsUpThresh.finalist_candidates
+      ~BottomsUpThresh.get_candidate_details_table
       ~BottomsUpThresh.get_candidate_outcomes
       ~BottomsUpThresh.get_candidates
       ~BottomsUpThresh.get_condorcet_tables

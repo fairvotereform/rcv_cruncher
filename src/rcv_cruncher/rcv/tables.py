@@ -111,7 +111,7 @@ class RCV_tables:
 
             for cand in candidate_set:
 
-                not_cand = set(candidate_set) - {cand}
+                not_cand = list(set(candidate_set) - {cand})
                 all_winner = all(condorcet_percent_df.loc[cand, not_cand] > 50)
 
                 if all_winner:
@@ -507,9 +507,9 @@ class RCV_tables:
                 rcv_df.loc["exhaust", rnd_count_col] = current_rnd_count_val
 
             # sum round columns
-            rcv_df.loc["colsum", rnd_count_col] = sum(rcv_df.loc[row_names, rnd_count_col].astype(float))
-            rcv_df.loc["colsum", rnd_transfer_col] = sum(rcv_df.loc[row_names, rnd_transfer_col].astype(float))
-            rcv_df.loc["colsum", rnd_percent_col] = sum(rcv_df.loc[row_names, rnd_percent_col].astype(float))
+            rcv_df.loc["colsum", rnd_count_col] = sum(rcv_df.loc[list(row_names), rnd_count_col].astype(float))
+            rcv_df.loc["colsum", rnd_transfer_col] = sum(rcv_df.loc[list(row_names), rnd_transfer_col].astype(float))
+            rcv_df.loc["colsum", rnd_percent_col] = sum(rcv_df.loc[list(row_names), rnd_percent_col].astype(float))
 
         # convert from decimal to float
         rcv_df.loc[row_names + ["colsum"], rcv_df.columns != "candidate"] = (

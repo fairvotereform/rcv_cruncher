@@ -1,4 +1,4 @@
-rcv.variants.STVFractionalBallot
+﻿rcv.variants.STVFractionalBallot
 ================================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.STVFractionalBallot
    
       ~STVFractionalBallot.__init__
       ~STVFractionalBallot.add_rule_set
+      ~STVFractionalBallot.calc_candidate_details_tables
       ~STVFractionalBallot.calc_candidate_rank_usage_table
       ~STVFractionalBallot.calc_condorcet_tables
       ~STVFractionalBallot.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.STVFractionalBallot
       ~STVFractionalBallot.calc_stats
       ~STVFractionalBallot.calc_winner_choice_position_distribution_table
       ~STVFractionalBallot.finalist_candidates
+      ~STVFractionalBallot.get_candidate_details_table
       ~STVFractionalBallot.get_candidate_outcomes
       ~STVFractionalBallot.get_candidates
       ~STVFractionalBallot.get_condorcet_tables

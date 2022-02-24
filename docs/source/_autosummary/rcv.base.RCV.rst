@@ -1,4 +1,4 @@
-rcv.base.RCV
+﻿rcv.base.RCV
 ============
 
 .. currentmodule:: rcv.base
@@ -18,6 +18,7 @@ rcv.base.RCV
    
       ~RCV.__init__
       ~RCV.add_rule_set
+      ~RCV.calc_candidate_details_tables
       ~RCV.calc_candidate_rank_usage_table
       ~RCV.calc_condorcet_tables
       ~RCV.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.base.RCV
       ~RCV.calc_stats
       ~RCV.calc_winner_choice_position_distribution_table
       ~RCV.finalist_candidates
+      ~RCV.get_candidate_details_table
       ~RCV.get_candidate_outcomes
       ~RCV.get_candidates
       ~RCV.get_condorcet_tables

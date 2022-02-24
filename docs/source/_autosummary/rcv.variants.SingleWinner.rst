@@ -1,4 +1,4 @@
-rcv.variants.SingleWinner
+﻿rcv.variants.SingleWinner
 =========================
 
 .. currentmodule:: rcv.variants
@@ -18,6 +18,7 @@ rcv.variants.SingleWinner
    
       ~SingleWinner.__init__
       ~SingleWinner.add_rule_set
+      ~SingleWinner.calc_candidate_details_tables
       ~SingleWinner.calc_candidate_rank_usage_table
       ~SingleWinner.calc_condorcet_tables
       ~SingleWinner.calc_crossover_tables
@@ -29,6 +30,7 @@ rcv.variants.SingleWinner
       ~SingleWinner.calc_stats
       ~SingleWinner.calc_winner_choice_position_distribution_table
       ~SingleWinner.finalist_candidates
+      ~SingleWinner.get_candidate_details_table
       ~SingleWinner.get_candidate_outcomes
       ~SingleWinner.get_candidates
       ~SingleWinner.get_condorcet_tables
