@@ -79,8 +79,8 @@ The run config file can include the following fields:
 
 * ``crossover_support``: true or false. If true, crossover support tables are produced for every election. Uses :meth:`cvr.base.CastVoteRecord.write_crossover_tables`. Defaults to false.
 
-* ``annotated_cvr_rank_format``: true or false. If true, an annotated cvr is created for each election containing many internal tracking variables for each ballot. Useful for debugging. Uses :meth:`cvr.base.write_annotated_cvr_table`. Defaults to false.
+* ``annotated_cvr_rank_format``: true or false. If true, an annotated cvr is created for each election containing many internal tracking variables for each ballot. Useful for debugging. Uses :meth:`cvr.base.CastVoteRecord.write_annotated_cvr_table`. Defaults to false.
 
-* ``winner_final_pile_rank_distribution_table``: true or false. If true, an aggregate csv file is created containing the rank distribution of the final ballot pile for the winner of each single winner election. The rank distribution is measured twice, once using the ranks as the voters marked them and a second time using the 'effective' rankings of each ballot after the contest rules are applied. Uses :meth:`rcv.base.calc_winner_final_pile_rank_distribution_table`. Defaults to false.
+* ``winner_final_pile_rank_distribution_table``: true or false. If true, an aggregate csv file is created containing the rank distribution of the final ballot pile for the winner of each single winner election. The rank distribution is measured twice, once using the ranks as the voters marked them and a second time using the 'effective' rankings of each ballot after the contest rules are applied. Uses :meth:`rcv.base.RCV.calc_winner_final_pile_rank_distribution_table`. Defaults to false.
 
 * ``split_stats``: true or false. If true, split statistics are produced based on "split_fields" values.
