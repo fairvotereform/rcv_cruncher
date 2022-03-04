@@ -290,7 +290,7 @@ def _write_aggregated_stats(
     rcv_group_stats_df_dict,
     rcv_variant_stats_df_dict,
     candidate_details_dfs,
-    winner_choice_position_dfs,
+    winner_final_pile_rank_distribution_dfs,
     candidate_rank_usage_dfs,
     quiet=False,
 ):
@@ -375,13 +375,15 @@ def _write_aggregated_stats(
         )
         df.to_csv(util.longname(results_dir / "candidate_details.csv"), index=False)
 
-    if output_config.get("winner_choice_position_distribution", False) and winner_choice_position_dfs:
+    if output_config.get("winner_final_pile_rank_distribution_table", False) and winner_final_pile_rank_distribution_dfs:
 
         if not quiet:
-            print("Write winnner choice position table ...")
+            print("Write winnner final pile rank distribution table ...")
 
-        df = pd.concat(winner_choice_position_dfs, axis=0, ignore_index=True, sort=False)
-        df.to_csv(util.longname(results_dir / "winner_choice_position.csv"), index=False)
+        sorted_final_pile_rank_distribution_dfs = sorted(winner_final_pile_rank_distribution_dfs,
+                                                         key=lambda x: -x.shape[1])
+        df = pd.concat(sorted_final_pile_rank_distribution_dfs, axis=0, sort=False)
+        df.to_csv(util.longname(results_dir / "winner_final_pile_rank_distribution.csv"), index=False)
 
     if output_config.get("candidate_rank_usage", False) and candidate_rank_usage_dfs:
 
@@ -608,20 +610,20 @@ class _CrunchSteps(_Steps):
                         "return_key": "variant_group",
                     },
                 ),
-                # (
-                #     "winner_choice_position",
-                #     {
-                #         "f": RCV.calc_winner_choice_position_distribution_table,
-                #         "args": [
-                #             self.state_data["rcv_object"],
-                #             1,
-                #         ],  # only intended for single winner elections right now
-                #         "condition": self.output_config.get("winner_choice_position_distribution"),
-                #         "depends_on": ["init_rcv"],
-                #         "fail_with": [],
-                #         "return_key": "winner_choice_position_df",
-                #     },
-                # ),
+                (
+                    "winner_final_pile_rank_distribution_table",
+                    {
+                        "f": RCV.calc_winner_final_pile_rank_distribution_table,
+                        "args": [
+                            self.state_data["rcv_object"],
+                            1,
+                        ],  # only intended for single winner elections right now
+                        "condition": self.output_config.get("winner_final_pile_rank_distribution_table"),
+                        "depends_on": ["init_rcv"],
+                        "fail_with": [],
+                        "return_key": "winner_final_pile_rank_distribution_df",
+                    },
+                ),
                 (
                     'candidate_details',
                     {
@@ -654,6 +656,16 @@ class _CrunchSteps(_Steps):
                         "fail_with": [],
                         "return_key": None,
                     },
+                ),
+                ('annotated_cvr_rank_format',
+                 {
+                        "f": RCV.write_annotated_cvr_table,
+                        "args": [self.state_data["rcv_object"], self.results_dir],
+                        "condition": self.output_config.get("annotated_cvr_rank_format"),
+                        "depends_on": ["init_rcv"],
+                        "fail_with": [],
+                        "return_key": None,
+                    }
                 ),
                 # ('ballot_stats_debug', {
                 #     'f': write_out.write_ballot_debug_info,
@@ -822,7 +834,7 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
 
     candidate_details_dfs = []
     candidate_rank_usage_dfs = []
-    winner_choice_position_dfs = []
+    winner_final_pile_rank_distribution_dfs = []
     rcv_variant_stats_df_dict = {variant_name: [] for variant_name in get_rcv_dict().keys()}
     rcv_group_stats_df_dict = {variant_group: [] for variant_group in ["single_winner", "multi_winner"]}
 
@@ -869,10 +881,10 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
             rcv_group_stats_df_dict[variant_group].append(crunch_returns["contest_stats_df"])
 
         if (
-            output_config.get("winner_choice_position_distribution")
-            and crunch_returns.get("winner_choice_position_df") is not None
+            output_config.get("winner_final_pile_rank_distribution_table")
+            and crunch_returns.get("winner_final_pile_rank_distribution_df") is not None
         ):
-            winner_choice_position_dfs.append(crunch_returns["winner_choice_position_df"])
+            winner_final_pile_rank_distribution_dfs.append(crunch_returns["winner_final_pile_rank_distribution_df"])
 
         if output_config.get("candidate_rank_usage") and crunch_returns.get("candidate_rank_usage_df") is not None:
             candidate_rank_usage_dfs.append(crunch_returns["candidate_rank_usage_df"])
@@ -929,7 +941,7 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
         rcv_group_stats_df_dict,
         rcv_variant_stats_df_dict,
         candidate_details_dfs,
-        winner_choice_position_dfs,
+        winner_final_pile_rank_distribution_dfs,
         candidate_rank_usage_dfs,
         quiet=False,
     )

@@ -14,17 +14,17 @@ Contest Set File
 The contest set csv file should contain the following columns:
 
 * ``state``: name of jurisdiction state
-* ``jurisdiction``: name of jurisdiction
+* ``jurisdiction``: name of jurisdiction, required
 * ``year``: year
-* ``date``: date in mm/dd/yyyy format
-* ``office``: office being elected
+* ``date``: date in mm/dd/yyyy format, required
+* ``office``: office being elected, required
 * ``notes``: arbitrary notes
 * ``exhaust_on_overvote_marks``: TRUE or FALSE, default is FALSE
-* ``exhaust_on_repeated_skipped_marks``: TRUE or FALSE, default is FALSE
+* ``exhaust_on_N_repeated_skipped_marks``: Number of repeated skipped marks after which the ballot is exhausted, default is 0 (no amount of repeated skipped marks exhaust a ballot)
 * ``exhaust_on_duplicate_candidate_marks``: TRUE or FALSE, default is FALSE
-* ``exclude_writein_marks``: TRUE or FALSE, default is FALSE
-* ``combine_writein_marks``: TRUE or FALSE, default is FALSE
-* ``treat_combined_writeins_as_exhaustable_duplicates``: TRUE or FALSE, default is FALSE
+* ``exclude_writein_marks``: TRUE or FALSE, default is FALSE. Write-in ballot markings are ignored.
+* ``combine_writein_marks``: TRUE or FALSE, default is FALSE. Any candidates named 'UWI' or that contain the string 'write' in their name are combined into single write-in candidate.
+* ``treat_combined_writeins_as_exhaustable_duplicates``: TRUE or FALSE, default is FALSE. If write-ins are combined, decide whether or not the newly combined writeins count as duplicate rankings for the purpose of ballot exhaustion.
 * ``multi_winner_rounds``: TRUE or FALSE, default is TRUE
 * ``n_winners``: an integer, defaults to 1. Only applies to RCV variants requiring a set number of winners (multi winner STV and Sequential IRV).
 * ``rcv_type``: name of RCV variant class
@@ -79,5 +79,8 @@ The run config file can include the following fields:
 
 * ``crossover_support``: true or false. If true, crossover support tables are produced for every election. Uses :meth:`cvr.base.CastVoteRecord.write_crossover_tables`. Defaults to false.
 
+* ``annotated_cvr_rank_format``: true or false. If true, an annotated cvr is created for each election containing many internal tracking variables for each ballot. Useful for debugging. Uses :meth:`cvr.base.write_annotated_cvr_table`. Defaults to false.
+
+* ``winner_final_pile_rank_distribution_table``: true or false. If true, an aggregate csv file is created containing the rank distribution of the final ballot pile for the winner of each single winner election. The rank distribution is measured twice, once using the ranks as the voters marked them and a second time using the 'effective' rankings of each ballot after the contest rules are applied. Uses :meth:`rcv.base.calc_winner_final_pile_rank_distribution_table`. Defaults to false.
 
 * ``split_stats``: true or false. If true, split statistics are produced based on "split_fields" values.

@@ -257,7 +257,7 @@ class STV(RCV, abc.ABC):
         all_winners = [(cand, tally) for cand, tally in zip(round_candidates, round_tally) if tally > threshold]
         all_winners = [cand for cand, _ in sorted(all_winners, key=lambda x: (-x[1], x[0]))]
         if all_winners and self._multi_winner_rounds:
-            self._round_winners = all_winners
+            self._round_winners = all_winners[:min(len(all_winners), self._n_winners - n_elected_candidates)]
         elif all_winners:
             self._round_winners = [all_winners[0]]
 
@@ -366,7 +366,7 @@ class STVWholeBallot(STV):
 
         thresh = self._win_threshold()
         ballot_weight = self._contest_cvr_ld[0]["weight"]  # assuming equal weighted ballots
-        continuing_candidates = set(self._contest_candidates) - set(self._inactive_candidates)
+        continuing_candidates = set(self._contest_candidates.unique_candidates) - set(self._inactive_candidates)
 
         # total and surplus
         cand_total = self.get_round_tally_dict(self._round_num, self._tab_num)[candidate]
@@ -379,7 +379,7 @@ class STVWholeBallot(STV):
         cand_ballots = [
             (idx, b)
             for idx, b in enumerate(self._contest_cvr_ld)
-            if b["ballot_marks"].marks and b["ballot_mark"].marks[0] == candidate
+            if b["ballot_marks"].marks and b["ballot_marks"].marks[0] == candidate
         ]
 
         # mark all ballot belonging to candidate as not-transfer
@@ -394,10 +394,7 @@ class STVWholeBallot(STV):
             start_idx = surplus_factor + offset - 1
             skip_factor = surplus_factor
 
-            print((start_idx, len(cand_ballots), skip_factor))
             for idx in range(start_idx, len(cand_ballots), skip_factor):
-
-                print(idx)
 
                 if idx in seen_idxs or idx in used_idxs:
                     raise RuntimeError("should this happen?")
@@ -407,8 +404,8 @@ class STVWholeBallot(STV):
                     break
 
                 # if current ballot has a next choice that is a continuing candidate,
-                ranks = cand_ballots[idx][1]["ranks"]
-                if set(ranks).intersection(continuing_candidates):
+                ranks = cand_ballots[idx][1]["ballot_marks"]
+                if set(ranks.marks).intersection(continuing_candidates):
                     # mark it for transfer
                     to_remove[cand_ballots[idx][0]] = True
                     # decrement candidate total
@@ -764,7 +761,7 @@ class BottomsUpThresh(RCV):
             disable_aggregation=False,
             exhaust_on_duplicate_candidate_marks=exhaust_on_duplicate_candidate_marks,
             exhaust_on_overvote_marks=exhaust_on_overvote_marks,
-            exhaust_on_repeated_skipped_marks=exhaust_on_N_repeated_skipped_marks,
+            exhaust_on_N_repeated_skipped_marks=exhaust_on_N_repeated_skipped_marks,
             treat_combined_writeins_as_exhaustable_duplicates=treat_combined_writeins_as_exhaustable_duplicates,
             combine_writein_marks=combine_writein_marks,
             exclude_writein_marks=exclude_writein_marks,
@@ -804,7 +801,7 @@ class BottomsUpThresh(RCV):
             for from_cand in candidates
             if from_cand != "exhaust"
         }
-        transfer_dict = {cand: 0 for cand in self._candidate_set.union({"exhaust"})}
+        transfer_dict = {cand: 0 for cand in self._contest_candidates.unique_candidates.union({"exhaust"})}
 
         for b in self._contest_cvr_ld:
             if len(b["ballot_marks"].marks) > 0 and b["ballot_marks"].marks[0] == self._round_loser:

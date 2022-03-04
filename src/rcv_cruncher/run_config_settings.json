@@ -8,6 +8,7 @@
     "round_by_round_table":                     { "default": false},
     "round_by_round_json":                      { "default": false},
     "ballot_stats_debug":                       { "default": false},
+    "annotated_cvr_rank_format":                { "default": false},
     "cvr_ballot_allocation_rank_format":        { "default": false},
     "cvr_ballot_allocation_candidate_format":   { "default": false},
     "first_choice_to_finalist":                 { "default": false},
@@ -16,7 +17,7 @@
     "cumulative_rankings":                      { "default": false},
     "rank_usage":                               { "default": false},
     "crossover_support":                        { "default": false},
-    "winner_choice_position_distribution":      { "default": false},
+    "winner_final_pile_rank_distribution_table":{ "default": false},
     "candidate_rank_usage":                     { "default": false},
     "split_stats":                              { "default": false},
     "cvr_path_root":                            { "default": ""}

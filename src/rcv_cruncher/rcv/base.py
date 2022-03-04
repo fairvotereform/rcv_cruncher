@@ -59,10 +59,10 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                 for iTab in range(1, rcv_obj.n_tabulations()+1)]
 
     @staticmethod
-    def calc_winner_choice_position_distribution_table(
+    def calc_winner_final_pile_rank_distribution_table(
         rcv_obj: Type[RCV], tabulation_num: int = 1
     ) -> Optional[pd.DataFrame]:
-        """Static wrapper for `RCV.get_winner_choice_position_distribution_table`.
+        """Static wrapper for `RCV.get_winner_final_pile_rank_distribution_table`.
 
         :param rcv_obj: RCV object or RCV subclass object
         :type rcv_obj: Type[RCV]
@@ -70,7 +70,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type tabulation_num: int, optional
         :rtype: Optional[pd.DataFrame]
         """
-        return rcv_obj.get_winner_choice_position_distribution_table(tabulation_num=tabulation_num)
+        return rcv_obj.get_winner_final_pile_rank_distribution_table(tabulation_num=tabulation_num)
 
     @staticmethod
     def calc_first_choice_to_finalist_table(rcv_obj: Type[RCV], tabulation_num: int = 1) -> pd.DataFrame:
@@ -161,6 +161,25 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
             outfile = open(save_path / f"{uid}_tab{iTab}.json", "w")
             json.dump(json_dict, outfile)
             outfile.close()
+
+    # @staticmethod
+    # def write_annotated_cvr_table(rcv: Type[RCV], save_dir: Union[str, pathlib.Path] = None) -> None:
+    #     """Static method wrapper around `get_annotated_cvr_table` object method that writes the table out to `save_dir`. All non-alphanumeric characters, besides underscores, are removed from file name components. Contest date is in mm/dd/yyyy format.
+
+    #     :param cvr: RCV object.
+    #     :type cvr: Type[RCV]
+    #     :param save_dir: Directory in which to write out table.
+    #     :type save_dir: Union[str, pathlib.Path]
+    #     """
+
+    #     df = rcv.get_annotated_cvr_table()
+    #     uid = rcv.get_stats()[0]["unique_id"].item()
+
+    #     save_path = pathlib.Path(save_dir) / "annotated_cvr"
+    #     save_path.mkdir(exist_ok=True, parents=True)
+
+    #     df.to_csv(save_path / f"{uid}.csv", index=False)
+
 
     # override me
     @abc.abstractmethod
@@ -921,3 +940,47 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :rtype: int
         """
         return self._tab_num
+
+    def get_annotated_cvr_table(self):
+
+        cvr_stats_annotated_cvr = super().get_annotated_cvr_table()
+        contest_stat_table = self._contest_stat_table
+
+        if not self._disable_aggregation:
+            disagg_info = self._disaggregation_info
+            disagg_info_keys = list(self._disaggregation_info.keys())
+
+            row_reps = [len(disagg_info[k]) for k in disagg_info_keys]
+            contest_stat_table = contest_stat_table.loc[contest_stat_table.index.repeat(row_reps)].reset_index()
+
+        extra_df = pd.DataFrame()
+        for iTab in range(1, self._tab_num + 1):
+
+            round_exhausted = ["not_exhausted" for i in self.get_initial_ranks()]
+
+            for iRound in range(1, self.n_rounds(tabulation_num=iTab) + 1):
+
+                if not self._disable_aggregation:
+
+                    ballot_alloc = self._tabulations[iTab - 1]["ballot_round_allocation"][iRound - 1]
+                    ballot_alloc = [[cand for _ in disagg_info[disagg_info_keys[idx]]] for idx, cand in enumerate(ballot_alloc)]
+                    ballot_alloc = util.flatten_list(ballot_alloc)
+                    extra_df[f'ballot_allocation{iTab}_round{iRound}'] = ballot_alloc
+
+                    round_exhausted = [iRound if i == "not_exhausted" and ballot_alloc[idx] == "exhaust" else i
+                                       for idx, i in enumerate(round_exhausted)]
+
+                    ballot_alloc_weight = self._tabulations[iTab - 1]["ballot_round_weight"][iRound - 1]
+                    ballot_alloc_weight = [[weight for _ in disagg_info[disagg_info_keys[idx]]]
+                                           for idx, weight in enumerate(ballot_alloc_weight)]
+                    ballot_alloc_weight = util.flatten_list(ballot_alloc_weight)
+                    extra_df[f'ballot_allocation_weight{iTab}_round{iRound}'] = ballot_alloc_weight
+
+            extra_df[f'final_allocation{iTab}'] = [str(i) for i in self.get_final_weight_distrib(tabulation_num=iTab)]
+            extra_df[f'round_exhausted{iTab}'] = round_exhausted
+
+        dfs = [
+            cvr_stats_annotated_cvr,
+            contest_stat_table,
+            extra_df]
+        return pd.concat(dfs, axis="columns", sort=False)

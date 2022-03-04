@@ -300,18 +300,18 @@ class RCV_tables:
 
         return cumulative_count_df, cumulative_percent_df
 
-    def _get_winner_choice_position_distribution_table(self, tabulation_num: int = 1) -> Optional[pd.DataFrame]:
-        """[summary]
+    def get_winner_final_pile_rank_distribution_table(self, tabulation_num: int = 1) -> Optional[pd.DataFrame]:
+        """Measure where winners ranked on ballots that ended up in their final pile. Only applicable for single winner elections.
 
-        :param tabulation_num: [description], defaults to 1
+        :param tabulation_num: Tabulation number (only applies to Sequential), defaults to 1
         :type tabulation_num: int, optional
-        :raises RuntimeError: [description]
-        :return: [description]
+        :return: A single row dataframe with contest details and counts of winner final ballots across ranking positions.
         :rtype: Optional[pd.DataFrame]
         """
 
         winner = self._tabulation_winner(tabulation_num=tabulation_num)
         contest_cvr_dl = self.get_cvr_dict(rule_set_name=self._contest_rule_set_name, disaggregate=False)
+        cvr_dl = self.get_cvr_dict(disaggregate=False)
 
         if len(winner) > 1:
             return None
@@ -319,25 +319,38 @@ class RCV_tables:
         winner = winner[0]
         rank_limit = self.get_stats()[0]["rank_limit"].item()
         winner_final_round_count = self._final_round_winner_vote(tabulation_num=tabulation_num)
-        final_weight_distrib = self.get_final_weight_distrib(tabulation_num=tabulation_num)
+        final_weight_distrib = self.get_final_weight_distrib(tabulation_num=tabulation_num, disaggregate=False)
 
-        winner_positions = {k: 0 for k in range(1, rank_limit + 1)}
-        for b, weight, final_distrib in zip(
+        winner_positions_effective = {k: 0 for k in range(1, rank_limit + 1)}
+        winner_positions_marked = {k: 0 for k in range(1, rank_limit + 1)}
+        for contest_b, cvr_b, weight, final_distrib in zip(
             contest_cvr_dl["ballot_marks"],
+            cvr_dl['ballot_marks'],
             contest_cvr_dl["weight"],
             final_weight_distrib,
         ):
 
             if winner == final_distrib[-1][0]:
-                winner_position = b.marks.index(winner)
-                winner_positions[winner_position + 1] += weight
 
-        if sum(winner_positions.values()) != winner_final_round_count:
+                winner_position_effective = contest_b.marks.index(winner)
+                winner_position_marked = cvr_b.marks.index(winner)
+
+                winner_positions_effective[winner_position_effective + 1] += weight
+                winner_positions_marked[winner_position_marked + 1] += weight
+
+        if sum(winner_positions_effective.values()) != winner_final_round_count:
             raise RuntimeError()
 
-        winner_positions = {k: 100 * v / winner_final_round_count for k, v in winner_positions.items()}
+        if sum(winner_positions_marked.values()) != winner_final_round_count:
+            raise RuntimeError()
 
-        choice_position_df = self.stats()[0][
+        winner_positions_effective = {k: 100 * v / winner_final_round_count
+                                      for k, v in winner_positions_effective.items()}
+
+        winner_positions_marked = {k: 100 * v / winner_final_round_count
+                                      for k, v in winner_positions_marked.items()}
+
+        choice_position_df = self.get_stats()[0][
             [
                 "jurisdiction",
                 "state",
@@ -352,8 +365,11 @@ class RCV_tables:
             ]
         ]
 
-        for position, percent in sorted(winner_positions.items()):
-            choice_position_df[f"choice{position}"] = float(round(percent, 2))
+        for position, percent in sorted(winner_positions_effective.items()):
+            choice_position_df[f"effective_rank{position}"] = float(round(percent, 2))
+
+        for position, percent in sorted(winner_positions_marked.items()):
+            choice_position_df[f"marked_rank{position}"] = float(round(percent, 2))
 
         return choice_position_df
 
@@ -520,9 +536,6 @@ class RCV_tables:
         rcv_df = rcv_df.reset_index(drop=True)
         return rcv_df
 
-    def _get_annotated_cvr_table(self):
-        dfs = [super().annotated_cvr_table(), self._contest_stat_table]
-        return pd.concat(dfs, axis="columns", sort=False)
 
     # def outcome_cvr_table(self):
 

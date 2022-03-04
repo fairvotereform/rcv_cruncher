@@ -271,6 +271,17 @@ class CastVoteRecord_tables:
 
         return count_df, percent_df
 
-    def _get_annotated_cvr_table(self):
-        dfs = [self._rank_header_cvr(), self._cvr_stat_table]
-        return pd.concat(dfs, axis="columns", sort=False)
+    def get_annotated_cvr_table(self):
+
+        dfs = [self._rank_header_cvr(disaggregate=self._disable_aggregation), self._cvr_stat_table]
+        concat_df = pd.concat(dfs, axis="columns", sort=False)
+
+        if not self._disable_aggregation:
+
+            disagg_info = self._disaggregation_info
+            disagg_info_keys = list(self._disaggregation_info.keys())
+            row_reps = [len(disagg_info[k]) for k in disagg_info_keys]
+
+            concat_df = concat_df.loc[concat_df.index.repeat(row_reps)].reset_index()
+
+        return concat_df

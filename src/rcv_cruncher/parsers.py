@@ -2,7 +2,7 @@
 Contains CVR parser functions.
 """
 
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Optional
 
 import csv
 import pathlib
@@ -768,13 +768,13 @@ def burlington2006(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     return {"ranks": new_ballots}
 
 
-def ess1(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str, List]:
+def ess1(cvr_path: Union[str, pathlib.Path], office: Optional[str] = None) -> Dict[str, List]:
     """Parser for one format of ES&S CVR files.
 
     :param cvr_path: Directory containing "\*allot\*.txt" files and "\*aster\*.txt" files.
     :type cvr_path: Union[str, pathlib.Path]
-    :param office: Name of election to parse, as written in master lookup file.
-    :type office: str
+    :param office: Name of election to parse, as written in master lookup file. If only one contest named in file, no need for this argument. This is generally the case when the pair of input file exist in a contest-specific folder. When in doubt check the master lookup file.
+    :type office: Optional[str]
     :return: A dictionary of lists containing informtion in the CVR file. Ranks are combined into per-ballot lists and stored with the key 'ranks'. A 'weight' key and list of 1's is added to the dictionary if no 'weight' column exists. All weights are of type :class:`decimal.Decimal`.
     :rtype: Dict[str, List]
     """
@@ -817,12 +817,21 @@ def ess1(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str, List]:
                 candidate_contest_map.update({key: candidate_contest_id})
 
     # find contest id
+    contest_id = None
     contest_reverse_map = {v.strip(): k for k, v in master_lookup["Contest"].items()}
-    if office not in contest_reverse_map:
+
+    # case: only one contest
+    if len(contest_reverse_map.keys()) == 1:
+        contest_id = contest_reverse_map[list(contest_reverse_map.keys())[0]]
+
+    # otherwise, use input office arg
+    if not contest_id and office not in contest_reverse_map:
         raise RuntimeError(
             f"contest set office value ({office}) not present in master lookup file {master_lookup_path}"
         )
-    contest_id = contest_reverse_map[office]
+
+    if not contest_id:
+        contest_id = contest_reverse_map[office]
 
     # remove candidates from master lookup if they are from another contest
     master_lookup["Candidate"] = {
@@ -1033,18 +1042,18 @@ def minneapolis2009(cvr_path: Union[str, pathlib.Path], office: str) -> Dict[str
 
     return bs
 
+def santafe(cvr_path: Union[str, pathlib.Path], column_id: str, contest_id: str) -> Dict[str, List]:
 
-def _santafe(column_id, contest_id, ctx):
-    path = ctx["cvr_path"]
+    path = pathlib.Path(cvr_path)
     candidate_map = {}
-    with open(ctx["cvr_path"].replace("CvrExport", "CandidateManifest"), encoding="utf8") as f:
+    with open(path / "CandidateManifest.csv", encoding="utf8") as f:
         for i in f:
             row = i.split(",")
             if row:
                 candidate_map[row[1]] = row[0]
     ballots = []
     ballot_length = 0
-    with open(path, "r", encoding="utf8") as f:
+    with open(path / "CvrExport.csv", "r", encoding="utf8") as f:
         reader = csv.reader(f)
         header = next(reader)
         s = "Original/Cards/0/Contests/{}/Marks/{}/{}"
@@ -1073,7 +1082,13 @@ def _santafe(column_id, contest_id, ctx):
                     else:
                         choices.append(BallotMarks.OVERVOTE)
                 ballots.append(choices)
-    return [b[:ballot_length] for b in ballots]
+
+    bs = {
+        "ranks": [b[:ballot_length] for b in ballots],
+        "weight": [decimal.Decimal("1")] * len(ballots)
+    }
+
+    return bs
 
 
 def _santafe_id(column_id, contest_id, ctx):
@@ -1132,7 +1147,7 @@ def unisyn(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     :rtype: Dict[str, List]
     """
 
-    glob_str = pathlib.Path(cvr_path).glob("/*.xml")
+    glob_str = pathlib.Path(cvr_path).glob("*.xml")
 
     contestIDdicts = {}
     for f in glob_str:
@@ -1374,6 +1389,4 @@ parser_dict = {
     "minneapolis2009": minneapolis2009,
     "candidate_column_csv": candidate_column_csv,
     "nyc2021": nyc2021
-    # "santafe": santafe, still need to figure out this parser
-    # "santafe_id": santafe_id,
 }

@@ -227,6 +227,35 @@ class CastVoteRecord(CastVoteRecord_stats, CastVoteRecord_tables):
             index_label=f"condorcet winner: {condorcet_winner}",
         )
 
+    @staticmethod
+    def calc_annotated_cvr_table(cvr: Type[CastVoteRecord]) -> pd.DataFrame:
+        """Static method wrapper around `get_annotated_cvr_table` object method.
+
+        :param cvr: CastVoteRecord object.
+        :type cvr: Type[CastVoteRecord]
+        :return: Pandas dataframes containing rank column cvr table with statistics attached
+        :rtype: pd.DataFrame
+        """
+        return cvr.get_annotated_cvr_table()
+
+    @staticmethod
+    def write_annotated_cvr_table(cvr: Type[CastVoteRecord], save_dir: Union[str, pathlib.Path] = None) -> None:
+        """Static method wrapper around `get_annotated_cvr_table` object method that writes the table out to `save_dir`. All non-alphanumeric characters, besides underscores, are removed from file name components. Contest date is in mm/dd/yyyy format.
+
+        :param cvr: CastVoteRecord object.
+        :type cvr: Type[CastVoteRecord]
+        :param save_dir: Directory in which to write out table.
+        :type save_dir: Union[str, pathlib.Path]
+        """
+
+        df = cvr.get_annotated_cvr_table()
+        uid = cvr.get_stats()[0]["unique_id"].item()
+
+        save_path = pathlib.Path(save_dir) / "annotated_cvr"
+        save_path.mkdir(exist_ok=True, parents=True)
+
+        df.to_csv(save_path / f"{uid}.csv", index=False)
+
     def __init__(
         self,
         jurisdiction: str = "",
