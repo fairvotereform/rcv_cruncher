@@ -960,21 +960,23 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
 
             for iRound in range(1, self.n_rounds(tabulation_num=iTab) + 1):
 
+                ballot_alloc = self._tabulations[iTab - 1]["ballot_round_allocation"][iRound - 1]
+                ballot_alloc_weight = self._tabulations[iTab - 1]["ballot_round_weight"][iRound - 1]
+
                 if not self._disable_aggregation:
 
-                    ballot_alloc = self._tabulations[iTab - 1]["ballot_round_allocation"][iRound - 1]
                     ballot_alloc = [[cand for _ in disagg_info[disagg_info_keys[idx]]] for idx, cand in enumerate(ballot_alloc)]
                     ballot_alloc = util.flatten_list(ballot_alloc)
-                    extra_df[f'ballot_allocation{iTab}_round{iRound}'] = ballot_alloc
 
-                    round_exhausted = [iRound if i == "not_exhausted" and ballot_alloc[idx] == "exhaust" else i
-                                       for idx, i in enumerate(round_exhausted)]
-
-                    ballot_alloc_weight = self._tabulations[iTab - 1]["ballot_round_weight"][iRound - 1]
                     ballot_alloc_weight = [[weight for _ in disagg_info[disagg_info_keys[idx]]]
                                            for idx, weight in enumerate(ballot_alloc_weight)]
                     ballot_alloc_weight = util.flatten_list(ballot_alloc_weight)
-                    extra_df[f'ballot_allocation_weight{iTab}_round{iRound}'] = ballot_alloc_weight
+
+                extra_df[f'ballot_allocation{iTab}_round{iRound}'] = ballot_alloc
+                extra_df[f'ballot_allocation_weight{iTab}_round{iRound}'] = ballot_alloc_weight
+
+                round_exhausted = [iRound if i == "not_exhausted" and ballot_alloc[idx] == "exhaust" else i
+                                    for idx, i in enumerate(round_exhausted)]
 
             extra_df[f'final_allocation{iTab}'] = [str(i) for i in self.get_final_weight_distrib(tabulation_num=iTab)]
             extra_df[f'round_exhausted{iTab}'] = round_exhausted

@@ -557,7 +557,7 @@ class STVWholeBallot(STV):
         for winner, to_remove in zip(winners, remove_bool_lists):
             self._contest_cvr_ld = [
                 {
-                    "ballot_marks": BallotMarks.remove_mark(b["ballot_marks"], [inactive_cand]),
+                    "ballot_marks": BallotMarks.remove_mark(b["ballot_marks"], [winner]),
                     "weight": b["weight"],
                     "weight_distrib": b["weight_distrib"],
                 }
