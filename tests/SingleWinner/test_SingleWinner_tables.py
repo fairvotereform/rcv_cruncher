@@ -585,7 +585,7 @@ params = [
                                 util.NAN,
                             ],
                         },
-                        dtype=float,
+
                     )
                 ]
             },

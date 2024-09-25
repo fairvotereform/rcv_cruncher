@@ -2,7 +2,6 @@ from rcv_cruncher import CastVoteRecord, rank_column_csv
 import os
 
 cvr_file = f'{os.path.dirname(__file__)}/../example_cvr/minneapolis2017/2017-mayor-cvr.csv'
-
 # initialize the object with optional details about the election (state, date, office, ..)
 # along with the parser function and parser function arguments. As described in the
 # documentation the only argument for this parser is the path to the CVR file.

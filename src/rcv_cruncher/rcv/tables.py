@@ -529,9 +529,9 @@ class RCV_tables:
 
         # convert from decimal to float
         rcv_df.loc[row_names + ["colsum"], rcv_df.columns != "candidate"] = (
-            rcv_df.loc[row_names + ["colsum"], rcv_df.columns != "candidate"].astype(float).round(3)
+            rcv_df.loc[row_names + ["colsum"], rcv_df.columns != "candidate"].astype(float)
         )
-
+        #.round(3) removed to see results
         # remove rownames
         rcv_df = rcv_df.reset_index(drop=True)
         return rcv_df

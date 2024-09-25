@@ -6,6 +6,8 @@ from typing import List, Optional, Dict, Callable
 import abc
 import copy
 import decimal
+from decimal import Decimal, getcontext, ROUND_DOWN
+
 
 from rcv_cruncher.marks import BallotMarks
 from rcv_cruncher.rcv.base import RCV
@@ -290,6 +292,7 @@ class STV(RCV, abc.ABC):
 
         first_round_dict = self.get_round_tally_dict(1, tabulation_num=self._tab_num)
         first_round_active_votes = sum(first_round_dict.values())
+        #int() turns the float into int by dropping decimal values, making it function that rounds down
         return int((first_round_active_votes / (self._n_winners + 1)) + 1)
 
 
@@ -597,6 +600,7 @@ class STVFractionalBallot(STV):
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
         bottoms_up_threshold: Optional[float] = None,
+        truncate_to: Optional[int] = 4
     ) -> None:
         super().__init__(
             jurisdiction=jurisdiction,
@@ -619,6 +623,7 @@ class STVFractionalBallot(STV):
             n_winners=n_winners,
             multi_winner_rounds=multi_winner_rounds,
             bottoms_up_threshold=bottoms_up_threshold,
+            truncate_to=truncate_to
         )
 
     def _update_weights(self) -> None:
@@ -626,9 +631,28 @@ class STVFractionalBallot(STV):
         If surplus needs to be transferred, change weights on winner ballots to reflect remaining
         active ballot proportion.
 
+        The surplus percentage of the transfered ballot weight is truncated at the decimal place
+        specified by self.truncate_to
+
         rules:
         - reduce weights of ballots ranking the winner by the amount
         """
+
+        def truncation(weight,truncation_dp=self._truncate_to):
+            """
+            Returns value truncated to truncation_dp in decimal data type
+            ie. truncation(2.16, 1) returns 2.1
+            if truncation_dp==None, returns weight unchanged
+            """
+
+            if truncation_dp == None:
+                return weight
+
+            quantizer = Decimal('1.' + '0' * truncation_dp)
+            weight = weight.quantize(quantizer, rounding=ROUND_DOWN)
+            #round Down same as truncate
+
+            return weight
 
         round_dict = self.get_round_tally_dict(self._round_num, tabulation_num=self._tab_num)
         threshold = self._win_threshold()
@@ -651,8 +675,9 @@ class STVFractionalBallot(STV):
                         winner_weight = b["weight"] * (1 - surplus_percent)
                         new_weight_distrib = b["weight_distrib"] + [(winner, winner_weight)]
 
-                        # remaining weight
-                        remaining_weight = b["weight"] * surplus_percent
+                        # remaining weight, truncated using function within this function
+                        remaining_weight = b["weight"] * truncation(surplus_percent)
+
 
                         # adjust ballot's current weight
                         new.append(

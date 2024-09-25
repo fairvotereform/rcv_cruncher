@@ -260,6 +260,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
         bottoms_up_threshold: Optional[float] = None,
+        truncate_to: Optional[int] = 4
     ) -> None:
         """
         Constructor. Subclass of CastVoteRecord. Initializes CastVoteRecord superclass, applies contest rules to ballots, tabulates the election, and calculates default statistics.
@@ -274,6 +275,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :type multi_winner_rounds: Optional[bool], optional
         :param bottoms_up_threshold: Float between 0 and 1 indicating the dynamic threshold to use in each round of a bottoms up election, defaults to None
         :type bottoms_up_threshold: Optional[float], optional
+        :param truncate_to: int or None representing how many decimal places to truncate surplas ballot transfers, if None, does not truncacte, defaults to 4
         """
 
         # INIT CVR
@@ -316,7 +318,9 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         self._multi_winner_rounds = multi_winner_rounds
         self._contest_candidates = self.get_candidates(self._contest_rule_set_name)
         self._contest_cvr_ld = None
+        self._truncate_to = truncate_to
         self._reset_ballots()
+
 
         # INIT STATE INFO
 

@@ -97,7 +97,7 @@ params = [
                     ],
                     "weight": [2, 1, 2, 1, 1, 0.5],
                 },
-                "n_winners": 3,
+                "n_winners": 3,"truncate_to":None,
             },
             "expected": {
                 "n_tabulation": 1,
@@ -169,7 +169,8 @@ params = [
                     ],
                     "weight": [2, 1, 2, 1, 1, 0.5],
                 },
-                "n_winners": 3,
+                "n_winners": 3,"truncate_to":None,
+
             },
             "expected": {
                 "n_tabulation": 1,
@@ -1658,7 +1659,7 @@ params = [
                     ],
                     "weight": [2, 1, 2, 1, 1, 0.5],
                 },
-                "n_winners": 3,
+                "n_winners": 3,"truncate_to":None,
             },
             "expected": {
                 "stat": round(

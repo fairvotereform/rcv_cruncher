@@ -266,7 +266,7 @@ class CastVoteRecord_tables:
                     percent_df.loc[cand, colname_dict[opponent]] = 0
 
         # convert decimal to float
-        count_df = count_df.astype(float).round(3)
+        count_df = count_df.astype(float)
         percent_df = percent_df.astype(float).round(3)
 
         return count_df, percent_df

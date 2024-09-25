@@ -14,7 +14,7 @@ election = SingleWinner(
      parser_args={'cvr_path': cvr_file},
      exhaust_on_duplicate_candidate_marks=False,
      exhaust_on_overvote_marks=False,
-     exhaust_on_repeated_skipped_marks=False
+     exhaust_on_N_repeated_skipped_marks=2
  )
 
 # save a csv table of the results to out_dir
@@ -36,7 +36,7 @@ election = STVFractionalBallot(
      parser_args={'cvr_path': cvr_file},
      exhaust_on_duplicate_candidate_marks=False,
      exhaust_on_overvote_marks=False,
-     exhaust_on_repeated_skipped_marks=False,
+     exhaust_on_N_repeated_skipped_marks=2,
      n_winners=2
  )
 
