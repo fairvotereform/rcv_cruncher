@@ -37,7 +37,8 @@ election = STVFractionalBallot(
      exhaust_on_duplicate_candidate_marks=False,
      exhaust_on_overvote_marks=False,
      exhaust_on_N_repeated_skipped_marks=2,
-     n_winners=2
+     n_winners=2,
+     truncate_to=4
  )
 
 # save a csv table of the results to out_dir
