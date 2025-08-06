@@ -66,6 +66,7 @@ def _flatten_rcv_stats(stats: List[pd.DataFrame]) -> pd.DataFrame:
             for col in other_tabulations.columns:
                 if col not in no_duplicate_fields:
                     flat_df[col] = str(flat_df[col].item()) + ";" + str(other_tabulations[col].item())
+                    #probably the cause of why I need to convert "eliminate_write_ins_first back into a bool"
 
     return flat_df
 
@@ -139,9 +140,7 @@ def _cast_func(s):
 
 
 def _read_contest_set(contest_set_path, override_cvr_root_dir=None):
-
     contest_set_path = pathlib.Path(contest_set_path)
-
     # assemble typecast funcs
     global _cast_str
     global _cast_int
@@ -241,7 +240,9 @@ def _read_contest_set(contest_set_path, override_cvr_root_dir=None):
         if col not in contest_set_settings:
             print(f'info -- "{col}" is an unrecognized column in contest_set.csv, it will be ignored.')
         else:
+
             contest_set_df[col] = contest_set_df[col].fillna(contest_set_settings[col]["default"])
+
             contest_set_df[col] = [
                 cast_dict[contest_set_settings[col]["type"]](i) for i in contest_set_df[col].tolist()
             ]
@@ -266,7 +267,9 @@ def _read_contest_set(contest_set_path, override_cvr_root_dir=None):
         if override_cvr_root_dir:
             copy_comp["cvr_path"] = pathlib.Path(override_cvr_root_dir) / comp["cvr_path"]
         else:
+
             copy_comp["cvr_path"] = run_config["cvr_path_root"] / comp["cvr_path"]
+
 
         copy_comp["parser_args"] = {"cvr_path": copy_comp["cvr_path"]}
         copy_comp["parser_args"].update(copy_comp["extra_parser_args"])

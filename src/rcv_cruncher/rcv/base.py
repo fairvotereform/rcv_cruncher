@@ -260,7 +260,8 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
         bottoms_up_threshold: Optional[float] = None,
-        truncate_to: Optional[int] = 4
+        truncate_to: Optional[int] = 4,
+        writeins_eliminated_first: bool = False
     ) -> None:
         """
         Constructor. Subclass of CastVoteRecord. Initializes CastVoteRecord superclass, applies contest rules to ballots, tabulates the election, and calculates default statistics.
@@ -276,7 +277,9 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         :param bottoms_up_threshold: Float between 0 and 1 indicating the dynamic threshold to use in each round of a bottoms up election, defaults to None
         :type bottoms_up_threshold: Optional[float], optional
         :param truncate_to: int or None representing how many decimal places to truncate surplas ballot transfers, if None, does not truncacte, defaults to 4
+        :parma writeins_eliminated_first: sets writeins as first loser (in _set_loser_round()) regardless of their number of votes. value should be True or False
         """
+        writeins_eliminated_first = str(writeins_eliminated_first).lower() == 'true' #least clumsy way I can find it keep writeins_eliminated_first a bool
 
         # INIT CVR
         super().__init__(
@@ -307,6 +310,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                 exhaust_on_duplicate_candidate_marks=exhaust_on_duplicate_candidate_marks,
                 exhaust_on_overvote_marks=exhaust_on_overvote_marks,
                 exhaust_on_N_repeated_skipped_marks=exhaust_on_N_repeated_skipped_marks,
+                writeins_eliminated_first=writeins_eliminated_first
             ),
         )
 
@@ -319,6 +323,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         self._contest_candidates = self.get_candidates(self._contest_rule_set_name)
         self._contest_cvr_ld = None
         self._truncate_to = truncate_to
+        self._writeins_lose_first = writeins_eliminated_first
         self._reset_ballots()
 
 
@@ -508,6 +513,7 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                     ] = self._round_num
 
                 self._inactive_candidates += novote_losers
+                #self._inactive_candidates += "writein"
                 first_elimination_round = False
 
                 self._clean_ballots()
@@ -642,24 +648,32 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
         If more than one, choose randomly
         """
 
+
         # split round results into two tuples (index-matched)
         active_candidates, round_tallies = self.get_round_tally_tuple(
             self._round_num, self._tab_num, only_round_active_candidates=True
         )
-        # find round loser
-        # ignore zero vote candidates, they will be automtically eliminated with the first non-zero loser
-        loser_count = min(i for i in round_tallies if i)
 
-        # haven't implemented any special rules for tied losers. Print a warning if one is reached
-        # if len([cand for cand, cand_tally
-        #         in zip(active_candidates, round_tallies) if cand_tally == loser_count]) > 1:
-        #     raise RuntimeWarning("reached a round with tied losers....")
+        if self._writeins_lose_first and ("writein" in active_candidates):
 
-        # in case of tied losers, choose one to eliminate (the last one in alpha order)
-        round_losers = sorted(
-            [cand for cand, cand_tally in zip(active_candidates, round_tallies) if cand_tally == loser_count]
-        )
-        self._round_loser = random.sample(round_losers, 1)[0]
+            self._round_loser = "writein"
+
+
+        else: #if self._round_loser != "writein":
+            # find round loser
+            # ignore zero vote candidates, they will be automtically eliminated with the first non-zero loser
+            loser_count = min(i for i in round_tallies if i)
+
+            # haven't implemented any special rules for tied losers. Print a warning if one is reached
+            # if len([cand for cand, cand_tally
+            #         in zip(active_candidates, round_tallies) if cand_tally == loser_count]) > 1:
+            #     raise RuntimeWarning("reached a round with tied losers....")
+
+            # in case of tied losers, choose one to eliminate (the last one in alpha order)
+            round_losers = sorted(
+                [cand for cand, cand_tally in zip(active_candidates, round_tallies) if cand_tally == loser_count]
+            )
+            self._round_loser = random.sample(round_losers, 1)[0]
 
     def get_round_tally_tuple(
         self,

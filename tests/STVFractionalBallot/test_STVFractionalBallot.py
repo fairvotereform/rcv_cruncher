@@ -1659,7 +1659,7 @@ params = [
                     ],
                     "weight": [2, 1, 2, 1, 1, 0.5],
                 },
-                "n_winners": 3,"truncate_to":None,
+                "n_winners": 3,"truncate_to":None,"writeins_eliminated_first":False
             },
             "expected": {
                 "stat": round(

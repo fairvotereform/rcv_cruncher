@@ -69,7 +69,7 @@
     },
     "bottoms_up_threshold": {
         "type": "float",
-        "default": "np.NAN"
+        "default": "np.nan"
     },
     "split_fields":{
         "type": "list",

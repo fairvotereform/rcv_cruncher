@@ -44,6 +44,7 @@ class BallotMarks:
         exhaust_on_duplicate_candidate_marks: bool = False,
         exhaust_on_overvote_marks: bool = False,
         exhaust_on_N_repeated_skipped_marks: int = 0,
+        writeins_eliminated_first: bool = False
     ) -> Dict:
         """A constructor of sorts. Returns passed and default parameters as a dictionary.
 
@@ -78,6 +79,7 @@ class BallotMarks:
             "exhaust_on_duplicate_candidate_marks": exhaust_on_duplicate_candidate_marks,
             "exhaust_on_overvote_marks": exhaust_on_overvote_marks,
             "exhaust_on_N_repeated_skipped_marks": exhaust_on_N_repeated_skipped_marks,
+            "writeins_eliminated_first": writeins_eliminated_first,
         }
 
     @staticmethod
@@ -247,6 +249,7 @@ class BallotMarks:
         exhaust_on_duplicate_candidate_marks: bool = False,
         exhaust_on_overvote_marks: bool = False,
         exhaust_on_N_repeated_skipped_marks: int = 0,
+        writeins_eliminated_first: bool = False,
     ) -> None:
         """
         Applies rules to ballot, modifying marks as necessary.
@@ -285,6 +288,7 @@ class BallotMarks:
             "exhaust_on_duplicate_candidate_marks": exhaust_on_duplicate_candidate_marks,
             "exhaust_on_overvote_marks": exhaust_on_overvote_marks,
             "exhaust_on_N_repeated_skipped_marks": exhaust_on_N_repeated_skipped_marks,
+            "writeins_eliminated_first":writeins_eliminated_first
         }
 
         all_skipped = None

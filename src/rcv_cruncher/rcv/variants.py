@@ -54,6 +54,7 @@ class SingleWinner(RCV):
         exclude_writein_marks: bool = False,
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
+        writeins_eliminated_first: bool = False,
         bottoms_up_threshold: Optional[float] = None,
     ) -> None:
         super().__init__(
@@ -77,6 +78,7 @@ class SingleWinner(RCV):
             n_winners=n_winners,
             multi_winner_rounds=multi_winner_rounds,
             bottoms_up_threshold=bottoms_up_threshold,
+            writeins_eliminated_first=writeins_eliminated_first,
         )
 
     def _contest_stats(self) -> List:
@@ -325,6 +327,7 @@ class STVWholeBallot(STV):
         exclude_writein_marks: bool = False,
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
+        writeins_eliminated_first: bool = None,
         bottoms_up_threshold: Optional[float] = None,
     ) -> None:
         super().__init__(
@@ -348,6 +351,7 @@ class STVWholeBallot(STV):
             n_winners=n_winners,
             multi_winner_rounds=multi_winner_rounds,
             bottoms_up_threshold=bottoms_up_threshold,
+            writeins_eliminated_first=writeins_eliminated_first
         )
 
         weights = set(b["weight"] for b in self._contest_cvr_ld)
@@ -600,7 +604,8 @@ class STVFractionalBallot(STV):
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
         bottoms_up_threshold: Optional[float] = None,
-        truncate_to: Optional[int] = 4
+        truncate_to: Optional[int] = 4,
+         writeins_eliminated_first: bool = False
     ) -> None:
         super().__init__(
             jurisdiction=jurisdiction,
@@ -623,7 +628,8 @@ class STVFractionalBallot(STV):
             n_winners=n_winners,
             multi_winner_rounds=multi_winner_rounds,
             bottoms_up_threshold=bottoms_up_threshold,
-            truncate_to=truncate_to
+            truncate_to=truncate_to,
+            writeins_eliminated_first=writeins_eliminated_first
         )
 
     def _update_weights(self) -> None:
@@ -770,7 +776,9 @@ class BottomsUpThresh(RCV):
         exclude_writein_marks: bool = False,
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
+        writeins_eliminated_first: bool = None,
         bottoms_up_threshold: Optional[float] = None,
+
     ) -> None:
         super().__init__(
             jurisdiction=jurisdiction,
@@ -793,17 +801,26 @@ class BottomsUpThresh(RCV):
             n_winners=n_winners,
             multi_winner_rounds=multi_winner_rounds,
             bottoms_up_threshold=bottoms_up_threshold,
+            writeins_eliminated_first=writeins_eliminated_first,
         )
         if self._bottoms_up_threshold is None:
-            raise RuntimeError('BottomsUpThresh RCV variant requires values for "bottoms_up_thresh" argument')
+            #raise RuntimeError('BottomsUpThresh RCV variant requires values for "bottoms_up_thresh" argument')
+            print("No bottoms up threshold set, default to 1/(n_winners+1)_")
+            self._bottoms_up_threshold=Decimal(1)/Decimal(self._n_winners+1)
 
     def _set_round_winners(self) -> None:
         """
         This function should set self._round_winners to the list of candidates that won the round
         """
+        if self._bottoms_up_threshold is None:
+            print("No bottoms up threshold set, default to 1/(n_winners+1)")
+            self._bottoms_up_threshold=Decimal(1)/Decimal(self._n_winners+1)
+
         round_candidates, round_tallies = self.get_round_tally_tuple(
             self._round_num, self._tab_num, only_round_active_candidates=True
         )
+        print("sum(round tallies):",sum(round_tallies),type(sum(round_tallies)))
+        print("self._bottoms_up_threshold:",self._bottoms_up_threshold,type(self._bottoms_up_threshold))
         threshold = sum(round_tallies) * self._bottoms_up_threshold
         if all(i > threshold for i in round_tallies):
             self._round_winners = list(round_candidates)
