@@ -74,3 +74,6 @@ docs/_build
 .mypy_cache/
 
 /conda-env
+
+#dev code
+/src/rcv_cruncher/WIPDevcode.py

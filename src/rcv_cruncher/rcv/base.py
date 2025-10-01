@@ -513,7 +513,6 @@ class RCV(abc.ABC, CastVoteRecord, RCV_stats, RCV_tables):
                     ] = self._round_num
 
                 self._inactive_candidates += novote_losers
-                #self._inactive_candidates += "writein"
                 first_elimination_round = False
 
                 self._clean_ballots()
