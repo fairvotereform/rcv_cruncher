@@ -27,7 +27,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="rcv_cruncher",
-    version="0.0.14",
+    version="0.0.15",
     description="Analyze RCV elections",
     # long_description='%s\n%s' % (
     #     re.compile('^.. start-badges.*^.. end-badges', re.M | re.S).sub('', read('README.rst')),
@@ -35,10 +35,10 @@ setup(
     # ),
     long_description=README,
     long_description_content_type="text/markdown",
+    license="GPL-3.0-or-later",
     # long_description="",
-    author="Chris Zawora",
-    author_email="christopher.zawora@gmail.com",
-    url="https://github.com/fairvotereform/rcv_cruncher",
+    author="Bryan Huang, Chris Zawora",
+    author_email="bhuang@fairvote.org, christopher.zawora@gmail.com",
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
