@@ -821,9 +821,15 @@ def _crunch_contest_set(contest_set, output_config, path_to_output, fresh_output
     if fresh_output and converted_cvr_dir.exists():
         print("deleting existing converted_cvr directory...")
         shutil.rmtree(util.longname(converted_cvr_dir))
-    util.verifyDir(converted_cvr_dir)
-    util.verifyDir(converted_cvr_dir / "candidate")
-    util.verifyDir(converted_cvr_dir / "rank")
+
+     # Create directories if they don't exist
+    converted_cvr_dir.mkdir(parents=True, exist_ok=True)
+    (converted_cvr_dir / "candidate").mkdir(parents=True, exist_ok=True)
+    (converted_cvr_dir / "rank").mkdir(parents=True, exist_ok=True)
+
+    #util.verifyDir(converted_cvr_dir)
+    #util.verifyDir(converted_cvr_dir / "candidate")
+    #util.verifyDir(converted_cvr_dir / "rank")
 
     # various tabulation stats will be output here
     results_dir = path_to_output / "results"

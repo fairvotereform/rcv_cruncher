@@ -32,7 +32,6 @@ def add_parser(parser_dict) -> None:
     """
     parser_dict.update(parser_dict)
 
-
 def get_parser_dict():
     """Returns the module parser dictionary. Including both package parsers and
     custom parsers added with :func:`add_parser`.
@@ -41,7 +40,6 @@ def get_parser_dict():
     :rtype: Dict
     """
     return parser_dict
-
 
 def rank_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     """Reads ballot ranking information stored in csv format.
@@ -123,7 +121,6 @@ def rank_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
 
     return dct
 
-
 def candidate_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
     """
     Reads ballot ranking information stored in csv file called "cvr.csv".
@@ -174,59 +171,6 @@ def candidate_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
                     ballot.append(BallotMarks.OVERVOTE)
                 else:
                     ballot.append(row_ranks[rank_num])
-            else:
-                ballot.append(BallotMarks.SKIPPED)
-        ballots.append(ballot)
-
-    ballot_dict = {"ranks": ballots}
-    for col in cvr.columns:
-        if col not in candidate_dict:
-            ballot_dict[col] = cvr[col]
-
-    return ballot_dict
-
-def candidate_column_csv_old(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
-    """
-    Reads ballot ranking information stored in csv file called "cvr.csv".
-    Candidate column names. One ballot per row, with ranks given to candidates in cell rows.
-
-    Candidate columns are identified by reading a "candidate_codes.csv" file. Columns present in the CVR file that are not listed in the candidate codes are parsed as auxillary ballot information (precinct ID, etc).
-
-    :param cvr_path: The path to the directory containing the CVR and candidate codes files.
-    :type cvr_path: Union[str, pathlib.Path]
-    :raises RuntimeError: Error raised if not all parsed rank lists are the same length.
-    :return: A dictionary of lists containing all columns in the CVR file. Rank columns are combined into per-ballot lists and stored with the key 'ranks'. A 'weight' key and list of 1's is added to the dictionary if no 'weight' column exists. All weights are of type :class:`decimal.Decimal`.
-    :rtype: Dict[str, List]
-    """
-
-    cvr_path = pathlib.Path(cvr_path)
-
-    cvr = pd.read_csv(cvr_path / "cvr.csv", encoding="utf8")
-    candidate_codes = pd.read_csv(cvr_path / "candidate_codes.csv", encoding="utf8")
-
-    candidate_dict = {str(code): cand for code, cand in zip(candidate_codes["code"], candidate_codes["candidate"])}
-
-    max_rank_num = int(cvr[candidate_dict.keys()].max().max())
-	# I need to add a test to add in overvotes. like there is for skipped or somethingcurrentCandidate = BallotMarks.OVERVOTE
-	#over votes is missing
-
-    ballots = []
-    for _, row in cvr.iterrows():
-        row_ranks = {
-            int(row[code]): candidate_dict[code]
-            for code, value in candidate_dict.items()
-            if value and not pd.isna(row[code])
-        }
-        print(row_ranks)
-
-
-        ballot = []
-
-        for rank_num in range(1, max_rank_num + 1):
-            if rank_num in row_ranks:
-                #PSEUDOCODE if rank_num in ballot:
-                #    replac
-                ballot.append(row_ranks[rank_num])
             else:
                 ballot.append(BallotMarks.SKIPPED)
         ballots.append(ballot)
@@ -1826,7 +1770,7 @@ def nyc2021(cvr_path: Union[str, pathlib.Path], office: str, other_data_cols: Li
     return election_ballots[office]
 
 def hart_redondo_beach(cvr_path: Union[str, pathlib.Path], office: str):
-   print("Check FairVoteReform github repository or reach out to research@fairvote.org")
+   print("Reach out to research@fairvote.org")
 
 
 parser_dict = {
