@@ -90,6 +90,7 @@ def rank_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
                 "UWI": BallotMarks.WRITEIN,
                 "Write-in": BallotMarks.WRITEIN,
                 "writein": BallotMarks.WRITEIN,
+                "Uncertified.Write.In": BallotMarks.WRITEIN,
             }
             for col in rank_col
         }

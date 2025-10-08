@@ -71,6 +71,14 @@
         "type": "float",
         "default": "np.nan"
     },
+    "truncate_to": {
+        "type": "int",
+        "default": "4"
+    },
+    "writeins_eliminated_first": {
+        "type": "bool",
+        "default": false
+    },
     "split_fields":{
         "type": "list",
         "default": ""

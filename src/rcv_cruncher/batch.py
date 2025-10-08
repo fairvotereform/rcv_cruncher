@@ -58,6 +58,8 @@ def _flatten_rcv_stats(stats: List[pd.DataFrame]) -> pd.DataFrame:
         "n_candidates",
         "rank_limit",
         "restrictive_rank_limit",
+        "truncate_to",
+        "writeins_eliminated_first",
     ]
 
     flat_df = stats[0].copy()

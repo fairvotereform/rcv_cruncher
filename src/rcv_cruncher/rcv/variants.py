@@ -54,6 +54,7 @@ class SingleWinner(RCV):
         exclude_writein_marks: bool = False,
         n_winners: Optional[int] = None,
         multi_winner_rounds: bool = False,
+        truncate_to: Optional[int] = 4,
         writeins_eliminated_first: bool = False,
         bottoms_up_threshold: Optional[float] = None,
     ) -> None:
@@ -644,18 +645,21 @@ class STVFractionalBallot(STV):
         - reduce weights of ballots ranking the winner by the amount
         """
 
+
         def truncation(weight,truncation_dp=self._truncate_to):
             """
             Returns value truncated to truncation_dp in decimal data type
             ie. truncation(2.16, 1) returns 2.1
             if truncation_dp==None, returns weight unchanged
             """
-
+            #print("truncation_dp ", truncation_dp)
             if truncation_dp == None:
                 return weight
 
             quantizer = Decimal('1.' + '0' * truncation_dp)
+            #print(weight)
             weight = weight.quantize(quantizer, rounding=ROUND_DOWN)
+            #print(weight,"-")
             #round Down same as truncate
 
             return weight
