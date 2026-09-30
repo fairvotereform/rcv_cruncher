@@ -1,0 +1,41 @@
+Contest Id,RCTab CVR Id,Tabulator Id,Batch Id,Vendor Id,Precinct,Precinct Portion,Rank 1,Rank 2,Rank 3,Rank 4,Rank 5,Rank 6,Rank 7
+mayor,101,,,101,101-1-99,,Emily Francis,Tricia Canonico,Adam Eggleston,Adam Hirschhorn,undervote,undervote,undervote
+mayor,102,,,102,101-1-74,,Tricia Canonico,Emily Francis,Adam Eggleston,Shirley Peel,Adam Hirschhorn,Scotty V VanTatenhove,Jeffrey Shumway
+mayor,103,,,103,101-1-73,,Tricia Canonico,Emily Francis,Adam Eggleston,Shirley Peel,Adam Hirschhorn,Scotty V VanTatenhove,Jeffrey Shumway
+mayor,104,,,104,101-1-43,,Emily Francis,Shirley Peel,Tricia Canonico,Scotty V VanTatenhove,Adam Hirschhorn,Adam Eggleston,Jeffrey Shumway
+mayor,105,,,105,101-1-42,,Emily Francis,Adam Eggleston,Shirley Peel,Tricia Canonico,undervote,undervote,undervote
+mayor,106,,,106,101-1-36,,Jeffrey Shumway,Shirley Peel,undervote,undervote,undervote,undervote,undervote
+mayor,107,,,107,0101-1-19,,Jeffrey Shumway,Emily Francis,Tricia Canonico,Shirley Peel,Scotty V VanTatenhove,Adam Eggleston,Adam Hirschhorn
+mayor,108,,,108,0101-1-2,,Emily Francis,Tricia Canonico,undervote,undervote,undervote,undervote,undervote
+mayor,109,,,109,101-1-98,,Emily Francis,Tricia Canonico,Adam Eggleston,undervote,undervote,undervote,undervote
+mayor,110,,,110,101-1-97,,Emily Francis,Adam Hirschhorn,Scotty V VanTatenhove,Shirley Peel,undervote,undervote,undervote
+mayor,111,,,111,101-1-60,,Emily Francis,Tricia Canonico,undervote,undervote,undervote,undervote,undervote
+mayor,112,,,112,101-1-39,,Shirley Peel,Jeffrey Shumway,Adam Eggleston,Tricia Canonico,Adam Hirschhorn,Scotty V VanTatenhove,Emily Francis
+mayor,2135,,,2135,0105-2-14,,undervote,undervote,undervote,undervote,undervote,undervote,"Tricia Canonico
+Adam Eggleston
+Emily Francis
+Adam Hirschhorn
+Shirley Peel
+Jeffrey Shumway
+Scotty V VanTatenhove"
+mayor,2137,,,2137,0105-2-19,,Emily Francis,Tricia Canonico,Adam Eggleston,"Adam Hirschhorn
+Scotty V VanTatenhove",Shirley Peel,Jeffrey Shumway,undervote
+mayor,2138,,,2138,0105-2-18,,"Tricia Canonico
+Adam Hirschhorn",Adam Eggleston,undervote,Scotty V VanTatenhove,undervote,"Emily Francis
+Shirley Peel",undervote
+mayor,2893,,,2893,110-5-37,,undervote,undervote,undervote,undervote,undervote,undervote,"Tricia Canonico
+Adam Eggleston
+Emily Francis
+Adam Hirschhorn
+Shirley Peel
+Jeffrey Shumway
+Scotty V VanTatenhove"
+mayor,2896,,,2896,110-5-81,,Jeffrey Shumway,Scotty V VanTatenhove,Shirley Peel,Emily Francis,"Adam Eggleston
+Emily Francis
+Adam Hirschhorn",Adam Hirschhorn,Adam Eggleston
+mayor,3837,,,3837,111-6-33,,Jeffrey Shumway,"Tricia Canonico
+Jeffrey Shumway",Jeffrey Shumway,Scotty V VanTatenhove,Adam Hirschhorn,Shirley Peel,undervote
+mayor,3839,,,3839,0111-6-22,,Adam Eggleston,Shirley Peel,Adam Hirschhorn,"Emily Francis
+Jeffrey Shumway",Scotty V VanTatenhove,Tricia Canonico,undervote
+mayor,3842,,,3842,0111-6-9,,Adam Hirschhorn,Adam Eggleston,Tricia Canonico,Emily Francis,"Tricia Canonico
+Shirley Peel",Jeffrey Shumway,Scotty V VanTatenhove

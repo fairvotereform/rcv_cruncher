@@ -35,6 +35,19 @@ The contest set csv file should contain the following columns:
 * ``extra_parser_args``: semicolon-separated list of key-value pairs corresponding to additional arguments required by parser function. Each key-value pair should be separated by '=' sign.
 * ``ignore_contest``: TRUE of FALSE, default is FALSE. If TRUE, skip election when running the batch.
 
+Example: candidate + rank column CVRs (Clear Ballot)
+----------------------------------------------------
+
+Clear Ballot systems (used by Portland, OR and Fort Collins, CO) export one column per candidate per rank, e.x. ``Smith Rank 1``, ``Smith Rank 2``, ``Doe Rank 1``. These files are read with the ``candidate_rank_column_csv`` parser, which turns two marked candidates at the same rank into an overvote. The Portland export contains every ballot in the city, so the ballot style holding the contest is selected with ``filter_column`` and ``filter_values``. Portland's three write-in lines are separate candidates in the file and are combined by the ``combine_writein_marks`` rule; the ``ignore_candidates`` argument reproduces the city's official rank CVR, which records lone marks on those lines as skipped.
+
+.. code-block:: text
+
+   parser_func: candidate_rank_column_csv
+   cvr_path: Oregon/Portland/2024/PortlandOR_CD1_2024_CandidateRankColumn.csv
+   extra_parser_args: filter_column=BallotStyleID;filter_values=2;ignore_candidates=Write-in-120,Write-in-121,Write-in-122
+
+See :func:`parsers.candidate_rank_column_csv` for the recognized header formats and the ``contest`` argument used when a file holds several contests.
+
 
 Run Config
 ^^^^^^^^^^

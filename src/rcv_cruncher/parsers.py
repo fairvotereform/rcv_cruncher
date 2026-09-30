@@ -15,6 +15,7 @@ import decimal
 import xmltodict
 import functools
 
+import numpy as np
 import pandas as pd
 
 from rcv_cruncher.marks import BallotMarks
@@ -73,9 +74,15 @@ def rank_column_csv(cvr_path: Union[str, pathlib.Path]) -> Dict[str, List]:
         replace_dict = {col: cand_codes_dict for col in rank_col}
         df = df.replace(replace_dict)
 
-        cand_codes_dict = {str(float(code)): cand for code, cand in zip(cand_codes["code"], cand_codes["candidate"])}
-        replace_dict = {col: cand_codes_dict for col in rank_col}
-        df = df.replace(replace_dict)
+        # numeric codes may have been read as floats (e.x. "1.0"), non-numeric codes are left as they are
+        cand_codes_dict = {
+            str(float(code)): cand
+            for code, cand in zip(cand_codes["code"], cand_codes["candidate"])
+            if str(code).replace(".", "", 1).lstrip("-").isdigit()
+        }
+        if cand_codes_dict:
+            replace_dict = {col: cand_codes_dict for col in rank_col}
+            df = df.replace(replace_dict)
 
     # replace skipped ranks and overvotes with constants
     df = df.replace(
@@ -1774,6 +1781,204 @@ def hart_redondo_beach(cvr_path: Union[str, pathlib.Path], office: str):
    print("Reach out to research@fairvote.org")
 
 
+# ----------------------------------------------------------------------------------------------------
+# "candidate + rank column" format
+# (Clear Ballot exports: Portland, OR 2024; Fort Collins, CO 2025)
+# ----------------------------------------------------------------------------------------------------
+
+_MARK_FALSE_VALUES = frozenset({"", "0", "0.0", "false", "f", "no", "n", "nan", "none", "null"})
+
+# Built-in header patterns. Each must define named groups "candidate" and "rank" and may define "contest".
+_CANDIDATE_RANK_COLUMN_PATTERNS = [
+    # Clear Ballot: "Choice_20_1:City of Portland, Councilor, District 1:1:Number of Winners 3:Peggy Sue Owens:NON"
+    ("clear_ballot", re.compile(r"^Choice_[^:]*:(?P<contest>[^:]*):(?P<rank>\d+):[^:]*:(?P<candidate>[^:]*)(?::[^:]*)*$")),
+    # "Tricia Canonico(1)" or "Tricia Canonico (1)"
+    ("name_paren_rank", re.compile(r"^(?P<candidate>.+?)\s*\(\s*(?P<rank>\d+)\s*\)$")),
+    # "Smith Rank 1", "Smith - Rank 1", "Smith_rank_1", "Smith: Choice 1"
+    ("name_rank", re.compile(r"^(?P<candidate>.+?)[\s_\-:]*(?:rank|choice)[\s_\-:]*(?P<rank>\d+)$", re.IGNORECASE)),
+    # "Rank 1 Smith", "Rank 1 - Smith", "Choice1_Smith"
+    ("rank_name", re.compile(r"^(?:rank|choice)[\s_\-]*(?P<rank>\d+)[\s_\-:]+(?P<candidate>[^:]+)$", re.IGNORECASE)),
+]
+
+
+def _as_str_list(value: Union[None, str, List[str]]) -> List[str]:
+    """Accept a list of strings or a comma-separated string (as passed through contest_set.csv) and return a list."""
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [v.strip() for v in value.split(",") if v.strip()]
+    return [str(v).strip() for v in value if str(v).strip()]
+
+
+def _find_candidate_rank_columns(columns: List[str]) -> Dict[str, Dict[str, str]]:
+    """Identify the candidate+rank columns using the built-in header patterns. The pattern explaining the most
+    columns wins, ties go to the earlier pattern. Returns {column: {"candidate", "rank", "contest"}}."""
+    best = {}
+    for _, pattern in _CANDIDATE_RANK_COLUMN_PATTERNS:
+        matched = {}
+        for col in columns:
+            m = pattern.match(col.strip())
+            if m:
+                groups = m.groupdict()
+                matched[col] = {
+                    "candidate": groups["candidate"].strip(),
+                    "rank": int(groups["rank"]),
+                    "contest": (groups.get("contest") or "").strip(),
+                }
+        if len(matched) > len(best):
+            best = matched
+    if not best:
+        raise ValueError(
+            "Could not identify any candidate+rank columns. Column headers must look like 'Smith(1)', 'Smith Rank 1' "
+            "or the Clear Ballot 'Choice_...' format. Add a pattern to _CANDIDATE_RANK_COLUMN_PATTERNS for new formats."
+        )
+    return best
+
+
+def _marked(series: pd.Series) -> "np.ndarray":
+    """Boolean array marking cells that contain a vote (anything other than blank/0/false)."""
+    values = series.astype(str).str.strip().str.lower()
+    return ~values.isin(_MARK_FALSE_VALUES).to_numpy()
+
+
+def candidate_rank_column_csv(
+    cvr_path: Union[str, pathlib.Path],
+    contest: Optional[str] = None,
+    filter_column: Optional[str] = None,
+    filter_values: Union[None, str, List[str]] = None,
+    ignore_candidates: Union[None, str, List[str]] = None,
+) -> Dict[str, List]:
+    """Reads ballot ranking information stored in "candidate + rank column" csv format, as exported by
+    Clear Ballot systems (Portland, OR and Fort Collins, CO). One ballot per row. There is one column per
+    candidate per rank (e.x. "Smith Rank 1", "Smith Rank 2", "Doe Rank 1", "Doe Rank 2") holding a 1 (or
+    any non-blank, non-zero, non-false value) when the ballot ranked that candidate at that rank.
+
+    For each rank, a ballot that marked exactly one candidate is given that candidate, a ballot that marked no
+    candidate is given :attr:`BallotMarks.SKIPPED` and a ballot that marked two or more candidates is given
+    :attr:`BallotMarks.OVERVOTE`. A candidate marked at several ranks is left as a duplicate ranking.
+
+    Column headers are recognized in these formats:
+
+    * ``Choice_20_1:<contest>:<rank>:Number of Winners 3:<candidate>:NON`` (Clear Ballot, Portland 2024)
+    * ``<candidate>(<rank>)`` or ``<candidate> (<rank>)`` (Fort Collins 2025)
+    * ``<candidate> Rank <rank>`` / ``<candidate> - Choice <rank>`` and ``Rank <rank> <candidate>`` variations
+
+    Candidate names are taken from the headers as is. Write-in lines (e.x. Portland's "Write-in-120",
+    "Write-in-121", "Uncertified Write In") are kept as separate candidates here and combined by the
+    ``combine_writein_marks`` tabulation rule. Two write-in lines marked at the same rank are an overvote.
+    If a file called "candidate_codes.csv" with columns "code" and "candidate" exists in the same directory,
+    candidates named in the "code" column are renamed.
+
+    :param cvr_path: The path to the CVR csv file.
+    :type cvr_path: Union[str, pathlib.Path]
+    :param contest: When the file holds several contests, only columns whose header contains this text (case
+        insensitive) are used, e.x. "District 1". Defaults to None.
+    :type contest: Optional[str], optional
+    :param filter_column: Name of a non-rank column used to keep only some ballots, e.x. "BallotStyleID".
+        Clear Ballot exports can contain every ballot cast in the jurisdiction, including ballots from styles
+        without this contest. Defaults to None.
+    :type filter_column: Optional[str], optional
+    :param filter_values: List (or comma-separated string) of values of **filter_column** to keep. Defaults to None.
+    :type filter_values: Union[None, str, List[str]], optional
+    :param ignore_candidates: List (or comma-separated string) of candidate names whose marks are recorded as
+        :attr:`BallotMarks.SKIPPED`. Their marks still count toward overvotes. Portland's official rank CVR treats
+        lone marks on its "Write-in-1xx" ballot lines this way. Defaults to None.
+    :type ignore_candidates: Union[None, str, List[str]], optional
+    :raises ValueError: If no candidate columns can be identified, or filter arguments do not match the file.
+    :return: A dictionary of lists containing all columns in the CVR file. Candidate columns are combined into
+        per-ballot rank lists stored with the key 'ranks'. A 'weight' key and list of 1's is added to the dictionary
+        if no 'weight' column exists. All weights are of type :class:`decimal.Decimal`.
+    :rtype: Dict[str, List]
+    """
+
+    cvr_path = pathlib.Path(cvr_path)
+    ignore_candidates = _as_str_list(ignore_candidates)
+    filter_values = _as_str_list(filter_values)
+
+    df = pd.read_csv(cvr_path, encoding="utf-8-sig", dtype=str, keep_default_na=False)
+    all_columns = [str(col) for col in df.columns]
+    df.columns = all_columns
+
+    # ballot filter (e.x. keep only ballot styles that include this contest)
+    if filter_column or filter_values:
+        if not (filter_column and filter_values):
+            raise ValueError("filter_column and filter_values must be given together.")
+        if filter_column not in all_columns:
+            raise ValueError(f"filter_column '{filter_column}' is not a column in {cvr_path.name}.")
+        keep = df[filter_column].astype(str).str.strip().isin(filter_values)
+        if not keep.any():
+            raise ValueError(f"No ballots have {filter_column} in {filter_values}.")
+        df = df.loc[keep].reset_index(drop=True)
+
+    # identify candidate columns
+    column_info = _find_candidate_rank_columns(all_columns)
+    all_candidate_columns = set(column_info)
+
+    if contest:
+        column_info = {col: info for col, info in column_info.items() if contest.lower() in col.lower()}
+        if not column_info:
+            raise ValueError(f"No candidate columns contain the contest text '{contest}'.")
+    contests = {info["contest"] for info in column_info.values() if info["contest"]}
+    if len(contests) > 1:
+        raise ValueError(
+            f"The file contains columns for several contests: {sorted(contests)}. Use the contest argument to pick one."
+        )
+
+    # candidate renames
+    rename = {}
+    candidate_codes_path = cvr_path.parent / "candidate_codes.csv"
+    if candidate_codes_path.is_file():
+        codes_df = pd.read_csv(candidate_codes_path, encoding="utf-8-sig", dtype=str, keep_default_na=False)
+        rename = {str(code).strip(): str(cand).strip() for code, cand in zip(codes_df["code"], codes_df["candidate"])}
+
+    ignore_lower = {c.lower() for c in ignore_candidates}
+
+    def final_name(raw_name: str) -> str:
+        name = rename.get(raw_name, raw_name)
+        if raw_name.lower() in ignore_lower or name.lower() in ignore_lower:
+            return BallotMarks.SKIPPED
+        return name
+
+    # mark matrix per (candidate, rank). Columns with the same candidate and rank are merged.
+    marks = {}
+    candidate_order = []
+    for col, info in column_info.items():
+        key = (info["candidate"], info["rank"])
+        if info["candidate"] not in candidate_order:
+            candidate_order.append(info["candidate"])
+        marked = _marked(df[col])
+        marks[key] = marked if key not in marks else (marks[key] | marked)
+
+    rank_numbers = sorted({rank for _, rank in marks})
+    n_ballots = df.shape[0]
+    ballot_ranks = np.full((n_ballots, len(rank_numbers)), BallotMarks.SKIPPED, dtype=object)
+
+    for position, rank in enumerate(rank_numbers):
+        rank_candidates = [cand for cand in candidate_order if (cand, rank) in marks]
+        mark_matrix = np.column_stack([marks[(cand, rank)] for cand in rank_candidates])
+        n_marks = mark_matrix.sum(axis=1)
+        names = np.array([final_name(cand) for cand in rank_candidates], dtype=object)
+
+        single = n_marks == 1
+        ballot_ranks[single, position] = names[mark_matrix.argmax(axis=1)[single]]
+        ballot_ranks[n_marks > 1, position] = BallotMarks.OVERVOTE
+
+    dct = {"ranks": ballot_ranks.tolist()}
+
+    # add in non-candidate columns
+    for col in df.columns:
+        if col not in all_candidate_columns:
+            dct[col] = df[col].tolist()
+
+    # add weight if not present in csv
+    if "weight" not in dct:
+        dct["weight"] = [decimal.Decimal("1") for _ in dct["ranks"]]
+    else:
+        dct["weight"] = [decimal.Decimal(str(w)) for w in dct["weight"]]
+
+    return dct
+
+
 parser_dict = {
     "burlington2006": burlington2006,
     "rank_column_csv": rank_column_csv,
@@ -1787,5 +1992,6 @@ parser_dict = {
     # "surveyUSA": surveyUSA,
     "minneapolis2009": minneapolis2009,
     "candidate_column_csv": candidate_column_csv,
+    "candidate_rank_column_csv": candidate_rank_column_csv,
     "nyc2021": nyc2021
 }

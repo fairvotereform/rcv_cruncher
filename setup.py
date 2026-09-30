@@ -73,7 +73,7 @@ setup(
         # eg: 'keyword1', 'keyword2', 'keyword3',
     ],
     python_requires=">=3.9",
-    install_requires=["tqdm>=4.56.0", "pandas>=1.2.0", "xmltodict>=0.12.0"],
+    install_requires=["tqdm>=4.56.0", "pandas>=1.2.0,<3", "xmltodict>=0.12.0"],
     extras_require={"dev": ["sphinx_copybutton"]},
     entry_points={
         "console_scripts": [

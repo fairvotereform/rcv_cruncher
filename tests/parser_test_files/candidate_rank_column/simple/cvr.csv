@@ -1,0 +1,7 @@
+BallotID,Precinct,Smith Rank 1,Smith Rank 2,Smith Rank 3,Doe Rank 1,Doe Rank 2,Doe Rank 3,Write-in Line 1 Rank 1,Write-in Line 1 Rank 2,Write-in Line 1 Rank 3,Write-in Line 2 Rank 1,Write-in Line 2 Rank 2,Write-in Line 2 Rank 3
+b1,P1,1,0,0,0,1,0,0,0,0,0,0,0
+b2,P1,1,0,0,1,0,0,0,1,0,0,0,0
+b3,P2,0,0,0,0,0,0,0,0,0,0,0,0
+b4,P2,0,0,0,0,1,1,1,0,0,1,0,0
+b5,P2,1,1,1,0,0,0,0,0,0,0,0,0
+b6,P3,,TRUE,,true,,x,,,,,,

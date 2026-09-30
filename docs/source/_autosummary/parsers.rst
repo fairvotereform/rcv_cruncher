@@ -17,6 +17,7 @@
       add_parser
       burlington2006
       candidate_column_csv
+      candidate_rank_column_csv
       choice_pro_plus
       dominion5_10
       dominion5_2
