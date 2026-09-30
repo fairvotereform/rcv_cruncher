@@ -1798,6 +1798,8 @@ _CANDIDATE_RANK_COLUMN_PATTERNS = [
     ("name_rank", re.compile(r"^(?P<candidate>.+?)[\s_\-:]*(?:rank|choice)[\s_\-:]*(?P<rank>\d+)$", re.IGNORECASE)),
     # "Rank 1 Smith", "Rank 1 - Smith", "Choice1_Smith"
     ("rank_name", re.compile(r"^(?:rank|choice)[\s_\-]*(?P<rank>\d+)[\s_\-:]+(?P<candidate>[^:]+)$", re.IGNORECASE)),
+    # "Peggy Sue Owens_1", "Michael (Mike) Sands_3", "Write-in-120_6", "Uncertified Write In_2"
+    ("name_underscore_rank", re.compile(r"^(?P<candidate>.+)_(?P<rank>\d+)$")),
 ]
 
 
